@@ -18,7 +18,8 @@ module.exports = {
   entry: path.join(opts.src, 'assets/js/index.js'),
   output: {
     path: opts.dest,
-    publicPath: '',
+    // spaのため、絶対パスにしないと、cssの読み込みやjsの読み込みがルート以外でおかしくなる
+    publicPath: '/',
     filename,
   },
   plugins: [

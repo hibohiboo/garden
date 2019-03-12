@@ -1,6 +1,18 @@
 version: '3'
 services:
+  # デプロイツール
+  garden_firebase:
+    build: ./firebase
+    env_file: .env
+    volumes:
+      - ../app/public:/app/public
+      - ../app/.firebaserc:/app/.firebaserc
+      - ../app/firebase.json:/app/firebase.json
+    ports:
+      - 5000:5000
+      - 9005:9005
 
+  # SPA
   garden:
     build: ./garden-webpack
     volumes:

@@ -1,2 +1,4 @@
 *
 !.gitignore
+!.firebaserc
+!firebase.json
