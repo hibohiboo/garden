@@ -1,0 +1,27 @@
+{
+  "name": "garden",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/hibohiboo/garden.svg)](https://travis-ci.org/hibohiboo/garden)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hibohiboo/garden.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hibohiboo/garden/issues"
+  },
+  "homepage": "https://github.com/hibohiboo/garden#readme",
+  "devDependencies": {
+    "elm": "^0.19.0-bugfix6",
+    "elm-format": "^0.8.1"
+  }
+}

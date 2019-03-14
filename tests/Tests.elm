@@ -1,9 +1,14 @@
-module Tests exposing (..)
+module Tests exposing (suite, unitTest)
 
-import Test exposing (..)
 import Expect
+import Route exposing (..)
+import Test exposing (..)
+import Url
+
+
 
 ----
+
 
 unitTest : Test
 unitTest =
@@ -12,4 +17,15 @@ unitTest =
             \() ->
                 1
                     |> Expect.equal 1
+        ]
+
+
+suite : Test
+suite =
+    describe "Route"
+        [ test "should parase URL" <|
+            \_ ->
+                Url.fromString "http://example.com/"
+                    |> Maybe.andThen Route.parse
+                    |> Expect.equal (Just Route.Top)
         ]
