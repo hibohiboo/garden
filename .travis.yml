@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-  - "11.8"
+  - 'stable'
 before_script:
   - npm install -g elm
   - npm install -g elm-test
   - chmod +x ./bin/test.sh
-script: ./bin/test.sh
+script: ./bin/travis-test.sh
