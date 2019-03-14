@@ -4,5 +4,5 @@ node_js:
 before_script:
   - npm install -g elm
   - npm install -g elm-test
-  - chmod +x ./bin/test.sh
+  - chmod +x ./bin/travis-test.sh
 script: ./bin/travis-test.sh
