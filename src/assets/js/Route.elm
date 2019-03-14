@@ -11,4 +11,4 @@ type Route
 
 parse : Url -> Maybe Route
 parse url =
-    Debug.todo "実装"
+    Just Top
