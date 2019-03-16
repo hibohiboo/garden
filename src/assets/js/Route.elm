@@ -5,8 +5,9 @@ import Url exposing (..)
 
 type Route
     = Top
-    | Rulebook
+    | RuleBook
     | PrivacyPolicy
+    | NotFound
 
 
 parse : Url -> Maybe Route

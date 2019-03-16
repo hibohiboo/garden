@@ -4,6 +4,7 @@ import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Route exposing (..)
 import Url
 
 
@@ -59,9 +60,31 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | url = url }
-            , Cmd.none
-            )
+            case Route.parse url of
+                Nothing ->
+                    ( { model | url = url }
+                    , Cmd.none
+                    )
+
+                Just Route.Top ->
+                    ( { model | url = url }
+                    , Cmd.none
+                    )
+
+                Just Route.RuleBook ->
+                    ( { model | url = url }
+                    , Cmd.none
+                    )
+
+                Just Route.PrivacyPolicy ->
+                    ( { model | url = url }
+                    , Cmd.none
+                    )
+
+                Just Route.NotFound ->
+                    ( { model | url = url }
+                    , Cmd.none
+                    )
 
 
 
