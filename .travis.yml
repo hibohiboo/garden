@@ -3,6 +3,7 @@ elm-test: 0.19.0-rev6
 elm-format: 0.8.1
 node_js: 'stable'
 before_script:
-  - npm install
+  - npm install -g elm
+  - npm install -g elm-test
   - chmod +x ./bin/travis-test.sh
 script: ./bin/travis-test.sh
