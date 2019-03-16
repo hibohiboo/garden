@@ -4,7 +4,3 @@ before_script:
   - chmod +x ./bin/travis-test.sh
 script:
   - elm-format --validate . && elm-test
-cache:
-  directories:
-    - node_modules
-    - elm-stuff
