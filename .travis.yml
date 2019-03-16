@@ -1,4 +1,5 @@
 language: elm
 node_js: 'stable'
 script:
-  - elm-format --validate . && elm-test
+  - elm-format --validate .
+  - elm-test

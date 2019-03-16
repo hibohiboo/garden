@@ -2,10 +2,10 @@ module Main exposing (Model, Msg(..), init, main, subscriptions, update, view, v
 
 import Browser
 import Browser.Navigation as Nav
+import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Json.Decode as D exposing (Decoder)
 import Route exposing (..)
 import Url
 import Url.Builder
@@ -113,20 +113,15 @@ goTo maybeRoute model =
         Just (Route.User userName) ->
             -- UserPage を取得
             ( model
-            , Http.get
-                { url =
-                    Url.Builder.crossOrigin "https://api.github.com" [ "users", userName, "repos" ] []
-                , expect = Http.expectJson (Result.map UserPage >> Loaded) reposDecoder
-                }
+            , GitHub.getRepos (Result.map UserPage >> Loaded) userName
             )
 
         Just (Route.Repo userName projectName) ->
             -- RepoPageを取得
             ( model
-            , Http.get
-                { url = Url.Builder.crossOrigin "https://api.github.com" [ "repos", userName, projectName, "issues" ] []
-                , expect = Http.expectJson (Result.map RepoPage >> Loaded) issuesDecoder
-                }
+            , GitHub.getIssues (Result.map RepoPage >> Loaded)
+                userName
+                projectName
             )
 
 
@@ -220,55 +215,3 @@ viewIssue issue =
 viewLink : String -> Html msg
 viewLink path =
     li [] [ a [ href path ] [ text path ] ]
-
-
-
--- GITHUB
-
-
-type alias Repo =
-    { name : String
-    , description : String
-    , language : Maybe String
-    , owner : String
-    , fork : Int
-    , star : Int
-    , watch : Int
-    }
-
-
-type alias Issue =
-    { number : Int
-    , title : String
-    , state : String
-    }
-
-
-reposDecoder : Decoder (List Repo)
-reposDecoder =
-    D.list repoDecoder
-
-
-repoDecoder : Decoder Repo
-repoDecoder =
-    D.map7 Repo
-        (D.field "name" D.string)
-        (D.field "description" D.string)
-        (D.maybe (D.field "language" D.string))
-        (D.at [ "owner", "login" ] D.string)
-        (D.field "forks" D.int)
-        (D.field "stargazers_count" D.int)
-        (D.field "watchers_count" D.int)
-
-
-issuesDecoder : Decoder (List Issue)
-issuesDecoder =
-    D.list issueDecoder
-
-
-issueDecoder : Decoder Issue
-issueDecoder =
-    D.map3 Issue
-        (D.field "number" D.int)
-        (D.field "title" D.string)
-        (D.field "state" D.string)
