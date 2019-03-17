@@ -225,6 +225,15 @@ view model =
         RuleBook ->
             Skeleton.view never Page.RuleBook.view
 
+        TopPage ->
+            Skeleton.view never Page.Top.view
+
+        PrivacyPolicy ->
+            Skeleton.view never Page.PrivacyPolicy.view
+
+        About ->
+            Skeleton.view never Page.About.view
+
         _ ->
             { title = "Garden - 箱庭の島の子供たち"
             , body =
@@ -235,15 +244,6 @@ view model =
 
                     ErrorPage error ->
                         viewError error
-
-                    TopPage ->
-                        Page.Top.view
-
-                    PrivacyPolicy ->
-                        Page.PrivacyPolicy.view
-
-                    About ->
-                        Page.About.view
 
                     GitHubUserPage gitHubUserPageModel ->
                         -- GitHubUserページのview関数を呼ぶ

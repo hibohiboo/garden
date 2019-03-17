@@ -3,12 +3,23 @@ module Page.About exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Markdown
+import Skeleton
 import Url
 import Url.Builder
 
 
-view : Html msg
+view : Skeleton.Details msg
 view =
+    { title = "このサイトについて"
+    , attrs = []
+    , kids =
+        [ viewHelper
+        ]
+    }
+
+
+viewHelper : Html msg
+viewHelper =
     div []
         [ Markdown.toHtml [ class "content" ] """
 ## このサイトについて

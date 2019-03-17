@@ -20,7 +20,7 @@ viewLink path =
 view : (a -> msg) -> Details a -> Browser.Document msg
 view toMsg details =
     { title =
-        details.title
+        "Garden - 箱庭の島の子供たち | " ++ details.title
     , body =
         [ viewHeader
         , Html.map toMsg <|

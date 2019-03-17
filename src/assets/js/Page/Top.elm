@@ -7,9 +7,14 @@ import Url
 import Url.Builder
 
 
-view : Html msg
+view : Skeleton.Details msg
 view =
-    viewTopPage
+    { title = "トップページ"
+    , attrs = []
+    , kids =
+        [ viewTopPage
+        ]
+    }
 
 
 viewTopPage : Html msg
