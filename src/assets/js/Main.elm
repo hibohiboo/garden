@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Http
 import Page.Repo exposing (..)
 import Page.Top exposing (..)
+import Page.User exposing (..)
 import Route exposing (..)
 import Skelton exposing (viewLink)
 import Url
@@ -44,7 +45,7 @@ type Page
     = NotFound
     | ErrorPage Http.Error
     | TopPage
-    | UserPage (List Repo)
+    | UserPage Page.User.Model
     | RepoPage Page.Repo.Model
 
 
@@ -65,6 +66,7 @@ type Msg
     | UrlChanged Url.Url
     | Loaded (Result Http.Error Page)
     | RepoMsg Page.Repo.Msg
+    | UserMsg Page.User.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -112,6 +114,22 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        -- Userページのメッセージが来たとき
+        UserMsg userMsg ->
+            -- 現在表示中のページが
+            case model.page of
+                -- UserPageであれば、
+                UserPage userModel ->
+                    -- Repoページのupdate処理を行う
+                    let
+                        ( newUserModel, userCmd ) =
+                            Page.User.update userMsg userModel
+                    in
+                    ( { model | page = UserPage newUserModel }, Cmd.map UserMsg userCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -131,9 +149,13 @@ goTo maybeRoute model =
             )
 
         Just (Route.User userName) ->
-            -- UserPage を取得
-            ( model
-            , GitHub.getRepos (Result.map UserPage >> Loaded) userName
+            -- User ページの初期化
+            let
+                ( userModel, userCmd ) =
+                    Page.User.init userName
+            in
+            ( { model | page = UserPage userModel }
+            , Cmd.map UserMsg userCmd
             )
 
         Just (Route.Repo userName projectName) ->
@@ -175,8 +197,10 @@ view model =
             TopPage ->
                 Page.Top.view
 
-            UserPage repos ->
-                viewUserPage repos
+            UserPage userPageModel ->
+                -- Userページのview関数を呼ぶ
+                Page.User.view userPageModel
+                    |> Html.map UserMsg
 
             RepoPage repoPageModel ->
                 -- Repoページのview関数を呼ぶ
@@ -203,12 +227,3 @@ viewError error =
 
         _ ->
             text (Debug.toString error)
-
-
-viewUserPage : List Repo -> Html msg
-viewUserPage repos =
-    ul []
-        -- ユーザの持っているリポジトリのURLを一覧で表示
-        (repos
-            |> List.map (\repo -> viewLink (Url.Builder.absolute [ repo.owner, repo.name ] []))
-        )
