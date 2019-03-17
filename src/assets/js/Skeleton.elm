@@ -67,4 +67,4 @@ viewNav =
 
 viewFooter : Html msg
 viewFooter =
-    footer [ class "page-footer" ] [ text "©hibo" ]
+    footer [ class "page-foot" ] [ text "©hibo" ]

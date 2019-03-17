@@ -11,8 +11,6 @@ body {
 
 // 基本設定
 header {
-  align-items: center;
-  display: flex;
 
   img {
     width: 80px;
@@ -35,11 +33,15 @@ header {
   min-height: 100vh;
 }
 
-// ヘッダー
+$bgColorHeadFoot: #222;
 
+// ヘッダー
 .page-head {
   grid-column: 1;
   grid-row: 1;
+  padding: 15px 0;
+  background-color: $bgColorHeadFoot;
+  text-align: center;
 }
 
 // メインコンテンツ
@@ -68,4 +70,9 @@ header {
 .page-foot {
   grid-column: 1;
   grid-row: 3;
+  padding: 20px 0;
+  background-color: $bgColorHeadFoot;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
 }
