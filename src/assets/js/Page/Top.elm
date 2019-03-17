@@ -2,7 +2,7 @@ module Page.Top exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Skelton exposing (viewLink)
+import Skeleton exposing (viewLink)
 import Url
 import Url.Builder
 
@@ -17,4 +17,5 @@ viewTopPage =
     ul []
         [ li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールブック" ] ]
         , li [] [ a [ href (Url.Builder.absolute [ "privacy-policy" ] []) ] [ text "プライバシーポリシー" ] ]
+        , li [] [ a [ href (Url.Builder.absolute [ "about" ] []) ] [ text "このサイトについて" ] ]
         ]

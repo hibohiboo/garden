@@ -4,7 +4,7 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Skelton exposing (viewLink)
+import Skeleton exposing (viewLink)
 import Url
 import Url.Builder
 

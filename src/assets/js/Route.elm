@@ -8,6 +8,7 @@ type Route
     = Top
     | RuleBook
     | PrivacyPolicy
+    | About
     | GitHubUser String
     | Repo String String
 
@@ -23,6 +24,7 @@ parser =
         [ map Top top
         , map RuleBook (s "rulebook")
         , map PrivacyPolicy (s "privacy-policy")
+        , map About (s "about")
         , map GitHubUser string
         , map Repo (string </> string)
         ]

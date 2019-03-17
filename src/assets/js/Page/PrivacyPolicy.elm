@@ -3,7 +3,7 @@ module Page.PrivacyPolicy exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Markdown
-import Skelton exposing (viewLink)
+import Skeleton exposing (viewLink)
 import Url
 import Url.Builder
 

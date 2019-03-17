@@ -6,13 +6,15 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
+import Page.About exposing (..)
 import Page.GitHubUser exposing (..)
 import Page.PrivacyPolicy exposing (..)
+import Page.Problem as Problem
 import Page.Repo exposing (..)
 import Page.RuleBook exposing (..)
 import Page.Top exposing (..)
 import Route exposing (..)
-import Skelton exposing (viewLink)
+import Skeleton exposing (Details, view)
 import Url
 import Url.Builder
 
@@ -51,6 +53,7 @@ type Page
     | RepoPage Page.Repo.Model
     | RuleBook
     | PrivacyPolicy
+    | About
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -162,6 +165,11 @@ goTo maybeRoute model =
             , Cmd.none
             )
 
+        Just Route.About ->
+            ( { model | page = About }
+            , Cmd.none
+            )
+
         Just (Route.GitHubUser gitHubUserName) ->
             -- GitHubUser ページの初期化
             let
@@ -196,43 +204,63 @@ subscriptions _ =
 -- VIEW
 
 
+styles : List (Attribute msg)
+styles =
+    [ style "text-align" "center"
+    , style "color" "#9A9A9A"
+    , style "padding" "6em 0"
+    ]
+
+
 view : Model -> Browser.Document Msg
 view model =
-    { title = "Garden - 箱庭の島の子供たち"
-    , body =
-        [ a [ href "/" ] [ h1 [] [ text "Garden - 箱庭の島の子供たち" ] ]
-        , case model.page of
-            NotFound ->
-                viewNotFound
+    case model.page of
+        NotFound ->
+            Skeleton.view never
+                { title = "Not Found"
+                , attrs = Problem.styles
+                , kids = Problem.notFound
+                }
 
-            ErrorPage error ->
-                viewError error
+        _ ->
+            { title = "Garden - 箱庭の島の子供たち"
+            , body =
+                [ a [ href "/" ] [ h1 [] [ text "Garden - 箱庭の島の子供たち" ] ]
+                , case model.page of
+                    NotFound ->
+                        viewNotFound
 
-            TopPage ->
-                Page.Top.view
+                    ErrorPage error ->
+                        viewError error
 
-            RuleBook ->
-                Page.RuleBook.view
+                    TopPage ->
+                        Page.Top.view
 
-            PrivacyPolicy ->
-                Page.PrivacyPolicy.view
+                    RuleBook ->
+                        Page.RuleBook.view
 
-            GitHubUserPage gitHubUserPageModel ->
-                -- GitHubUserページのview関数を呼ぶ
-                Page.GitHubUser.view gitHubUserPageModel
-                    |> Html.map GitHubUserMsg
+                    PrivacyPolicy ->
+                        Page.PrivacyPolicy.view
 
-            RepoPage repoPageModel ->
-                -- Repoページのview関数を呼ぶ
-                Page.Repo.view repoPageModel
-                    |> Html.map RepoMsg
-        ]
-    }
+                    About ->
+                        Page.About.view
+
+                    GitHubUserPage gitHubUserPageModel ->
+                        -- GitHubUserページのview関数を呼ぶ
+                        Page.GitHubUser.view gitHubUserPageModel
+                            |> Html.map GitHubUserMsg
+
+                    RepoPage repoPageModel ->
+                        -- Repoページのview関数を呼ぶ
+                        Page.Repo.view repoPageModel
+                            |> Html.map RepoMsg
+                ]
+            }
 
 
 {-| NotFound ページ
 -}
-viewNotFound : Html Msg
+viewNotFound : Html msg
 viewNotFound =
     text "not found"
 
