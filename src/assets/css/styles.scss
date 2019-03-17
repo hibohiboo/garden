@@ -16,7 +16,7 @@ header {
 
   img {
     width: 80px;
-    vertical-align: bottom;
+    vertical-align: bottom; // 余計な余白が入るのを防ぐ
   }
 }
 
@@ -33,4 +33,39 @@ header {
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
+}
+
+// ヘッダー
+
+.page-head {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+// メインコンテンツ
+.page-main{
+  grid-column: 1;
+  grid-row: 2;
+}
+
+// ナビゲーション
+.page-nav {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+// ボタン
+
+.page-btn,
+.page-btn-close {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: right;
+  align-self: center;
+}
+
+// フッタ
+.page-foot {
+  grid-column: 1;
+  grid-row: 3;
 }

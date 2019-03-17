@@ -24,15 +24,22 @@ view toMsg details =
     { title =
         "Garden - 箱庭の島の子供たち | " ++ details.title
     , body =
-        [ viewHeader
-        , main_ [ class "page-main" ]
-            [ Html.map toMsg <|
-                div (class "center" :: details.attrs) details.kids
+        [ -- Google Tag Manager (noscript)
+          node "noscript"
+            []
+            [ iframe [ src "https://www.googletagmanager.com/ns.html?id=GTM-NM7RRXS", height 0, width 0, style "display" "none", style "visibility" "hidden" ] []
             ]
-        , viewNav
-        , button [ type_ "button", class "page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
-        , button [ type_ "button", class "page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
-        , viewFooter
+        , div [ class "page" ]
+            [ viewHeader
+            , main_ [ class "page-main" ]
+                [ Html.map toMsg <|
+                    div (class "center" :: details.attrs) details.kids
+                ]
+            , viewNav
+            , button [ type_ "button", class "page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+            , button [ type_ "button", class "page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
+            , viewFooter
+            ]
         ]
     }
 
