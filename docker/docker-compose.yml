@@ -37,8 +37,6 @@ services:
       - ./config/postcss.config.js:/app/postcss.config.js
       - ./config/babel.config.js:/app/babel.config.js
       - ./config/webpack.config.separate.js:/app/webpack.config.separate.js
-      # docs
-      - ../docs/elm:/docs/elm
     environment:
       - SHELL=/bin/bash
     ports:

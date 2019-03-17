@@ -3,6 +3,8 @@ module Skeleton exposing (Details, view, viewLink)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Url
+import Url.Builder
 
 
 type alias Details msg =
@@ -23,8 +25,13 @@ view toMsg details =
         "Garden - 箱庭の島の子供たち | " ++ details.title
     , body =
         [ viewHeader
-        , Html.map toMsg <|
-            div (class "center" :: details.attrs) details.kids
+        , main_ [ class "page-main" ]
+            [ Html.map toMsg <|
+                div (class "center" :: details.attrs) details.kids
+            ]
+        , viewNav
+        , button [ type_ "button", class "page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+        , button [ type_ "button", class "page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
         , viewFooter
         ]
     }
@@ -32,9 +39,25 @@ view toMsg details =
 
 viewHeader : Html msg
 viewHeader =
-    header [] []
+    header [ class "page-head" ]
+        [ a [ href "/" ]
+            [ img [ src "/assets/images/toy_hakoniwa.png" ] []
+            ]
+        ]
+
+
+viewNav : Html msg
+viewNav =
+    nav [ class "page-nav" ]
+        [ ul []
+            [ li [] [ a [ href (Url.Builder.absolute [ "" ] []) ] [ text "トップ" ] ]
+            , li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールブック" ] ]
+            , li [] [ a [ href (Url.Builder.absolute [ "privacy-policy" ] []) ] [ text "プライバシーポリシー" ] ]
+            , li [] [ a [ href (Url.Builder.absolute [ "about" ] []) ] [ text "このサイトについて" ] ]
+            ]
+        ]
 
 
 viewFooter : Html msg
 viewFooter =
-    footer [] []
+    footer [ class "page-footer" ] [ text "©hibo" ]

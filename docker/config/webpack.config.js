@@ -135,7 +135,7 @@ if (MODE === 'development') {
       progress: true,
       inline: true,
       stats: 'errors-only',
-      contentBase: path.join(__dirname, 'src/assets'),
+      contentBase: path.join(__dirname, 'src'),
       historyApiFallback: true,
       // feel free to delete this section if you don't need anything like this
       before(app) {
