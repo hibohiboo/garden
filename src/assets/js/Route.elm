@@ -6,7 +6,7 @@ import Url.Parser as Parser exposing ((</>), Parser, map, oneOf, string, top)
 
 type Route
     = Top
-    | User String
+    | GitHubUser String
     | Repo String String
 
 
@@ -19,6 +19,6 @@ parser : Parser (Route -> a) a
 parser =
     oneOf
         [ map Top top
-        , map User string
+        , map GitHubUser string
         , map Repo (string </> string)
         ]

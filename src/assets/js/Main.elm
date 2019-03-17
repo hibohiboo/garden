@@ -6,9 +6,9 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
+import Page.GitHubUser exposing (..)
 import Page.Repo exposing (..)
 import Page.Top exposing (..)
-import Page.User exposing (..)
 import Route exposing (..)
 import Skelton exposing (viewLink)
 import Url
@@ -45,7 +45,7 @@ type Page
     = NotFound
     | ErrorPage Http.Error
     | TopPage
-    | UserPage Page.User.Model
+    | GitHubUserPage Page.GitHubUser.Model
     | RepoPage Page.Repo.Model
 
 
@@ -66,7 +66,7 @@ type Msg
     | UrlChanged Url.Url
     | Loaded (Result Http.Error Page)
     | RepoMsg Page.Repo.Msg
-    | UserMsg Page.User.Msg
+    | GitHubUserMsg Page.GitHubUser.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -114,18 +114,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        -- Userページのメッセージが来たとき
-        UserMsg userMsg ->
+        -- GitHubUserページのメッセージが来たとき
+        GitHubUserMsg gitHubUserMsg ->
             -- 現在表示中のページが
             case model.page of
-                -- UserPageであれば、
-                UserPage userModel ->
+                -- GitHubUserPageであれば、
+                GitHubUserPage gitHubUserModel ->
                     -- Repoページのupdate処理を行う
                     let
-                        ( newUserModel, userCmd ) =
-                            Page.User.update userMsg userModel
+                        ( newGitHubUserModel, gitHubUserCmd ) =
+                            Page.GitHubUser.update gitHubUserMsg gitHubUserModel
                     in
-                    ( { model | page = UserPage newUserModel }, Cmd.map UserMsg userCmd )
+                    ( { model | page = GitHubUserPage newGitHubUserModel }, Cmd.map GitHubUserMsg gitHubUserCmd )
 
                 _ ->
                     ( model, Cmd.none )
@@ -148,21 +148,21 @@ goTo maybeRoute model =
             , Cmd.none
             )
 
-        Just (Route.User userName) ->
-            -- User ページの初期化
+        Just (Route.GitHubUser gitHubUserName) ->
+            -- GitHubUser ページの初期化
             let
-                ( userModel, userCmd ) =
-                    Page.User.init userName
+                ( gitHubUserModel, gitHubUserCmd ) =
+                    Page.GitHubUser.init gitHubUserName
             in
-            ( { model | page = UserPage userModel }
-            , Cmd.map UserMsg userCmd
+            ( { model | page = GitHubUserPage gitHubUserModel }
+            , Cmd.map GitHubUserMsg gitHubUserCmd
             )
 
-        Just (Route.Repo userName projectName) ->
+        Just (Route.Repo gitHubUserName projectName) ->
             -- Repo ページの初期化
             let
                 ( repoModel, repoCmd ) =
-                    Page.Repo.init userName projectName
+                    Page.Repo.init gitHubUserName projectName
             in
             ( { model | page = RepoPage repoModel }
             , Cmd.map RepoMsg repoCmd
@@ -184,9 +184,9 @@ subscriptions _ =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "URL Interceptor"
+    { title = "Garden - 箱庭の島の子供たち"
     , body =
-        [ a [ href "/" ] [ h1 [] [ text "My github view" ] ]
+        [ a [ href "/" ] [ h1 [] [ text "Garden - 箱庭の島の子供たち" ] ]
         , case model.page of
             NotFound ->
                 viewNotFound
@@ -197,10 +197,10 @@ view model =
             TopPage ->
                 Page.Top.view
 
-            UserPage userPageModel ->
-                -- Userページのview関数を呼ぶ
-                Page.User.view userPageModel
-                    |> Html.map UserMsg
+            GitHubUserPage gitHubUserPageModel ->
+                -- GitHubUserページのview関数を呼ぶ
+                Page.GitHubUser.view gitHubUserPageModel
+                    |> Html.map GitHubUserMsg
 
             RepoPage repoPageModel ->
                 -- Repoページのview関数を呼ぶ

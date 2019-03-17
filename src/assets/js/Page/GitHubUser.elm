@@ -1,4 +1,4 @@
-module Page.User exposing (Model, Msg, init, update, view)
+module Page.GitHubUser exposing (Model, Msg, init, update, view)
 
 import GitHub exposing (Issue, Repo)
 import Html exposing (..)
@@ -10,7 +10,7 @@ import Url.Builder
 
 
 type alias Model =
-    { userName : String
+    { gitHubUserName : String
     , state : State
     }
 
@@ -22,11 +22,11 @@ type State
 
 
 init : String -> ( Model, Cmd Msg )
-init userName =
+init gitHubUserName =
     -- ページの初期化
     -- 最初のModelを作ると同時に、ページの表示に必要なデータをHttpで取得
-    ( Model userName Init
-    , GitHub.getRepos GotRepos userName
+    ( Model gitHubUserName Init
+    , GitHub.getRepos GotRepos gitHubUserName
     )
 
 
@@ -52,14 +52,14 @@ view model =
             text "Loading ..."
 
         Loaded repos ->
-            viewUserPage repos
+            viewGitHubUserPage repos
 
         Error e ->
             text (Debug.toString e)
 
 
-viewUserPage : List Repo -> Html msg
-viewUserPage repos =
+viewGitHubUserPage : List Repo -> Html msg
+viewGitHubUserPage repos =
     ul []
         -- ユーザの持っているリポジトリのURLを一覧で表示
         (repos
