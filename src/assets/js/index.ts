@@ -30,7 +30,7 @@ app.ports.initializedToJs.subscribe(() => {
 
 // spaで画面遷移が起こった際にjsにイベントを伝える
 app.ports.urlChangeToJs.subscribe(() => {
-  // ナビゲーションバーの非表示にする
+  // ナビゲーションバーを非表示にする
   const pageElement = document.querySelector('.page')!;
   pageElement.classList.remove('open');
 });

@@ -107,3 +107,42 @@ $bgColorHeadFoot: #222;
   color: #fff;
   font-size: 14px;
 }
+
+// ##### 画面の横幅1260ピクセル以上 #####
+
+@media (min-width: 1260px) {
+  .page {
+    grid-template-columns: 260px 1fr;
+  }
+
+  // メインコンテンツ
+  .page-main{
+    grid-column: 2;
+    grid-row: 1/ -1;
+  }
+  // ヘッダ
+  .page-head {
+    padding: 40px 0;
+
+    img {
+      width: 150px;
+    }
+  }
+
+  // ナビゲーション
+
+  .page-nav {
+    display: block;
+    background-color: $bgColorHeadFoot;
+  }
+
+  // ボタン
+  .page-btn {
+    display: none;
+  }
+
+  // フッタ
+  .page-foot{
+    padding: 40px 0;
+  }
+}
