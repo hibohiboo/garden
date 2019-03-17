@@ -71,8 +71,10 @@
 [elm lang ][*2]  
 [elm spa][*3]  
 [elm http][*4]
+[キャラの魅力][*5]
 
 [*1]:https://github.com/simonh1000/elm-webpack-starter/blob/master/package.json
 [*2]:https://github.com/elm/package.elm-lang.org
 [*3]:https://github.com/rtfeldman/elm-spa-example
 [*4]:https://qiita.com/ababup1192/items/b03fce202e1018bc4992
+[*5]:https://twitter.com/burumakun/status/1106858891856343040

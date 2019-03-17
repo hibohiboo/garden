@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), init, main, subscriptions, update, view, viewLink)
+module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
 import Browser.Navigation as Nav
@@ -7,7 +7,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Page.Repo exposing (..)
+import Page.Top exposing (..)
 import Route exposing (..)
+import Skelton exposing (viewLink)
 import Url
 import Url.Builder
 
@@ -171,7 +173,7 @@ view model =
                 viewError error
 
             TopPage ->
-                viewTopPage
+                Page.Top.view
 
             UserPage repos ->
                 viewUserPage repos
@@ -203,14 +205,6 @@ viewError error =
             text (Debug.toString error)
 
 
-viewTopPage : Html Msg
-viewTopPage =
-    ul []
-        [ viewLink (Url.Builder.absolute [ "elm" ] [])
-        , viewLink (Url.Builder.absolute [ "hibohiboo" ] [])
-        ]
-
-
 viewUserPage : List Repo -> Html msg
 viewUserPage repos =
     ul []
@@ -218,8 +212,3 @@ viewUserPage repos =
         (repos
             |> List.map (\repo -> viewLink (Url.Builder.absolute [ repo.owner, repo.name ] []))
         )
-
-
-viewLink : String -> Html msg
-viewLink path =
-    li [] [ a [ href path ] [ text path ] ]
