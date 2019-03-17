@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
+port module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
 import Browser.Navigation as Nav
@@ -17,6 +17,20 @@ import Route exposing (..)
 import Skeleton exposing (Details, view)
 import Url
 import Url.Builder
+
+
+
+-- 初期化完了をjsに伝える
+
+
+port initializedToJs : () -> Cmd msg
+
+
+
+-- 画面遷移をjsに伝える
+
+
+port urlChangeToJs : () -> Cmd msg
 
 
 
@@ -62,6 +76,14 @@ init flags url key =
     Model key TopPage
         -- はじめてページを訪れた時も忘れずにページの初期化を行う
         |> goTo (Route.parse url)
+        |> initialized
+
+
+{-| 初期化後をjsに伝える
+-}
+initialized : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+initialized ( model, msg ) =
+    ( model, Cmd.batch [ msg, initializedToJs () ] )
 
 
 
@@ -90,6 +112,10 @@ update msg model =
         UrlChanged url ->
             -- ページの初期化をヘルパー関数に移譲
             goTo (Route.parse url) model
+                -- 画面遷移をjsに伝える
+                |> (\( newModel, newMsg ) ->
+                        ( newModel, Cmd.batch [ newMsg, urlChangeToJs () ] )
+                   )
 
         -- ページの内容を非同期で取得した時の共通処理
         Loaded result ->

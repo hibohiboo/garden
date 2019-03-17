@@ -87,6 +87,16 @@ $bgColorHeadFoot: #222;
   display: none;
 }
 
+.open {
+  .page-nav,
+  .page-btn-close {
+    display: block;
+  }
+  .page-btn {
+    display: none;
+  }
+}
+
 // フッタ
 .page-foot {
   grid-column: 1;

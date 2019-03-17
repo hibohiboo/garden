@@ -14,6 +14,27 @@ const flags: string = localStorage[STORAGE_KEY] === undefined ? "" : localStorag
 // 前回値を初期値として与える
 const app = Elm.Main.init({ node: mountNode, flags });
 
+// elmのspa構築後に、dom要素に対してイベントを設定
+app.ports.initializedToJs.subscribe(() => {
+  // ナビゲーションバーの表示/非表示を切り替える
+  const pageElement = document.querySelector('.page')!;
+  const naviButtons = document.querySelectorAll('.navi-btn')!;
+  for (let i = 0, len = naviButtons.length; i < len; i++) {
+    const naviButton = naviButtons[i];
+    naviButton.addEventListener('click', () => {
+      pageElement.classList.toggle('open');
+    });
+  }
+
+});
+
+// spaで画面遷移が起こった際にjsにイベントを伝える
+app.ports.urlChangeToJs.subscribe(() => {
+  // ナビゲーションバーの非表示にする
+  const pageElement = document.querySelector('.page')!;
+  pageElement.classList.remove('open');
+});
+
 // app.ports.initialize.subscribe(() => {
 // });
 // app.ports.toJs.subscribe((data: string) => {

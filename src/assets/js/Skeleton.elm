@@ -47,8 +47,8 @@ viewPage mainContent =
             [ mainContent
             ]
         , viewNav
-        , button [ type_ "button", class "page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
-        , button [ type_ "button", class "page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
+        , button [ type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+        , button [ type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
         , viewFooter
         ]
 
