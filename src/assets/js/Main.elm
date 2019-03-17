@@ -6,6 +6,7 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
+import Page.Repo exposing (..)
 import Route exposing (..)
 import Url
 import Url.Builder
@@ -42,7 +43,7 @@ type Page
     | ErrorPage Http.Error
     | TopPage
     | UserPage (List Repo)
-    | RepoPage (List Issue)
+    | RepoPage Page.Repo.Model
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -61,6 +62,7 @@ type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
     | Loaded (Result Http.Error Page)
+    | RepoMsg Page.Repo.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -92,6 +94,22 @@ update msg model =
             , Cmd.none
             )
 
+        -- Repoページのメッセージが来たとき
+        RepoMsg repoMsg ->
+            -- 現在表示中のページが
+            case model.page of
+                -- RepoPageであれば、
+                RepoPage repoModel ->
+                    -- Repoページのupdate処理を行う
+                    let
+                        ( newRepoModel, topCmd ) =
+                            Page.Repo.update repoMsg repoModel
+                    in
+                    ( { model | page = RepoPage newRepoModel }, Cmd.map RepoMsg topCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -117,11 +135,13 @@ goTo maybeRoute model =
             )
 
         Just (Route.Repo userName projectName) ->
-            -- RepoPageを取得
-            ( model
-            , GitHub.getIssues (Result.map RepoPage >> Loaded)
-                userName
-                projectName
+            -- Repo ページの初期化
+            let
+                ( repoModel, repoCmd ) =
+                    Page.Repo.init userName projectName
+            in
+            ( { model | page = RepoPage repoModel }
+            , Cmd.map RepoMsg repoCmd
             )
 
 
@@ -156,8 +176,10 @@ view model =
             UserPage repos ->
                 viewUserPage repos
 
-            RepoPage issues ->
-                viewRepoPage issues
+            RepoPage repoPageModel ->
+                -- Repoページのview関数を呼ぶ
+                Page.Repo.view repoPageModel
+                    |> Html.map RepoMsg
         ]
     }
 
@@ -185,7 +207,7 @@ viewTopPage : Html Msg
 viewTopPage =
     ul []
         [ viewLink (Url.Builder.absolute [ "elm" ] [])
-        , viewLink (Url.Builder.absolute [ "evancz" ] [])
+        , viewLink (Url.Builder.absolute [ "hibohiboo" ] [])
         ]
 
 
@@ -196,20 +218,6 @@ viewUserPage repos =
         (repos
             |> List.map (\repo -> viewLink (Url.Builder.absolute [ repo.owner, repo.name ] []))
         )
-
-
-viewRepoPage : List Issue -> Html msg
-viewRepoPage issues =
-    ul [] (List.map viewIssue issues)
-
-
-viewIssue : Issue -> Html msg
-viewIssue issue =
-    li []
-        [ span [] [ text ("[" ++ issue.state ++ "]") ]
-        , span [] [ text ("#" ++ String.fromInt issue.number) ]
-        , span [] [ text issue.title ]
-        ]
 
 
 viewLink : String -> Html msg

@@ -16,11 +16,11 @@ const app = Elm.Main.init({ node: mountNode, flags });
 
 // app.ports.initialize.subscribe(() => {
 // });
-app.ports.toJs.subscribe((data: string) => {
-  // localStorage[STORAGE_KEY] = data;
+// app.ports.toJs.subscribe((data: string) => {
+//   // localStorage[STORAGE_KEY] = data;
 
-  // // 本文がなければ、ストレージから削除してしまう
-  // if(data.trim().length == 0){
-  //   localStorage.removeItem(STORAGE_KEY);  
-  // }
-});
+//   // // 本文がなければ、ストレージから削除してしまう
+//   // if(data.trim().length == 0){
+//   //   localStorage.removeItem(STORAGE_KEY);  
+//   // }
+// });

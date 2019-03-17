@@ -1,4 +1,4 @@
-module GitHub exposing (Issue, Repo, getIssues, getRepos)
+module GitHub exposing (Issue, Repo, getIssues, getRepos, issueUrl)
 
 import Http
 import Json.Decode as D exposing (Decoder)
@@ -12,7 +12,7 @@ import Url.Builder
 
 type alias Repo =
     { name : String
-    , description : String
+    , description : Maybe String
     , language : Maybe String
     , owner : String
     , fork : Int
@@ -37,7 +37,7 @@ repoDecoder : Decoder Repo
 repoDecoder =
     D.map7 Repo
         (D.field "name" D.string)
-        (D.field "description" D.string)
+        (D.maybe (D.field "description" D.string))
         (D.maybe (D.field "language" D.string))
         (D.at [ "owner", "login" ] D.string)
         (D.field "forks" D.int)
@@ -61,8 +61,7 @@ issueDecoder =
 getRepos : (Result Http.Error (List Repo) -> msg) -> String -> Cmd msg
 getRepos toMsg userName =
     Http.get
-        { url =
-            Url.Builder.crossOrigin "https://api.github.com" [ "users", userName, "repos" ] []
+        { url = repoUrl userName
         , expect = Http.expectJson toMsg reposDecoder
         }
 
@@ -70,6 +69,26 @@ getRepos toMsg userName =
 getIssues : (Result Http.Error (List Issue) -> msg) -> String -> String -> Cmd msg
 getIssues toMsg userName projectName =
     Http.get
-        { url = Url.Builder.crossOrigin "https://api.github.com" [ "repos", userName, projectName, "issues" ] []
+        { url = issuesUrl userName projectName
         , expect = Http.expectJson toMsg issuesDecoder
         }
+
+
+domain : String
+domain =
+    "https://api.github.com"
+
+
+repoUrl : String -> String
+repoUrl userName =
+    Url.Builder.crossOrigin domain [ "users", userName, "repos" ] []
+
+
+issuesUrl : String -> String -> String
+issuesUrl userName projectName =
+    Url.Builder.crossOrigin domain [ "repos", userName, projectName, "issues" ] []
+
+
+issueUrl : String -> String -> Int -> String
+issueUrl userName projectName number =
+    Url.Builder.crossOrigin domain [ "repos", userName, projectName, "issues", String.fromInt number ] []
