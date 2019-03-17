@@ -37,7 +37,9 @@ suite =
         [ testParse "shold parse Top" "/" (Just Route.Top)
         , testParse "shold parse Top with quesies" "/?dummy=value" (Just Route.Top)
         , testParse "shold parse Top with hash" "/#dumy" (Just Route.Top)
-        , testParse "shold parse User" "/foo" (Just (Route.User "foo"))
+        , testParse "shold parse RuleBook" "/rulebook" (Just Route.RuleBook)
+        , testParse "shold parse PrivacyPolicy" "/privacy-policy" (Just Route.PrivacyPolicy)
+        , testParse "shold parse User" "/foo" (Just (Route.GitHubUser "foo"))
         , testParse "shold parse Repo" "/foo/bar" (Just (Route.Repo "foo" "bar"))
         , testParse "shold parse Inavalid path" "/foo/bar/baz" Nothing
         ]

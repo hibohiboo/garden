@@ -15,6 +15,6 @@ view =
 viewTopPage : Html msg
 viewTopPage =
     ul []
-        [ viewLink (Url.Builder.absolute [ "elm" ] [])
-        , viewLink (Url.Builder.absolute [ "hibohiboo" ] [])
+        [ li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールブック" ] ]
+        , li [] [ a [ href (Url.Builder.absolute [ "privacy-policy" ] []) ] [ text "プライバシーポリシー" ] ]
         ]

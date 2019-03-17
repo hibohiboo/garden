@@ -7,7 +7,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Page.GitHubUser exposing (..)
+import Page.PrivacyPolicy exposing (..)
 import Page.Repo exposing (..)
+import Page.RuleBook exposing (..)
 import Page.Top exposing (..)
 import Route exposing (..)
 import Skelton exposing (viewLink)
@@ -47,6 +49,8 @@ type Page
     | TopPage
     | GitHubUserPage Page.GitHubUser.Model
     | RepoPage Page.Repo.Model
+    | RuleBook
+    | PrivacyPolicy
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -148,6 +152,16 @@ goTo maybeRoute model =
             , Cmd.none
             )
 
+        Just Route.RuleBook ->
+            ( { model | page = RuleBook }
+            , Cmd.none
+            )
+
+        Just Route.PrivacyPolicy ->
+            ( { model | page = PrivacyPolicy }
+            , Cmd.none
+            )
+
         Just (Route.GitHubUser gitHubUserName) ->
             -- GitHubUser ページの初期化
             let
@@ -196,6 +210,12 @@ view model =
 
             TopPage ->
                 Page.Top.view
+
+            RuleBook ->
+                Page.RuleBook.view
+
+            PrivacyPolicy ->
+                Page.PrivacyPolicy.view
 
             GitHubUserPage gitHubUserPageModel ->
                 -- GitHubUserページのview関数を呼ぶ
