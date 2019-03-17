@@ -222,6 +222,9 @@ view model =
                 , kids = Problem.notFound
                 }
 
+        RuleBook ->
+            Skeleton.view never Page.RuleBook.view
+
         _ ->
             { title = "Garden - 箱庭の島の子供たち"
             , body =
@@ -235,9 +238,6 @@ view model =
 
                     TopPage ->
                         Page.Top.view
-
-                    RuleBook ->
-                        Page.RuleBook.view
 
                     PrivacyPolicy ->
                         Page.PrivacyPolicy.view
@@ -254,6 +254,9 @@ view model =
                         -- Repoページのview関数を呼ぶ
                         Page.Repo.view repoPageModel
                             |> Html.map RepoMsg
+
+                    _ ->
+                        text "parse error"
                 ]
             }
 

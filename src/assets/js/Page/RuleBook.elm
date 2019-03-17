@@ -7,13 +7,13 @@ import Url
 import Url.Builder
 
 
-view : Html msg
+view : Skeleton.Details msg
 view =
-    viewRuleBookPage
-
-
-viewRuleBookPage : Html msg
-viewRuleBookPage =
-    ul []
-        [ text "test"
+    { title = "ルールブック"
+    , attrs = []
+    , kids =
+        [ ul []
+            [ text "test"
+            ]
         ]
+    }
