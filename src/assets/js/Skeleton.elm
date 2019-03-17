@@ -21,6 +21,11 @@ viewLink path =
 
 view : (a -> msg) -> Details a -> Browser.Document msg
 view toMsg details =
+    let
+        mainContent =
+            Html.map toMsg <|
+                div (class "center" :: details.attrs) details.kids
+    in
     { title =
         "Garden - 箱庭の島の子供たち | " ++ details.title
     , body =
@@ -29,19 +34,23 @@ view toMsg details =
             []
             [ iframe [ src "https://www.googletagmanager.com/ns.html?id=GTM-NM7RRXS", height 0, width 0, style "display" "none", style "visibility" "hidden" ] []
             ]
-        , div [ class "page" ]
-            [ viewHeader
-            , main_ [ class "page-main" ]
-                [ Html.map toMsg <|
-                    div (class "center" :: details.attrs) details.kids
-                ]
-            , viewNav
-            , button [ type_ "button", class "page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
-            , button [ type_ "button", class "page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
-            , viewFooter
-            ]
+        , viewPage mainContent
         ]
     }
+
+
+viewPage : Html msg -> Html msg
+viewPage mainContent =
+    div [ class "page" ]
+        [ viewHeader
+        , main_ [ class "page-main" ]
+            [ mainContent
+            ]
+        , viewNav
+        , button [ type_ "button", class "page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+        , button [ type_ "button", class "page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
+        , viewFooter
+        ]
 
 
 viewHeader : Html msg

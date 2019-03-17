@@ -47,7 +47,24 @@ $bgColorHeadFoot: #222;
 .page-nav {
   grid-column: 1;
   grid-row: 2;
+  z-index: 100;
+  background-color: rgba(0,0,0,0.8);
+  
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  a {
+    display: block;
+    margin: 30px;
+    border-bottom: solid 1px #aaa;
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none;
+  }
 }
+
 
 // ボタン
 
