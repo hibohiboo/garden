@@ -9,6 +9,7 @@ body {
   padding: 0;
 }
 
+// 基本設定
 header {
   align-items: center;
   display: flex;
@@ -17,4 +18,19 @@ header {
     width: 80px;
     vertical-align: bottom;
   }
+}
+
+
+.page-nav,
+.page-btn-close {
+  display: none;
+}
+
+// グリッド
+
+.page {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
 }
