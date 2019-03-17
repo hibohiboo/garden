@@ -11,17 +11,10 @@ body {
 
 // 基本設定
 header {
-
   img {
     width: 80px;
     vertical-align: bottom; // 余計な余白が入るのを防ぐ
   }
-}
-
-
-.page-nav,
-.page-btn-close {
-  display: none;
 }
 
 // グリッド
@@ -64,6 +57,17 @@ $bgColorHeadFoot: #222;
   grid-row: 1;
   justify-self: right;
   align-self: center;
+  padding: 20px;
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.page-nav,
+.page-btn-close {
+  display: none;
 }
 
 // フッタ
