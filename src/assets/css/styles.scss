@@ -1,7 +1,8 @@
 @charset "UTF-8";
+
 body {
-  margin: 0px;
-  font-family: 'メイリオ', 'Hiragino Kaku Gothic Pro', sans-serif;
+  font-family: "メイリオ", "Hiragino Kaku Gothic Pro", sans-serif;
+  margin: 0;
 }
 
 .page * {
@@ -12,8 +13,8 @@ body {
 // 基本設定
 header {
   img {
-    width: 80px;
     vertical-align: bottom; // 余計な余白が入るのを防ぐ
+    width: 80px;
   }
 }
 
@@ -30,37 +31,38 @@ $bgColorHeadFoot: #222;
 
 // ヘッダー
 .page-head {
+  background-color: $bgColorHeadFoot;
   grid-column: 1;
   grid-row: 1;
   padding: 15px 0;
-  background-color: $bgColorHeadFoot;
   text-align: center;
 }
 
 // メインコンテンツ
-.page-main{
+.page-main {
   grid-column: 1;
   grid-row: 2;
 }
 
 // ナビゲーション
 .page-nav {
+  background-color: rgba(0, 0, 0, 0.8);
   grid-column: 1;
   grid-row: 2;
   z-index: 100;
-  background-color: rgba(0,0,0,0.8);
   
   ul {
+    list-style: none;
     margin: 0;
     padding: 0;
-    list-style: none;
   }
+
   a {
-    display: block;
-    margin: 30px;
     border-bottom: solid 1px #aaa;
     color: #fff;
+    display: block;
     font-size: 20px;
+    margin: 30px;
     text-decoration: none;
   }
 }
@@ -70,16 +72,16 @@ $bgColorHeadFoot: #222;
 
 .page-btn,
 .page-btn-close {
+  align-self: center;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 28px;
   grid-column: 1;
   grid-row: 1;
   justify-self: right;
-  align-self: center;
   padding: 20px;
-  border: none;
-  background-color: transparent;
-  color: #fff;
-  font-size: 28px;
-  cursor: pointer;
 }
 
 .page-nav,
@@ -92,6 +94,7 @@ $bgColorHeadFoot: #222;
   .page-btn-close {
     display: block;
   }
+
   .page-btn {
     display: none;
   }
@@ -99,19 +102,19 @@ $bgColorHeadFoot: #222;
 
 // フッタ
 .page-foot {
-  grid-column: 1;
-  grid-row: 3;
-  padding: 20px 0;
   background-color: $bgColorHeadFoot;
-  text-align: center;
   color: #fff;
-  font-size: 14px;
 
   // フッタ内でgridレイアウト
   display: grid;
+  font-size: 14px;
+  grid-column: 1;
+  grid-row: 3;
   grid-template-columns: 1fr 1fr 1fr;
+  padding: 20px 0;
+  text-align: center;
 
-  .copy-right{
+  .copy-right {
     grid-column: 2;
     grid-row: 1;
   }
@@ -148,23 +151,34 @@ $bgColorHeadFoot: #222;
     }
   }
 
-  .foot-links{
+  .foot-links {
     grid-column: 3;
     grid-row: 1;
+    list-style: none;
 
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    margin: 0;
+    padding: 0;
     
     a {
-      display: block;
       border-bottom: solid 1px #aaa;
       color: #fff;
+      display: block;
       font-size: 8px;
+      max-width: 100px;
       text-decoration: none;
     }
   }
 }
+
+// markdownのシンプルなページでのデザイン 
+.content {
+ h2,
+ h3,
+ h4 {
+    padding-top: 10px;
+  }
+}
+
 
 // ##### 画面の横幅1260ピクセル以上 #####
 
@@ -174,7 +188,7 @@ $bgColorHeadFoot: #222;
   }
 
   // メインコンテンツ
-  .page-main{
+  .page-main {
     grid-column: 2;
     grid-row: 1/ -1;
   }
@@ -190,8 +204,8 @@ $bgColorHeadFoot: #222;
   // ナビゲーション
 
   .page-nav {
-    display: block;
     background-color: $bgColorHeadFoot;
+    display: block;
   }
 
   // ボタン
@@ -200,7 +214,16 @@ $bgColorHeadFoot: #222;
   }
 
   // フッタ
-  .page-foot{
+  .page-foot {
     padding: 40px 0;
+  }
+
+  // markdownのシンプルなページでのデザイン 
+  .content {
+    padding-left: 30px;
+
+    ul {
+      padding-left: 40px;
+    }
   }
 }
