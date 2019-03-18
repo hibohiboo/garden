@@ -55,7 +55,7 @@ view model =
             viewGitHubUserPage repos
 
         Error e ->
-            text (Debug.toString e)
+            text "error"
 
 
 viewGitHubUserPage : List Repo -> Html msg

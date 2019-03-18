@@ -13,7 +13,7 @@ view =
     , attrs = []
     , kids =
         [ ul []
-            [ text "test"
+            [ text "作成中"
             ]
         ]
     }

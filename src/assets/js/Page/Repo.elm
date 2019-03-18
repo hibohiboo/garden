@@ -53,7 +53,11 @@ view model =
             ul [] (List.map (viewIssue model.userName model.projectName) issues)
 
         Error e ->
-            text (Debug.toString e)
+            text "error"
+
+
+
+--(Debug.toString e)
 
 
 viewIssue : String -> String -> Issue -> Html Msg

@@ -68,7 +68,11 @@ view model =
             viewSkeleton (viewHelper markdown)
 
         Error e ->
-            viewSkeleton (text (Debug.toString e))
+            viewSkeleton (text "error")
+
+
+
+--(text (Debug.toString e))
 
 
 viewSkeleton : Html msg -> Skeleton.Details msg

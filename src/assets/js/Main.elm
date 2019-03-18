@@ -320,4 +320,8 @@ viewError error =
             pre [] [ text message ]
 
         _ ->
-            text (Debug.toString error)
+            text "error"
+
+
+
+--text (Debug.toString error)
