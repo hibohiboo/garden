@@ -251,9 +251,7 @@ subscriptions _ =
 
 styles : List (Attribute msg)
 styles =
-    [ style "text-align" "center"
-    , style "color" "#9A9A9A"
-    , style "padding" "6em 0"
+    [ style "padding" "6em 0"
     ]
 
 

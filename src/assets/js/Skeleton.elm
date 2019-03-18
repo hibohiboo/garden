@@ -24,7 +24,7 @@ view toMsg details =
     let
         mainContent =
             Html.map toMsg <|
-                div (class "center" :: details.attrs) details.kids
+                div (class "" :: details.attrs) details.kids
     in
     { title =
         "Garden - 箱庭の島の子供たち | " ++ details.title
@@ -64,8 +64,8 @@ viewHeader =
 
 viewNav : Html msg
 viewNav =
-    nav [ class "page-nav" ]
-        [ ul []
+    nav [ class "page-nav browser-default" ]
+        [ ul [ class "browser-default" ]
             [ li [] [ a [ href (Url.Builder.absolute [ "" ] []) ] [ text "トップ" ] ]
             , li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールブック" ] ]
             ]

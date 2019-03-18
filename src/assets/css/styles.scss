@@ -172,10 +172,31 @@ $bgColorHeadFoot: #222;
 
 // markdownのシンプルなページでのデザイン 
 .content {
- h2,
- h3,
- h4 {
+  h2,
+  h3,
+  h4 {
+    font-weight: bold;
     padding-top: 10px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  h4 {
+    font-size: 16px;
+  }
+
+  ul {
+    padding-left: 40px;
+
+    li {
+      list-style-type: disc;
+    }
   }
 }
 
@@ -222,8 +243,12 @@ $bgColorHeadFoot: #222;
   .content {
     padding-left: 30px;
 
-    ul {
-      padding-left: 40px;
-    }
+
+  }
+
+  // materialize.css で上書きされるので初期化
+  nav {
+    height: auto;
+    line-height: initial;
   }
 }
