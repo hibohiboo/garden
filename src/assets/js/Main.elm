@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Http
 import Page.About exposing (..)
 import Page.GitHubUser exposing (..)
+import Page.Markdown as Markdown
 import Page.PrivacyPolicy exposing (..)
 import Page.Problem as Problem
 import Page.Repo exposing (..)
@@ -65,6 +66,7 @@ type Page
     | TopPage
     | GitHubUserPage Page.GitHubUser.Model
     | RepoPage Page.Repo.Model
+    | MarkdownPage Markdown.Model
     | RuleBook
     | PrivacyPolicy
     | About
@@ -96,6 +98,7 @@ type Msg
     | Loaded (Result Http.Error Page)
     | RepoMsg Page.Repo.Msg
     | GitHubUserMsg Page.GitHubUser.Msg
+    | MarkdownMsg Markdown.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -153,12 +156,24 @@ update msg model =
             case model.page of
                 -- GitHubUserPageであれば、
                 GitHubUserPage gitHubUserModel ->
-                    -- Repoページのupdate処理を行う
+                    -- GitHubUserページのupdate処理を行う
                     let
                         ( newGitHubUserModel, gitHubUserCmd ) =
                             Page.GitHubUser.update gitHubUserMsg gitHubUserModel
                     in
                     ( { model | page = GitHubUserPage newGitHubUserModel }, Cmd.map GitHubUserMsg gitHubUserCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        MarkdownMsg markdownMsg ->
+            case model.page of
+                MarkdownPage markdownModel ->
+                    let
+                        ( newMarkdownModel, markdownCmd ) =
+                            Markdown.update markdownMsg markdownModel
+                    in
+                    ( { model | page = MarkdownPage newMarkdownModel }, Cmd.map MarkdownMsg markdownCmd )
 
                 _ ->
                     ( model, Cmd.none )
@@ -187,8 +202,12 @@ goTo maybeRoute model =
             )
 
         Just Route.PrivacyPolicy ->
-            ( { model | page = PrivacyPolicy }
-            , Cmd.none
+            let
+                ( markdownModel, markdownCmd ) =
+                    Markdown.init "privacy-policy.md"
+            in
+            ( { model | page = MarkdownPage markdownModel }
+            , Cmd.map MarkdownMsg markdownCmd
             )
 
         Just Route.About ->
@@ -254,8 +273,11 @@ view model =
         TopPage ->
             Skeleton.view never Page.Top.view
 
-        PrivacyPolicy ->
-            Skeleton.view never Page.PrivacyPolicy.view
+        MarkdownPage markdownModel ->
+            Skeleton.view never
+                (Markdown.view
+                    markdownModel
+                )
 
         About ->
             Skeleton.view never Page.About.view
