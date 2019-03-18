@@ -6,10 +6,8 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Page.About exposing (..)
 import Page.GitHubUser exposing (..)
 import Page.Markdown as Markdown
-import Page.PrivacyPolicy exposing (..)
 import Page.Problem as Problem
 import Page.Repo exposing (..)
 import Page.RuleBook exposing (..)
@@ -68,8 +66,6 @@ type Page
     | RepoPage Page.Repo.Model
     | MarkdownPage Markdown.Model
     | RuleBook
-    | PrivacyPolicy
-    | About
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -211,8 +207,12 @@ goTo maybeRoute model =
             )
 
         Just Route.About ->
-            ( { model | page = About }
-            , Cmd.none
+            let
+                ( markdownModel, markdownCmd ) =
+                    Markdown.init "about.md"
+            in
+            ( { model | page = MarkdownPage markdownModel }
+            , Cmd.map MarkdownMsg markdownCmd
             )
 
         Just (Route.GitHubUser gitHubUserName) ->
@@ -278,9 +278,6 @@ view model =
                 (Markdown.view
                     markdownModel
                 )
-
-        About ->
-            Skeleton.view never Page.About.view
 
         _ ->
             { title = "Garden - 箱庭の島の子供たち"

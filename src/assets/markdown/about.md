@@ -1,27 +1,3 @@
-module Page.About exposing (view)
-
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Markdown
-import Skeleton
-import Url
-import Url.Builder
-
-
-view : Skeleton.Details msg
-view =
-    { title = "このサイトについて"
-    , attrs = []
-    , kids =
-        [ viewHelper
-        ]
-    }
-
-
-viewHelper : Html msg
-viewHelper =
-    div []
-        [ Markdown.toHtml [ class "content" ] """
 ## このサイトについて
 
 ### リンクについて
@@ -53,7 +29,3 @@ viewHelper =
 
 また、このウェブサイトの利用に際し、hibo以外の第三者からなされた行為又は提供されたサービスについても、hiboは一切責任を負わないものとします。
 
-
-
-        """
-        ]
