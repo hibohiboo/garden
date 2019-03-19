@@ -18,6 +18,11 @@ view =
     }
 
 
+mainContent =
+    main_ [ class "page-main" ]
+        [ viewTopPage ]
+
+
 viewTopPage : Html msg
 viewTopPage =
     div [ class "center" ]

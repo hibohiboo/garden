@@ -10,11 +10,11 @@ import Utils.Terms as Terms
 
 view : Skeleton.Details msg
 view =
-    { title = "ルールブック"
+    { title = "基本ルール"
     , attrs = []
     , kids =
         [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ text "Garden 基本ルールブック" ] ]
-        , div [ class "content" ] [ first, commonRule ]
+        , div [ class "content" ] [ first ]
         ]
     }
 
@@ -39,6 +39,7 @@ first =
 本ゲームは、孤島に集められた異形の子供を演じるゲームである。
 プレイヤーの分身であるキャラクター（以下、PC)は、特異な力を持つ子供となる。
 """ ]
+        , commonRule
         ]
 
 

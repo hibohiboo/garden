@@ -22,7 +22,7 @@ viewLink path =
 view : (a -> msg) -> Details a -> Browser.Document msg
 view toMsg details =
     let
-        mainContent =
+        kids =
             Html.map toMsg <|
                 div (class "" :: details.attrs) details.kids
     in
@@ -34,23 +34,27 @@ view toMsg details =
             []
             [ iframe [ src "https://www.googletagmanager.com/ns.html?id=GTM-NM7RRXS", height 0, width 0, style "display" "none", style "visibility" "hidden" ] []
             ]
-        , viewPage mainContent
+        , viewPage kids
         ]
     }
 
 
 viewPage : Html msg -> Html msg
-viewPage mainContent =
+viewPage m =
     div [ class "page" ]
         [ viewHeader
-        , main_ [ class "page-main" ]
-            [ mainContent
-            ]
+        , mainContent m
         , viewNav
         , button [ type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
         , button [ type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
         , viewFooter
         ]
+
+
+mainContent : Html msg -> Html msg
+mainContent m =
+    main_ [ class "page-main" ]
+        [ m ]
 
 
 viewHeader : Html msg
