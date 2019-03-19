@@ -2,7 +2,7 @@ module Page.Top exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Skeleton exposing (viewLink)
+import Skeleton exposing (NavigationMenu, viewLink, viewMain, viewNav)
 import Url
 import Url.Builder
 import Utils.Terms as Terms
@@ -13,14 +13,12 @@ view =
     { title = "トップページ"
     , attrs = []
     , kids =
-        [ viewTopPage
+        [ viewMain viewTopPage
+        , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
+        , button [ type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+        , button [ type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
         ]
     }
-
-
-mainContent =
-    main_ [ class "page-main" ]
-        [ viewTopPage ]
 
 
 viewTopPage : Html msg

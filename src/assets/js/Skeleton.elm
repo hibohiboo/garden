@@ -1,4 +1,4 @@
-module Skeleton exposing (Details, view, viewLink)
+module Skeleton exposing (Details, NavigationMenu, view, viewLink, viewMain, viewNav)
 
 import Browser
 import Html exposing (..)
@@ -21,11 +21,6 @@ viewLink path =
 
 view : (a -> msg) -> Details a -> Browser.Document msg
 view toMsg details =
-    let
-        kids =
-            Html.map toMsg <|
-                div (class "" :: details.attrs) details.kids
-    in
     { title =
         "Garden - 箱庭の島の子供たち | " ++ details.title
     , body =
@@ -34,25 +29,19 @@ view toMsg details =
             []
             [ iframe [ src "https://www.googletagmanager.com/ns.html?id=GTM-NM7RRXS", height 0, width 0, style "display" "none", style "visibility" "hidden" ] []
             ]
-        , viewPage kids
+        , Html.map toMsg <|
+            div (class "page" :: details.attrs)
+                (viewHeader
+                    :: List.append
+                        details.kids
+                        [ viewFooter ]
+                )
         ]
     }
 
 
-viewPage : Html msg -> Html msg
-viewPage m =
-    div [ class "page" ]
-        [ viewHeader
-        , mainContent m
-        , viewNav
-        , button [ type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
-        , button [ type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
-        , viewFooter
-        ]
-
-
-mainContent : Html msg -> Html msg
-mainContent m =
+viewMain : Html msg -> Html msg
+viewMain m =
     main_ [ class "page-main" ]
         [ m ]
 
@@ -66,13 +55,21 @@ viewHeader =
         ]
 
 
-viewNav : Html msg
-viewNav =
+type alias NavigationMenu =
+    { src : String
+    , text : String
+    }
+
+
+viewNav : List NavigationMenu -> Html msg
+viewNav menues =
+    let
+        navigations =
+            List.map (\menu -> li [] [ a [ href (Url.Builder.absolute [ menu.src ] []) ] [ text menu.text ] ]) menues
+    in
     nav [ class "page-nav browser-default" ]
         [ ul [ class "browser-default" ]
-            [ li [] [ a [ href (Url.Builder.absolute [ "" ] []) ] [ text "トップ" ] ]
-            , li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールブック" ] ]
-            ]
+            navigations
         ]
 
 
