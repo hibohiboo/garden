@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Skeleton exposing (viewLink)
 import Url
 import Url.Builder
+import Utils.Terms as Terms
 
 
 view : Skeleton.Details msg
@@ -21,7 +22,8 @@ viewTopPage : Html msg
 viewTopPage =
     div [ class "center" ]
         [ div [ class "top-header" ]
-            [ h1 [] [ text "Garden" ]
+            [ div [] [ text Terms.trpgGenre ]
+            , h1 [] [ text "Garden" ]
             , h2 [] [ text "～ 箱庭の島の子供たち ～" ]
             , a [ class "top-image", href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.jpg" ] [] ]
             ]
