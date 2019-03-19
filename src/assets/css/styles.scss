@@ -271,6 +271,20 @@ $bgColorHeadFoot: #222;
   h2 {
     font-size: 8vw;
   }
+
+  // 画像がはみ出さないように修正
+  .top-image {
+    max-width: 90vw;
+    max-height: 35vh;
+    overflow: hidden;
+    display: block;
+  }
+}
+
+.page-main {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
 }
 
 @media (min-width: 768px){
@@ -281,5 +295,42 @@ $bgColorHeadFoot: #222;
     h2 {
       font-size: 80px;
     }
+
+    .top-image {
+      max-height: 40vh;
+      display: block;
+    }
+  }
+}
+
+// 基本色
+:root {
+  --main-color: #5D9AB2;
+  --accent-color: #BF6A7A;
+  --dark-color: #2B5566;
+  --text-bright-color: #fff; // テキストの色
+  --icon-color: #fff;        // アイコンの色
+  --icon-bk-color: #ddd;     // 丸型ボックスの色
+  --gray-color: #ddd;
+  --large-width: 1000px;       // 横幅の最大値
+  --middle-width: 800px;
+}
+
+.rulebook-title h1 {
+  font-size: 2.5rem;
+  padding-bottom: 10px;
+}
+
+// コンテンツページ
+.content{
+  h1 {
+    // 見出しの行頭にバーをつけたデザイン
+    padding-left: 0.5rem;
+    border-left: solid 0.75rem var(--accent-color);
+    font-size: 2rem;
+  }
+  .content-doc {
+    white-space: pre-wrap; 
+    word-wrap: break-word;
   }
 }

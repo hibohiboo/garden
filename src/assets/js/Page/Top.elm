@@ -23,7 +23,7 @@ viewTopPage =
         [ div [ class "top-header" ]
             [ h1 [] [ text "Garden" ]
             , h2 [] [ text "～ 箱庭の島の子供たち ～" ]
-            , a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.jpg" ] [] ]
+            , a [ class "top-image", href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.jpg" ] [] ]
             ]
         , p []
             [ text "海上に浮かぶ一つの島。"
