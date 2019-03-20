@@ -5,7 +5,31 @@ import Html.Attributes exposing (..)
 import Skeleton exposing (viewLink)
 import Url
 import Url.Builder
+import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, getNavigationPageClass, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
+
+
+type alias Model =
+    { naviState : NaviState
+    }
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( Model Close
+    , Cmd.none
+    )
+
+
+type Msg
+    = ToggleNavigation
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        ToggleNavigation ->
+            ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 
 
 view : Skeleton.Details msg

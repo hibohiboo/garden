@@ -5,9 +5,10 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Markdown
-import Skeleton exposing (NaviState(..), NavigationMenu, getNavigationPageClass, viewLink, viewMain, viewNav)
+import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
+import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, getNavigationPageClass, toggleNavigationState, viewNav)
 
 
 type alias Model =
@@ -61,16 +62,7 @@ update msg model =
             ( { model | state = Error err }, Cmd.none )
 
         ToggleNavigation ->
-            let
-                ns =
-                    case model.naviState of
-                        Close ->
-                            Open
-
-                        Open ->
-                            Close
-            in
-            ( { model | naviState = ns }, Cmd.none )
+            ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg

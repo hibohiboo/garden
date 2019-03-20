@@ -13,7 +13,7 @@ import Page.Repo exposing (..)
 import Page.RuleBook exposing (..)
 import Page.Top exposing (..)
 import Route exposing (..)
-import Skeleton exposing (Details, NaviState(..), view)
+import Skeleton exposing (Details, view)
 import Url
 import Url.Builder
 
@@ -71,7 +71,7 @@ type Page
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     -- 後に画面遷移で使うためのキーを Modelに持たせておく
-    Model key (TopPage (Page.Top.Model Close))
+    Model key (TopPage Page.Top.initModel)
         -- はじめてページを訪れた時も忘れずにページの初期化を行う
         |> goTo (Route.parse url)
         |> initialized

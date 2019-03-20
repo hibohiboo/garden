@@ -1,11 +1,12 @@
-module Page.Top exposing (Model, Msg, init, update, view)
+module Page.Top exposing (Model, Msg, init, initModel, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import Skeleton exposing (NaviState(..), NavigationMenu, getNavigationPageClass, viewLink, viewMain, viewNav)
+import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
+import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, getNavigationPageClass, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
 
 
@@ -16,9 +17,14 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Close
+    ( initModel
     , Cmd.none
     )
+
+
+initModel : Model
+initModel =
+    Model Close
 
 
 type Msg
@@ -29,16 +35,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ToggleNavigation ->
-            let
-                ns =
-                    case model.naviState of
-                        Close ->
-                            Open
-
-                        Open ->
-                            Close
-            in
-            ( { model | naviState = ns }, Cmd.none )
+            ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg
