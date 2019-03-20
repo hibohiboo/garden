@@ -13,7 +13,7 @@ import Page.Repo exposing (..)
 import Page.RuleBook exposing (..)
 import Page.Top exposing (..)
 import Route exposing (..)
-import Skeleton exposing (Details, view)
+import Skeleton exposing (Details, NaviState(..), view)
 import Url
 import Url.Builder
 
@@ -61,7 +61,7 @@ type alias Model =
 type Page
     = NotFound
     | ErrorPage Http.Error
-    | TopPage
+    | TopPage Page.Top.Model
     | GitHubUserPage Page.GitHubUser.Model
     | RepoPage Page.Repo.Model
     | MarkdownPage Markdown.Model
@@ -71,7 +71,7 @@ type Page
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     -- 後に画面遷移で使うためのキーを Modelに持たせておく
-    Model key TopPage
+    Model key (TopPage (Page.Top.Model Close))
         -- はじめてページを訪れた時も忘れずにページの初期化を行う
         |> goTo (Route.parse url)
         |> initialized
@@ -95,6 +95,7 @@ type Msg
     | RepoMsg Page.Repo.Msg
     | GitHubUserMsg Page.GitHubUser.Msg
     | MarkdownMsg Markdown.Msg
+    | TopMsg Page.Top.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -174,6 +175,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        TopMsg pageTopMsg ->
+            case model.page of
+                TopPage topModel ->
+                    let
+                        ( newModel, topCmd ) =
+                            Page.Top.update pageTopMsg topModel
+                    in
+                    ( { model | page = TopPage newModel }, Cmd.map TopMsg topCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -188,8 +201,12 @@ goTo maybeRoute model =
             )
 
         Just Route.Top ->
-            ( { model | page = TopPage }
-            , Cmd.none
+            let
+                ( m, cmd ) =
+                    Page.Top.init
+            in
+            ( { model | page = TopPage m }
+            , Cmd.map TopMsg cmd
             )
 
         Just Route.RuleBook ->
@@ -268,8 +285,8 @@ view model =
         RuleBook ->
             Skeleton.view never Page.RuleBook.view
 
-        TopPage ->
-            Skeleton.view never Page.Top.view
+        TopPage m ->
+            Skeleton.view TopMsg (Page.Top.view m)
 
         MarkdownPage markdownModel ->
             Skeleton.view MarkdownMsg

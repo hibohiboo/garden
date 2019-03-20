@@ -1,22 +1,61 @@
-module Page.Top exposing (view)
+module Page.Top exposing (Model, Msg, init, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Skeleton exposing (NavigationMenu, viewLink, viewMain, viewNav)
+import Html.Events exposing (onClick)
+import Skeleton exposing (NaviState(..), NavigationMenu, getNavigationPageClass, viewLink, viewMain, viewNav)
 import Url
 import Url.Builder
 import Utils.Terms as Terms
 
 
-view : Skeleton.Details msg
-view =
+type alias Model =
+    { naviState : NaviState
+    }
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( Model Close
+    , Cmd.none
+    )
+
+
+type Msg
+    = ToggleNavigation
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        ToggleNavigation ->
+            let
+                ns =
+                    case model.naviState of
+                        Close ->
+                            Open
+
+                        Open ->
+                            Close
+            in
+            ( { model | naviState = ns }, Cmd.none )
+
+
+view : Model -> Skeleton.Details Msg
+view model =
+    let
+        -- ナビゲーションの状態によってページに持たせるクラスを変える
+        naviClass =
+            getNavigationPageClass
+                model.naviState
+    in
     { title = "トップページ"
-    , attrs = []
+    , attrs = [ class naviClass ]
     , kids =
         [ viewMain viewTopPage
         , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
-        , button [ type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
-        , button [ type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
+        , button [ onClick ToggleNavigation, type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+        , button [ onClick ToggleNavigation, type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
         ]
     }
 

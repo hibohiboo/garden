@@ -5,7 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Markdown
-import Skeleton exposing (NavigationMenu, viewLink, viewMain, viewNav)
+import Skeleton exposing (NaviState(..), NavigationMenu, getNavigationPageClass, viewLink, viewMain, viewNav)
 import Url
 import Url.Builder
 
@@ -21,11 +21,6 @@ type State
     = Init
     | Loaded String
     | Error Http.Error
-
-
-type NaviState
-    = Open
-    | Close
 
 
 init : String -> ( Model, Cmd Msg )
@@ -83,12 +78,8 @@ view model =
     let
         -- ナビゲーションの状態によってページに持たせるクラスを変える
         naviClass =
-            case model.naviState of
-                Close ->
-                    ""
-
-                Open ->
-                    "open"
+            getNavigationPageClass
+                model.naviState
     in
     case model.state of
         Init ->

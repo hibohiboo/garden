@@ -1,4 +1,4 @@
-module Skeleton exposing (Details, NavigationMenu, view, viewLink, viewMain, viewNav)
+module Skeleton exposing (Details, NaviState(..), NavigationMenu, getNavigationPageClass, view, viewLink, viewMain, viewNav)
 
 import Browser
 import Html exposing (..)
@@ -59,6 +59,22 @@ type alias NavigationMenu =
     { src : String
     , text : String
     }
+
+
+type NaviState
+    = Open
+    | Close
+
+
+getNavigationPageClass : NaviState -> String
+getNavigationPageClass naviState =
+    -- ナビゲーションの状態によってページに持たせるクラスを変える
+    case naviState of
+        Close ->
+            ""
+
+        Open ->
+            "open"
 
 
 viewNav : List NavigationMenu -> Html msg
