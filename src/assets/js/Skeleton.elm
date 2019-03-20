@@ -67,8 +67,8 @@ viewNav menues =
         navigations =
             List.map (\menu -> li [] [ a [ href (Url.Builder.absolute [ menu.src ] []) ] [ text menu.text ] ]) menues
     in
-    nav [ class "page-nav browser-default" ]
-        [ ul [ class "browser-default" ]
+    nav [ class "page-nav" ]
+        [ ul []
             navigations
         ]
 

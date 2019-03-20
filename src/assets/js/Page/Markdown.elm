@@ -2,9 +2,10 @@ module Page.Markdown exposing (Model, Msg, init, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import Http
 import Markdown
-import Skeleton
+import Skeleton exposing (NavigationMenu, viewLink, viewMain, viewNav)
 import Url
 import Url.Builder
 
@@ -12,6 +13,7 @@ import Url.Builder
 type alias Model =
     { fileName : String
     , state : State
+    , naviState : NaviState
     }
 
 
@@ -21,11 +23,16 @@ type State
     | Error Http.Error
 
 
+type NaviState
+    = Open
+    | Close
+
+
 init : String -> ( Model, Cmd Msg )
 init fileName =
     -- ページの初期化
     -- 最初のModelを作ると同時に、ページの表示に必要なデータをHttpで取得
-    ( Model fileName Init
+    ( Model fileName Init Close
     , getMarkdown GotMarkdown fileName
     )
 
@@ -45,6 +52,7 @@ markdownUrl fileName =
 
 type Msg
     = GotMarkdown (Result Http.Error String)
+    | ToggleNavigation
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -57,30 +65,55 @@ update msg model =
         GotMarkdown (Err err) ->
             ( { model | state = Error err }, Cmd.none )
 
+        ToggleNavigation ->
+            let
+                ns =
+                    case model.naviState of
+                        Close ->
+                            Open
 
-view : Model -> Skeleton.Details msg
+                        Open ->
+                            Close
+            in
+            ( { model | naviState = ns }, Cmd.none )
+
+
+view : Model -> Skeleton.Details Msg
 view model =
+    let
+        -- ナビゲーションの状態によってページに持たせるクラスを変える
+        naviClass =
+            case model.naviState of
+                Close ->
+                    ""
+
+                Open ->
+                    "open"
+    in
     case model.state of
         Init ->
-            viewSkeleton (text "Loading ...")
+            viewSkeleton (text "Loading ...") naviClass
 
         Loaded markdown ->
-            viewSkeleton (viewHelper markdown)
+            viewSkeleton (viewHelper markdown) naviClass
 
         Error e ->
-            viewSkeleton (text "error")
+            viewSkeleton (text "error") naviClass
 
 
 
 --(text (Debug.toString e))
 
 
-viewSkeleton : Html msg -> Skeleton.Details msg
-viewSkeleton html =
+viewSkeleton : Html Msg -> String -> Skeleton.Details Msg
+viewSkeleton html naviClass =
     { title = "プライバシーポリシー"
-    , attrs = []
+    , attrs = [ class naviClass ]
     , kids =
-        [ html
+        [ viewMain html
+        , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
+        , button [ onClick ToggleNavigation, type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+        , button [ onClick ToggleNavigation, type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
         ]
     }
 

@@ -272,7 +272,7 @@ view model =
             Skeleton.view never Page.Top.view
 
         MarkdownPage markdownModel ->
-            Skeleton.view never
+            Skeleton.view MarkdownMsg
                 (Markdown.view
                     markdownModel
                 )

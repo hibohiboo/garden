@@ -86,11 +86,15 @@ $bgColorHeadFoot: #222;
   grid-column: 1;
   grid-row: 2;
   z-index: 100;
+  height: auto; //materializeだと上書きされてしまっていた。
   
   ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    li {
+      float: none; // materializeでleftが指定されるので解除
+    }
   }
 
   a {
