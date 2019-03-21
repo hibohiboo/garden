@@ -1,13 +1,17 @@
-module Page.MyPages.CharacterNew exposing (Model, Msg, init, initModel, update, view)
+port module Page.MyPages.CharacterNew exposing (Model, Msg, init, initModel, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Json.Encode as E
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
+
+
+port saveNewCharacter : String -> Cmd msg
 
 
 type alias Character =
@@ -38,6 +42,7 @@ type Msg
     = ToggleNavigation
     | InputName String
     | InputKana String
+    | Save
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -64,6 +69,9 @@ update msg model =
                     { char | kana = s }
             in
             ( { model | character = c }, Cmd.none )
+
+        Save ->
+            ( model, saveNewCharacter "a" )
 
 
 view : Model -> Skeleton.Details Msg
@@ -104,6 +112,10 @@ editArea model =
         , div [ class "input-field" ]
             [ input [ placeholder "フリガナ", id "kana", type_ "text", class "validate", value model.character.kana, onInput InputKana ] []
             , label [ for "kana" ] [ text "フリガナ" ]
+            ]
+        , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
+            [ text "保存"
+            , i [ class "material-icons right" ] [ text "send" ]
             ]
         ]
 

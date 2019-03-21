@@ -108,6 +108,11 @@ app.ports.signOut.subscribe(() => {
   });
 });
 
+// キャラクター新規作成
+app.ports.saveNewCharacter.subscribe(json => {
+  console.log('add', json)
+});
+
 // app.ports.initialize.subscribe(() => {
 // });
 // app.ports.toJs.subscribe((data: string) => {
