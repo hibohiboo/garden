@@ -1,4 +1,4 @@
-module Page.LoginUser exposing (Model, Msg(..), init, initModel, update, view)
+port module Page.LoginUser exposing (Model, Msg(..), init, initModel, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -9,6 +9,9 @@ import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
+
+
+port signOut : () -> Cmd msg
 
 
 type alias Model =
@@ -32,6 +35,7 @@ initModel =
 type Msg
     = ToggleNavigation
     | SignedIn String
+    | SignOut
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -48,6 +52,9 @@ update msg model =
                 Just user ->
                     ( { model | user = Just user }, Cmd.none )
 
+        SignOut ->
+            ( model, signOut () )
+
 
 view : Model -> Skeleton.Details Msg
 view model =
@@ -58,7 +65,7 @@ view model =
                 model.naviState
     in
     { title = "マイページ"
-    , attrs = [ class naviClass, class "mypage" ]
+    , attrs = [ class naviClass, class "loginpage" ]
     , kids =
         [ viewMain (viewMainPage model)
         , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
@@ -68,7 +75,7 @@ view model =
     }
 
 
-viewMainPage : Model -> Html msg
+viewMainPage : Model -> Html Msg
 viewMainPage model =
     case model.user of
         Nothing ->
@@ -91,8 +98,9 @@ loginPage =
         ]
 
 
-myPage : User -> Html msg
+myPage : User -> Html Msg
 myPage user =
-    div [ class "" ]
+    div [ class "mypage" ]
         [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
+        , button [ class "signout-button", onClick SignOut, type_ "button" ] [ span [] [ text "サインアウト" ] ]
         ]

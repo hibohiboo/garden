@@ -9,9 +9,9 @@ const config = require('./_config'); // tslint:disable-line no-var-requires
 
 // firebase使用準備
 firebase.initializeApp(config);
+
 // firebase認証準備
 const auth = firebase.auth();
-let fbUi: any = null;
 
 // ローカルストレージに保存するためのキー
 const STORAGE_KEY = 'insaneHandouts';
@@ -30,31 +30,10 @@ app.ports.initializedToJs.subscribe(() => {
 
 });
 
-// ログインページ遷移時にイベントを伝える
-app.ports.urlChangeToLoginPage.subscribe(() => {
-
-  auth.onAuthStateChanged((firebaseUser) => {
-    let user: User | null = null;
-    if (firebaseUser === null) {
-      return;
-    }
-    user = new User(firebaseUser);
-    // const twitterId = firebaseUser.providerData
-    // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
-    // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
-
-    const json = JSON.stringify(user);
-    console.log('firebaseuser', firebaseUser);
-    // elm -> js
-    // app.ports.logout.subscribe(() => {
-    //   auth.signOut().then(() => {
-    //     // console.log("Signed out.");
-    //   });
-    // });
-    app.ports.signedIn.send(json);
-  });
+// ログインが必要なときにfirebaseuiを使って要素を準備する
+const viewLoginPage = () => {
   const uiConfig = {
-    signInSuccessUrl: '/',
+    signInSuccessUrl: '/mypage', // ログイン成功時の遷移先
     signInOptions: [
       firebase.auth.TwitterAuthProvider.PROVIDER_ID,
     ],
@@ -73,17 +52,48 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       },
     },
     // 利用規約。こことプライバシーポリシーのURLをhttps:// からのURLに変えると動かなくなることがある
-    tosUrl: '/agreement.html',
+    tosUrl: '/agreement',
     // プライバシーポリシー
     privacyPolicyUrl() {
       window.location.assign('/privacy-policy');
     },
   };
+  try {
+    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
+    ui.start('#firebaseui-auth-container', uiConfig);
+  } catch (e) {
+    // 2回目に読み込んだ時に、elmと競合してfirebaseui-auth-containerの要素が取得できなくなるので、再読み込み
+    location.reload();
+  }
+};
 
-  // 認証ui使用準備
-  fbUi = new firebaseui.auth.AuthUI(auth);
-  fbUi.start('#firebaseui-auth-container', uiConfig);
+// ログインページ遷移時にElmからイベントを取得
+app.ports.urlChangeToLoginPage.subscribe(() => {
+  auth.onAuthStateChanged((firebaseUser) => {
+    let user: User | null = null;
+    if (firebaseUser === null) {
+      viewLoginPage();
+      return;
+    }
+    user = new User(firebaseUser);
+    // const twitterId = firebaseUser.providerData
+    // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
+    // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
 
+    const json = JSON.stringify(user);
+    console.log('firebaseuser', firebaseUser);
+
+    // サインイン情報を伝える。
+    app.ports.signedIn.send(json);
+  });
+});
+
+// elm -> js
+// サインアウト
+app.ports.signOut.subscribe(() => {
+  auth.signOut().then(() => {
+    // console.log("Signed out.");
+  });
 });
 
 // app.ports.initialize.subscribe(() => {
