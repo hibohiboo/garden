@@ -3,8 +3,8 @@ port module Page.MyPages.CharacterNew exposing (Model, Msg, init, initModel, upd
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Json.Encode as E
 import Models.Character exposing (..)
+import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
@@ -35,35 +35,23 @@ initModel =
 
 type Msg
     = ToggleNavigation
-    | InputName String
-    | InputKana String
+    | EditorMsg CharacterEditor.Msg
     | Save
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        -- キャラクターのモデルを更新
-        char =
-            model.character
-    in
     case msg of
         ToggleNavigation ->
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 
-        InputName s ->
+        -- キャラクターデータの更新
+        EditorMsg emsg ->
             let
-                c =
-                    { char | name = s }
+                ( m, s ) =
+                    CharacterEditor.update emsg model.character
             in
-            ( { model | character = c }, Cmd.none )
-
-        InputKana s ->
-            let
-                c =
-                    { char | kana = s }
-            in
-            ( { model | character = c }, Cmd.none )
+            ( { model | character = m }, Cmd.map EditorMsg s )
 
         Save ->
             ( model, model.character |> encodeCharacter |> saveNewCharacter )
@@ -92,22 +80,16 @@ viewHelper model =
             [ text "新規作成" ]
         , div
             [ class "edit-karte" ]
-            [ editArea model
+            [ edit model
             , karte model
             ]
         ]
 
 
-editArea model =
+edit : Model -> Html Msg
+edit model =
     div [ class "edit-area" ]
-        [ div [ class "input-field" ]
-            [ input [ placeholder "名前", id "name", type_ "text", class "validate", value model.character.name, onInput InputName ] []
-            , label [ for "name" ] [ text "名前" ]
-            ]
-        , div [ class "input-field" ]
-            [ input [ placeholder "フリガナ", id "kana", type_ "text", class "validate", value model.character.kana, onInput InputKana ] []
-            , label [ for "kana" ] [ text "フリガナ" ]
-            ]
+        [ Html.map EditorMsg (editArea model.character)
         , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
             [ text "保存"
             , i [ class "material-icons right" ] [ text "send" ]
@@ -115,6 +97,7 @@ editArea model =
         ]
 
 
+karte : Model -> Html Msg
 karte model =
     let
         char =
