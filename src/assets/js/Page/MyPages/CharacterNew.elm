@@ -71,7 +71,15 @@ update msg model =
             ( { model | character = c }, Cmd.none )
 
         Save ->
-            ( model, saveNewCharacter "a" )
+            ( model, model.character |> encodeCharacter |> E.encode 0 |> saveNewCharacter )
+
+
+encodeCharacter : Character -> E.Value
+encodeCharacter c =
+    E.object
+        [ ( "name", E.string c.name )
+        , ( "kana", E.string c.kana )
+        ]
 
 
 view : Model -> Skeleton.Details Msg
