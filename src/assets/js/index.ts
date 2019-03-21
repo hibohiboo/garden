@@ -11,6 +11,7 @@ const config = require('./_config'); // tslint:disable-line no-var-requires
 firebase.initializeApp(config);
 // firebase認証準備
 const auth = firebase.auth();
+let fbUi: any = null;
 
 // ローカルストレージに保存するためのキー
 const STORAGE_KEY = 'insaneHandouts';
@@ -34,21 +35,23 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
 
   auth.onAuthStateChanged((firebaseUser) => {
     let user: User | null = null;
-    if (firebaseUser) {
-      user = new User(firebaseUser);
-      // const twitterId = firebaseUser.providerData
-      // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
-      // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
+    if (firebaseUser === null) {
+      return;
     }
+    user = new User(firebaseUser);
+    // const twitterId = firebaseUser.providerData
+    // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
+    // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
+
     const json = JSON.stringify(user);
     console.log('firebaseuser', firebaseUser);
-    console.log(user);
     // elm -> js
     // app.ports.logout.subscribe(() => {
     //   auth.signOut().then(() => {
     //     // console.log("Signed out.");
     //   });
     // });
+    app.ports.signedIn.send(json);
   });
   const uiConfig = {
     signInSuccessUrl: '/',
@@ -78,10 +81,11 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
   };
 
   // 認証ui使用準備
-  const ui = new firebaseui.auth.AuthUI(auth);
+  if (fbUi == null) {
+    fbUi = new firebaseui.auth.AuthUI(auth);
+  }
+  fbUi.start('#firebaseui-auth-container', uiConfig);
 
-  ui.start('#firebaseui-auth-container', uiConfig);
-  console.log(ui);
 });
 
 // app.ports.initialize.subscribe(() => {

@@ -230,14 +230,13 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        SignedIn rmsg ->
+        SignedIn json ->
             case model.page of
                 LoginUserPage rmodel ->
                     let
-                        --( newmodel, newmsg ) =
-                        -- Page.LoginUser.update rmsg rmodel
-                        newmodel =
-                            rmodel
+                        ( newmodel, newmsg ) =
+                         Page.LoginUser.update (Page.LoginUser.SignedIn json) rmodel
+
                     in
                     ( { model | page = LoginUserPage newmodel }, Cmd.none )
 

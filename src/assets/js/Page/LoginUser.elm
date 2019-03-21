@@ -1,4 +1,4 @@
-module Page.LoginUser exposing (Model, Msg, init, initModel, update, view)
+module Page.LoginUser exposing (Model, Msg(..), init, initModel, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -8,10 +8,11 @@ import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
-
+import Page.MyPages.User exposing(..)
 
 type alias Model =
-    { naviState : NaviState
+    { naviState : NaviState,
+      user: Maybe User
     }
 
 
@@ -24,11 +25,12 @@ init =
 
 initModel : Model
 initModel =
-    Model Close
+    Model Close Nothing
 
 
 type Msg
     = ToggleNavigation
+    | SignedIn String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -36,6 +38,7 @@ update msg model =
     case msg of
         ToggleNavigation ->
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
+        SignedIn s -> ({model | user = Just (User "test" "aaa")}, Cmd.none)
 
 
 view : Model -> Skeleton.Details Msg
@@ -49,7 +52,7 @@ view model =
     { title = "マイページ"
     , attrs = [ class naviClass ]
     , kids =
-        [ viewMain viewTopPage
+        [ viewMain (viewTopPage model)
         , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
@@ -57,14 +60,17 @@ view model =
     }
 
 
-viewTopPage : Html msg
-viewTopPage =
-    div [ class "" ]
-        [ h1 [] [ text "マイページ" ]
-        , div [] [ text "ユーザページの利用にはログインをお願いしております。" ]
-        , div []
-            [ text "現在、Twitterでログイン可能です。"
+viewTopPage : Model -> Html msg
+viewTopPage  model =
+    case model.user of 
+      Nothing ->
+        div [ class "" ]
+            [ h1 [] [ text "マイページ" ]
+            , div [] [ text "ユーザページの利用にはログインをお願いしております。" ]
+            , div []
+                [ text "現在、Twitterでログイン可能です。"
+                ]
+            , div [ id "firebaseui-auth-container", lang "ja" ] []
+            , div [ id "loader" ] [ text "Loading ..." ]
             ]
-        , div [ id "firebaseui-auth-container", lang "ja" ] []
-        , div [ id "loader" ] [ text "Loading ..." ]
-        ]
+      _ -> div[][text "test"]
