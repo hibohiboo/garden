@@ -1,8 +1,10 @@
 module Page.RuleBook exposing (Model, Msg(..), init, update, view)
 
 import Browser.Dom as Dom
+import Browser.Navigation as Navigation
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
 import Url
@@ -37,6 +39,7 @@ initModel =
 type Msg
     = ToggleNavigation
     | NoOp
+    | PageAnchor String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -47,6 +50,9 @@ update msg model =
 
         NoOp ->
             ( model, Cmd.none )
+
+        PageAnchor id ->
+            ( model, Navigation.load id )
 
 
 view : Model -> Skeleton.Details Msg
@@ -61,11 +67,29 @@ view model =
     , attrs = [ class naviClass ]
     , kids =
         [ viewMain viewRulebook
-        , viewNav [ NavigationMenu "rulebook#first" "はじめに", NavigationMenu "rulebook#world" "ワールド" ]
+        , viewNavi [ NavigationMenu "#first" "はじめに", NavigationMenu "#world" "ワールド" ]
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
         ]
     }
+
+
+viewNavi : List NavigationMenu -> Html Msg
+viewNavi menues =
+    let
+        navigations =
+            List.map
+                (\menu ->
+                    li []
+                        [ a [ href "#", onClick (PageAnchor menu.src) ] [ text menu.text ]
+                        ]
+                )
+                menues
+    in
+    nav [ class "page-nav" ]
+        [ ul []
+            navigations
+        ]
 
 
 tableOfContents : List ( String, String )

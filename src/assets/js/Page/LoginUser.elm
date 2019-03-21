@@ -60,6 +60,6 @@ view model =
 viewTopPage : Html msg
 viewTopPage =
     div [ class "center" ]
-        [ div [ id "firebaseui-auth-container" ] []
+        [ div [ id "firebaseui-auth-container", lang "ja" ] []
         , div [ id "loader" ] [ text "Loading ..." ]
         ]
