@@ -407,10 +407,11 @@ $bgColorHeadFoot: #222;
 .karte {
   font-size: 16px;
   display: grid;
-  width: 800px;
-  height: 1050px;
+  width: 720px;   // A4横少し余裕をもって。800だとぎりぎり
+  height: 1100px; // A4縦ギリギリ
+  padding-left: 60px;
   grid-template-columns: 20px repeat(12, 1fr);
-  grid-template-rows: repeat(42, 25px);
+  grid-template-rows: repeat(44, 25px);
   grid-column-gap: 0;
   div {
     border: solid 1px #000;
@@ -418,27 +419,27 @@ $bgColorHeadFoot: #222;
   }
   .outer-line{
     grid-column: 1/-1;
-    grid-row: 2/42;
+    grid-row: 4/42;
   }
   .label-personal{
     grid-column: 1;
-    grid-row: 2/10;
+    grid-row: 4/12;
   }
   .label-kana {
     grid-column: 2/4;
-    grid-row: 2;
+    grid-row: 4;
   }
   .kana {
     grid-column: 4/6;
-    grid-row: 2;
+    grid-row: 4;
   }
   .label-name {
     grid-column: 2/4;
-    grid-row: 3;
+    grid-row: 5;
   }
   .name {
     grid-column: 4/6;
-    grid-row: 3;
+    grid-row: 5;
   }
 
 }
@@ -487,4 +488,45 @@ $bgColorHeadFoot: #222;
 
   }
 
+}
+
+
+@media print {
+  header,
+  footer,
+  nav,
+  .edit-area,
+   h1
+   {
+    display: none;
+  }
+
+  .page.character-sheet {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows:  1fr ;
+    min-height: inherit;
+    max-width: inherit;
+  }
+    // メインコンテンツ
+    .page-main {
+      max-width: inherit;
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .edit-karte {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      .edit-area {
+        max-width: 360px;
+        grid-column: 1;
+      }
+      .karte {
+        grid-column: 1;
+      }
+    }
+    .page-foot{
+      display: none;
+    }
 }
