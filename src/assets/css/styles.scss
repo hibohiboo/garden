@@ -245,6 +245,7 @@ $bgColorHeadFoot: #222;
 
 @media (min-width: 1260px) {
   .page {
+    max-width: 960px;
     grid-template-columns: 260px 1fr;
   }
 
