@@ -8,7 +8,7 @@ import Markdown
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
-import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, getNavigationPageClass, toggleNavigationState, viewNav)
+import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 
 
 type alias Model =

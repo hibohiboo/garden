@@ -1,11 +1,11 @@
-module Page.RuleBook exposing (view)
+module Page.RuleBook exposing (Model, Msg(..), init, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Skeleton exposing (viewLink)
+import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
-import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, getNavigationPageClass, toggleNavigationState, viewNav)
+import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
 
 
@@ -16,9 +16,14 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Close
+    ( initModel
     , Cmd.none
     )
+
+
+initModel : Model
+initModel =
+    Model Close
 
 
 type Msg
@@ -32,15 +37,31 @@ update msg model =
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 
 
-view : Skeleton.Details msg
-view =
+view : Model -> Skeleton.Details Msg
+view model =
+    let
+        -- ナビゲーションの状態によってページに持たせるクラスを変える
+        naviClass =
+            getNavigationPageClass
+                model.naviState
+    in
     { title = "基本ルール"
-    , attrs = []
+    , attrs = [ class naviClass ]
     , kids =
+        [ viewMain viewRulebook
+        , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
+        , openNavigationButton ToggleNavigation
+        , closeNavigationButton ToggleNavigation
+        ]
+    }
+
+
+viewRulebook : Html msg
+viewRulebook =
+    div []
         [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ text "Garden 基本ルールブック" ] ]
         , div [ class "content" ] [ first ]
         ]
-    }
 
 
 first : Html msg

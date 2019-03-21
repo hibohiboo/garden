@@ -10,7 +10,7 @@ import Page.GitHubUser exposing (..)
 import Page.Markdown as Markdown
 import Page.Problem as Problem
 import Page.Repo exposing (..)
-import Page.RuleBook exposing (..)
+import Page.RuleBook as RuleBook
 import Page.Top exposing (..)
 import Route exposing (..)
 import Skeleton exposing (Details, view)
@@ -65,7 +65,7 @@ type Page
     | GitHubUserPage Page.GitHubUser.Model
     | RepoPage Page.Repo.Model
     | MarkdownPage Markdown.Model
-    | RuleBook
+    | RuleBookPage RuleBook.Model
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -96,6 +96,7 @@ type Msg
     | GitHubUserMsg Page.GitHubUser.Msg
     | MarkdownMsg Markdown.Msg
     | TopMsg Page.Top.Msg
+    | RuleBookMsg RuleBook.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -187,6 +188,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        RuleBookMsg rmsg ->
+            case model.page of
+                RuleBookPage rmodel ->
+                    let
+                        ( newmodel, newmsg ) =
+                            RuleBook.update rmsg rmodel
+                    in
+                    ( { model | page = RuleBookPage newmodel }, Cmd.map RuleBookMsg newmsg )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -210,8 +223,12 @@ goTo maybeRoute model =
             )
 
         Just Route.RuleBook ->
-            ( { model | page = RuleBook }
-            , Cmd.none
+            let
+                ( m, cmd ) =
+                    RuleBook.init
+            in
+            ( { model | page = RuleBookPage m }
+            , Cmd.map RuleBookMsg cmd
             )
 
         Just Route.PrivacyPolicy ->
@@ -282,8 +299,8 @@ view model =
                 , kids = Problem.notFound
                 }
 
-        RuleBook ->
-            Skeleton.view never Page.RuleBook.view
+        RuleBookPage m ->
+            Skeleton.view RuleBookMsg (RuleBook.view m)
 
         TopPage m ->
             Skeleton.view TopMsg (Page.Top.view m)

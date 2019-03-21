@@ -1,7 +1,8 @@
-module Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, getNavigationPageClass, toggleNavigationState, viewNav)
+module Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import Url
 import Url.Builder
 
@@ -27,6 +28,16 @@ viewNav menues =
         [ ul []
             navigations
         ]
+
+
+openNavigationButton : msg -> Html msg
+openNavigationButton msg =
+    button [ onClick msg, type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
+
+
+closeNavigationButton : msg -> Html msg
+closeNavigationButton msg =
+    button [ onClick msg, type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
 
 
 toggleNavigationState : NaviState -> NaviState

@@ -6,7 +6,7 @@ import Html.Events exposing (onClick)
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
-import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, getNavigationPageClass, toggleNavigationState, viewNav)
+import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
 
 
@@ -51,8 +51,8 @@ view model =
     , kids =
         [ viewMain viewTopPage
         , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
-        , button [ onClick ToggleNavigation, type_ "button", class "navi-btn page-btn" ] [ span [ class "fas fa-bars", title "メニューを開く" ] [] ]
-        , button [ onClick ToggleNavigation, type_ "button", class "navi-btn page-btn-close" ] [ span [ class "fas fa-times", title "メニューを閉じる" ] [] ]
+        , openNavigationButton ToggleNavigation
+        , closeNavigationButton ToggleNavigation
         ]
     }
 
