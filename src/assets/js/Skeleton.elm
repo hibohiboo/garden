@@ -76,5 +76,6 @@ viewFooter =
         , ul [ class "foot-links" ]
             [ li [] [ a [ href (Url.Builder.absolute [ "privacy-policy" ] []) ] [ text "プライバシーポリシー" ] ]
             , li [] [ a [ href (Url.Builder.absolute [ "about" ] []) ] [ text "このサイトについて" ] ]
+            , li [] [ a [ href (Url.Builder.absolute [ "agreement" ] []) ] [ text "利用規約" ] ]
             ]
         ]

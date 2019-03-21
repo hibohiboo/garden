@@ -9,8 +9,7 @@ type Route
     | RuleBook (Maybe String)
     | PrivacyPolicy
     | About
-    | GitHubUser String
-    | Repo String String
+    | Agreement
     | LoginUser
 
 
@@ -25,8 +24,10 @@ parser =
         [ map Top top
         , map RuleBook (s "rulebook" </> fragment identity)
         , map PrivacyPolicy (s "privacy-policy")
+        , map Agreement (s "agreement")
         , map About (s "about")
         , map LoginUser (s "mypage")
-        , map GitHubUser string
-        , map Repo (string </> string)
+
+        -- , map GitHubUser string
+        -- , map Repo (string </> string)
         ]

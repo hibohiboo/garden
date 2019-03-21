@@ -58,7 +58,7 @@ view model =
                 model.naviState
     in
     { title = "マイページ"
-    , attrs = [ class naviClass ]
+    , attrs = [ class naviClass, class "mypage" ]
     , kids =
         [ viewMain (viewMainPage model)
         , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
@@ -94,11 +94,5 @@ loginPage =
 myPage : User -> Html msg
 myPage user =
     div [ class "" ]
-        [ h1 [] [ text (user.displayName ++ "さんのマイページ") ]
-        , div [] [ text "ユーザページの利用にはログインをお願いしております。" ]
-        , div []
-            [ text "現在、Twitterでログイン可能です。"
-            ]
-        , div [ id "firebaseui-auth-container", lang "ja" ] []
-        , div [ id "loader" ] [ text "Loading ..." ]
+        [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
         ]

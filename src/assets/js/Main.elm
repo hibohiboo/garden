@@ -77,8 +77,6 @@ type Page
     = NotFound
     | ErrorPage Http.Error
     | TopPage Page.Top.Model
-    | GitHubUserPage Page.GitHubUser.Model
-    | RepoPage Page.Repo.Model
     | MarkdownPage Markdown.Model
     | RuleBookPage RuleBook.Model
     | LoginUserPage Page.LoginUser.Model
@@ -108,8 +106,6 @@ type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
     | Loaded (Result Http.Error Page)
-    | RepoMsg Page.Repo.Msg
-    | GitHubUserMsg Page.GitHubUser.Msg
     | MarkdownMsg Markdown.Msg
     | TopMsg Page.Top.Msg
     | RuleBookMsg RuleBook.Msg
@@ -150,41 +146,13 @@ update msg model =
             , Cmd.none
             )
 
-        -- Repoページのメッセージが来たとき
-        RepoMsg repoMsg ->
-            -- 現在表示中のページが
-            case model.page of
-                -- RepoPageであれば、
-                RepoPage repoModel ->
-                    -- Repoページのupdate処理を行う
-                    let
-                        ( newRepoModel, topCmd ) =
-                            Page.Repo.update repoMsg repoModel
-                    in
-                    ( { model | page = RepoPage newRepoModel }, Cmd.map RepoMsg topCmd )
-
-                _ ->
-                    ( model, Cmd.none )
-
-        -- GitHubUserページのメッセージが来たとき
-        GitHubUserMsg gitHubUserMsg ->
-            -- 現在表示中のページが
-            case model.page of
-                -- GitHubUserPageであれば、
-                GitHubUserPage gitHubUserModel ->
-                    -- GitHubUserページのupdate処理を行う
-                    let
-                        ( newGitHubUserModel, gitHubUserCmd ) =
-                            Page.GitHubUser.update gitHubUserMsg gitHubUserModel
-                    in
-                    ( { model | page = GitHubUserPage newGitHubUserModel }, Cmd.map GitHubUserMsg gitHubUserCmd )
-
-                _ ->
-                    ( model, Cmd.none )
-
+        --MarkdownMsgページのメッセージが来たとき
         MarkdownMsg markdownMsg ->
+            -- 現在表示中のページが
             case model.page of
+                -- MarkdownPageであれば、
                 MarkdownPage markdownModel ->
+                    --MarkdownPage ページのupdate処理を行う
                     let
                         ( newMarkdownModel, markdownCmd ) =
                             Markdown.update markdownMsg markdownModel
@@ -235,8 +203,7 @@ update msg model =
                 LoginUserPage rmodel ->
                     let
                         ( newmodel, newmsg ) =
-                         Page.LoginUser.update (Page.LoginUser.SignedIn json) rmodel
-
+                            Page.LoginUser.update (Page.LoginUser.SignedIn json) rmodel
                     in
                     ( { model | page = LoginUserPage newmodel }, Cmd.none )
 
@@ -292,6 +259,15 @@ goTo maybeRoute model =
             , Cmd.map MarkdownMsg markdownCmd
             )
 
+        Just Route.Agreement ->
+            let
+                ( markdownModel, markdownCmd ) =
+                    Markdown.init "agreement.md"
+            in
+            ( { model | page = MarkdownPage markdownModel }
+            , Cmd.map MarkdownMsg markdownCmd
+            )
+
         Just Route.LoginUser ->
             let
                 ( m, cmd ) =
@@ -301,26 +277,6 @@ goTo maybeRoute model =
             , Cmd.batch [ Cmd.map LoginUserMsg cmd, urlChangeToLoginPage () ]
             )
 
-        Just (Route.GitHubUser gitHubUserName) ->
-            -- GitHubUser ページの初期化
-            let
-                ( gitHubUserModel, gitHubUserCmd ) =
-                    Page.GitHubUser.init gitHubUserName
-            in
-            ( { model | page = GitHubUserPage gitHubUserModel }
-            , Cmd.map GitHubUserMsg gitHubUserCmd
-            )
-
-        Just (Route.Repo gitHubUserName projectName) ->
-            -- Repo ページの初期化
-            let
-                ( repoModel, repoCmd ) =
-                    Page.Repo.init gitHubUserName projectName
-            in
-            ( { model | page = RepoPage repoModel }
-            , Cmd.map RepoMsg repoCmd
-            )
-
 
 
 -- SUBSCRIPTIONS
@@ -328,7 +284,7 @@ goTo maybeRoute model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    signedIn SignedIn 
+    signedIn SignedIn
 
 
 
@@ -366,31 +322,12 @@ view model =
         LoginUserPage m ->
             Skeleton.view LoginUserMsg (Page.LoginUser.view m)
 
-        _ ->
-            { title = "Garden - 箱庭の島の子供たち"
-            , body =
-                [ a [ href "/" ] [ h1 [] [ text "Garden - 箱庭の島の子供たち" ] ]
-                , case model.page of
-                    NotFound ->
-                        viewNotFound
-
-                    ErrorPage error ->
-                        viewError error
-
-                    GitHubUserPage gitHubUserPageModel ->
-                        -- GitHubUserページのview関数を呼ぶ
-                        Page.GitHubUser.view gitHubUserPageModel
-                            |> Html.map GitHubUserMsg
-
-                    RepoPage repoPageModel ->
-                        -- Repoページのview関数を呼ぶ
-                        Page.Repo.view repoPageModel
-                            |> Html.map RepoMsg
-
-                    _ ->
-                        text "parse error"
-                ]
-            }
+        ErrorPage error ->
+            Skeleton.view never
+                { title = "Garden - 箱庭の島の子供たち"
+                , attrs = Problem.styles
+                , kids = [ viewError error ]
+                }
 
 
 {-| NotFound ページ

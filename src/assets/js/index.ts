@@ -81,9 +81,7 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
   };
 
   // 認証ui使用準備
-  if (fbUi == null) {
-    fbUi = new firebaseui.auth.AuthUI(auth);
-  }
+  fbUi = new firebaseui.auth.AuthUI(auth);
   fbUi.start('#firebaseui-auth-container', uiConfig);
 
 });
