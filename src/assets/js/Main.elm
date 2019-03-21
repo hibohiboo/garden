@@ -41,6 +41,13 @@ port urlChangeToLoginPage : () -> Cmd msg
 
 
 
+-- サインイン成功メッセージ
+
+
+port signedIn : (String -> msg) -> Sub msg
+
+
+
 -- MAIN
 
 
@@ -107,6 +114,7 @@ type Msg
     | TopMsg Page.Top.Msg
     | RuleBookMsg RuleBook.Msg
     | LoginUserMsg Page.LoginUser.Msg
+    | SignedIn String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -222,6 +230,20 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        SignedIn rmsg ->
+            case model.page of
+                LoginUserPage rmodel ->
+                    let
+                        --( newmodel, newmsg ) =
+                        -- Page.LoginUser.update rmsg rmodel
+                        newmodel =
+                            rmodel
+                    in
+                    ( { model | page = LoginUserPage newmodel }, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -306,8 +328,8 @@ goTo maybeRoute model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    signedIn SignedIn 
 
 
 

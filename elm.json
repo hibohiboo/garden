@@ -15,7 +15,8 @@
       "elm/url": "1.0.0",
       "elm/json": "1.1.2",
       "elm/parser": "1.1.0",
-      "elm-explorations/markdown": "1.0.0"
+      "elm-explorations/markdown": "1.0.0",
+      "NoRedInk/elm-json-decode-pipeline": "1.0.0"
     },
     "indirect": {
       "elm/time": "1.0.0",

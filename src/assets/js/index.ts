@@ -9,7 +9,8 @@ const config = require('./_config'); // tslint:disable-line no-var-requires
 
 // firebase使用準備
 firebase.initializeApp(config);
-
+// firebase認証準備
+const auth = firebase.auth();
 
 // ローカルストレージに保存するためのキー
 const STORAGE_KEY = 'insaneHandouts';
@@ -30,8 +31,7 @@ app.ports.initializedToJs.subscribe(() => {
 
 // ログインページ遷移時にイベントを伝える
 app.ports.urlChangeToLoginPage.subscribe(() => {
-  // firebase認証
-  const auth = firebase.auth();
+
   auth.onAuthStateChanged((firebaseUser) => {
     let user: User | null = null;
     if (firebaseUser) {
@@ -77,7 +77,9 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     },
   };
 
-  const ui = new firebaseui.auth.AuthUI(firebase.auth());
+  // 認証ui使用準備
+  const ui = new firebaseui.auth.AuthUI(auth);
+
   ui.start('#firebaseui-auth-container', uiConfig);
   console.log(ui);
 });
