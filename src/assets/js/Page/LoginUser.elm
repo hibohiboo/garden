@@ -88,7 +88,7 @@ viewMainPage model =
 loginPage : Html msg
 loginPage =
     div [ class "" ]
-        [ h1 [] [ text "マイページ" ]
+        [ h3 [] [ text "マイページ" ]
         , div [] [ text "ユーザページの利用にはログインをお願いしております。" ]
         , div []
             [ text "現在、Twitterでログイン可能です。"
@@ -103,4 +103,8 @@ myPage user =
     div [ class "mypage" ]
         [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
         , button [ class "signout-button", onClick SignOut, type_ "button" ] [ span [] [ text "サインアウト" ] ]
+        , a [ href "#", class "waves-effect waves-light btn", style "width" "250px" ]
+            [ i [ class "small material-icons" ] [ text "add" ]
+            , text "キャラクター新規作成"
+            ]
         ]
