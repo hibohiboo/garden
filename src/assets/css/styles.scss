@@ -240,7 +240,7 @@ $bgColorHeadFoot: #222;
 
 @media (min-width: 1260px) {
   .page {
-    max-width: 960px;
+    max-width: 1024px;
     grid-template-columns: 260px 1fr;
   }
 
@@ -382,4 +382,61 @@ $bgColorHeadFoot: #222;
     height: 30px;
     width: 120px;
   }
+}
+
+//  =====##### キャラクター #####=====
+
+.character-sheet {
+  h1 {
+    font-size: 2rem;
+    margin: 1rem;
+  }
+  .edit-area {
+    max-width: 480px;
+  }
+}
+@media (min-width: 1260px) {
+  .page.character-sheet {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    max-width: 100vw;
+
+    // メインコンテンツ
+    .page-main {
+      max-width: 100vw;
+      grid-column: 1;
+      grid-row: 2;
+    }
+    // ヘッダ
+    .page-head {
+      grid-column: 1;
+      grid-row: 1;
+      padding: 0;
+      img {
+        width: 50px;
+      }
+    }
+    .page-nav {
+      background-color: rgba(0, 0, 0, 0.8);
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    // フッタ
+    .page-foot {
+      grid-column: 1/-1;
+      grid-row: 3;
+      padding: 0;
+    }
+
+    // materialize.css で上書きされるので初期化
+    nav {
+      height: auto;
+      line-height: initial;
+    }
+
+  }
+
 }

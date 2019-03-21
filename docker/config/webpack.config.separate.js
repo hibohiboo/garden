@@ -99,9 +99,10 @@ module.exports = {
   },
   // cdnから読み込むものはここに
   externals: {
-    jquery: 'jQuery',
-    'chart.js': 'Chart',
-    firebase: 'firebase',
-    firebaseui: 'firebaseui'
+    jquery: 'jQuery'
+    , 'chart.js': 'Chart'
+    , firebase: 'firebase'
+    , firebaseui: 'firebaseui'
+    , M: 'M' // materialize
   },
 };

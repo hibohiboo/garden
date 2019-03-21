@@ -1,6 +1,7 @@
 // import { Chart } from 'chart.js';
 import * as firebase from 'firebase';
 import * as firebaseui from 'firebaseui';
+import * as M from 'M';
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import User from './User';
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
@@ -27,7 +28,13 @@ const app = Elm.Main.init({ node: mountNode, flags });
 
 // elmのspa構築後に、dom要素に対してイベントを設定
 app.ports.initializedToJs.subscribe(() => {
+  M.updateTextFields();
+});
 
+// ページ遷移後に呼ばれる
+app.ports.urlChangeToJs.subscribe(() => {
+  // 新しく構築されたDOMにmaterializeを適用
+  M.updateTextFields();
 });
 
 // ログインが必要なときにfirebaseuiを使って要素を準備する

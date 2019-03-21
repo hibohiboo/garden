@@ -6,13 +6,12 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Page.GitHubUser exposing (..)
 import Page.LoginUser
 import Page.Markdown as Markdown
+import Page.MyPages.CharacterNew as CharacterNew
 import Page.Problem as Problem
-import Page.Repo exposing (..)
 import Page.RuleBook as RuleBook
-import Page.Top exposing (..)
+import Page.Top
 import Route exposing (..)
 import Skeleton exposing (Details, view)
 import Url
@@ -80,6 +79,7 @@ type Page
     | MarkdownPage Markdown.Model
     | RuleBookPage RuleBook.Model
     | LoginUserPage Page.LoginUser.Model
+    | CharacterNewPage CharacterNew.Model
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -111,6 +111,7 @@ type Msg
     | RuleBookMsg RuleBook.Msg
     | LoginUserMsg Page.LoginUser.Msg
     | SignedIn String
+    | CharacterNewMsg CharacterNew.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -210,6 +211,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        CharacterNewMsg ms ->
+            case model.page of
+                CharacterNewPage rmodel ->
+                    let
+                        ( newmodel, newmsg ) =
+                            CharacterNew.update ms rmodel
+                    in
+                    ( { model | page = CharacterNewPage newmodel }, Cmd.map CharacterNewMsg newmsg )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -277,6 +290,15 @@ goTo maybeRoute model =
             , Cmd.batch [ Cmd.map LoginUserMsg cmd, urlChangeToLoginPage () ]
             )
 
+        Just Route.CharacterNew ->
+            let
+                ( m, cmd ) =
+                    CharacterNew.init
+            in
+            ( { model | page = CharacterNewPage m }
+            , Cmd.map CharacterNewMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -300,6 +322,13 @@ styles =
 view : Model -> Browser.Document Msg
 view model =
     case model.page of
+        ErrorPage error ->
+            Skeleton.view never
+                { title = "Garden - 箱庭の島の子供たち"
+                , attrs = Problem.styles
+                , kids = [ viewError error ]
+                }
+
         NotFound ->
             Skeleton.view never
                 { title = "Not Found"
@@ -322,12 +351,8 @@ view model =
         LoginUserPage m ->
             Skeleton.view LoginUserMsg (Page.LoginUser.view m)
 
-        ErrorPage error ->
-            Skeleton.view never
-                { title = "Garden - 箱庭の島の子供たち"
-                , attrs = Problem.styles
-                , kids = [ viewError error ]
-                }
+        CharacterNewPage m ->
+            Skeleton.view CharacterNewMsg (CharacterNew.view m)
 
 
 {-| NotFound ページ

@@ -11,6 +11,7 @@ type Route
     | About
     | Agreement
     | LoginUser
+    | CharacterNew
 
 
 parse : Url -> Maybe Route
@@ -27,6 +28,7 @@ parser =
         , map Agreement (s "agreement")
         , map About (s "about")
         , map LoginUser (s "mypage")
+        , map CharacterNew (s "mypage" </> s "character" </> s "new")
 
         -- , map GitHubUser string
         -- , map Repo (string </> string)
