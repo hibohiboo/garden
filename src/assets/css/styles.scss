@@ -391,10 +391,58 @@ $bgColorHeadFoot: #222;
     font-size: 2rem;
     margin: 1rem;
   }
+}
+.edit-karte {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  grid-template-rows: 1fr;
   .edit-area {
-    max-width: 480px;
+    max-width: 360px;
+    grid-column: 1;
+  }
+  .karte {
+    grid-column: 2;
   }
 }
+.karte {
+  font-size: 16px;
+  display: grid;
+  width: 800px;
+  height: 1050px;
+  grid-template-columns: 20px repeat(12, 1fr);
+  grid-template-rows: repeat(42, 25px);
+  grid-column-gap: 0;
+  div {
+    border: solid 1px #000;
+    padding-left: 2px;
+  }
+  .outer-line{
+    grid-column: 1/-1;
+    grid-row: 2/42;
+  }
+  .label-personal{
+    grid-column: 1;
+    grid-row: 2/10;
+  }
+  .label-kana {
+    grid-column: 2/4;
+    grid-row: 2;
+  }
+  .kana {
+    grid-column: 4/6;
+    grid-row: 2;
+  }
+  .label-name {
+    grid-column: 2/4;
+    grid-row: 3;
+  }
+  .name {
+    grid-column: 4/6;
+    grid-row: 3;
+  }
+
+}
+
 @media (min-width: 1260px) {
   .page.character-sheet {
     display: grid;

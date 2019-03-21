@@ -1,7 +1,7 @@
 // import { Chart } from 'chart.js';
 import * as firebase from 'firebase';
 import * as firebaseui from 'firebaseui';
-import * as M from 'M';
+import * as M from 'M'; //  tslint-disable-line
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import User from './User';
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
@@ -14,20 +14,25 @@ firebase.initializeApp(config);
 // firebase認証準備
 const auth = firebase.auth();
 
-// ローカルストレージに保存するためのキー
-const STORAGE_KEY = 'insaneHandouts';
+// firestore使用準備
+const db = firebase.firestore();
+
+// // ローカルストレージに保存するためのキー
+// const STORAGE_KEY = 'insaneHandouts';
+
+// // ローカルストレージから前回値を読み出し
+// const flags: string = localStorage[STORAGE_KEY] === undefined ? '' : localStorage.insaneHandouts;
+const flags = null;
 
 // elmのＤＯＭを作成する元となるＤＯＭ要素
 const mountNode: HTMLElement = document.getElementById('main')!;
-
-// ローカルストレージから前回値を読み出し
-const flags: string = localStorage[STORAGE_KEY] === undefined ? '' : localStorage.insaneHandouts;
 
 // 前回値を初期値として与える
 const app = Elm.Main.init({ node: mountNode, flags });
 
 // elmのspa構築後に、dom要素に対してイベントを設定
 app.ports.initializedToJs.subscribe(() => {
+  // elmの構築したDOMにmaterializeを適用
   M.updateTextFields();
 });
 
