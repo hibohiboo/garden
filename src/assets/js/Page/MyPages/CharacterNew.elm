@@ -11,7 +11,9 @@ import Utils.Terms as Terms
 
 
 type alias Character =
-    { name : String }
+    { name : String
+    , kana : String
+    }
 
 
 type alias Model =
@@ -29,12 +31,13 @@ init =
 
 initModel : Model
 initModel =
-    Model Close (Character "")
+    Model Close (Character "" "")
 
 
 type Msg
     = ToggleNavigation
     | InputName String
+    | InputKana String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,6 +55,13 @@ update msg model =
             let
                 c =
                     { char | name = s }
+            in
+            ( { model | character = c }, Cmd.none )
+
+        InputKana s ->
+            let
+                c =
+                    { char | kana = s }
             in
             ( { model | character = c }, Cmd.none )
 
@@ -91,6 +101,10 @@ editArea model =
             [ input [ placeholder "名前", id "name", type_ "text", class "validate", value model.character.name, onInput InputName ] []
             , label [ for "name" ] [ text "名前" ]
             ]
+        , div [ class "input-field" ]
+            [ input [ placeholder "フリガナ", id "kana", type_ "text", class "validate", value model.character.kana, onInput InputKana ] []
+            , label [ for "kana" ] [ text "フリガナ" ]
+            ]
         ]
 
 
@@ -102,7 +116,7 @@ karte model =
     div [ class "karte" ]
         [ div [ class "label-personal" ] [ text "異能因子発現個体" ]
         , div [ class "label-kana" ] [ text "フリガナ" ]
-        , div [ class "kana" ] [ text char.name ]
+        , div [ class "kana" ] [ text char.kana ]
         , div [ class "label-name" ] [ text "名前" ]
         , div [ class "name" ] [ text char.name ]
         , div [ class "outer-line" ] []
