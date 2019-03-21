@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Json.Encode as E
+import Models.Character exposing (..)
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
@@ -12,12 +13,6 @@ import Utils.Terms as Terms
 
 
 port saveNewCharacter : String -> Cmd msg
-
-
-type alias Character =
-    { name : String
-    , kana : String
-    }
 
 
 type alias Model =
@@ -35,7 +30,7 @@ init =
 
 initModel : Model
 initModel =
-    Model Close (Character "" "")
+    Model Close initCharacter
 
 
 type Msg
@@ -71,15 +66,7 @@ update msg model =
             ( { model | character = c }, Cmd.none )
 
         Save ->
-            ( model, model.character |> encodeCharacter |> E.encode 0 |> saveNewCharacter )
-
-
-encodeCharacter : Character -> E.Value
-encodeCharacter c =
-    E.object
-        [ ( "name", E.string c.name )
-        , ( "kana", E.string c.kana )
-        ]
+            ( model, model.character |> encodeCharacter |> saveNewCharacter )
 
 
 view : Model -> Skeleton.Details Msg
