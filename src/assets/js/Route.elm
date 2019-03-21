@@ -1,12 +1,12 @@
 module Route exposing (Route(..), parse)
 
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, map, oneOf, s, string, top)
+import Url.Parser as Parser exposing ((</>), Parser, fragment, map, oneOf, s, string, top)
 
 
 type Route
     = Top
-    | RuleBook
+    | RuleBook (Maybe String)
     | PrivacyPolicy
     | About
     | GitHubUser String
@@ -22,7 +22,7 @@ parser : Parser (Route -> a) a
 parser =
     oneOf
         [ map Top top
-        , map RuleBook (s "rulebook")
+        , map RuleBook (s "rulebook" </> fragment identity)
         , map PrivacyPolicy (s "privacy-policy")
         , map About (s "about")
         , map GitHubUser string

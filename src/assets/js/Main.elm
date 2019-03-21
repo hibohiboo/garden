@@ -222,10 +222,10 @@ goTo maybeRoute model =
             , Cmd.map TopMsg cmd
             )
 
-        Just Route.RuleBook ->
+        Just (Route.RuleBook id) ->
             let
                 ( m, cmd ) =
-                    RuleBook.init
+                    RuleBook.init id
             in
             ( { model | page = RuleBookPage m }
             , Cmd.map RuleBookMsg cmd
