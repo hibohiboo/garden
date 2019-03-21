@@ -1,4 +1,4 @@
-module Page.Top exposing (Model, Msg, init, initModel, update, view)
+module Page.LoginUser exposing (Model, Msg, init, initModel, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -46,11 +46,11 @@ view model =
             getNavigationPageClass
                 model.naviState
     in
-    { title = "トップページ"
+    { title = "マイページ"
     , attrs = [ class naviClass ]
     , kids =
         [ viewMain viewTopPage
-        , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック", NavigationMenu "mypage" "マイページ" ]
+        , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック" ]
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
         ]
@@ -60,22 +60,6 @@ view model =
 viewTopPage : Html msg
 viewTopPage =
     div [ class "center" ]
-        [ div [ class "top-header" ]
-            [ div [] [ text Terms.trpgGenre ]
-            , h1 [] [ text "Garden" ]
-            , h2 [] [ text "～ 箱庭の島の子供たち ～" ]
-            , a [ class "top-image", href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.jpg" ] [] ]
-            ]
-        , p
-            [ class "content-doc" ]
-            [ text """
-ガーデンと呼ばれる絶海の孤島。
-その島は異形の子供たちの研究施設であった。
-ある日、見えない力が島を覆い、研究者たちは死に絶えた。
-残された子供たち。逃げ出した実験動物。倒壊した建物。
-彼らはこれからどのように生きるのか。
-""" ]
-        , ul []
-            [ li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールを読む" ] ]
-            ]
+        [ div [ id "firebaseui-auth-container" ] []
+        , div [ id "loader" ] [ text "Loading ..." ]
         ]

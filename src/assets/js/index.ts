@@ -1,6 +1,39 @@
 // import { Chart } from 'chart.js';
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
+import * as firebase from 'firebase';
+import * as firebaseui from 'firebaseui';
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
+
+const config = require('./_config'); // tslint:disable-line no-var-requires
+firebase.initializeApp(config);
+
+const uiConfig = {
+  signInSuccessUrl: '/',
+  signInOptions: [
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+  ],
+  callbacks: {
+    signInSuccessWithAuthResult(authResult, redirectUrl) {
+      // User successfully signed in.
+      return true;
+    },
+    uiShown() {
+      // The widget is rendered. Hide the loader.
+      const elm = document.getElementById('loader');
+      if (!elm) {
+        return;
+      }
+      elm.style.display = 'none';
+    },
+  },
+  // 利用規約。こことプライバシーポリシーのURLをhttps:// からのURLに変えると動かなくなることがある
+  tosUrl: '/agreement.html',
+  // プライバシーポリシー
+  privacyPolicyUrl() {
+    window.location.assign('/privacy-policy.html');
+  },
+};
+const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 // ローカルストレージに保存するためのキー
 const STORAGE_KEY = 'insaneHandouts';
@@ -16,23 +49,13 @@ const app = Elm.Main.init({ node: mountNode, flags });
 
 // elmのspa構築後に、dom要素に対してイベントを設定
 app.ports.initializedToJs.subscribe(() => {
-  // // ナビゲーションバーの表示/非表示を切り替える
-  // const pageElement = document.querySelector('.page')!;
-  // const naviButtons = document.querySelectorAll('.navi-btn')!;
-  // for (let i = 0, len = naviButtons.length; i < len; i++) {
-  //   const naviButton = naviButtons[i];
-  //   naviButton.addEventListener('click', () => {
-  //     pageElement.classList.toggle('open');
-  //   });
-  // }
 
 });
 
-// spaで画面遷移が起こった際にjsにイベントを伝える
-app.ports.urlChangeToJs.subscribe(() => {
-  // // ナビゲーションバーを非表示にする
-  // const pageElement = document.querySelector('.page')!;
-  // pageElement.classList.remove('open');
+// ログインページ遷移時にイベントを伝える
+app.ports.urlChangeToLoginPage.subscribe(() => {
+  ui.start('#firebaseui-auth-container', uiConfig);
+  console.log(ui);
 });
 
 // app.ports.initialize.subscribe(() => {

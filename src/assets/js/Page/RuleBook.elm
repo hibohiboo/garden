@@ -70,14 +70,14 @@ view model =
 
 tableOfContents : List ( String, String )
 tableOfContents =
-    [ ( "#first", "はじめに" ), ( "world", "ワールド" ) ]
+    [ ( "first", "はじめに" ), ( "world", "ワールド" ) ]
 
 
 viewRulebook : Html msg
 viewRulebook =
     div []
         [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ text "Garden 基本ルールブック" ] ]
-        , div [ class "content" ] [ first, world ]
+        , div [ class "content" ] [ first, world, character ]
         ]
 
 
@@ -192,4 +192,18 @@ A2地区の臨海部に建造された東西90km南北40km程度の実験都市�
 崩壊の日を起こした者を解放の勇者だと崇めて探しだそうとする勇者探索派。
 さらに、外部からも介入が入り始めている。
 """ ]
+        ]
+
+
+character : Html msg
+character =
+    section [ id "character" ]
+        [ h1 []
+            [ text "キャラクター" ]
+        , p
+            [ class "content-doc" ]
+            [ text """
+プレイヤーの分身であるキャラクター（以下、PC)は、特異な力を持つ子供となる。
+""" ]
+        , commonRule
         ]

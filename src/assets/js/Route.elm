@@ -11,6 +11,7 @@ type Route
     | About
     | GitHubUser String
     | Repo String String
+    | LoginUser
 
 
 parse : Url -> Maybe Route
@@ -25,6 +26,7 @@ parser =
         , map RuleBook (s "rulebook" </> fragment identity)
         , map PrivacyPolicy (s "privacy-policy")
         , map About (s "about")
+        , map LoginUser (s "mypage")
         , map GitHubUser string
         , map Repo (string </> string)
         ]

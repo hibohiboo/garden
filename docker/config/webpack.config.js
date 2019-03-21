@@ -99,6 +99,8 @@ const common = {
   externals: {
     jquery: 'jQuery',
     'chart.js': 'Chart',
+    firebase: 'firebase',
+    firebaseui: 'firebaseui'
   },
 };
 

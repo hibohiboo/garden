@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Page.GitHubUser exposing (..)
+import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.Problem as Problem
 import Page.Repo exposing (..)
@@ -30,6 +31,13 @@ port initializedToJs : () -> Cmd msg
 
 
 port urlChangeToJs : () -> Cmd msg
+
+
+
+-- ログインページへの遷移
+
+
+port urlChangeToLoginPage : () -> Cmd msg
 
 
 
@@ -66,6 +74,7 @@ type Page
     | RepoPage Page.Repo.Model
     | MarkdownPage Markdown.Model
     | RuleBookPage RuleBook.Model
+    | LoginUserPage Page.LoginUser.Model
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -97,6 +106,7 @@ type Msg
     | MarkdownMsg Markdown.Msg
     | TopMsg Page.Top.Msg
     | RuleBookMsg RuleBook.Msg
+    | LoginUserMsg Page.LoginUser.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -200,6 +210,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        LoginUserMsg rmsg ->
+            case model.page of
+                LoginUserPage rmodel ->
+                    let
+                        ( newmodel, newmsg ) =
+                            Page.LoginUser.update rmsg rmodel
+                    in
+                    ( { model | page = LoginUserPage newmodel }, Cmd.map LoginUserMsg newmsg )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -247,6 +269,15 @@ goTo maybeRoute model =
             in
             ( { model | page = MarkdownPage markdownModel }
             , Cmd.map MarkdownMsg markdownCmd
+            )
+
+        Just Route.LoginUser ->
+            let
+                ( m, cmd ) =
+                    Page.LoginUser.init
+            in
+            ( { model | page = LoginUserPage m }
+            , Cmd.batch [ Cmd.map LoginUserMsg cmd, urlChangeToLoginPage () ]
             )
 
         Just (Route.GitHubUser gitHubUserName) ->
@@ -310,6 +341,9 @@ view model =
                 (Markdown.view
                     markdownModel
                 )
+
+        LoginUserPage m ->
+            Skeleton.view LoginUserMsg (Page.LoginUser.view m)
 
         _ ->
             { title = "Garden - 箱庭の島の子供たち"
