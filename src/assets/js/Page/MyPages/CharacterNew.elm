@@ -104,7 +104,7 @@ karte model =
             model.character
     in
     div [ class "karte" ]
-        [ div [ class "label-personal" ] [ text "異能因子発現個体" ]
+        [ div [ class "label-personal" ] [ text "個体識別用情報" ]
         , div [ class "label-kana" ] [ text "フリガナ" ]
         , div [ class "kana" ] [ text char.kana ]
         , div [ class "label-name" ] [ text "名前" ]

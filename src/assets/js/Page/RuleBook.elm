@@ -82,7 +82,7 @@ viewNavi menues =
             List.map
                 (\menu ->
                     li []
-                        [ a [ href "#", onClick (PageAnchor menu.src) ] [ text menu.text ]
+                        [ a [ onClick (PageAnchor menu.src) ] [ text menu.text ]
                         ]
                 )
                 menues
