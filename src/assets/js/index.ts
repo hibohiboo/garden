@@ -101,12 +101,36 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // });
     // Add a new document with a generated id. 先にidを作って
     const usersRef = db.collection("users");
+    const query = usersRef.where("uid", "==", user.uid);
 
-    const newUserRef = usersRef.doc();
-    // 後からデータをセットする
-    newUserRef.set({ uid: user.uid, displayName: user.displayName });
-    // const query = usersRef.where("uid", "==", user.uid);
-    // query.get().then(function (doc) {
+    query.get().then(function (querySnapshot) {
+      if (querySnapshot.size === 0) {
+        // データが取得できなければユーザを追加
+        const newUserRef = usersRef.doc();
+        newUserRef.set({
+          uid: user!.uid
+          , displayName: user!.displayName
+          , createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          , updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return;
+      }
+      querySnapshot.forEach(function (doc) {
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+
+        // 更新日時を更新する
+        doc.ref.update({
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+      });
+    })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+
+    // then(function (doc) {
     //   if (doc.exists) {
     //     console.log("Document data:", doc.data());
     //   } else {
@@ -115,7 +139,13 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     //   }
     // }).catch(function (error) {
     //   console.log("Error getting document:", error);
-
+    //   // データが取得できなければユーザを追加
+    //   const newUserRef = usersRef.doc();
+    //   // 後からデータをセットする
+    //   newUserRef.set({
+    //     uid: user!.uid,
+    //     displayName: user!.displayName
+    //   });
     // });
 
     // サインイン情報を伝える。
