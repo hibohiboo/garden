@@ -84,7 +84,7 @@ const viewLoginPage = () => {
 
 // ログインページ遷移時にElmからイベントを取得
 app.ports.urlChangeToLoginPage.subscribe(() => {
-  auth.onAuthStateChanged((firebaseUser) => {
+  auth.onAuthStateChanged(async (firebaseUser) => {
     let user: User | null = null;
     if (firebaseUser === null) {
       viewLoginPage();
@@ -95,7 +95,7 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
     // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
 
-    const json = JSON.stringify(user);
+
     // console.log('firebaseuser', firebaseUser);
 
     // usersコレクションへの参照を取得
@@ -104,37 +104,44 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // usersコレクションからログインユーザの情報を取得する条件を設定
     const query = usersRef.where("uid", "==", user.uid);
 
+    // データベースのユーザ情報
+    let dbuser;
+
     // ユーザを取得
-    query.get().then(function (querySnapshot) {
-      if (querySnapshot.size === 0) {
-        // 取得できなければユーザを追加
-        userRef = usersRef.doc();
-        userRef.set({
-          uid: user!.uid
-          , maxCharacter: 5
-          , displayName: user!.displayName
-          , createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          , updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        return;
-      }
-      querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
-        // console.log(doc.id, " => ", doc.data());
-        // ユーザ情報取得
-        userRef = doc.ref;
+    const querySnapshot = await query.get();
 
-        // 更新日時を更新する
-        userRef.update({
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+    await querySnapshot.forEach(function (doc) {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      // ユーザ情報取得
+      userRef = doc.ref;
+      dbuser = doc.data();
 
+      // 更新日時を更新する
+      userRef.update({
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    })
-      .catch(function (error) {
-        console.log("Error getting documents: ", error);
-      });
+    });
 
+    if (querySnapshot.size === 0) {
+      // 取得できなければユーザを追加
+      userRef = usersRef.doc();
+      dbuser = {
+        uid: user!.uid
+        , maxCharacter: 5
+        , displayName: user!.displayName
+        , createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        , updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      userRef.set(dbuser);
+    }
+    // console.log(dbuser)
+
+    const json = JSON.stringify({
+      uid: dbuser.uid
+      , displayName: dbuser.displayName
+    });
+    // console.log(json)
     // サインイン情報を伝える。
     app.ports.signedIn.send(json);
   });
@@ -150,7 +157,7 @@ app.ports.signOut.subscribe(() => {
 
 // キャラクター新規作成
 app.ports.saveNewCharacter.subscribe(json => {
-  console.log('add', json);
+
   if (userRef === undefined) {
     alert('セッションが切れました。申し訳ないですが、もう一度ログインしなおしてください。');
     location.href = '/mypage/';
