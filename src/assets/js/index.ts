@@ -30,6 +30,9 @@ const mountNode: HTMLElement = document.getElementById('main')!;
 // 前回値を初期値として与える
 const app = Elm.Main.init({ node: mountNode, flags });
 
+// DBのユーザ情報。
+let userRef; // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
+
 // elmのspa構築後に、dom要素に対してイベントを設定
 app.ports.initializedToJs.subscribe(() => {
   // elmの構築したDOMにmaterializeを適用
@@ -94,21 +97,21 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
 
     const json = JSON.stringify(user);
     // console.log('firebaseuser', firebaseUser);
-    // Add a new document in collection "cities"
-    // ユーザをDBに追加。
-    // db.collection("users").add(user).then(function (docRef) {
-    //   console.log("Document written with ID: ", docRef.id);
-    // });
-    // Add a new document with a generated id. 先にidを作って
+
+    // usersコレクションへの参照を取得
     const usersRef = db.collection("users");
+
+    // usersコレクションからログインユーザの情報を取得する条件を設定
     const query = usersRef.where("uid", "==", user.uid);
 
+    // ユーザを取得
     query.get().then(function (querySnapshot) {
       if (querySnapshot.size === 0) {
-        // データが取得できなければユーザを追加
-        const newUserRef = usersRef.doc();
-        newUserRef.set({
+        // 取得できなければユーザを追加
+        userRef = usersRef.doc();
+        userRef.set({
           uid: user!.uid
+          , maxCharacter: 5
           , displayName: user!.displayName
           , createdAt: firebase.firestore.FieldValue.serverTimestamp()
           , updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -118,9 +121,11 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       querySnapshot.forEach(function (doc) {
         // doc.data() is never undefined for query doc snapshots
         // console.log(doc.id, " => ", doc.data());
+        // ユーザ情報取得
+        userRef = doc.ref;
 
         // 更新日時を更新する
-        doc.ref.update({
+        userRef.update({
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -129,24 +134,6 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       .catch(function (error) {
         console.log("Error getting documents: ", error);
       });
-
-    // then(function (doc) {
-    //   if (doc.exists) {
-    //     console.log("Document data:", doc.data());
-    //   } else {
-    //     // doc.data() will be undefined in this case
-    //     console.log("No such document!");
-    //   }
-    // }).catch(function (error) {
-    //   console.log("Error getting document:", error);
-    //   // データが取得できなければユーザを追加
-    //   const newUserRef = usersRef.doc();
-    //   // 後からデータをセットする
-    //   newUserRef.set({
-    //     uid: user!.uid,
-    //     displayName: user!.displayName
-    //   });
-    // });
 
     // サインイン情報を伝える。
     app.ports.signedIn.send(json);
@@ -164,7 +151,14 @@ app.ports.signOut.subscribe(() => {
 // キャラクター新規作成
 app.ports.saveNewCharacter.subscribe(json => {
   console.log('add', json);
-
+  if (userRef === undefined) {
+    alert('セッションが切れました。申し訳ないですが、もう一度ログインしなおしてください。');
+    location.href = '/mypage/';
+  }
+  const data = JSON.parse(json);
+  data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+  data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+  userRef.collection('characters').add(data);
 });
 
 // app.ports.initialize.subscribe(() => {
