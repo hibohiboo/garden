@@ -1,21 +1,22 @@
 // import { Chart } from 'chart.js';
-import * as firebase from 'firebase';
-import * as firebaseui from 'firebaseui';
+// import * as firebase from 'firebase';
+// import * as firebaseui from 'firebaseui';
+import FireBaseBackEnd from './FireBaseBackEnd';
 import * as M from 'M'; //  tslint-disable-line
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import User from './User';
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
 
-const config = require('./_config'); // tslint:disable-line no-var-requires
+// const config = require('./_config'); // tslint:disable-line no-var-requires
 
 // firebase使用準備
-firebase.initializeApp(config);
-
+// firebase.initializeApp(config);
+const fireBase = new FireBaseBackEnd();
 // firebase認証準備
-const auth = firebase.auth();
+const auth = fireBase.auth;;
 
 // firestore使用準備
-const db = firebase.firestore();
+const db = fireBase.db;
 
 // // ローカルストレージに保存するためのキー
 // const STORAGE_KEY = 'insaneHandouts';
@@ -47,39 +48,7 @@ app.ports.urlChangeToJs.subscribe(() => {
 
 // ログインが必要なときにfirebaseuiを使って要素を準備する
 const viewLoginPage = () => {
-  const uiConfig = {
-    signInSuccessUrl: '/mypage', // ログイン成功時の遷移先
-    signInOptions: [
-      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    ],
-    callbacks: {
-      signInSuccessWithAuthResult(authResult, redirectUrl) {
-        // User successfully signed in.
-        return true;
-      },
-      uiShown() {
-        // The widget is rendered. Hide the loader.
-        const elm = document.getElementById('loader');
-        if (!elm) {
-          return;
-        }
-        elm.style.display = 'none';
-      },
-    },
-    // 利用規約。こことプライバシーポリシーのURLをhttps:// からのURLに変えると動かなくなることがある
-    tosUrl: '/agreement',
-    // プライバシーポリシー
-    privacyPolicyUrl() {
-      window.location.assign('/privacy-policy');
-    },
-  };
-  try {
-    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
-    ui.start('#firebaseui-auth-container', uiConfig);
-  } catch (e) {
-    // 2回目に読み込んだ時に、elmと競合してfirebaseui-auth-containerの要素が取得できなくなるので、再読み込み
-    location.reload();
-  }
+
 };
 
 // ログインページ遷移時にElmからイベントを取得
@@ -119,7 +88,7 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
 
       // 更新日時を更新する
       userRef.update({
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        updatedAt: fireBase.getTimestamp()
       });
     });
 
@@ -130,8 +99,8 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
         uid: user!.uid
         , maxCharacter: 5
         , displayName: user!.displayName
-        , createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        , updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        , createdAt: fireBase.getTimestamp()
+        , updatedAt: fireBase.getTimestamp()
       };
       userRef.set(dbuser);
     }
@@ -163,8 +132,8 @@ app.ports.saveNewCharacter.subscribe(json => {
     location.href = '/mypage/';
   }
   const data = JSON.parse(json);
-  data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-  data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+  data.createdAt = fireBase.getTimestamp();
+  data.updatedAt = fireBase.getTimestamp();
   userRef.collection('characters').add(data);
 });
 
