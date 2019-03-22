@@ -72,9 +72,15 @@
 [elm spa][*3]  
 [elm http][*4]
 [キャラの魅力][*5]
+[0から始める Firestore + Firebase Authentication][*6]
+[Firestore で、DB設計を考える際に参考になった情報][*7]
+[Cloud Firestoreの勘所 パート2 — データ設計][*8]
 
 [*1]:https://github.com/simonh1000/elm-webpack-starter/blob/master/package.json
 [*2]:https://github.com/elm/package.elm-lang.org
 [*3]:https://github.com/rtfeldman/elm-spa-example
 [*4]:https://qiita.com/ababup1192/items/b03fce202e1018bc4992
 [*5]:https://twitter.com/burumakun/status/1106858891856343040
+[*6]:https://qiita.com/KarageAgeta/items/0996c8f0ea219c284dbd
+[*7]:https://qiita.com/samuraikun/items/dfe7d1081f62359b0dcd
+[*8]:https://medium.com/google-cloud-jp/firestore2-920ac799345c

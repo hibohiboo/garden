@@ -93,7 +93,30 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
 
     const json = JSON.stringify(user);
-    console.log('firebaseuser', firebaseUser);
+    // console.log('firebaseuser', firebaseUser);
+    // Add a new document in collection "cities"
+    // ユーザをDBに追加。
+    // db.collection("users").add(user).then(function (docRef) {
+    //   console.log("Document written with ID: ", docRef.id);
+    // });
+    // Add a new document with a generated id. 先にidを作って
+    const usersRef = db.collection("users");
+
+    const newUserRef = usersRef.doc();
+    // 後からデータをセットする
+    newUserRef.set({ uid: user.uid, displayName: user.displayName });
+    // const query = usersRef.where("uid", "==", user.uid);
+    // query.get().then(function (doc) {
+    //   if (doc.exists) {
+    //     console.log("Document data:", doc.data());
+    //   } else {
+    //     // doc.data() will be undefined in this case
+    //     console.log("No such document!");
+    //   }
+    // }).catch(function (error) {
+    //   console.log("Error getting document:", error);
+
+    // });
 
     // サインイン情報を伝える。
     app.ports.signedIn.send(json);
@@ -110,7 +133,8 @@ app.ports.signOut.subscribe(() => {
 
 // キャラクター新規作成
 app.ports.saveNewCharacter.subscribe(json => {
-  console.log('add', json)
+  console.log('add', json);
+
 });
 
 // app.ports.initialize.subscribe(() => {
