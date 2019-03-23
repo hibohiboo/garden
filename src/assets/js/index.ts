@@ -148,8 +148,11 @@ app.ports.saveNewCharacter.subscribe(json => {
 });
 
 // キャラクター情報取得
-app.ports.getCharacter.subscribe(id => {
-  console.log(id);
+app.ports.getCharacter.subscribe(async id => {
+  const characterRef = await db.collection("characters").doc(id).get();
+  const character = characterRef.data();
+
+  console.log(character);
   app.ports.gotCharacter.send('test');
 });
 
