@@ -40,13 +40,6 @@ port urlChangeToLoginPage : () -> Cmd msg
 
 
 
--- サインイン成功メッセージ
-
-
-port signedIn : (String -> msg) -> Sub msg
-
-
-
 -- MAIN
 
 
@@ -110,7 +103,6 @@ type Msg
     | TopMsg Page.Top.Msg
     | RuleBookMsg RuleBook.Msg
     | LoginUserMsg Page.LoginUser.Msg
-    | SignedIn String
     | CharacterNewMsg CharacterNew.Msg
 
 
@@ -195,18 +187,6 @@ update msg model =
                             Page.LoginUser.update rmsg rmodel
                     in
                     ( { model | page = LoginUserPage newmodel }, Cmd.map LoginUserMsg newmsg )
-
-                _ ->
-                    ( model, Cmd.none )
-
-        SignedIn json ->
-            case model.page of
-                LoginUserPage rmodel ->
-                    let
-                        ( newmodel, newmsg ) =
-                            Page.LoginUser.update (Page.LoginUser.SignedIn json) rmodel
-                    in
-                    ( { model | page = LoginUserPage newmodel }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
@@ -306,7 +286,7 @@ goTo maybeRoute model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    signedIn SignedIn
+    Sub.map LoginUserMsg Page.LoginUser.subscriptions
 
 
 

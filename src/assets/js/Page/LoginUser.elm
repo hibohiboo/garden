@@ -1,4 +1,4 @@
-port module Page.LoginUser exposing (Model, Msg(..), init, initModel, update, view)
+port module Page.LoginUser exposing (Model, Msg(..), init, initModel, subscriptions, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -12,6 +12,18 @@ import Utils.Terms as Terms
 
 
 port signOut : () -> Cmd msg
+
+
+
+-- サインイン成功メッセージ
+
+
+port signedIn : (String -> msg) -> Sub msg
+
+
+subscriptions : Sub Msg
+subscriptions =
+    signedIn SignedIn
 
 
 type alias Model =
