@@ -1,4 +1,4 @@
-port module Page.MyPages.CharacterUpdate exposing (Model, Msg, init, initModel, update, view)
+port module Page.MyPages.CharacterUpdate exposing (Model, Msg, init, initModel, subscriptions, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -19,6 +19,13 @@ port getCharacter : String -> Cmd msg
 
 
 port gotCharacter : (String -> msg) -> Sub msg
+
+
+subscriptions : Sub Msg
+subscriptions =
+    Sub.batch
+        [ gotCharacter GotCharacter
+        ]
 
 
 type alias Model =
@@ -44,6 +51,7 @@ type Msg
     = ToggleNavigation
     | EditorMsg CharacterEditor.Msg
     | Save
+    | GotCharacter String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -62,6 +70,16 @@ update msg model =
 
         Save ->
             ( model, model.character |> encodeCharacter |> updateCharacter )
+
+        GotCharacter name ->
+            let
+                m =
+                    model.character
+
+                newModel =
+                    { m | name = name }
+            in
+            ( { model | character = newModel }, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg

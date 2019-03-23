@@ -150,6 +150,7 @@ app.ports.saveNewCharacter.subscribe(json => {
 // キャラクター情報取得
 app.ports.getCharacter.subscribe(id => {
   console.log(id);
+  app.ports.gotCharacter.send('test');
 });
 
 // app.ports.initialize.subscribe(() => {

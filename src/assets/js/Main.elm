@@ -310,7 +310,10 @@ goTo maybeRoute model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.map LoginUserMsg Page.LoginUser.subscriptions
+    Sub.batch
+        [ Sub.map LoginUserMsg Page.LoginUser.subscriptions
+        , Sub.map CharacterUpdateMsg CharacterUpdate.subscriptions
+        ]
 
 
 
