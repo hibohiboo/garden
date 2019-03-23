@@ -118,8 +118,8 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       , name: "なまえ"
     },
     {
-      kana: "かな"
-      , name: "なまえ２"
+      kana: ""
+      , name: ""
     }]);
 
     app.ports.getCharacters.send(testJson);

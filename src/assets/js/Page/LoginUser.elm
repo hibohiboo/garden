@@ -146,17 +146,21 @@ myPage user characters =
 characterListWrapper characters =
     div [ class "row" ]
         [ div [ class "col m6 s12" ]
-            (List.map characterList characters)
+            [ characterList characters ]
         ]
 
 
-characterList char =
+characterList characters =
     div [ class "collection with-header" ]
-        [ div [ class "collection-header" ] [ text "作成したPC一覧" ]
-        , div [ class "collection-item" ]
-            [ text char.name
-            , a [ class "secondary-content btn-floating btn-small waves-effect waves-light red" ]
-                [ i [ class "material-icons" ] [ text "edit" ]
-                ]
+        (div [ class "collection-header" ] [ text "作成したPC一覧" ]
+            :: List.map characterListItem characters
+        )
+
+
+characterListItem char =
+    div [ class "collection-item" ]
+        [ text char.name
+        , a [ class "secondary-content btn-floating btn-small waves-effect waves-light red" ]
+            [ i [ class "material-icons" ] [ text "edit" ]
             ]
         ]
