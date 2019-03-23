@@ -75,7 +75,7 @@
 [0から始める Firestore + Firebase Authentication][*6]
 [Firestore で、DB設計を考える際に参考になった情報][*7]
 [Cloud Firestoreの勘所 パート2 — データ設計][*8]
-[][*9]
+[Cloud Functions for Firebaseが最高だった話][*9]
 
 [*1]:https://github.com/simonh1000/elm-webpack-starter/blob/master/package.json
 [*2]:https://github.com/elm/package.elm-lang.org
