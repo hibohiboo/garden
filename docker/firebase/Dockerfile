@@ -17,3 +17,6 @@ COPY functions /app/functions
 
 # functions用のモジュールをインストールしておく。
 RUN cd /app/functions && NODE_ENV=development npm install -y
+
+# ローカルでfunctionを実行するために必要
+RUN yarn global add @google-cloud/functions-emulator --ignore-engines
