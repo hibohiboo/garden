@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D
+import Models.Character exposing (..)
 import Page.MyPages.User exposing (..)
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -32,7 +33,7 @@ subscriptions =
 type alias Model =
     { naviState : NaviState
     , user : Maybe User
-    , characters : List Int
+    , characters : List Character
     }
 
 
@@ -73,7 +74,7 @@ update msg model =
             ( model, signOut () )
 
         GotCharacters s ->
-            case D.decodeString (D.list D.int) s of
+            case D.decodeString (D.list characterDecoder) s of
                 Err a ->
                     ( model, Cmd.none )
 

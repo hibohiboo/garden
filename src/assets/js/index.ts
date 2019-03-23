@@ -113,8 +113,16 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // console.log(json)
     // サインイン情報を伝える。
     app.ports.signedIn.send(json);
+    const testJson = JSON.stringify([{
+      kana: "kana"
+      , name: "なまえ"
+    },
+    {
+      kana: "かな"
+      , name: "なまえ２"
+    }]);
 
-    app.ports.getCharacters.send("[1,2,3]");
+    app.ports.getCharacters.send(testJson);
   });
 });
 
