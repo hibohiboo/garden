@@ -76,6 +76,7 @@
 [Firestore で、DB設計を考える際に参考になった情報][*7]
 [Cloud Firestoreの勘所 パート2 — データ設計][*8]
 [Cloud Functions for Firebaseが最高だった話][*9]
+[10000行超のElmを書いて見つけたベストプラクティス][*10]
 
 [*1]:https://github.com/simonh1000/elm-webpack-starter/blob/master/package.json
 [*2]:https://github.com/elm/package.elm-lang.org
@@ -86,3 +87,4 @@
 [*7]:https://qiita.com/samuraikun/items/dfe7d1081f62359b0dcd
 [*8]:https://medium.com/google-cloud-jp/firestore2-920ac799345c
 [*9]:https://qiita.com/HALU5071/items/e43729ac5b06b0506fbe
+[*10]:http://jinjor-labo.hatenablog.com/entry/2016/12/04/002210

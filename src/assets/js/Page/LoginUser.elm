@@ -3,6 +3,7 @@ port module Page.LoginUser exposing (Model, Msg(..), init, initModel, subscripti
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Json.Decode as D
 import Page.MyPages.User exposing (..)
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -14,21 +15,24 @@ import Utils.Terms as Terms
 port signOut : () -> Cmd msg
 
 
-
--- サインイン成功メッセージ
-
-
 port signedIn : (String -> msg) -> Sub msg
+
+
+port getCharacters : (String -> msg) -> Sub msg
 
 
 subscriptions : Sub Msg
 subscriptions =
-    signedIn SignedIn
+    Sub.batch
+        [ signedIn SignedIn
+        , getCharacters GotCharacters
+        ]
 
 
 type alias Model =
     { naviState : NaviState
     , user : Maybe User
+    , characters : List Int
     }
 
 
@@ -41,13 +45,14 @@ init =
 
 initModel : Model
 initModel =
-    Model Close Nothing
+    Model Close Nothing []
 
 
 type Msg
     = ToggleNavigation
     | SignedIn String
     | SignOut
+    | GotCharacters String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -66,6 +71,18 @@ update msg model =
 
         SignOut ->
             ( model, signOut () )
+
+        GotCharacters s ->
+            case D.decodeString (D.list D.int) s of
+                Err a ->
+                    ( model, Cmd.none )
+
+                Ok char ->
+                    let
+                        _ =
+                            Debug.log "decodeChar" char
+                    in
+                    ( { model | characters = char }, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg

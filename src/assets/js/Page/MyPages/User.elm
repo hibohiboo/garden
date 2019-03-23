@@ -1,17 +1,19 @@
 module Page.MyPages.User exposing (User, decodeUserFromString)
+
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
-import Json.Decode.Pipeline exposing (required, optional, hardcoded)
+import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import Json.Encode as E
+
+
 type alias User =
     { uid : String
     , displayName : String
     }
 
 
-
-
 decodeUserFromString : String -> Maybe User
-decodeUserFromString json = decodeUserFromJson (E.string json)
+decodeUserFromString json =
+    decodeUserFromJson (E.string json)
 
 
 decodeUserFromJson : Value -> Maybe User
@@ -24,6 +26,8 @@ decodeUserFromJson json =
         |> Decode.decodeValue Decode.string
         |> Result.toMaybe
         |> Maybe.andThen (Decode.decodeString decoder >> Result.toMaybe)
+
+
 decoder : Decoder User
 decoder =
     Decode.succeed User

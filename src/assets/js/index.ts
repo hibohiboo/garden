@@ -113,6 +113,8 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // console.log(json)
     // サインイン情報を伝える。
     app.ports.signedIn.send(json);
+
+    app.ports.getCharacters.send("[1,2,3]");
   });
 });
 
