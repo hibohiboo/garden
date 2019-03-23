@@ -115,8 +115,31 @@ myPage user =
     div [ class "mypage" ]
         [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
         , button [ class "signout-button", onClick SignOut, type_ "button" ] [ span [] [ text "サインアウト" ] ]
-        , a [ href (Url.Builder.absolute [ "mypage", "character", "new" ] []), class "waves-effect waves-light btn", style "width" "250px" ]
-            [ i [ class "small material-icons" ] [ text "add" ]
-            , text "キャラクター新規作成"
+        , div [ class "character-area" ]
+            [ a [ href (Url.Builder.absolute [ "mypage", "character", "new" ] []), class "waves-effect waves-light btn", style "width" "250px" ]
+                [ i [ class "small material-icons" ] [ text "add" ]
+                , text "キャラクター新規作成"
+                ]
+            , characterListWrapper
+            ]
+        ]
+
+
+characterListWrapper =
+    div [ class "row" ]
+        [ div [ class "col m6 s12" ]
+            [ characterList
+            ]
+        ]
+
+
+characterList =
+    div [ class "collection with-header" ]
+        [ div [ class "collection-header" ] [ text "作成したPC一覧" ]
+        , div [ class "collection-item" ]
+            [ text "キャラクター名"
+            , a [ class "secondary-content btn-floating btn-small waves-effect waves-light red" ]
+                [ i [ class "material-icons" ] [ text "edit" ]
+                ]
             ]
         ]
