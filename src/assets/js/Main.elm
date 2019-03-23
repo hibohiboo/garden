@@ -9,6 +9,7 @@ import Http
 import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterNew as CharacterNew
+import Page.MyPages.CharacterUpdate as CharacterUpdate
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
 import Page.Top
@@ -73,6 +74,7 @@ type Page
     | RuleBookPage RuleBook.Model
     | LoginUserPage Page.LoginUser.Model
     | CharacterNewPage CharacterNew.Model
+    | CharacterUpdatePage CharacterUpdate.Model
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -104,6 +106,7 @@ type Msg
     | RuleBookMsg RuleBook.Msg
     | LoginUserMsg Page.LoginUser.Msg
     | CharacterNewMsg CharacterNew.Msg
+    | CharacterUpdateMsg CharacterUpdate.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -203,6 +206,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        CharacterUpdateMsg ms ->
+            case model.page of
+                CharacterUpdatePage rmodel ->
+                    let
+                        ( newmodel, newmsg ) =
+                            CharacterUpdate.update ms rmodel
+                    in
+                    ( { model | page = CharacterUpdatePage newmodel }, Cmd.map CharacterUpdateMsg newmsg )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 {- パスに応じて各ページを初期化する -}
@@ -279,6 +294,15 @@ goTo maybeRoute model =
             , Cmd.map CharacterNewMsg cmd
             )
 
+        Just (Route.CharacterUpdate s) ->
+            let
+                ( m, cmd ) =
+                    CharacterUpdate.init
+            in
+            ( { model | page = CharacterUpdatePage m }
+            , Cmd.map CharacterUpdateMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -333,6 +357,9 @@ view model =
 
         CharacterNewPage m ->
             Skeleton.view CharacterNewMsg (CharacterNew.view m)
+
+        CharacterUpdatePage m ->
+            Skeleton.view CharacterUpdateMsg (CharacterUpdate.view m)
 
 
 {-| NotFound ページ
