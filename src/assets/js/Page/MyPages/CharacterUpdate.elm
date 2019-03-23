@@ -15,22 +15,29 @@ import Utils.Terms as Terms
 port updateCharacter : String -> Cmd msg
 
 
+port getCharacter : String -> Cmd msg
+
+
+port gotCharacter : (String -> msg) -> Sub msg
+
+
 type alias Model =
     { naviState : NaviState
     , character : Character
+    , characterId : String
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initModel
-    , Cmd.none
+init : String -> ( Model, Cmd Msg )
+init id =
+    ( initModel id
+    , Cmd.batch [ getCharacter id ]
     )
 
 
-initModel : Model
-initModel =
-    Model Close initCharacter
+initModel : String -> Model
+initModel id =
+    Model Close initCharacter id
 
 
 type Msg

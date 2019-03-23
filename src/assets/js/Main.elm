@@ -294,10 +294,10 @@ goTo maybeRoute model =
             , Cmd.map CharacterNewMsg cmd
             )
 
-        Just (Route.CharacterUpdate s) ->
+        Just (Route.CharacterUpdate id) ->
             let
                 ( m, cmd ) =
-                    CharacterUpdate.init
+                    CharacterUpdate.init id
             in
             ( { model | page = CharacterUpdatePage m }
             , Cmd.map CharacterUpdateMsg cmd

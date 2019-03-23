@@ -147,6 +147,11 @@ app.ports.saveNewCharacter.subscribe(json => {
   userRef.collection('characters').add(data);
 });
 
+// キャラクター情報取得
+app.ports.getCharacter.subscribe(id => {
+  console.log(id);
+});
+
 // app.ports.initialize.subscribe(() => {
 // });
 // app.ports.toJs.subscribe((data: string) => {
