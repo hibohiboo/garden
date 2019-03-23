@@ -112,7 +112,7 @@ viewMainPage model =
             loginPage
 
         Just user ->
-            myPage user
+            myPage user model.characters
 
 
 loginPage : Html msg
@@ -128,8 +128,8 @@ loginPage =
         ]
 
 
-myPage : User -> Html Msg
-myPage user =
+myPage : User -> List Character -> Html Msg
+myPage user characters =
     div [ class "mypage" ]
         [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
         , button [ class "signout-button", onClick SignOut, type_ "button" ] [ span [] [ text "サインアウト" ] ]
@@ -138,24 +138,23 @@ myPage user =
                 [ i [ class "small material-icons" ] [ text "add" ]
                 , text "キャラクター新規作成"
                 ]
-            , characterListWrapper
+            , characterListWrapper characters
             ]
         ]
 
 
-characterListWrapper =
+characterListWrapper characters =
     div [ class "row" ]
         [ div [ class "col m6 s12" ]
-            [ characterList
-            ]
+            (List.map characterList characters)
         ]
 
 
-characterList =
+characterList char =
     div [ class "collection with-header" ]
         [ div [ class "collection-header" ] [ text "作成したPC一覧" ]
         , div [ class "collection-item" ]
-            [ text "キャラクター名"
+            [ text char.name
             , a [ class "secondary-content btn-floating btn-small waves-effect waves-light red" ]
                 [ i [ class "material-icons" ] [ text "edit" ]
                 ]
