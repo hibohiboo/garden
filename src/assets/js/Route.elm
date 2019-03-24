@@ -11,7 +11,7 @@ type Route
     | About
     | Agreement
     | LoginUser
-    | CharacterNew
+    | CharacterCreate String
     | CharacterUpdate String
 
 
@@ -29,7 +29,7 @@ parser =
         , map Agreement (s "agreement")
         , map About (s "about")
         , map LoginUser (s "mypage")
-        , map CharacterNew (s "mypage" </> s "character" </> s "new")
+        , map CharacterCreate (s "mypage" </> s "character" </> s "create" </> string)
         , map CharacterUpdate (s "mypage" </> s "character" </> s "edit" </> string)
 
         -- , map GitHubUser string

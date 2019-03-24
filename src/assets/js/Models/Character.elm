@@ -6,14 +6,16 @@ import Json.Encode as E
 
 
 type alias Character =
-    { name : String
+    { storeUserId : String
+    , characterId : String
+    , name : String
     , kana : String
     }
 
 
-initCharacter : Character
-initCharacter =
-    Character "" ""
+initCharacter : String -> Character
+initCharacter storeUserId =
+    Character storeUserId "" "" ""
 
 
 encodeCharacter : Character -> String
@@ -25,7 +27,9 @@ encodeCharacter c =
 encodeCharacterToValue : Character -> E.Value
 encodeCharacterToValue c =
     E.object
-        [ ( "name", E.string c.name )
+        [ ( "storeUserId", E.string c.storeUserId )
+        , ( "characterId", E.string c.characterId )
+        , ( "name", E.string c.name )
         , ( "kana", E.string c.kana )
         ]
 
@@ -33,5 +37,7 @@ encodeCharacterToValue c =
 characterDecoder : Decoder Character
 characterDecoder =
     Decode.succeed Character
+        |> Json.Decode.Pipeline.required "storeUserId" Decode.string
+        |> Json.Decode.Pipeline.required "characterId" Decode.string
         |> Json.Decode.Pipeline.required "name" Decode.string
         |> Json.Decode.Pipeline.required "kana" Decode.string

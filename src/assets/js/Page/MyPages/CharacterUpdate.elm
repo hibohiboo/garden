@@ -44,7 +44,7 @@ init id =
 
 initModel : String -> Model
 initModel id =
-    Model Close initCharacter id
+    Model Close (initCharacter "") id
 
 
 type Msg

@@ -137,7 +137,7 @@ myPage user characters =
         [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
         , button [ class "signout-button", onClick SignOut, type_ "button" ] [ span [] [ text "サインアウト" ] ]
         , div [ class "character-area" ]
-            [ a [ href (Url.Builder.absolute [ "mypage", "character", "new" ] []), class "waves-effect waves-light btn", style "width" "250px" ]
+            [ a [ href (Url.Builder.absolute [ "mypage", "character", "create", user.storeUserId ] []), class "waves-effect waves-light btn", style "width" "250px" ]
                 [ i [ class "small material-icons" ] [ text "add" ]
                 , text "キャラクター新規作成"
                 ]

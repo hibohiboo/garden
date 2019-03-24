@@ -8,7 +8,7 @@ import Html.Attributes exposing (..)
 import Http
 import Page.LoginUser
 import Page.Markdown as Markdown
-import Page.MyPages.CharacterNew as CharacterNew
+import Page.MyPages.CharacterCreate as CharacterCreate
 import Page.MyPages.CharacterUpdate as CharacterUpdate
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
@@ -73,7 +73,7 @@ type Page
     | MarkdownPage Markdown.Model
     | RuleBookPage RuleBook.Model
     | LoginUserPage Page.LoginUser.Model
-    | CharacterNewPage CharacterNew.Model
+    | CharacterCreatePage CharacterCreate.Model
     | CharacterUpdatePage CharacterUpdate.Model
 
 
@@ -105,7 +105,7 @@ type Msg
     | TopMsg Page.Top.Msg
     | RuleBookMsg RuleBook.Msg
     | LoginUserMsg Page.LoginUser.Msg
-    | CharacterNewMsg CharacterNew.Msg
+    | CharacterCreateMsg CharacterCreate.Msg
     | CharacterUpdateMsg CharacterUpdate.Msg
 
 
@@ -194,14 +194,14 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        CharacterNewMsg ms ->
+        CharacterCreateMsg ms ->
             case model.page of
-                CharacterNewPage rmodel ->
+                CharacterCreatePage rmodel ->
                     let
                         ( newmodel, newmsg ) =
-                            CharacterNew.update ms rmodel
+                            CharacterCreate.update ms rmodel
                     in
-                    ( { model | page = CharacterNewPage newmodel }, Cmd.map CharacterNewMsg newmsg )
+                    ( { model | page = CharacterCreatePage newmodel }, Cmd.map CharacterCreateMsg newmsg )
 
                 _ ->
                     ( model, Cmd.none )
@@ -285,13 +285,13 @@ goTo maybeRoute model =
             , Cmd.batch [ Cmd.map LoginUserMsg cmd, urlChangeToLoginPage () ]
             )
 
-        Just Route.CharacterNew ->
+        Just (Route.CharacterCreate storeUserId) ->
             let
                 ( m, cmd ) =
-                    CharacterNew.init
+                    CharacterCreate.init storeUserId
             in
-            ( { model | page = CharacterNewPage m }
-            , Cmd.map CharacterNewMsg cmd
+            ( { model | page = CharacterCreatePage m }
+            , Cmd.map CharacterCreateMsg cmd
             )
 
         Just (Route.CharacterUpdate id) ->
@@ -358,8 +358,8 @@ view model =
         LoginUserPage m ->
             Skeleton.view LoginUserMsg (Page.LoginUser.view m)
 
-        CharacterNewPage m ->
-            Skeleton.view CharacterNewMsg (CharacterNew.view m)
+        CharacterCreatePage m ->
+            Skeleton.view CharacterCreateMsg (CharacterCreate.view m)
 
         CharacterUpdatePage m ->
             Skeleton.view CharacterUpdateMsg (CharacterUpdate.view m)

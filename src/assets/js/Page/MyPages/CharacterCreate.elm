@@ -1,4 +1,4 @@
-port module Page.MyPages.CharacterNew exposing (Model, Msg, init, initModel, update, view)
+port module Page.MyPages.CharacterCreate exposing (Model, Msg, init, initModel, update, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -21,16 +21,16 @@ type alias Model =
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initModel
+init : String -> ( Model, Cmd Msg )
+init storeUserId =
+    ( initModel storeUserId
     , Cmd.none
     )
 
 
-initModel : Model
-initModel =
-    Model Close initCharacter
+initModel : String -> Model
+initModel storeUserId =
+    Model Close (initCharacter storeUserId)
 
 
 type Msg

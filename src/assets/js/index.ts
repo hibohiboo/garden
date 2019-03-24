@@ -138,21 +138,12 @@ app.ports.getCharacters.subscribe(async storeUserId => {
   const characters: Character[] = [];
   await querySnapshot.forEach((doc) => {
     const character = doc.data();
+    character.storeUserId = storeUserId;
+    character.characterId = doc.id;
     characters.push(character);
   });
-  console.log(characters)
   app.ports.gotCharacters.send(JSON.stringify(characters));
 });
-
-async function getCharactersJson(storeUserId) {
-  const querySnapshot = await db.collection("users").doc(storeUserId).collection('characters').get();
-  const characters: Character[] = [];
-  await querySnapshot.forEach((doc) => {
-    const character = doc.data();
-    characters.push(character);
-  });
-  return JSON.stringify(characters);
-}
 
 // elm -> js
 // サインアウト
