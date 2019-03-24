@@ -12,7 +12,7 @@ type Route
     | Agreement
     | LoginUser
     | CharacterCreate String
-    | CharacterUpdate String
+    | CharacterUpdate String String
 
 
 parse : Url -> Maybe Route
@@ -30,7 +30,7 @@ parser =
         , map About (s "about")
         , map LoginUser (s "mypage")
         , map CharacterCreate (s "mypage" </> s "character" </> s "create" </> string)
-        , map CharacterUpdate (s "mypage" </> s "character" </> s "edit" </> string)
+        , map CharacterUpdate (s "mypage" </> s "character" </> s "edit" </> string </> string)
 
         -- , map GitHubUser string
         -- , map Repo (string </> string)

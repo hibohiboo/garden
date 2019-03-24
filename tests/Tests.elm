@@ -43,6 +43,6 @@ suite =
         , testParse "shold parse Agreement" "/agreement" (Just Route.Agreement)
         , testParse "shold parse LoginUser" "/mypage" (Just Route.LoginUser)
         , testParse "shold parse CreateCharacter" "/mypage/character/create/aaa" (Just (Route.CharacterCreate "aaa"))
-        , testParse "shold parse UpdateCharacter" "/mypage/character/edit/aaa" (Just (Route.CharacterUpdate "aaa"))
+        , testParse "shold parse UpdateCharacter" "/mypage/character/edit/aaa/bbb" (Just (Route.CharacterUpdate "aaa" "bbb"))
         , testParse "shold parse Inavalid path" "/foo/bar/baz" Nothing
         ]
