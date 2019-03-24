@@ -8,6 +8,7 @@ import Json.Encode as E
 type alias User =
     { uid : String
     , displayName : String
+    , storeUserId : String
     }
 
 
@@ -33,3 +34,4 @@ decoder =
     Decode.succeed User
         |> Json.Decode.Pipeline.required "uid" Decode.string
         |> Json.Decode.Pipeline.required "displayName" Decode.string
+        |> Json.Decode.Pipeline.required "storeUserId" Decode.string

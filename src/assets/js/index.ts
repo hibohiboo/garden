@@ -7,22 +7,18 @@ import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import User from './User';
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
 
-// const config = require('./_config'); // tslint:disable-line no-var-requires
-
 // firebase使用準備
-// firebase.initializeApp(config);
 const fireBase = new FireBaseBackEnd();
+
 // firebase認証準備
 const auth = fireBase.auth;;
 
 // firestore使用準備
 const db = fireBase.db;
 
-// // ローカルストレージに保存するためのキー
-// const STORAGE_KEY = 'insaneHandouts';
+// ローカルストレージに保存するためのキー
+const STORAGE_KEY = 'gardenLoginData';
 
-// // ローカルストレージから前回値を読み出し
-// const flags: string = localStorage[STORAGE_KEY] === undefined ? '' : localStorage.insaneHandouts;
 const flags = null;
 
 // elmのＤＯＭを作成する元となるＤＯＭ要素
@@ -32,7 +28,7 @@ const mountNode: HTMLElement = document.getElementById('main')!;
 const app = Elm.Main.init({ node: mountNode, flags });
 
 // DBのユーザ情報。
-let userRef; // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
+let userData;  // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
 
 // elmのspa構築後に、dom要素に対してイベントを設定
 app.ports.initializedToJs.subscribe(() => {
@@ -53,6 +49,18 @@ const viewLoginPage = () => {
 
 // ログインページ遷移時にElmからイベントを取得
 app.ports.urlChangeToLoginPage.subscribe(() => {
+  // ローカルストレージから情報を読み出し
+  if (localStorage[STORAGE_KEY] !== undefined) {
+    const json = localStorage[STORAGE_KEY];
+
+    // サインイン情報を伝える。
+    app.ports.signedIn.send(json);
+
+    userData = JSON.parse(json);
+    return;
+  }
+
+  // ローカルに保存されていない場合、認証を行う。
   auth.onAuthStateChanged(async (firebaseUser) => {
     let user: User | null = null;
     if (firebaseUser === null) {
@@ -64,7 +72,6 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
     // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
 
-
     // console.log('firebaseuser', firebaseUser);
 
     // usersコレクションへの参照を取得
@@ -75,6 +82,8 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
 
     // データベースのユーザ情報
     let dbuser;
+    let userRef;
+    let storeUserId;
 
     // ユーザを取得
     const querySnapshot = await query.get();
@@ -85,6 +94,7 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       // ユーザ情報取得
       userRef = doc.ref;
       dbuser = doc.data();
+      storeUserId = doc.id;
 
       // 更新日時を更新する
       userRef.update({
@@ -109,34 +119,53 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     const json = JSON.stringify({
       uid: dbuser.uid
       , displayName: dbuser.displayName
+      , storeUserId: storeUserId
     });
-    // console.log(json)
+
     // サインイン情報を伝える。
     app.ports.signedIn.send(json);
-    const testJson = JSON.stringify([{
-      kana: "kana"
-      , name: "なまえ"
-    },
-    {
-      kana: ""
-      , name: ""
-    }]);
-
-    app.ports.getCharacters.send(testJson);
   });
 });
+
+type Character = {
+  name: string,
+  kana: string
+}
+
+// firestoreからユーザの持つキャラクターを取得
+app.ports.getCharacters.subscribe(async storeUserId => {
+  const querySnapshot = await db.collection("users").doc(storeUserId).collection('characters').get();
+  const characters: Character[] = [];
+  await querySnapshot.forEach((doc) => {
+    const character = doc.data();
+    characters.push(character);
+  });
+  console.log(characters)
+  app.ports.gotCharacters.send(JSON.stringify(characters));
+});
+
+async function getCharactersJson(storeUserId) {
+  const querySnapshot = await db.collection("users").doc(storeUserId).collection('characters').get();
+  const characters: Character[] = [];
+  await querySnapshot.forEach((doc) => {
+    const character = doc.data();
+    characters.push(character);
+  });
+  return JSON.stringify(characters);
+}
 
 // elm -> js
 // サインアウト
 app.ports.signOut.subscribe(() => {
   auth.signOut().then(() => {
     // console.log("Signed out.");
+    localStorage.removeItem(STORAGE_KEY);
   });
 });
 
 // キャラクター新規作成
 app.ports.saveNewCharacter.subscribe(json => {
-
+  const userRef = db.collection("users").doc(userData.uid);
   if (userRef === undefined) {
     alert('セッションが切れました。申し訳ないですが、もう一度ログインしなおしてください。');
     location.href = '/mypage/';

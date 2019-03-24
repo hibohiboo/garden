@@ -19,14 +19,17 @@ port signOut : () -> Cmd msg
 port signedIn : (String -> msg) -> Sub msg
 
 
-port getCharacters : (String -> msg) -> Sub msg
+port getCharacters : String -> Cmd msg
+
+
+port gotCharacters : (String -> msg) -> Sub msg
 
 
 subscriptions : Sub Msg
 subscriptions =
     Sub.batch
         [ signedIn SignedIn
-        , getCharacters GotCharacters
+        , gotCharacters GotCharacters
         ]
 
 
@@ -68,7 +71,7 @@ update msg model =
                     ( model, Cmd.none )
 
                 Just user ->
-                    ( { model | user = Just user }, Cmd.none )
+                    ( { model | user = Just user }, getCharacters user.storeUserId )
 
         SignOut ->
             ( model, signOut () )
