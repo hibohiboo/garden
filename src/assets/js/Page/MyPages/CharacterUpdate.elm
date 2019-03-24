@@ -15,7 +15,7 @@ import Utils.Terms as Terms
 port updateCharacter : String -> Cmd msg
 
 
-port getCharacter : String -> Cmd msg
+port getCharacter : ( String, String ) -> Cmd msg
 
 
 port gotCharacter : (String -> msg) -> Sub msg
@@ -31,20 +31,19 @@ subscriptions =
 type alias Model =
     { naviState : NaviState
     , character : Character
-    , characterId : String
     }
 
 
-init : String -> ( Model, Cmd Msg )
-init id =
-    ( initModel id
-    , Cmd.batch [ getCharacter id ]
+init : String -> String -> ( Model, Cmd Msg )
+init storeUserId characterId =
+    ( initModel storeUserId
+    , Cmd.batch [ getCharacter ( storeUserId, characterId ) ]
     )
 
 
 initModel : String -> Model
-initModel id =
-    Model Close (initCharacter "") id
+initModel storeUserId =
+    Model Close (initCharacter storeUserId)
 
 
 type Msg
