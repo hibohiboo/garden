@@ -3,6 +3,7 @@ port module Page.MyPages.CharacterUpdate exposing (Model, Msg, init, initModel, 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Json.Decode as D
 import Models.Character exposing (..)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
 import Skeleton exposing (viewLink, viewMain)
@@ -70,15 +71,21 @@ update msg model =
         Save ->
             ( model, model.character |> encodeCharacter |> updateCharacter )
 
-        GotCharacter name ->
+        GotCharacter s ->
             let
                 m =
-                    model.character
+                    case D.decodeString characterDecoder s of
+                        Err a ->
+                            initCharacter ""
 
-                newModel =
-                    { m | name = name }
+                        Ok char ->
+                            let
+                                _ =
+                                    Debug.log "decodeChar" char
+                            in
+                            char
             in
-            ( { model | character = newModel }, Cmd.none )
+            ( { model | character = m }, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg
