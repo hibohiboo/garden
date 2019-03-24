@@ -187,7 +187,8 @@ app.ports.updateCharacter.subscribe(async json => {
   const character = JSON.parse(json);
   const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
   character.updatedAt = fireBase.getTimestamp();
-  characterRef.update(character);
+  await characterRef.update(character);
+  app.ports.updatedCharacter.send(true);
 });
 
 

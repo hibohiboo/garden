@@ -1,5 +1,6 @@
 port module Page.MyPages.CharacterUpdate exposing (Model, Msg, init, initModel, subscriptions, update, view)
 
+import Browser.Navigation as Navigation
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -16,6 +17,9 @@ import Utils.Terms as Terms
 port updateCharacter : String -> Cmd msg
 
 
+port updatedCharacter : (Bool -> msg) -> Sub msg
+
+
 port getCharacter : ( String, String ) -> Cmd msg
 
 
@@ -26,6 +30,7 @@ subscriptions : Sub Msg
 subscriptions =
     Sub.batch
         [ gotCharacter GotCharacter
+        , updatedCharacter UpdatedCharacter
         ]
 
 
@@ -52,6 +57,7 @@ type Msg
     | EditorMsg CharacterEditor.Msg
     | Save
     | GotCharacter String
+    | UpdatedCharacter Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -86,6 +92,9 @@ update msg model =
                             char
             in
             ( { model | character = m }, Cmd.none )
+
+        UpdatedCharacter _ ->
+            ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
 
 view : Model -> Skeleton.Details Msg
