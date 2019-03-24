@@ -85,10 +85,10 @@ update msg model =
                             initCharacter ""
 
                         Ok char ->
-                            let
-                                _ =
-                                    Debug.log "decodeChar" char
-                            in
+                            -- let
+                            --     _ =
+                            --         Debug.log "decodeChar" char
+                            -- in
                             char
             in
             ( { model | character = m }, Cmd.none )
