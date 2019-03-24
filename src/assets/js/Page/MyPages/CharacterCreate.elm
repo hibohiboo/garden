@@ -1,5 +1,6 @@
-port module Page.MyPages.CharacterCreate exposing (Model, Msg, init, initModel, update, view)
+port module Page.MyPages.CharacterCreate exposing (Model, Msg, init, initModel, subscriptions, update, view)
 
+import Browser.Navigation as Navigation
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -13,6 +14,16 @@ import Utils.Terms as Terms
 
 
 port saveNewCharacter : String -> Cmd msg
+
+
+port createdCharacter : (Bool -> msg) -> Sub msg
+
+
+subscriptions : Sub Msg
+subscriptions =
+    Sub.batch
+        [ createdCharacter CreatedCharacter
+        ]
 
 
 type alias Model =
@@ -37,6 +48,7 @@ type Msg
     = ToggleNavigation
     | EditorMsg CharacterEditor.Msg
     | Save
+    | CreatedCharacter Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -55,6 +67,9 @@ update msg model =
 
         Save ->
             ( model, model.character |> encodeCharacter |> saveNewCharacter )
+
+        CreatedCharacter _ ->
+            ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
 
 view : Model -> Skeleton.Details Msg

@@ -157,16 +157,13 @@ app.ports.signOut.subscribe(() => {
 });
 
 // キャラクター新規作成
-app.ports.saveNewCharacter.subscribe(json => {
-  const userRef = db.collection("users").doc(userData.uid);
-  if (userRef === undefined) {
-    alert('セッションが切れました。申し訳ないですが、もう一度ログインしなおしてください。');
-    location.href = '/mypage/';
-  }
+app.ports.saveNewCharacter.subscribe(async json => {
   const data = JSON.parse(json);
+  const userRef = db.collection("users").doc(data.storeUserId);
   data.createdAt = fireBase.getTimestamp();
   data.updatedAt = fireBase.getTimestamp();
-  userRef.collection('characters').add(data);
+  await userRef.collection('characters').add(data);
+  app.ports.createdCharacter.send(true);
 });
 
 // キャラクター情報取得

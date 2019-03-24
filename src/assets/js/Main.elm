@@ -313,6 +313,7 @@ subscriptions model =
     Sub.batch
         [ Sub.map LoginUserMsg Page.LoginUser.subscriptions
         , Sub.map CharacterUpdateMsg CharacterUpdate.subscriptions
+        , Sub.map CharacterCreateMsg CharacterCreate.subscriptions
         ]
 
 
