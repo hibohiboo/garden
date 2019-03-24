@@ -122,7 +122,7 @@ edit model =
     div [ class "edit-area" ]
         [ Html.map EditorMsg (editArea model.character)
         , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
-            [ text "保存"
+            [ text "更新"
             , i [ class "material-icons right" ] [ text "send" ]
             ]
         ]

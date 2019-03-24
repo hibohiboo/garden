@@ -49,24 +49,26 @@ const viewLoginPage = () => {
 
 // ログインページ遷移時にElmからイベントを取得
 app.ports.urlChangeToLoginPage.subscribe(() => {
-  // ローカルストレージから情報を読み出し
-  if (localStorage[STORAGE_KEY] !== undefined) {
-    const json = localStorage[STORAGE_KEY];
-
-    // サインイン情報を伝える。
-    app.ports.signedIn.send(json);
-
-    userData = JSON.parse(json);
-    return;
-  }
-
-  // ローカルに保存されていない場合、認証を行う。
+  //認証を行う。
   auth.onAuthStateChanged(async (firebaseUser) => {
     let user: User | null = null;
     if (firebaseUser === null) {
       viewLoginPage();
       return;
     }
+    // ローカルストレージからユーザ情報を読み出し
+    if (localStorage[STORAGE_KEY] !== undefined) {
+      const json = localStorage[STORAGE_KEY];
+
+      // サインイン情報を伝える。
+      app.ports.signedIn.send(json);
+
+      userData = JSON.parse(json);
+      return;
+    }
+
+    // ローカルストレージにユーザ情報がなければデータを更新する
+
     user = new User(firebaseUser);
     // const twitterId = firebaseUser.providerData
     // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
@@ -175,9 +177,19 @@ app.ports.getCharacter.subscribe(async data => {
   const character = characterRef.data();
   character.storeUserId = storeUserId;
   character.characterId = characterId;
-  console.log(character);
-  app.ports.gotCharacter.send('test');
+  app.ports.gotCharacter.send(JSON.stringify(character));
+  // 新しく構築されたDOMにmaterializeを適用
+  M.updateTextFields();
 });
+
+// キャラクター更新
+app.ports.updateCharacter.subscribe(async json => {
+  const character = JSON.parse(json);
+  const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
+  character.updatedAt = fireBase.getTimestamp();
+  characterRef.update(character);
+});
+
 
 // app.ports.initialize.subscribe(() => {
 // });
