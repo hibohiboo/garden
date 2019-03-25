@@ -21,6 +21,7 @@ type alias Model =
     { naviState : NaviState
     , id : String
     , modalTitle : String
+    , modalContentsUrl : String
     }
 
 
@@ -28,7 +29,7 @@ init : Maybe String -> ( Model, Cmd Msg )
 init s =
     case s of
         Just id ->
-            ( Model Close id "", jumpToBottom id )
+            ( Model Close id "" "", jumpToBottom id )
 
         Nothing ->
             ( initModel
@@ -38,11 +39,11 @@ init s =
 
 initModel : Model
 initModel =
-    Model Close "" "異形器官一覧"
+    Model Close "" "異形器官一覧" ""
 
 
-organList : Html Msg
-organList =
+organList : String -> Html Msg
+organList url =
     div []
         [ ul []
             [ li [] [ text "翼" ]
@@ -88,7 +89,7 @@ view model =
         , viewNavi (List.map (\( value, text ) -> NavigationMenu value text) tableOfContents)
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
-        , modalWindow model.modalTitle organList
+        , modalWindow model.modalTitle (organList model.modalContentsUrl)
         ]
     }
 
