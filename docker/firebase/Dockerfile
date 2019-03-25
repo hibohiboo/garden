@@ -16,7 +16,10 @@ RUN sed -i -e "s/\(\"scripts\": {\)/\1\n    \"firebase\": \"firebase\", /g" /app
 COPY functions /app/functions
 
 # functions用のモジュールをインストールしておく。
-RUN cd /app/functions && NODE_ENV=development npm install -y
+RUN cd /app/functions && yarn add firebase-admin
+RUN cd /app/functions && yarn add firebase-functions
+RUN cd /app/functions && yarn add --dev tslint
+RUN cd /app/functions && yarn add --dev typescript
 
 # ローカルでfunctionを実行するために必要
 RUN yarn global add @google-cloud/functions-emulator --ignore-engines

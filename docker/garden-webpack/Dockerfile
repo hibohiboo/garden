@@ -1,4 +1,4 @@
-FROM node:11.11.0
+FROM node:11.12.0
 
 # コンテナ上の作業ディレクトリ作成
 WORKDIR /app
@@ -9,7 +9,7 @@ RUN npm init -y
 ## for js
 ### babel
 RUN yarn add --dev @babel/core \
-                  @babel/preset-env
+  @babel/preset-env
 
 RUN yarn add --dev @babel/cli
 
@@ -58,9 +58,9 @@ RUN yarn add purecss
 
 ### lint
 RUN yarn add --dev eslint \
-                   eslint-plugin-import \
-                   eslint-config-airbnb-base \
-                   eslint-plugin-jasmine
+  eslint-plugin-import \
+  eslint-config-airbnb-base \
+  eslint-plugin-jasmine
 
 ### esdoc
 RUN yarn add --dev esdoc esdoc-standard-plugin
@@ -103,3 +103,4 @@ RUN yarn add --dev @types/materialize-css
 RUN yarn add --dev @types/chart.js
 
 RUN yarn add --dev postcss-loader
+#RUN yarn add --dev @types/firebase
