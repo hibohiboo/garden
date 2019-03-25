@@ -1,6 +1,4 @@
-// import { Chart } from 'chart.js';
-// import * as firebase from 'firebase';
-// import * as firebaseui from 'firebaseui';
+
 import FireBaseBackEnd from './FireBaseBackEnd';
 import * as M from 'M'; //  tslint-disable-line
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
@@ -44,7 +42,7 @@ app.ports.urlChangeToJs.subscribe(() => {
 
 // ログインが必要なときにfirebaseuiを使って要素を準備する
 const viewLoginPage = () => {
-
+  fireBase.createLoginUi();
 };
 
 // ログインページ遷移時にElmからイベントを取得
