@@ -38,6 +38,16 @@ app.ports.initializedToJs.subscribe(() => {
 app.ports.urlChangeToJs.subscribe(() => {
   // 新しく構築されたDOMにmaterializeを適用
   M.updateTextFields();
+
+  const $modal = $('#mainModal');
+  if ($modal.length !== 0) {
+    $modal.modal(); // モーダル使用準備
+  }
+});
+
+// モーダルを開く
+app.ports.openModal.subscribe(() => {
+  $('#mainModal').modal('open');
 });
 
 // ログインが必要なときにfirebaseuiを使って要素を準備する

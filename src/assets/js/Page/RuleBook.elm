@@ -1,4 +1,4 @@
-module Page.RuleBook exposing (Model, Msg(..), init, update, view)
+port module Page.RuleBook exposing (Model, Msg(..), init, update, view)
 
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
@@ -12,6 +12,9 @@ import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
+
+
+port openModal : () -> Cmd msg
 
 
 type alias Model =
@@ -41,6 +44,7 @@ type Msg
     = ToggleNavigation
     | NoOp
     | PageAnchor String
+    | ModalOrgan
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -55,6 +59,9 @@ update msg model =
         PageAnchor id ->
             ( model, Navigation.load id )
 
+        ModalOrgan ->
+            ( model, openModal () )
+
 
 view : Model -> Skeleton.Details Msg
 view model =
@@ -68,11 +75,24 @@ view model =
     , attrs = [ class naviClass ]
     , kids =
         [ viewMain viewRulebook
-        , viewNavi [ NavigationMenu "#first" "はじめに", NavigationMenu "#world" "ワールド" ]
+        , viewNavi (List.map (\( value, text ) -> NavigationMenu value text) tableOfContents)
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
+        , modalWindow
         ]
     }
+
+
+modalWindow =
+    div [ id "mainModal", class "modal" ]
+        [ div [ class "modal-content" ]
+            [ h4 [] [ text "ヘッダ" ]
+            , p [] [ text "test" ]
+            ]
+        , div [ class "modal-footer" ]
+            [ a [ href "#!", class "modal-close waves-effect waves-green btn-flat" ] [ text "Agree" ]
+            ]
+        ]
 
 
 viewNavi : List NavigationMenu -> Html Msg
@@ -95,14 +115,24 @@ viewNavi menues =
 
 tableOfContents : List ( String, String )
 tableOfContents =
-    [ ( "first", "はじめに" ), ( "world", "ワールド" ) ]
+    [ ( "/", "トップに戻る" ), ( "#first", "はじめに" ), ( "#world", "ワールド" ) ]
 
 
-viewRulebook : Html msg
+viewRulebook : Html Msg
 viewRulebook =
     div []
         [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ text "Garden 基本ルールブック" ] ]
-        , div [ class "content" ] [ first, world, character ]
+        , div [ class "content" ]
+            [ first
+            , world
+            , character
+            , a [ onClick ModalOrgan, class "waves-effect waves-light btn modal-trigger", href "#" ] [ text "変異器官一覧" ]
+            , div []
+                [ ul []
+                    [ li [] [ text "翼" ]
+                    ]
+                ]
+            ]
         ]
 
 

@@ -114,12 +114,18 @@ A2地区の臨海部に建造された東西90km南北40km程度の実験都市�
 
 character : Html msg
 character =
-    section [ id "character" ]
+    section [ id "character content-doc" ]
         [ h1 []
             [ text "キャラクター" ]
         , p
-            [ class "content-doc" ]
+            []
             [ text """
 プレイヤーの分身であるキャラクター（以下、PC)は、特異な力を持つ子供となる。
+""" ]
+        , h2 [] [ text "1. 変異器官の決定" ]
+        , p
+            []
+            [ text """
+異能の発生源となる変異器官を選択する。
 """ ]
         ]

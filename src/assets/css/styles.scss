@@ -235,6 +235,13 @@ $bgColorHeadFoot: #222;
   }
 }
 
+// タブレット向け
+@media (min-width: 600px) and (max-width: 1260px) {
+  main>div {
+    padding-left: 30px; // 左が詰まりすぎているので少し空ける
+  }
+}
+
 
 // ##### 画面の横幅1260ピクセル以上 #####
 
@@ -290,7 +297,8 @@ $bgColorHeadFoot: #222;
 }
 
 // 改行を反映する要素
-.content-doc {
+.content-doc,
+.content-doc p {
   white-space: pre-wrap; 
   word-wrap: break-word;
 }
@@ -494,7 +502,7 @@ $bgColorHeadFoot: #222;
   }
 
 }
-@media (max-width: 1259px) {
+@media (max-width: 799px) {
   .karte {
     display: none;
   }
