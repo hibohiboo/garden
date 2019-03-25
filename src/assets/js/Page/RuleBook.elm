@@ -20,6 +20,7 @@ port openModal : () -> Cmd msg
 type alias Model =
     { naviState : NaviState
     , id : String
+    , modalTitle : String
     }
 
 
@@ -27,7 +28,7 @@ init : Maybe String -> ( Model, Cmd Msg )
 init s =
     case s of
         Just id ->
-            ( Model Close id, jumpToBottom id )
+            ( Model Close id "", jumpToBottom id )
 
         Nothing ->
             ( initModel
@@ -37,14 +38,23 @@ init s =
 
 initModel : Model
 initModel =
-    Model Close ""
+    Model Close "" "異形器官一覧"
+
+
+organList : Html Msg
+organList =
+    div []
+        [ ul []
+            [ li [] [ text "翼" ]
+            ]
+        ]
 
 
 type Msg
     = ToggleNavigation
     | NoOp
     | PageAnchor String
-    | ModalOrgan
+    | ModalOrgan String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -59,8 +69,8 @@ update msg model =
         PageAnchor id ->
             ( model, Navigation.load id )
 
-        ModalOrgan ->
-            ( model, openModal () )
+        ModalOrgan title ->
+            ( { model | modalTitle = title }, openModal () )
 
 
 view : Model -> Skeleton.Details Msg
@@ -78,19 +88,20 @@ view model =
         , viewNavi (List.map (\( value, text ) -> NavigationMenu value text) tableOfContents)
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
-        , modalWindow
+        , modalWindow model.modalTitle organList
         ]
     }
 
 
-modalWindow =
+modalWindow : String -> Html msg -> Html msg
+modalWindow title content =
     div [ id "mainModal", class "modal" ]
         [ div [ class "modal-content" ]
-            [ h4 [] [ text "ヘッダ" ]
-            , p [] [ text "test" ]
+            [ h4 [] [ text title ]
+            , p [] [ content ]
             ]
         , div [ class "modal-footer" ]
-            [ a [ href "#!", class "modal-close waves-effect waves-green btn-flat" ] [ text "Agree" ]
+            [ a [ href "#!", class "modal-close waves-effect waves-green btn-flat" ] [ text "閉じる" ]
             ]
         ]
 
@@ -126,12 +137,7 @@ viewRulebook =
             [ first
             , world
             , character
-            , a [ onClick ModalOrgan, class "waves-effect waves-light btn modal-trigger", href "#" ] [ text "変異器官一覧" ]
-            , div []
-                [ ul []
-                    [ li [] [ text "翼" ]
-                    ]
-                ]
+            , a [ onClick (ModalOrgan "変異器官一覧"), class "waves-effect waves-light btn modal-trigger", href "#" ] [ text "変異器官一覧" ]
             ]
         ]
 
