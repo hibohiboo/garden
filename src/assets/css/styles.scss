@@ -494,7 +494,11 @@ $bgColorHeadFoot: #222;
   }
 
 }
-
+@media (max-width: 1259px) {
+  .karte {
+    display: none;
+  }
+}
 
 @media print {
   header,
