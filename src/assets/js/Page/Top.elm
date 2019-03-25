@@ -64,13 +64,12 @@ viewTopPage =
             [ div [] [ text Terms.trpgGenre ]
             , h1 [] [ text "Garden" ]
             , h2 [] [ text "～ 箱庭の島の子供たち ～" ]
-            , a [ class "top-image", href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.jpg" ] [] ]
+            , a [ class "top-image", href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.png" ] [] ]
             ]
         , p
             [ class "content-doc" ]
             [ text """
 ガーデンと呼ばれる絶海の孤島。
-その島は異形の子供たちの研究施設であった。
 ある日、研究者たちは死に絶えた。
 倒壊した建物。逃げ出した実験動物。
 残されたのは子供たち。

@@ -82,10 +82,6 @@ update msg model =
                     ( model, Cmd.none )
 
                 Ok char ->
-                    let
-                        _ =
-                            Debug.log "decodeChar" char
-                    in
                     ( { model | characters = char }, Cmd.none )
 
 

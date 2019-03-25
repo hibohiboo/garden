@@ -318,6 +318,9 @@ $bgColorHeadFoot: #222;
     max-height: 35vh;
     overflow: hidden;
     display: block;
+    img {
+      max-width: 360px;
+    }
   }
 }
 
