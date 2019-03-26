@@ -12,6 +12,7 @@ type alias Organ =
     }
 
 
+organsDecodeFromString : String -> Result Error (List Organ)
 organsDecodeFromString s =
     decodeString (list organDecoder) s
 

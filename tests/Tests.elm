@@ -1,4 +1,4 @@
-module Tests exposing (suite, unitTest)
+module Tests exposing (sheet, suite, unitTest)
 
 import Expect
 import GoogleSpreadSheetApi as GSApi
@@ -64,10 +64,25 @@ sheet =
                                 GSApi.Organ "" ""
 
                     expect =
-                        GSApi.Organ "a" "b"
+                        { name = "a", description = "b" }
                 in
                 Expect.equal actual expect
         , test "配列の配列を処理するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        case GSApi.organsDecodeFromString "[[\"a\", \"b\"],[\"c\", \"d\"]]" of
+                            Ok a ->
+                                a
+
+                            Err _ ->
+                                [ GSApi.Organ "a" "b" ]
+
+                    expect =
+                        [ GSApi.Organ "a" "b", GSApi.Organ "c" "d" ]
+                in
+                Expect.equal actual expect
+        , test "配列をレコードに処理するテスト" <|
             \_ ->
                 let
                     actual =
