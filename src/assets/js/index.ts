@@ -25,7 +25,7 @@ const flags = JSON.stringify({
 // elmのＤＯＭを作成する元となるＤＯＭ要素
 const mountNode: HTMLElement = document.getElementById('main')!;
 
-// 前回値を初期値として与える
+// 初期値を与える
 const app = Elm.Main.init({ node: mountNode, flags });
 
 // DBのユーザ情報。

@@ -6,7 +6,7 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Json.Decode as D exposing (Value)
+import Json.Decode as D
 import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
@@ -45,7 +45,7 @@ port urlChangeToLoginPage : () -> Cmd msg
 -- MAIN
 
 
-main : Program Value Model Msg
+main : Program String Model Msg
 main =
     Browser.application
         { init = init
@@ -79,11 +79,11 @@ type Page
     | CharacterUpdatePage CharacterUpdate.Model
 
 
-init : Value -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         apiKey =
-            case D.decodeValue (D.field "googleSheetApiKey" D.string) flags of
+            case D.decodeString (D.field "googleSheetApiKey" D.string) flags of
                 Ok decodedKey ->
                     decodedKey
 
@@ -254,7 +254,7 @@ goTo maybeRoute model =
         Just (Route.RuleBook id) ->
             let
                 ( m, cmd ) =
-                    RuleBook.init id
+                    RuleBook.init model.googleSheetApiKey id
             in
             ( { model | page = RuleBookPage m }
             , Cmd.map RuleBookMsg cmd

@@ -2,9 +2,11 @@ port module Page.RuleBook exposing (Model, Msg(..), init, update, view)
 
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
+import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Http
 import Page.Rules.Base exposing (..)
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
@@ -19,45 +21,28 @@ port openModal : () -> Cmd msg
 
 type alias Model =
     { naviState : NaviState
+    , googleSheetApiKey : String
     , id : String
     , modalTitle : String
-    , modalContentsUrl : Html Msg
+    , modalContents : Html Msg
     }
 
 
-init : Maybe String -> ( Model, Cmd Msg )
-init s =
+init : String -> Maybe String -> ( Model, Cmd Msg )
+init apiKey s =
     case s of
         Just id ->
-            ( Model Close id "" testHtml, jumpToBottom id )
+            ( Model Close apiKey id "" (text ""), jumpToBottom id )
 
         Nothing ->
-            ( initModel
+            ( initModel apiKey
             , Cmd.none
             )
 
 
-initModel : Model
-initModel =
-    Model Close "" "異形器官一覧" testHtml
-
-
-organList : String -> Html Msg
-organList url =
-    div []
-        [ ul []
-            [ li [] [ text "翼" ]
-            ]
-        ]
-
-
-testHtml : Html Msg
-testHtml =
-    div []
-        [ ul []
-            [ li [] [ text "翼" ]
-            ]
-        ]
+initModel : String -> Model
+initModel apiKey =
+    Model Close apiKey "" "異形器官一覧" (text "")
 
 
 type Msg
@@ -65,6 +50,7 @@ type Msg
     | NoOp
     | PageAnchor String
     | ModalOrgan String
+    | GotOrgans (Result Http.Error (List Organ))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -80,7 +66,17 @@ update msg model =
             ( model, Navigation.load id )
 
         ModalOrgan title ->
-            ( { model | modalTitle = title }, openModal () )
+            ( { model | modalTitle = title }, GSAPI.getOrgans GotOrgans model.googleSheetApiKey "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w" "organList!A1:B11" )
+
+        GotOrgans (Ok organs) ->
+            let
+                organTable =
+                    organList organs
+            in
+            ( { model | modalContents = organTable }, openModal () )
+
+        GotOrgans (Err _) ->
+            ( model, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg
@@ -98,7 +94,7 @@ view model =
         , viewNavi (List.map (\( value, text ) -> NavigationMenu value text) tableOfContents)
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
-        , modalWindow model.modalTitle testHtml
+        , modalWindow model.modalTitle model.modalContents
         ]
     }
 
@@ -147,8 +143,22 @@ viewRulebook =
             [ first
             , world
             , character
-            , a [ onClick (ModalOrgan "変異器官一覧"), class "waves-effect waves-light btn modal-trigger", href "#" ] [ text "変異器官一覧" ]
+            , a [ onClick (ModalOrgan "変異器官一覧"), class "waves-effect waves-light btn", href "#" ] [ text "変異器官一覧" ]
             ]
+        ]
+
+
+organList : List Organ -> Html Msg
+organList organs =
+    table []
+        [ thead []
+            [ tr []
+                [ th [] [ text "器官" ]
+                , th [] [ text "説明" ]
+                ]
+            ]
+        , tbody []
+            (List.map (\organ -> tr [] [ td [] [ text organ.name ], td [] [ text organ.description ] ]) organs)
         ]
 
 
