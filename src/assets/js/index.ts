@@ -3,6 +3,7 @@ import FireBaseBackEnd from './FireBaseBackEnd';
 import * as M from 'M'; //  tslint-disable-line
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import User from './User';
+import { GOOGLE_SHEET_API_KEY } from "./constants";
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
 
 // firebase使用準備
@@ -17,7 +18,9 @@ const db = fireBase.db;
 // ローカルストレージに保存するためのキー
 const STORAGE_KEY = 'gardenLoginData';
 
-const flags = null;
+const flags = JSON.stringify({
+  apiKey: GOOGLE_SHEET_API_KEY
+});
 
 // elmのＤＯＭを作成する元となるＤＯＭ要素
 const mountNode: HTMLElement = document.getElementById('main')!;
@@ -195,6 +198,7 @@ app.ports.updateCharacter.subscribe(async json => {
   await characterRef.update(character);
   app.ports.updatedCharacter.send(true);
 });
+
 
 
 // app.ports.initialize.subscribe(() => {

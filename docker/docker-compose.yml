@@ -40,13 +40,13 @@ services:
       - ./config/postcss.config.js:/app/postcss.config.js
       - ./config/babel.config.js:/app/babel.config.js
       - ./config/webpack.config.separate.js:/app/webpack.config.separate.js
-    environment:
-      - SHELL=/bin/bash
     ports:
       - 3000:3000
       - 3002:3002
+    env_file: .env
     environment:
       - NODE_ENV=develop
+      - SHELL=/bin/bash
     command: [yarn, webpack-dev-server, --hot, --colors, --port, '3000', --host, '0.0.0.0', ]
       # command: [yarn, run, elm-watch]
 

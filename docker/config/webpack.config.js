@@ -110,9 +110,12 @@ if (MODE === 'development') {
   module.exports = merge(common, {
     plugins: [
       // Suggested for hot-loading
-      new webpack.NamedModulesPlugin(),
+      new webpack.NamedModulesPlugin()
       // Prevents compilation errors causing the hot loader to lose state
-      new webpack.NoEmitOnErrorsPlugin(),
+      , new webpack.NoEmitOnErrorsPlugin()
+      , new webpack.DefinePlugin({
+        GOOGLE_SHEET_API_KEY: JSON.stringify(process.env.GOOGLE_SHEET_API_KEY)
+      })
     ],
     module: {
       rules: [

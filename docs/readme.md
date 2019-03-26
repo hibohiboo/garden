@@ -77,6 +77,10 @@
 [Cloud Firestoreの勘所 パート2 — データ設計][*8]
 [Cloud Functions for Firebaseが最高だった話][*9]
 [10000行超のElmを書いて見つけたベストプラクティス][*10]
+[Webpackを使ってJSでも.envしたい][*11]
+[JavaScriptでデプロイ環境ごとに設定ファイルを読み込む方法][*12]
+[DefinePlugin][*13]
+[Web Pack define plugin variables are recoginized by ts-loader][*14]
 
 [*1]:https://github.com/simonh1000/elm-webpack-starter/blob/master/package.json
 [*2]:https://github.com/elm/package.elm-lang.org
@@ -88,3 +92,7 @@
 [*8]:https://medium.com/google-cloud-jp/firestore2-920ac799345c
 [*9]:https://qiita.com/HALU5071/items/e43729ac5b06b0506fbe
 [*10]:http://jinjor-labo.hatenablog.com/entry/2016/12/04/002210
+[*11]:https://aloerina01.github.io/blog/2017-02-22-1
+[*12]:https://qiita.com/mikakane/items/5ab96c4c7e187ab6c9f1
+[*13]:https://webpack.js.org/plugins/define-plugin/
+[*14]:https://github.com/TypeStrong/ts-loader/issues/37
