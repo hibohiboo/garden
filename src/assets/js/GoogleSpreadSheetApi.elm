@@ -1,4 +1,4 @@
-module GoogleSpreadSheetApi exposing (Organ, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder)
+module GoogleSpreadSheetApi exposing (Organ, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString)
 
 import Http
 import Json.Decode as D exposing (..)
@@ -12,9 +12,19 @@ type alias Organ =
     }
 
 
+organsInObjectDecodeFromString : String -> Result Error (List Organ)
+organsInObjectDecodeFromString s =
+    decodeString organsInObjectDecoder s
+
+
+organsInObjectDecoder : Decoder (List Organ)
+organsInObjectDecoder =
+    field "values" organsDecoder
+
+
 organsDecodeFromString : String -> Result Error (List Organ)
 organsDecodeFromString s =
-    decodeString (list organDecoder) s
+    decodeString organsDecoder s
 
 
 organsDecoder : Decoder (List Organ)

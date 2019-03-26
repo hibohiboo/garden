@@ -82,11 +82,11 @@ sheet =
                         [ GSApi.Organ "a" "b", GSApi.Organ "c" "d" ]
                 in
                 Expect.equal actual expect
-        , test "配列をレコードに処理するテスト" <|
+        , test "オブジェクトの中の配列を処理するテスト" <|
             \_ ->
                 let
                     actual =
-                        case GSApi.organsDecodeFromString "[[\"a\", \"b\"],[\"c\", \"d\"]]" of
+                        case GSApi.organsInObjectDecodeFromString "{\"values\":[[\"a\", \"b\"],[\"c\", \"d\"]]}" of
                             Ok a ->
                                 a
 
