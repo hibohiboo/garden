@@ -19,7 +19,7 @@ const db = fireBase.db;
 const STORAGE_KEY = 'gardenLoginData';
 
 const flags = JSON.stringify({
-  apiKey: GOOGLE_SHEET_API_KEY
+  googleSheetApiKey: GOOGLE_SHEET_API_KEY
 });
 
 // elmのＤＯＭを作成する元となるＤＯＭ要素

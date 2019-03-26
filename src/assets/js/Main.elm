@@ -6,6 +6,7 @@ import GitHub exposing (Issue, Repo)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
+import Json.Decode as D exposing (Value)
 import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
@@ -44,7 +45,7 @@ port urlChangeToLoginPage : () -> Cmd msg
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program Value Model Msg
 main =
     Browser.application
         { init = init
@@ -63,6 +64,7 @@ main =
 type alias Model =
     { key : Nav.Key
     , page : Page
+    , googleSheetApiKey : String
     }
 
 
@@ -77,10 +79,19 @@ type Page
     | CharacterUpdatePage CharacterUpdate.Model
 
 
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init : Value -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
+    let
+        apiKey =
+            case D.decodeValue (D.field "googleSheetApiKey" D.string) flags of
+                Ok decodedKey ->
+                    decodedKey
+
+                Err _ ->
+                    ""
+    in
     -- 後に画面遷移で使うためのキーを Modelに持たせておく
-    Model key (TopPage Page.Top.initModel)
+    Model key (TopPage Page.Top.initModel) apiKey
         -- はじめてページを訪れた時も忘れずにページの初期化を行う
         |> goTo (Route.parse url)
         |> initialized
