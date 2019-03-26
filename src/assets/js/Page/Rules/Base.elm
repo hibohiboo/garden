@@ -114,7 +114,7 @@ A2地区の臨海部に建造された東西90km南北40km程度の実験都市�
 
 character : Html msg
 character =
-    section [ id "character content-doc" ]
+    section [ id "character", class "content-doc" ]
         [ h1 []
             [ text "キャラクター" ]
         , p
