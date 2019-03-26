@@ -1,6 +1,7 @@
 module Tests exposing (suite, unitTest)
 
 import Expect
+import GoogleSpreadSheetApi as GSApi
 import Route exposing (..)
 import Test exposing (..)
 import Url
@@ -45,4 +46,40 @@ suite =
         , testParse "shold parse CreateCharacter" "/mypage/character/create/aaa" (Just (Route.CharacterCreate "aaa"))
         , testParse "shold parse UpdateCharacter" "/mypage/character/edit/aaa/bbb" (Just (Route.CharacterUpdate "aaa" "bbb"))
         , testParse "shold parse Inavalid path" "/foo/bar/baz" Nothing
+        ]
+
+
+sheet : Test
+sheet =
+    describe "GoogleSpreadSheet"
+        [ test "配列をレコードに入れるテスト" <|
+            \_ ->
+                let
+                    actual =
+                        case GSApi.organDecodeFromString "[\"a\", \"b\"]" of
+                            Ok a ->
+                                a
+
+                            Err _ ->
+                                GSApi.Organ "" ""
+
+                    expect =
+                        GSApi.Organ "a" "b"
+                in
+                Expect.equal actual expect
+        , test "配列の配列を処理するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        case GSApi.organsDecodeFromString "[[\"a\", \"b\"],[\"c\", \"d\"]]" of
+                            Ok a ->
+                                a
+
+                            Err _ ->
+                                []
+
+                    expect =
+                        [ GSApi.Organ "a" "b", GSApi.Organ "c" "d" ]
+                in
+                Expect.equal actual expect
         ]
