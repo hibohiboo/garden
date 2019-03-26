@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -47,7 +48,10 @@ module.exports = {
       { context: `${opts.src}/assets/markdown` }),
     new MiniCssExtractPlugin({
       filename: '[name]-[hash].css',
-    }),
+    })
+    , new webpack.DefinePlugin({
+      GOOGLE_SHEET_API_KEY: JSON.stringify(process.env.GOOGLE_SHEET_API_KEY)
+    })
   ],
   resolve: {
     modules: [opts.src, 'node_modules'],
