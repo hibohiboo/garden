@@ -66,7 +66,7 @@ update msg model =
             ( model, Navigation.load id )
 
         ModalOrgan title ->
-            ( { model | modalTitle = title }, GSAPI.getOrgans GotOrgans model.googleSheetApiKey "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w" "organList!A1:B11" )
+            ( { model | modalTitle = title }, GSAPI.getOrgans GotOrgans model.googleSheetApiKey "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w" "organList!A2:B11" )
 
         GotOrgans (Ok organs) ->
             let
@@ -150,16 +150,16 @@ viewRulebook =
 
 organList : List Organ -> Html Msg
 organList organs =
-    table []
-        [ thead []
-            [ tr []
-                [ th [] [ text "器官" ]
-                , th [] [ text "説明" ]
+    dl [ class "collection with-header" ]
+        (List.indexedMap
+            (\i organ ->
+                [ dt [] [ text (String.fromInt (i + 1) ++ " : " ++ organ.name) ]
+                , dd [] [ text organ.description ]
                 ]
-            ]
-        , tbody []
-            (List.map (\organ -> tr [] [ td [] [ text organ.name ], td [] [ text organ.description ] ]) organs)
-        ]
+            )
+            organs
+            |> List.concat
+        )
 
 
 jumpToBottom : String -> Cmd Msg

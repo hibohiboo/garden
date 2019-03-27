@@ -62,17 +62,14 @@ viewTopPage =
     div [ class "center" ]
         [ div [ class "top-header" ]
             [ div [] [ text Terms.trpgGenre ]
-            , h1 [] [ text "Garden" ]
+            , h1 [] [ text "Sandbox Garden" ]
             , h2 [] [ text "～ 箱庭の島の子供たち ～" ]
             , a [ class "top-image", href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.png" ] [] ]
             ]
         , p
             [ class "content-doc" ]
             [ text """
-ガーデンと呼ばれる絶海の孤島。
-ある日、研究者たちは死に絶えた。
-倒壊した建物。逃げ出した実験動物。
-残されたのは子供たち。
+コワレタセカイデアソビタイ
 """ ]
         , ul []
             [ li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールを読む" ] ]
