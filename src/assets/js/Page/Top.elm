@@ -3,6 +3,7 @@ module Page.Top exposing (Model, Msg, init, initModel, update, view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
@@ -11,20 +12,21 @@ import Utils.Terms as Terms
 
 
 type alias Model =
-    { naviState : NaviState
+    { session : Session.Data
+    , naviState : NaviState
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initModel
+init : Session.Data -> ( Model, Cmd Msg )
+init session =
+    ( initModel session
     , Cmd.none
     )
 
 
-initModel : Model
-initModel =
-    Model Close
+initModel : Session.Data -> Model
+initModel session =
+    Model session Close
 
 
 type Msg

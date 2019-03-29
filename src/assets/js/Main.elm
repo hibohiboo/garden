@@ -70,7 +70,7 @@ type alias Model =
 
 
 type Page
-    = NotFound
+    = NotFound Session.Data
     | ErrorPage Http.Error
     | TopPage Page.Top.Model
     | MarkdownPage Markdown.Model
@@ -92,7 +92,7 @@ init flags url key =
                     ""
     in
     -- 後に画面遷移で使うためのキーを Modelに持たせておく
-    Model key (TopPage Page.Top.initModel) apiKey
+    Model key (NotFound Session.empty) apiKey
         -- はじめてページを訪れた時も忘れずにページの初期化を行う
         |> goTo (Route.parse url)
         |> initialized
@@ -241,7 +241,25 @@ exit model =
         MarkdownPage m ->
             m.session
 
-        _ ->
+        TopPage m ->
+            m.session
+
+        RuleBookPage m ->
+            m.session
+
+        LoginUserPage m ->
+            m.session
+
+        CharacterCreatePage m ->
+            m.session
+
+        CharacterUpdatePage m ->
+            m.session
+
+        NotFound session ->
+            session
+
+        ErrorPage _ ->
             Session.empty
 
 
@@ -257,14 +275,14 @@ goTo maybeRoute model =
     in
     case maybeRoute of
         Nothing ->
-            ( { model | page = NotFound }
+            ( { model | page = NotFound session }
             , Cmd.none
             )
 
         Just Route.Top ->
             let
                 ( m, cmd ) =
-                    Page.Top.init
+                    Page.Top.init session
             in
             ( { model | page = TopPage m }
             , Cmd.map TopMsg cmd
@@ -273,7 +291,7 @@ goTo maybeRoute model =
         Just (Route.RuleBook id) ->
             let
                 ( m, cmd ) =
-                    RuleBook.init model.googleSheetApiKey id
+                    RuleBook.init session model.googleSheetApiKey id
             in
             ( { model | page = RuleBookPage m }
             , Cmd.map RuleBookMsg cmd
@@ -309,7 +327,7 @@ goTo maybeRoute model =
         Just Route.LoginUser ->
             let
                 ( m, cmd ) =
-                    Page.LoginUser.init
+                    Page.LoginUser.init session
             in
             ( { model | page = LoginUserPage m }
             , Cmd.batch [ Cmd.map LoginUserMsg cmd, urlChangeToLoginPage () ]
@@ -318,7 +336,7 @@ goTo maybeRoute model =
         Just (Route.CharacterCreate storeUserId) ->
             let
                 ( m, cmd ) =
-                    CharacterCreate.init storeUserId
+                    CharacterCreate.init session storeUserId
             in
             ( { model | page = CharacterCreatePage m }
             , Cmd.map CharacterCreateMsg cmd
@@ -327,7 +345,7 @@ goTo maybeRoute model =
         Just (Route.CharacterUpdate storeUserId characterId) ->
             let
                 ( m, cmd ) =
-                    CharacterUpdate.init storeUserId characterId
+                    CharacterUpdate.init session storeUserId characterId
             in
             ( { model | page = CharacterUpdatePage m }
             , Cmd.map CharacterUpdateMsg cmd
@@ -367,7 +385,7 @@ view model =
                 , kids = [ viewError error ]
                 }
 
-        NotFound ->
+        NotFound _ ->
             Skeleton.view never
                 { title = "Not Found"
                 , attrs = Problem.styles

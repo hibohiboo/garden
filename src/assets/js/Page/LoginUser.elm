@@ -6,6 +6,7 @@ import Html.Events exposing (onClick)
 import Json.Decode as D
 import Models.Character exposing (..)
 import Page.MyPages.User exposing (..)
+import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
@@ -34,22 +35,23 @@ subscriptions =
 
 
 type alias Model =
-    { naviState : NaviState
+    { session : Session.Data
+    , naviState : NaviState
     , user : Maybe User
     , characters : List Character
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initModel
+init : Session.Data -> ( Model, Cmd Msg )
+init session =
+    ( initModel session
     , Cmd.none
     )
 
 
-initModel : Model
-initModel =
-    Model Close Nothing []
+initModel : Session.Data -> Model
+initModel session =
+    Model session Close Nothing []
 
 
 type Msg

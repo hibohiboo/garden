@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Page.Rules.Base exposing (..)
+import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
 import Url
@@ -20,7 +21,8 @@ port openModal : () -> Cmd msg
 
 
 type alias Model =
-    { naviState : NaviState
+    { session : Session.Data
+    , naviState : NaviState
     , googleSheetApiKey : String
     , id : String
     , modalTitle : String
@@ -28,21 +30,21 @@ type alias Model =
     }
 
 
-init : String -> Maybe String -> ( Model, Cmd Msg )
-init apiKey s =
+init : Session.Data -> String -> Maybe String -> ( Model, Cmd Msg )
+init session apiKey s =
     case s of
         Just id ->
-            ( Model Close apiKey id "" (text ""), jumpToBottom id )
+            ( Model session Close apiKey id "" (text ""), jumpToBottom id )
 
         Nothing ->
-            ( initModel apiKey
+            ( initModel session apiKey
             , Cmd.none
             )
 
 
-initModel : String -> Model
-initModel apiKey =
-    Model Close apiKey "" "異形器官一覧" (text "")
+initModel : Session.Data -> String -> Model
+initModel session apiKey =
+    Model session Close apiKey "" "異形器官一覧" (text "")
 
 
 type Msg

@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Models.Character exposing (..)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
+import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
@@ -27,21 +28,22 @@ subscriptions =
 
 
 type alias Model =
-    { naviState : NaviState
+    { session : Session.Data
+    , naviState : NaviState
     , character : Character
     }
 
 
-init : String -> ( Model, Cmd Msg )
-init storeUserId =
-    ( initModel storeUserId
+init : Session.Data -> String -> ( Model, Cmd Msg )
+init session storeUserId =
+    ( initModel session storeUserId
     , Cmd.none
     )
 
 
-initModel : String -> Model
-initModel storeUserId =
-    Model Close (initCharacter storeUserId)
+initModel : Session.Data -> String -> Model
+initModel session storeUserId =
+    Model session Close (initCharacter storeUserId)
 
 
 type Msg
