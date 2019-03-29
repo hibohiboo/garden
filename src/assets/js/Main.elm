@@ -15,6 +15,7 @@ import Page.Problem as Problem
 import Page.RuleBook as RuleBook
 import Page.Top
 import Route exposing (..)
+import Session
 import Skeleton exposing (Details, view)
 import Url
 import Url.Builder
@@ -231,11 +232,29 @@ update msg model =
 
 
 
+-- EXIT
+
+
+exit : Model -> Session.Data
+exit model =
+    case model.page of
+        MarkdownPage m ->
+            m.session
+
+        _ ->
+            Session.empty
+
+
+
 {- パスに応じて各ページを初期化する -}
 
 
 goTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 goTo maybeRoute model =
+    let
+        session =
+            exit model
+    in
     case maybeRoute of
         Nothing ->
             ( { model | page = NotFound }
@@ -263,7 +282,7 @@ goTo maybeRoute model =
         Just Route.PrivacyPolicy ->
             let
                 ( markdownModel, markdownCmd ) =
-                    Markdown.init "privacy-policy.md"
+                    Markdown.init session "privacy-policy.md" 1.0
             in
             ( { model | page = MarkdownPage markdownModel }
             , Cmd.map MarkdownMsg markdownCmd
@@ -272,7 +291,7 @@ goTo maybeRoute model =
         Just Route.About ->
             let
                 ( markdownModel, markdownCmd ) =
-                    Markdown.init "about.md"
+                    Markdown.init session "about.md" 1.0
             in
             ( { model | page = MarkdownPage markdownModel }
             , Cmd.map MarkdownMsg markdownCmd
@@ -281,7 +300,7 @@ goTo maybeRoute model =
         Just Route.Agreement ->
             let
                 ( markdownModel, markdownCmd ) =
-                    Markdown.init "agreement.md"
+                    Markdown.init session "agreement.md" 1.0
             in
             ( { model | page = MarkdownPage markdownModel }
             , Cmd.map MarkdownMsg markdownCmd

@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Markdown
+import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
@@ -12,7 +13,9 @@ import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNaviga
 
 
 type alias Model =
-    { fileName : String
+    { session : Session.Data
+    , fileName : String
+    , version : Session.Version
     , state : State
     , naviState : NaviState
     }
@@ -24,26 +27,24 @@ type State
     | Error Http.Error
 
 
-init : String -> ( Model, Cmd Msg )
-init fileName =
-    -- ページの初期化
-    -- 最初のModelを作ると同時に、ページの表示に必要なデータをHttpで取得
-    ( Model fileName Init Close
-    , getMarkdown GotMarkdown fileName
-    )
+init : Session.Data -> String -> Session.Version -> ( Model, Cmd Msg )
+init session fileName version =
+    case Session.getMarkdown session fileName version of
+        Just markdown ->
+            let
+                model =
+                    Model session fileName version (Loaded markdown) Close
+            in
+            ( model
+            , Cmd.none
+            )
 
-
-getMarkdown : (Result Http.Error String -> msg) -> String -> Cmd msg
-getMarkdown toMsg fileName =
-    Http.get
-        { url = markdownUrl fileName
-        , expect = Http.expectString toMsg
-        }
-
-
-markdownUrl : String -> String
-markdownUrl fileName =
-    Url.Builder.absolute [ "assets", "markdown", fileName ] []
+        Nothing ->
+            -- ページの初期化
+            -- 最初のModelを作ると同時に、ページの表示に必要なデータをHttpで取得
+            ( Model session fileName version Init Close
+            , Session.fetchMarkdown GotMarkdown fileName
+            )
 
 
 type Msg
@@ -56,7 +57,12 @@ update msg model =
     --- init での Http リクエストの結果が得られたら Model を変更する
     case msg of
         GotMarkdown (Ok markdown) ->
-            ( { model | state = Loaded markdown }, Cmd.none )
+            ( { model
+                | state = Loaded markdown
+                , session = Session.addMarkdown model.fileName model.version markdown model.session
+              }
+            , Cmd.none
+            )
 
         GotMarkdown (Err err) ->
             ( { model | state = Error err }, Cmd.none )
