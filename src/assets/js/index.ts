@@ -34,9 +34,9 @@ let userData;  // nullで初期化すると、Object is possibly 'null'.のエ�
 const initMaterialize = () => {
   M.updateTextFields();
 
-  // selectボックスの使用
-  const elems = document.querySelectorAll('select');
-  const instances = M.FormSelect.init(elems, {});
+  // // selectボックスの使用 -> 要素の変更を検知しないためうまく動かない
+  // const elems = document.querySelectorAll('select');
+  // const instances = M.FormSelect.init(elems, {});
 };
 
 // elmのspa構築後に、dom要素に対してイベントを設定

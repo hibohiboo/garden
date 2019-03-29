@@ -50,7 +50,8 @@ editArea character editor =
 
 organList organs =
     div [ class "input-field" ]
-        [ select []
-            (List.map (\organ -> option [ value organ.name, disabled True, selected True ] [ text organ.name ]) organs)
-        , label [] [ text "変異器官" ]
+        [ label [ for "organ" ] [ text "変異器官" ]
+        , input [ placeholder "変異器官", id "organ", type_ "text", class "validate", autocomplete True, list "organs" ] []
+        , datalist [ id "organs" ]
+            (List.map (\organ -> option [ value organ.name ] [ text organ.name ]) organs)
         ]
