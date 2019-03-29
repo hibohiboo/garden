@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addMarkdown, addSpreasSheetData, empty, fetchMarkdown, fetchSpreasSheetData, getMarkdown, getSpreasSheetData, markdownUrl, toMarkdownKey, toSpreasSheetDataKey)
+module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, getMarkdown, getOrgans, getSpreasSheetData, markdownUrl, organRange, organSheetId, organSheetVersion, toMarkdownKey, toSpreasSheetDataKey)
 
 import Dict
 import GoogleSpreadSheetApi
@@ -91,3 +91,34 @@ fetchSpreasSheetData toMsg apiKey documentId range =
         { url = GoogleSpreadSheetApi.sheetUrl apiKey documentId range
         , expect = Http.expectString toMsg
         }
+
+
+
+-- 変異器官
+
+
+organSheetId =
+    "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
+
+
+organRange =
+    "organList!A2:B11"
+
+
+organSheetVersion =
+    1.0
+
+
+getOrgans : Data -> Maybe String
+getOrgans data =
+    getSpreasSheetData data organSheetId organRange organSheetVersion
+
+
+addOrgans : Data -> String -> Data
+addOrgans data json =
+    addSpreasSheetData organSheetId organRange organSheetVersion json data
+
+
+fetchOrgans : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchOrgans toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey organSheetId organRange

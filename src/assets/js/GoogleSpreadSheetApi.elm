@@ -1,4 +1,4 @@
-module GoogleSpreadSheetApi exposing (Organ, getOrgans, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, sheetUrl)
+module GoogleSpreadSheetApi exposing (Organ, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, sheetUrl)
 
 import Http
 import Json.Decode as D exposing (..)
@@ -14,14 +14,6 @@ type alias Organ =
     { name : String
     , description : String
     }
-
-
-getOrgans : (Result Http.Error (List Organ) -> msg) -> String -> String -> String -> Cmd msg
-getOrgans toMsg apiKey documentId range =
-    Http.get
-        { url = sheetUrl apiKey documentId range
-        , expect = Http.expectJson toMsg organsInObjectDecoder
-        }
 
 
 sheetUrl : String -> String -> String -> String
