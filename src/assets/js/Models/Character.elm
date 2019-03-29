@@ -1,5 +1,6 @@
-module Models.Character exposing (Character, characterDecoder, encodeCharacter, initCharacter)
+module Models.Character exposing (Character, EditorModel, characterDecoder, encodeCharacter, initCharacter)
 
+import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import Json.Encode as E
@@ -10,6 +11,11 @@ type alias Character =
     , characterId : String
     , name : String
     , kana : String
+    }
+
+
+type alias EditorModel =
+    { organs : List Organ
     }
 
 

@@ -1,9 +1,11 @@
 port module Page.MyPages.CharacterUpdate exposing (Model, Msg, init, initModel, subscriptions, update, view)
 
 import Browser.Navigation as Navigation
+import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Http
 import Json.Decode as D
 import Models.Character exposing (..)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
@@ -38,20 +40,38 @@ subscriptions =
 type alias Model =
     { session : Session.Data
     , naviState : NaviState
+    , googleSheetApiKey : String
     , character : Character
+    , editorModel : EditorModel
     }
 
 
-init : Session.Data -> String -> String -> ( Model, Cmd Msg )
-init session storeUserId characterId =
-    ( initModel session storeUserId
-    , Cmd.batch [ getCharacter ( storeUserId, characterId ) ]
+init : Session.Data -> String -> String -> String -> ( Model, Cmd Msg )
+init session apiKey storeUserId characterId =
+    let
+        organs =
+            case Session.getOrgans session of
+                Just sheet ->
+                    GSAPI.organsListFromJson sheet
+
+                Nothing ->
+                    []
+
+        cmd =
+            if organs == [] then
+                Session.fetchOrgans GotOrgans apiKey
+
+            else
+                Cmd.none
+    in
+    ( initModel session apiKey storeUserId organs
+    , Cmd.batch [ getCharacter ( storeUserId, characterId ), cmd ]
     )
 
 
-initModel : Session.Data -> String -> Model
-initModel session storeUserId =
-    Model session Close (initCharacter storeUserId)
+initModel : Session.Data -> String -> String -> List Organ -> Model
+initModel session apiKey storeUserId organs =
+    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs)
 
 
 type Msg
@@ -60,6 +80,7 @@ type Msg
     | Save
     | GotCharacter String
     | UpdatedCharacter Bool
+    | GotOrgans (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -98,6 +119,29 @@ update msg model =
         UpdatedCharacter _ ->
             ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
+        GotOrgans (Ok json) ->
+            case GSAPI.organsInObjectDecodeFromString json of
+                Ok organs ->
+                    let
+                        oldEditorModel =
+                            model.editorModel
+
+                        newEditorModel =
+                            { oldEditorModel | organs = organs }
+                    in
+                    ( { model
+                        | editorModel = newEditorModel
+                        , session = Session.addOrgans model.session json
+                      }
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotOrgans (Err _) ->
+            ( model, Cmd.none )
+
 
 view : Model -> Skeleton.Details Msg
 view model =
@@ -131,7 +175,7 @@ viewHelper model =
 edit : Model -> Html Msg
 edit model =
     div [ class "edit-area" ]
-        [ Html.map EditorMsg (editArea model.character)
+        [ Html.map EditorMsg (editArea model.character model.editorModel)
         , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
             [ text "更新"
             , i [ class "material-icons right" ] [ text "send" ]

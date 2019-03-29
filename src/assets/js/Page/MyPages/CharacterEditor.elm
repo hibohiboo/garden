@@ -1,5 +1,6 @@
 port module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
 
+import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -32,8 +33,8 @@ update msg char =
             ( c, Cmd.none )
 
 
-editArea : Character -> Html Msg
-editArea character =
+editArea : Character -> EditorModel -> Html Msg
+editArea character editor =
     div [ class "character-edit-area" ]
         [ div [ class "input-field" ]
             [ input [ placeholder "名前", id "name", type_ "text", class "validate", value character.name, onInput InputName ] []
@@ -43,4 +44,13 @@ editArea character =
             [ input [ placeholder "フリガナ", id "kana", type_ "text", class "validate", value character.kana, onInput InputKana ] []
             , label [ for "kana" ] [ text "フリガナ" ]
             ]
+        , organList editor.organs
+        ]
+
+
+organList organs =
+    div [ class "input-field" ]
+        [ select []
+            (List.map (\organ -> option [ value organ.name, disabled True, selected True ] [ text organ.name ]) organs)
+        , label [] [ text "変異器官" ]
         ]

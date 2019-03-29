@@ -1,4 +1,4 @@
-module GoogleSpreadSheetApi exposing (Organ, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, sheetUrl)
+module GoogleSpreadSheetApi exposing (Organ, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, organsListFromJson, sheetUrl)
 
 import Http
 import Json.Decode as D exposing (..)
@@ -19,6 +19,16 @@ type alias Organ =
 sheetUrl : String -> String -> String -> String
 sheetUrl apiKey documentId range =
     Url.Builder.crossOrigin "https://sheets.googleapis.com" [ "v4", "spreadsheets", documentId, "values", range ] [ Url.Builder.string "key" apiKey ]
+
+
+organsListFromJson : String -> List Organ
+organsListFromJson sheet =
+    case organsInObjectDecodeFromString sheet of
+        Ok organs ->
+            organs
+
+        Err _ ->
+            []
 
 
 organsInObjectDecodeFromString : String -> Result Error (List Organ)

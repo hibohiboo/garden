@@ -57,16 +57,6 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        organSheetId =
-            "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
-
-        organRange =
-            "organList!A2:B11"
-
-        organSheetVersion =
-            1.0
-    in
     case msg of
         ToggleNavigation ->
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
@@ -78,27 +68,27 @@ update msg model =
             ( model, Navigation.load id )
 
         ModalOrgan title ->
-            case Session.getSpreasSheetData model.session organSheetId organRange organSheetVersion of
+            case Session.getOrgans model.session of
                 Just sheet ->
-                    ( updateOrgansListModel { model | modalTitle = title } sheet organSheetId organRange organSheetVersion, openModal () )
+                    ( updateOrgansListModel { model | modalTitle = title } sheet, openModal () )
 
                 Nothing ->
-                    ( { model | modalTitle = title }, Session.fetchSpreasSheetData GotOrgans model.googleSheetApiKey organSheetId organRange )
+                    ( { model | modalTitle = title }, Session.fetchOrgans GotOrgans model.googleSheetApiKey )
 
         GotOrgans (Ok json) ->
-            ( updateOrgansListModel model json organSheetId organRange organSheetVersion, openModal () )
+            ( updateOrgansListModel model json, openModal () )
 
         GotOrgans (Err _) ->
             ( model, Cmd.none )
 
 
-updateOrgansListModel : Model -> String -> String -> String -> Session.Version -> Model
-updateOrgansListModel model json organSheetId organRange organSheetVersion =
+updateOrgansListModel : Model -> String -> Model
+updateOrgansListModel model json =
     case GSAPI.organsInObjectDecodeFromString json of
         Ok organs ->
             { model
                 | modalContents = organList organs
-                , session = Session.addSpreasSheetData organSheetId organRange organSheetVersion json model.session
+                , session = Session.addOrgans model.session json
             }
 
         Err _ ->

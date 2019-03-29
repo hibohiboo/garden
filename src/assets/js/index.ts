@@ -31,16 +31,24 @@ const app = Elm.Main.init({ node: mountNode, flags });
 // DBのユーザ情報。
 let userData;  // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
 
+const initMaterialize = () => {
+  M.updateTextFields();
+
+  // selectボックスの使用
+  const elems = document.querySelectorAll('select');
+  const instances = M.FormSelect.init(elems, {});
+};
+
 // elmのspa構築後に、dom要素に対してイベントを設定
 app.ports.initializedToJs.subscribe(() => {
   // elmの構築したDOMにmaterializeを適用
-  M.updateTextFields();
+  initMaterialize();
 });
 
 // ページ遷移後に呼ばれる
 app.ports.urlChangeToJs.subscribe(() => {
   // 新しく構築されたDOMにmaterializeを適用
-  M.updateTextFields();
+  initMaterialize();
 
   const $modal = $('#mainModal');
   if ($modal.length !== 0) {
