@@ -80,7 +80,7 @@ update msg model =
         ModalOrgan title ->
             case Session.getSpreasSheetData model.session organSheetId organRange organSheetVersion of
                 Just sheet ->
-                    ( updateOrgansListModel model sheet organSheetId organRange organSheetVersion, openModal () )
+                    ( updateOrgansListModel { model | modalTitle = title } sheet organSheetId organRange organSheetVersion, openModal () )
 
                 Nothing ->
                     ( { model | modalTitle = title }, Session.fetchSpreasSheetData GotOrgans model.googleSheetApiKey organSheetId organRange )
@@ -132,9 +132,11 @@ modalWindow title content =
             [ h4 [] [ text title ]
             , p [] [ content ]
             ]
-        , div [ class "modal-footer" ]
-            [ a [ href "#!", class "modal-close waves-effect waves-green btn-flat" ] [ text "閉じる" ]
-            ]
+
+        -- elmの遷移と干渉して、 close のときにM.Modal._modalsOpenの値が １から0にならない
+        -- , div [ class "modal-footer" ]
+        --     [ a [ href "#", class "modal-close waves-effect waves-green btn-flat" ] [ text "閉じる" ]
+        --     ]
         ]
 
 
