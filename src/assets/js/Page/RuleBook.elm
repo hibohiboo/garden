@@ -52,11 +52,21 @@ type Msg
     | NoOp
     | PageAnchor String
     | ModalOrgan String
-    | GotOrgans (Result Http.Error (List Organ))
+    | GotOrgans (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        organSheetId =
+            "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
+
+        organRange =
+            "organList!A2:B11"
+
+        organSheetVersion =
+            1.0
+    in
     case msg of
         ToggleNavigation ->
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
@@ -68,17 +78,31 @@ update msg model =
             ( model, Navigation.load id )
 
         ModalOrgan title ->
-            ( { model | modalTitle = title }, GSAPI.getOrgans GotOrgans model.googleSheetApiKey "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w" "organList!A2:B11" )
+            case Session.getSpreasSheetData model.session organSheetId organRange organSheetVersion of
+                Just sheet ->
+                    ( updateOrgansListModel model sheet organSheetId organRange organSheetVersion, openModal () )
 
-        GotOrgans (Ok organs) ->
-            let
-                organTable =
-                    organList organs
-            in
-            ( { model | modalContents = organTable }, openModal () )
+                Nothing ->
+                    ( { model | modalTitle = title }, Session.fetchSpreasSheetData GotOrgans model.googleSheetApiKey organSheetId organRange )
+
+        GotOrgans (Ok json) ->
+            ( updateOrgansListModel model json organSheetId organRange organSheetVersion, openModal () )
 
         GotOrgans (Err _) ->
             ( model, Cmd.none )
+
+
+updateOrgansListModel : Model -> String -> String -> String -> Session.Version -> Model
+updateOrgansListModel model json organSheetId organRange organSheetVersion =
+    case GSAPI.organsInObjectDecodeFromString json of
+        Ok organs ->
+            { model
+                | modalContents = organList organs
+                , session = Session.addSpreasSheetData organSheetId organRange organSheetVersion json model.session
+            }
+
+        Err _ ->
+            { model | modalContents = text "error" }
 
 
 view : Model -> Skeleton.Details Msg
