@@ -160,7 +160,21 @@ viewRulebook =
         , div [ class "content" ]
             [ first
             , world
-            , character
+            , section [ id "character", class "content-doc" ]
+                [ h1 []
+                    [ text "キャラクター" ]
+                , p
+                    []
+                    [ text """
+プレイヤーの分身であるキャラクター（以下、PC)は、特異な力を持つ子供となる。
+""" ]
+                , h2 [] [ text "1. 変異器官の決定" ]
+                , p
+                    []
+                    [ text """
+異能の発生源となる変異器官を選択する。
+""" ]
+                ]
             , a [ onClick (ModalOrgan "変異器官一覧"), class "waves-effect waves-light btn", href "#" ] [ text "変異器官一覧" ]
             ]
         ]

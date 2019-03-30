@@ -195,5 +195,7 @@ karte model =
         , div [ class "kana" ] [ text char.kana ]
         , div [ class "label-name" ] [ text "名前" ]
         , div [ class "name" ] [ text char.name ]
+        , div [ class "label-organ" ] [ text "変異器官" ]
+        , div [ class "organ" ] [ text char.organ ]
         , div [ class "outer-line" ] []
         ]

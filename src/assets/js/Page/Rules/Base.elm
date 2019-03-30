@@ -1,4 +1,4 @@
-module Page.Rules.Base exposing (character, commonRule, first, world)
+module Page.Rules.Base exposing (commonRule, first, world)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -108,24 +108,5 @@ A2地区の臨海部に建造された東西90km南北40km程度の実験都市�
 故郷に帰りたい脱出派。
 崩壊の日を起こした者を解放の勇者だと崇めて探しだそうとする勇者探索派。
 さらに、外部からも介入が入り始めている。
-""" ]
-        ]
-
-
-character : Html msg
-character =
-    section [ id "character", class "content-doc" ]
-        [ h1 []
-            [ text "キャラクター" ]
-        , p
-            []
-            [ text """
-プレイヤーの分身であるキャラクター（以下、PC)は、特異な力を持つ子供となる。
-""" ]
-        , h2 [] [ text "1. 変異器官の決定" ]
-        , p
-            []
-            [ text """
-異能の発生源となる変異器官を選択する。
 """ ]
         ]
