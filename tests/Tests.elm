@@ -119,7 +119,7 @@ getText =
             \_ ->
                 let
                     actual =
-                        GSApi.dictFromJson "{\"values\":[[\"a\", \"b\"],[\"c\", \"d\"]]}"
+                        GSApi.dictFromSpreadSheet "{\"values\":[[\"a\", \"b\"],[\"c\", \"d\"]]}"
 
                     expect =
                         Dict.fromList [ ( "a", "b" ), ( "c", "d" ) ]

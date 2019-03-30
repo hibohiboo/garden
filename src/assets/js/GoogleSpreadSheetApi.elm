@@ -1,4 +1,4 @@
-module GoogleSpreadSheetApi exposing (Organ, dictFromJson, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, organsListFromJson, sheetUrl)
+module GoogleSpreadSheetApi exposing (Organ, dictFromSpreadSheet, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, organsListFromJson, sheetUrl)
 
 import Dict exposing (Dict)
 import Http
@@ -68,12 +68,6 @@ organDecoder =
 -- テキスト文字列一覧
 
 
-type alias Text =
-    { key : String
-    , value : String
-    }
-
-
 textStringDecoder : Decoder ( String, String )
 textStringDecoder =
     D.map2 Tuple.pair
@@ -86,8 +80,8 @@ textStringsDecoder s =
     decodeString (field "values" (D.list textStringDecoder)) s
 
 
-dictFromJson : String -> Dict String String
-dictFromJson sheet =
+dictFromSpreadSheet : String -> Dict String String
+dictFromSpreadSheet sheet =
     case textStringsDecoder sheet of
         Ok a ->
             Dict.fromList a
