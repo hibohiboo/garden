@@ -1,10 +1,12 @@
-module Tests exposing (sheet, suite, unitTest)
+module Tests exposing (getText, sheet, suite, unitTest)
 
+import Dict exposing (Dict)
 import Expect
 import GoogleSpreadSheetApi as GSApi
 import Route exposing (..)
 import Test exposing (..)
 import Url
+import Utils.TextStrings as Tx
 
 
 
@@ -95,6 +97,32 @@ sheet =
 
                     expect =
                         [ GSApi.Organ "a" "b", GSApi.Organ "c" "d" ]
+                in
+                Expect.equal actual expect
+        ]
+
+
+getText : Test
+getText =
+    describe "TextStrings"
+        [ test "値を取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        Tx.getText "test"
+
+                    expect =
+                        "test"
+                in
+                Expect.equal actual expect
+        , test "スプレッドから取得した結果をディクショナリにするテスト" <|
+            \_ ->
+                let
+                    actual =
+                        GSApi.dictFromJson "{\"values\":[[\"a\", \"b\"],[\"c\", \"d\"]]}"
+
+                    expect =
+                        Dict.fromList [ ( "a", "b" ), ( "c", "d" ) ]
                 in
                 Expect.equal actual expect
         ]

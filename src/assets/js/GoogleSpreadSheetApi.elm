@@ -1,5 +1,6 @@
-module GoogleSpreadSheetApi exposing (Organ, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, organsListFromJson, sheetUrl)
+module GoogleSpreadSheetApi exposing (Organ, dictFromJson, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, organsListFromJson, sheetUrl)
 
+import Dict exposing (Dict)
 import Http
 import Json.Decode as D exposing (..)
 import Url
@@ -61,3 +62,35 @@ organDecoder =
     D.map2 Organ
         (index 0 string)
         (index 1 string)
+
+
+
+-- テキスト文字列一覧
+
+
+type alias Text =
+    { key : String
+    , value : String
+    }
+
+
+textStringDecoder : Decoder ( String, String )
+textStringDecoder =
+    D.map2 Tuple.pair
+        (index 0 string)
+        (index 1 string)
+
+
+textStringsDecoder : String -> Result Error (List ( String, String ))
+textStringsDecoder s =
+    decodeString (field "values" (D.list textStringDecoder)) s
+
+
+dictFromJson : String -> Dict String String
+dictFromJson sheet =
+    case textStringsDecoder sheet of
+        Ok a ->
+            Dict.fromList a
+
+        Err _ ->
+            Dict.empty
