@@ -93,8 +93,6 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     // .filter(function(userInfo:firebase.UserInfo){return userInfo.providerId === firebase.auth.TwitterAuthProvider.PROVIDER_ID;})
     // .map(function(userInfo:firebase.UserInfo){return userInfo.uid;})[0];
 
-    // console.log('firebaseuser', firebaseUser);
-
     // usersコレクションへの参照を取得
     const usersRef = db.collection("users");
 
@@ -110,17 +108,15 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
     const querySnapshot = await query.get();
 
     await querySnapshot.forEach(function (doc) {
-      // doc.data() is never undefined for query doc snapshots
-      // console.log(doc.id, " => ", doc.data());
       // ユーザ情報取得
       userRef = doc.ref;
       dbuser = doc.data();
       storeUserId = doc.id;
 
-      // 更新日時を更新する
-      userRef.update({
-        updatedAt: fireBase.getTimestamp()
-      });
+      //   // 更新日時を更新する
+      //   userRef.update({
+      //     updatedAt: fireBase.getTimestamp()
+      //   });
     });
 
     if (querySnapshot.size === 0) {
@@ -142,6 +138,9 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       , displayName: dbuser.displayName
       , storeUserId: storeUserId
     });
+
+    // ローカルストレージにユーザ情報を保存
+    localStorage[STORAGE_KEY] = json;
 
     // サインイン情報を伝える。
     app.ports.signedIn.send(json);
@@ -206,16 +205,3 @@ app.ports.updateCharacter.subscribe(async json => {
   await characterRef.update(character);
   app.ports.updatedCharacter.send(true);
 });
-
-
-
-// app.ports.initialize.subscribe(() => {
-// });
-// app.ports.toJs.subscribe((data: string) => {
-//   // localStorage[STORAGE_KEY] = data;
-
-//   // // 本文がなければ、ストレージから削除してしまう
-//   // if(data.trim().length == 0){
-//   //   localStorage.removeItem(STORAGE_KEY);
-//   // }
-// });
