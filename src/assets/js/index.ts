@@ -130,6 +130,8 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
         , updatedAt: fireBase.getTimestamp()
       };
       userRef.set(dbuser);
+
+      storeUserId = userRef.id;
     }
     // console.log(dbuser)
 
