@@ -58,10 +58,26 @@ inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
         ]
 
 
+inputAreas : String -> String -> List String -> (String -> msg) -> Html msg
+inputAreas fieldId labelName val toMsg =
+    let
+        inputList =
+            -- 空のリストを渡されたときは追加用に空要素を追加する
+            if List.length val == 0 then
+                [ "" ]
+
+            else
+                val
+    in
+    div []
+        (List.map (\v -> inputArea fieldId labelName v toMsg) inputList)
+
+
 editArea : Character -> EditorModel -> Html Msg
 editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.name InputKana
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
+        , inputAreas "traits" "特性" [] InputKana
         ]

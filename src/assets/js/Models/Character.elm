@@ -12,6 +12,7 @@ type alias Character =
     , name : String
     , kana : String
     , organ : String
+    , traits : List String
     }
 
 
@@ -22,7 +23,7 @@ type alias EditorModel =
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" ""
+    Character storeUserId "" "" "" "" []
 
 
 encodeCharacter : Character -> String
@@ -39,6 +40,7 @@ encodeCharacterToValue c =
         , ( "name", E.string c.name )
         , ( "kana", E.string c.kana )
         , ( "organ", E.string c.organ )
+        , ( "traits", E.list E.string c.traits )
         ]
 
 
@@ -50,3 +52,4 @@ characterDecoder =
         |> Json.Decode.Pipeline.required "name" Decode.string
         |> Json.Decode.Pipeline.required "kana" Decode.string
         |> Json.Decode.Pipeline.required "organ" Decode.string
+        |> Json.Decode.Pipeline.optional "traits" (Decode.list Decode.string) []
