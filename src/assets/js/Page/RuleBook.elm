@@ -189,47 +189,46 @@ tableOfContents =
 
 viewRulebook : Dict String String -> Html Msg
 viewRulebook texts =
+    let
+        -- 辞書からテキストを取得する。keyに指定した辞書がない場合は、defaultValueを表示する。
+        dicText key defaultValue =
+            text (Tx.getText texts key defaultValue)
+    in
     div []
-        [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ text (Tx.getText texts "rulebook.title" "Garden 基本ルールブック") ] ]
+        [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ dicText "rulebook.title" "Garden 基本ルールブック" ] ]
         , div [ class "content" ]
             [ img [ src "/assets/images/childrens.png", class "front-cover", alt (Tx.getText texts "rulebook.title" "Garden 基本ルールブック") ] []
             , section [ id "first" ]
                 [ h1 []
-                    [ text (Tx.getText texts "rulebook.section.first.title" "はじめに") ]
+                    [ dicText "rulebook.section.first.title" "はじめに" ]
                 , p
                     [ class "content-doc" ]
-                    [ text (Tx.getText texts "rulebook.section.first.content.1" "舞台設定") ]
+                    [ dicText "rulebook.section.first.content.1" "舞台設定" ]
                 , p
                     [ class "content-doc" ]
-                    [ text (Tx.getText texts "rulebook.section.first.content.2" "どういうゲームか") ]
+                    [ dicText "rulebook.section.first.content.2" "どういうゲームか" ]
                 , h2 [ id "commonRule" ]
-                    [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.title" "このルールの読み方") ]
+                    [ dicText "rulebook.section.first.notes_for_readming.title" "このルールの読み方" ]
                 , div [ class "collection with-header" ]
-                    [ div [ class "collection-header" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type" "かっこの種類") ]
-                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type.1" "【】：キャラクターの〇を表す。") ]
-                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type.2" "《》：特技を表す。") ]
-                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type.3" "＜＞：このゲームで使われる固有名詞を表す。") ]
+                    [ div [ class "collection-header" ] [ dicText "rulebook.section.first.notes_for_readming.bracket_type" "かっこの種類" ]
+                    , div [ class "collection-item" ] [ dicText "rulebook.section.first.notes_for_readming.bracket_type.1" "【】：キャラクターの〇を表す。" ]
+                    , div [ class "collection-item" ] [ dicText "rulebook.section.first.notes_for_readming.bracket_type.2" "《》：特技を表す。" ]
+                    , div [ class "collection-item" ] [ dicText "rulebook.section.first.notes_for_readming.bracket_type.3" "＜＞：このゲームで使われる固有名詞を表す。" ]
                     ]
                 , div [ class "collection with-header" ]
-                    [ div [ class "collection-header" ] [ text (Tx.getText texts "rulebook.section.first.regarding_fractions.title" "端数の処理") ]
-                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.regarding_fractions.content" "このゲームでは、割り算を行う場合、常に端数は切り上げとする。") ]
+                    [ div [ class "collection-header" ] [ dicText "rulebook.section.first.regarding_fractions.title" "端数の処理" ]
+                    , div [ class "collection-item" ] [ dicText "rulebook.section.first.regarding_fractions.content" "このゲームでは、割り算を行う場合、常に端数は切り上げとする。" ]
                     ]
                 ]
             , world
             , section [ id "character", class "content-doc" ]
                 [ h1 []
-                    [ text (Tx.getText texts "rulebook.section.character.title" "キャラクター") ]
-                , p
-                    []
-                    [ text (Tx.getText texts "rulebook.section.character.description.1" "キャラクターとは") ]
-                , h2 [] [ text "1. 変異器官の決定" ]
-                , p
-                    []
-                    [ text """
-異能の発生源となる変異器官を選択する。
-""" ]
+                    [ dicText "rulebook.section.character.title" "キャラクター" ]
+                , p [] [ dicText "rulebook.section.character.description.1" "キャラクターとは" ]
+                , h2 [] [ dicText "rulebook.section.character.organ.title" "1. 変異器官の決定" ]
+                , p [] [ dicText "rulebook.section.character.organ.title" "異能の発生源となる変異器官を選択する。" ]
+                , a [ onClick (ModalOrgan (Tx.getText texts "chart.list.organ.title" "変異器官一覧")), class "waves-effect waves-light btn", href "#" ] [ dicText "chart.list.organ.title" "変異器官一覧" ]
                 ]
-            , a [ onClick (ModalOrgan "変異器官一覧"), class "waves-effect waves-light btn", href "#" ] [ text "変異器官一覧" ]
             ]
         ]
 
