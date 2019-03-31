@@ -8,7 +8,6 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
-import Page.Rules.Base exposing (..)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
@@ -216,7 +215,20 @@ viewRulebook texts =
                     , div [ class "collection-item" ] [ dicText "rulebook.section.first.regarding_fractions.content" "このゲームでは、割り算を行う場合、常に端数は切り上げとする。" ]
                     ]
                 ]
-            , world
+            , section
+                [ id "world" ]
+                [ h1 [] [ dicText "rulebook.section.world.title" "ワールド" ]
+                , h2 [] [ dicText "rulebook.section.world.mutant.title" "異能因子発現個体群" ]
+                , p [ class "content-doc" ] [ dicText "rulebook.section.world.mutant.content" "異能因子発現個体群とは" ]
+                , h2 [] [ dicText "rulebook.section.world.garden.title" "箱庭の島 - ガーデン -" ]
+                , p [ class "content-doc" ] [ dicText "rulebook.section.world.garden.content" "ガーデンとは" ]
+                , h2 [] [ dicText "rulebook.section.world.sakuraba_city.title" "箱庭の中の箱庭 - 桜庭市 -" ]
+                , p [ class "content-doc" ] [ dicText "rulebook.section.world.sakuraba_city.content" "桜庭市とは" ]
+                , h2 [] [ dicText "rulebook.section.world.date_of_collapse.title" "崩壊の日" ]
+                , p [ class "content-doc" ] [ dicText "rulebook.section.world.date_of_collapse.content" "崩壊の日に起きたこと" ]
+                , h2 [] [ dicText "rulebook.section.world.sakuraba_city_after.title" "崩壊後の桜庭市" ]
+                , p [ class "content-doc" ] [ dicText "rulebook.section.world.sakuraba_city_after.content" "桜庭市ナワバリバトル" ]
+                ]
             , section [ id "character", class "content-doc" ]
                 [ h1 [] [ dicText "rulebook.section.character.title" "キャラクター" ]
                 , p [] [ dicText "rulebook.section.character.description.1" "キャラクターとは" ]
