@@ -86,7 +86,7 @@ editArea : Character -> EditorModel -> Html Msg
 editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
-        , inputArea "kana" "フリガナ" character.name InputKana
+        , inputArea "kana" "フリガナ" character.kana InputKana
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
         , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         ]
