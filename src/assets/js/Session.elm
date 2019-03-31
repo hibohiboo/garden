@@ -133,7 +133,7 @@ testStringsSheetId =
 
 
 testStringsRange =
-    "textStrings!A2:B29"
+    "textStrings!A2:B31"
 
 
 testStringsSheetVersion =
