@@ -105,7 +105,7 @@ viewHelper model =
 edit : Model -> Html Msg
 edit model =
     div [ class "edit-area" ]
-        [ Html.map EditorMsg (editArea model.character (EditorModel []))
+        [ Html.map EditorMsg (editArea model.character (EditorModel [] []))
         , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
             [ text "保存"
             , i [ class "material-icons right" ] [ text "send" ]

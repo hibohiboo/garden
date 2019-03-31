@@ -87,9 +87,14 @@ editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.name InputKana
-        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\( name, description ) -> name) editor.organs)
-        , inputAreas "traits" "特性" character.traits InputTrait AddTrait DeleteTrait
+        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
+        , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         ]
+
+
+getNameList : List ( String, String ) -> List String
+getNameList list =
+    List.map (\( name, description ) -> name) list
 
 
 
@@ -115,6 +120,37 @@ inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
         , label [ for fieldId ] [ text labelName ]
         , datalist [ id listId ]
             (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
+        ]
+
+
+
+-- オートコンプリート付き可変の入力欄
+
+
+inputAreasWithAutocomplete : String -> String -> Array String -> (Int -> String -> msg) -> msg -> (Int -> msg) -> String -> List String -> Html msg
+inputAreasWithAutocomplete fieldId labelName arrays updateMsg addMsg deleteMsg listId autocompleteList =
+    div []
+        [ div []
+            (List.concat
+                [ Array.toList <| Array.indexedMap (\i v -> updateAreaWithAutocomplete i fieldId labelName v updateMsg deleteMsg listId) arrays
+                , addButton labelName addMsg
+                ]
+            )
+        , datalist [ id listId ]
+            (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
+        ]
+
+
+updateAreaWithAutocomplete : Int -> String -> String -> String -> (Int -> String -> msg) -> (Int -> msg) -> String -> Html msg
+updateAreaWithAutocomplete index fieldId labelName val updateMsg deleteMsg listId =
+    let
+        fid =
+            fieldId ++ String.fromInt index
+    in
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index), autocomplete True, list listId ] []
+        , label [ for fid ] [ text labelName ]
+        , deleteButton deleteMsg index
         ]
 
 

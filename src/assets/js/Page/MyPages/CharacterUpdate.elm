@@ -56,21 +56,36 @@ init session apiKey storeUserId characterId =
                 Nothing ->
                     []
 
-        cmd =
+        organsCmd =
             if organs == [] then
                 Session.fetchOrgans GotOrgans apiKey
 
             else
                 Cmd.none
+
+        traits =
+            case Session.getTraits session of
+                Just sheet ->
+                    GSAPI.tuplesListFromJson sheet
+
+                Nothing ->
+                    []
+
+        traitsCmd =
+            if traits == [] then
+                Session.fetchTraits GotTraits apiKey
+
+            else
+                Cmd.none
     in
-    ( initModel session apiKey storeUserId organs
-    , Cmd.batch [ getCharacter ( storeUserId, characterId ), cmd ]
+    ( initModel session apiKey storeUserId organs traits
+    , Cmd.batch [ getCharacter ( storeUserId, characterId ), organsCmd, traitsCmd ]
     )
 
 
-initModel : Session.Data -> String -> String -> List ( String, String ) -> Model
-initModel session apiKey storeUserId organs =
-    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs)
+initModel : Session.Data -> String -> String -> List ( String, String ) -> List ( String, String ) -> Model
+initModel session apiKey storeUserId organs traits =
+    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs traits)
 
 
 type Msg
@@ -80,6 +95,7 @@ type Msg
     | GotCharacter String
     | UpdatedCharacter Bool
     | GotOrgans (Result Http.Error String)
+    | GotTraits (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -107,10 +123,6 @@ update msg model =
                             initCharacter ""
 
                         Ok char ->
-                            -- let
-                            --     _ =
-                            --         Debug.log "decodeChar" char
-                            -- in
                             char
             in
             ( { model | character = m }, Cmd.none )
@@ -139,6 +151,29 @@ update msg model =
                     ( model, Cmd.none )
 
         GotOrgans (Err _) ->
+            ( model, Cmd.none )
+
+        GotTraits (Ok json) ->
+            case GSAPI.tuplesInObjectDecodeFromString json of
+                Ok traits ->
+                    let
+                        oldEditorModel =
+                            model.editorModel
+
+                        newEditorModel =
+                            { oldEditorModel | traits = traits }
+                    in
+                    ( { model
+                        | editorModel = newEditorModel
+                        , session = Session.addTraits model.session json
+                      }
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotTraits (Err _) ->
             ( model, Cmd.none )
 
 

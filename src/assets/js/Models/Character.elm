@@ -19,6 +19,7 @@ type alias Character =
 
 type alias EditorModel =
     { organs : List ( String, String )
+    , traits : List ( String, String )
     }
 
 
