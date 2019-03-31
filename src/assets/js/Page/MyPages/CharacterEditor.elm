@@ -7,7 +7,6 @@ import Html.Events exposing (onClick, onInput)
 import Models.Character exposing (..)
 import Url
 import Url.Builder
-import Utils.Terms as Terms
 
 
 type Msg

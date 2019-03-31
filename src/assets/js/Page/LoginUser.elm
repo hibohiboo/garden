@@ -11,7 +11,6 @@ import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
-import Utils.Terms as Terms
 
 
 port signOut : () -> Cmd msg

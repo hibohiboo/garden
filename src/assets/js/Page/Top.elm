@@ -8,7 +8,6 @@ import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
-import Utils.Terms as Terms
 
 
 type alias Model =
@@ -63,7 +62,7 @@ viewTopPage : Html msg
 viewTopPage =
     div [ class "center" ]
         [ div [ class "top-header" ]
-            [ div [] [ text Terms.trpgGenre ]
+            [ div [] [ text "孤島異能研究機関崩壊後TRPG" ]
             , h1 [] [ text "Sandbox Garden" ]
             , h2 [] [ text "～ 箱庭の島の子供たち ～" ]
             , a [ class "top-image", href (Url.Builder.absolute [ "rulebook" ] []) ] [ img [ src "/assets/images/childrens.png" ] [] ]

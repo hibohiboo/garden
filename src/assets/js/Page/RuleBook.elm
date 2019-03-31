@@ -15,7 +15,6 @@ import Task exposing (..)
 import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
-import Utils.Terms as Terms
 import Utils.TextStrings as Tx
 
 
@@ -195,20 +194,17 @@ viewRulebook texts =
             text (Tx.getText texts key defaultValue)
     in
     div []
-        [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ dicText "rulebook.title" "Garden 基本ルールブック" ] ]
+        [ div [ class "rulebook-title" ]
+            [ div [] [ dicText "rulebook.genre" "孤島異能研究機関崩壊後TRPG" ]
+            , h1 [] [ dicText "rulebook.title" "Garden 基本ルールブック" ]
+            ]
         , div [ class "content" ]
             [ img [ src "/assets/images/childrens.png", class "front-cover", alt (Tx.getText texts "rulebook.title" "Garden 基本ルールブック") ] []
             , section [ id "first" ]
-                [ h1 []
-                    [ dicText "rulebook.section.first.title" "はじめに" ]
-                , p
-                    [ class "content-doc" ]
-                    [ dicText "rulebook.section.first.content.1" "舞台設定" ]
-                , p
-                    [ class "content-doc" ]
-                    [ dicText "rulebook.section.first.content.2" "どういうゲームか" ]
-                , h2 [ id "commonRule" ]
-                    [ dicText "rulebook.section.first.notes_for_readming.title" "このルールの読み方" ]
+                [ h1 [] [ dicText "rulebook.section.first.title" "はじめに" ]
+                , p [ class "content-doc" ] [ dicText "rulebook.section.first.content.1" "舞台設定" ]
+                , p [ class "content-doc" ] [ dicText "rulebook.section.first.content.2" "どういうゲームか" ]
+                , h2 [ id "commonRule" ] [ dicText "rulebook.section.first.notes_for_readming.title" "このルールの読み方" ]
                 , div [ class "collection with-header" ]
                     [ div [ class "collection-header" ] [ dicText "rulebook.section.first.notes_for_readming.bracket_type" "かっこの種類" ]
                     , div [ class "collection-item" ] [ dicText "rulebook.section.first.notes_for_readming.bracket_type.1" "【】：キャラクターの〇を表す。" ]
@@ -222,8 +218,7 @@ viewRulebook texts =
                 ]
             , world
             , section [ id "character", class "content-doc" ]
-                [ h1 []
-                    [ dicText "rulebook.section.character.title" "キャラクター" ]
+                [ h1 [] [ dicText "rulebook.section.character.title" "キャラクター" ]
                 , p [] [ dicText "rulebook.section.character.description.1" "キャラクターとは" ]
                 , h2 [] [ dicText "rulebook.section.character.organ.title" "1. 変異器官の決定" ]
                 , p [] [ dicText "rulebook.section.character.organ.title" "異能の発生源となる変異器官を選択する。" ]
