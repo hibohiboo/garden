@@ -40,26 +40,28 @@ update msg char =
             ( c, Cmd.none )
 
 
-editArea : Character -> EditorModel -> Html Msg
-editArea character editor =
-    div [ class "character-edit-area" ]
-        [ div [ class "input-field" ]
-            [ input [ placeholder "名前", id "name", type_ "text", class "validate", value character.name, onInput InputName ] []
-            , label [ for "name" ] [ text "名前" ]
-            ]
-        , div [ class "input-field" ]
-            [ input [ placeholder "フリガナ", id "kana", type_ "text", class "validate", value character.kana, onInput InputKana ] []
-            , label [ for "kana" ] [ text "フリガナ" ]
-            ]
-        , organList editor.organs character.organ
+inputArea : String -> String -> String -> (String -> msg) -> Html msg
+inputArea fieldId labelName val toMsg =
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg ] []
+        , label [ for fieldId ] [ text labelName ]
         ]
 
 
-organList : List Organ -> String -> Html Msg
-organList organs organ =
+inputAreaWithAutocomplete : String -> String -> String -> (String -> msg) -> String -> List String -> Html msg
+inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
     div [ class "input-field" ]
-        [ label [ for "organ" ] [ text "変異器官" ]
-        , input [ placeholder "変異器官", id "organ", type_ "text", class "validate", autocomplete True, list "organs", value organ, onInput InputOrgan ] []
-        , datalist [ id "organs" ]
-            (List.map (\o -> option [ value o.name ] [ text o.name ]) organs)
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId ] []
+        , label [ for fieldId ] [ text labelName ]
+        , datalist [ id listId ]
+            (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
+        ]
+
+
+editArea : Character -> EditorModel -> Html Msg
+editArea character editor =
+    div [ class "character-edit-area" ]
+        [ inputArea "name" "名前" character.name InputName
+        , inputArea "kana" "フリガナ" character.name InputKana
+        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
         ]
