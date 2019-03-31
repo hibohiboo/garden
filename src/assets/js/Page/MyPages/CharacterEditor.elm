@@ -21,6 +21,20 @@ type Msg
 
 update : Msg -> Character -> ( Character, Cmd Msg )
 update msg char =
+    let
+        deleteAt i arrays =
+            let
+                len =
+                    Array.length arrays
+
+                head =
+                    Array.slice 0 i arrays
+
+                tail =
+                    Array.slice (i + 1) len arrays
+            in
+            Array.append head tail
+    in
     case msg of
         InputName s ->
             let
@@ -59,17 +73,8 @@ update msg char =
 
         DeleteTrait i ->
             let
-                len =
-                    Array.length char.traits
-
-                head =
-                    Array.slice 0 i char.traits
-
-                tail =
-                    Array.slice (i + 1) len char.traits
-
                 c =
-                    { char | traits = Array.append head tail }
+                    { char | traits = deleteAt i char.traits }
             in
             ( c, Cmd.none )
 
