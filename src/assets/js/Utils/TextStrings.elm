@@ -1,11 +1,10 @@
-module Utils.TextStrings exposing (defaultEmpty, getText)
+module Utils.TextStrings exposing (getText)
 
 import Dict exposing (Dict)
 
 
-defaultEmpty : Dict String String -> String -> String
-defaultEmpty d key =
-    getText d key ""
+
+-- Dictから値を取り出して返す。ない場合にはデフォルト値を返す
 
 
 getText : Dict String String -> String -> String -> String

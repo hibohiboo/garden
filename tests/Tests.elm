@@ -105,29 +105,7 @@ sheet =
 getText : Test
 getText =
     describe "TextStrings"
-        [ describe "defaultEmpty"
-            [ test "値を取得するテスト" <|
-                \_ ->
-                    let
-                        actual =
-                            Tx.defaultEmpty (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "test"
-
-                        expect =
-                            "test"
-                    in
-                    Expect.equal actual expect
-            , test "値がなければ空白を取得するテスト" <|
-                \_ ->
-                    let
-                        actual =
-                            Tx.defaultEmpty (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "bb"
-
-                        expect =
-                            ""
-                    in
-                    Expect.equal actual expect
-            ]
-        , describe "getText"
+        [ describe "getText"
             [ test "値を取得するテスト" <|
                 \_ ->
                     let
