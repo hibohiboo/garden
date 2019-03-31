@@ -71,6 +71,8 @@ type Msg
     | ModalOrgan String
     | GotOrgans (Result Http.Error String)
     | GotTexts (Result Http.Error String)
+    | ModalTrait String
+    | GotTraits (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -88,13 +90,13 @@ update msg model =
         ModalOrgan title ->
             case Session.getOrgans model.session of
                 Just sheet ->
-                    ( updateOrgansListModel { model | modalTitle = title } sheet, openModal () )
+                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addOrgans, openModal () )
 
                 Nothing ->
                     ( { model | modalTitle = title }, Session.fetchOrgans GotOrgans model.googleSheetApiKey )
 
         GotOrgans (Ok json) ->
-            ( updateOrgansListModel model json, openModal () )
+            ( updateTupleListModel model json Session.addOrgans, openModal () )
 
         GotOrgans (Err _) ->
             ( model, Cmd.none )
@@ -105,14 +107,28 @@ update msg model =
         GotTexts (Err _) ->
             ( model, Cmd.none )
 
+        ModalTrait title ->
+            case Session.getTraits model.session of
+                Just sheet ->
+                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addTraits, openModal () )
 
-updateOrgansListModel : Model -> String -> Model
-updateOrgansListModel model json =
+                Nothing ->
+                    ( { model | modalTitle = title }, Session.fetchTraits GotTraits model.googleSheetApiKey )
+
+        GotTraits (Ok json) ->
+            ( updateTupleListModel model json Session.addTraits, openModal () )
+
+        GotTraits (Err _) ->
+            ( model, Cmd.none )
+
+
+updateTupleListModel : Model -> String -> (Session.Data -> String -> Session.Data) -> Model
+updateTupleListModel model json addSession =
     case GSAPI.tuplesInObjectDecodeFromString json of
-        Ok organs ->
+        Ok tuples ->
             { model
-                | modalContents = organList organs
-                , session = Session.addOrgans model.session json
+                | modalContents = tupleList tuples
+                , session = addSession model.session json
             }
 
         Err _ ->
@@ -237,13 +253,19 @@ viewRulebook texts =
                 , a [ onClick (ModalOrgan (Tx.getText texts "chart.list.organ.title" "変異器官一覧")), class "waves-effect waves-light btn", href "#" ] [ dicText "chart.list.organ.title" "変異器官一覧" ]
                 , h2 [] [ dicText "rulebook.section.character.trait.title" "2. 特性の決定" ]
                 , p [] [ dicText "rulebook.section.character.trait.content" "異能の特性を選択する。" ]
+                , a [ onClick (ModalTrait (Tx.getText texts "chart.list.trait.title" "特性一覧")), class "waves-effect waves-light btn", href "#" ] [ dicText "chart.list.trait.title" "特性一覧" ]
                 ]
             ]
         ]
 
 
-organList : List ( String, String ) -> Html Msg
-organList organs =
+modalOpenButton : (String -> msg) -> Dict String String -> String -> String -> Html msg
+modalOpenButton modalMsg texts key defaultValue =
+    a [ onClick (modalMsg (Tx.getText texts key defaultValue)), class "waves-effect waves-light btn", href "#" ] [ text (Tx.getText texts key defaultValue) ]
+
+
+tupleList : List ( String, String ) -> Html Msg
+tupleList organs =
     dl [ class "collection with-header" ]
         (List.indexedMap
             (\i ( name, description ) ->

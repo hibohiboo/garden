@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, markdownUrl, organRange, organSheetId, organSheetVersion, testStringsRange, testStringsSheetId, testStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey)
+module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, markdownUrl, organRange, organSheetId, organSheetVersion, testStringsRange, testStringsSheetId, testStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion)
 
 import Dict
 import GoogleSpreadSheetApi
@@ -94,6 +94,37 @@ fetchSpreasSheetData toMsg apiKey documentId range =
 
 
 
+-- 文字列
+
+
+testStringsSheetId =
+    "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
+
+
+testStringsRange =
+    "textStrings!A2:B31"
+
+
+testStringsSheetVersion =
+    1.0
+
+
+getTextStrings : Data -> Maybe String
+getTextStrings data =
+    getSpreasSheetData data testStringsSheetId testStringsRange testStringsSheetVersion
+
+
+addTextStrings : Data -> String -> Data
+addTextStrings data json =
+    addSpreasSheetData testStringsSheetId testStringsRange testStringsSheetVersion json data
+
+
+fetchTextStrings : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchTextStrings toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey testStringsSheetId testStringsRange
+
+
+
 -- 変異器官
 
 
@@ -125,31 +156,31 @@ fetchOrgans toMsg apiKey =
 
 
 
--- 文字列
+-- 特性
 
 
-testStringsSheetId =
+traitSheetId =
     "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
 
 
-testStringsRange =
-    "textStrings!A2:B31"
+traitRange =
+    "traitList!A2:B6"
 
 
-testStringsSheetVersion =
+traitSheetVersion =
     1.0
 
 
-getTextStrings : Data -> Maybe String
-getTextStrings data =
-    getSpreasSheetData data testStringsSheetId testStringsRange testStringsSheetVersion
+getTraits : Data -> Maybe String
+getTraits data =
+    getSpreasSheetData data traitSheetId traitRange traitSheetVersion
 
 
-addTextStrings : Data -> String -> Data
-addTextStrings data json =
-    addSpreasSheetData testStringsSheetId testStringsRange testStringsSheetVersion json data
+addTraits : Data -> String -> Data
+addTraits data json =
+    addSpreasSheetData traitSheetId traitRange traitSheetVersion json data
 
 
-fetchTextStrings : (Result Http.Error String -> msg) -> String -> Cmd msg
-fetchTextStrings toMsg apiKey =
-    fetchSpreasSheetData toMsg apiKey testStringsSheetId testStringsRange
+fetchTraits : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchTraits toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey traitSheetId traitRange
