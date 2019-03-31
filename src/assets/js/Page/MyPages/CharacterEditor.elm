@@ -1,5 +1,6 @@
 port module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
 
+import Array exposing (Array)
 import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -13,6 +14,7 @@ type Msg
     = InputName String
     | InputKana String
     | InputOrgan String
+    | AddTrait
 
 
 update : Msg -> Character -> ( Character, Cmd Msg )
@@ -39,6 +41,17 @@ update msg char =
             in
             ( c, Cmd.none )
 
+        AddTrait ->
+            let
+                c =
+                    { char | traits = Array.push "" char.traits }
+            in
+            ( c, Cmd.none )
+
+
+
+-- 単純な入力
+
 
 inputArea : String -> String -> String -> (String -> msg) -> Html msg
 inputArea fieldId labelName val toMsg =
@@ -46,6 +59,10 @@ inputArea fieldId labelName val toMsg =
         [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg ] []
         , label [ for fieldId ] [ text labelName ]
         ]
+
+
+
+-- 単純な入力。オートコンプリート付き
 
 
 inputAreaWithAutocomplete : String -> String -> String -> (String -> msg) -> String -> List String -> Html msg
@@ -58,19 +75,23 @@ inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
         ]
 
 
-inputAreas : String -> String -> List String -> (String -> msg) -> Html msg
-inputAreas fieldId labelName val toMsg =
-    let
-        inputList =
-            -- 空のリストを渡されたときは追加用に空要素を追加する
-            if List.length val == 0 then
-                [ "" ]
-
-            else
-                val
-    in
+inputAreas : String -> String -> Array String -> (String -> msg) -> msg -> Html msg
+inputAreas fieldId labelName arrays updateMsg addMsg =
     div []
-        (List.map (\v -> inputArea fieldId labelName v toMsg) inputList)
+        [ div []
+            (List.concat
+                [ Array.toList <| Array.map (\v -> inputArea fieldId labelName v updateMsg) arrays
+                , addButton labelName addMsg
+                ]
+            )
+        ]
+
+
+addButton : String -> msg -> List (Html msg)
+addButton labelName addMsg =
+    [ text (labelName ++ "を追加  ")
+    , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
+    ]
 
 
 editArea : Character -> EditorModel -> Html Msg
@@ -79,5 +100,5 @@ editArea character editor =
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.name InputKana
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
-        , inputAreas "traits" "特性" [] InputKana
+        , inputAreas "traits" "特性" character.traits InputKana AddTrait
         ]

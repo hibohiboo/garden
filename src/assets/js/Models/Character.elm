@@ -1,5 +1,6 @@
 module Models.Character exposing (Character, EditorModel, characterDecoder, encodeCharacter, initCharacter)
 
+import Array exposing (Array)
 import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
@@ -12,7 +13,7 @@ type alias Character =
     , name : String
     , kana : String
     , organ : String
-    , traits : List String
+    , traits : Array String
     }
 
 
@@ -23,7 +24,7 @@ type alias EditorModel =
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" "" []
+    Character storeUserId "" "" "" "" (Array.fromList [ "" ])
 
 
 encodeCharacter : Character -> String
@@ -40,7 +41,7 @@ encodeCharacterToValue c =
         , ( "name", E.string c.name )
         , ( "kana", E.string c.kana )
         , ( "organ", E.string c.organ )
-        , ( "traits", E.list E.string c.traits )
+        , ( "traits", E.array E.string c.traits )
         ]
 
 
@@ -52,4 +53,4 @@ characterDecoder =
         |> Json.Decode.Pipeline.required "name" Decode.string
         |> Json.Decode.Pipeline.required "kana" Decode.string
         |> Json.Decode.Pipeline.required "organ" Decode.string
-        |> Json.Decode.Pipeline.optional "traits" (Decode.list Decode.string) []
+        |> Json.Decode.Pipeline.optional "traits" (Decode.array Decode.string) (Array.fromList [ "" ])
