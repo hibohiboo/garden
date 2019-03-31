@@ -16,6 +16,7 @@ type Msg
     | InputOrgan String
     | AddTrait
     | InputTrait Int String
+    | DeleteTrait Int
 
 
 update : Msg -> Character -> ( Character, Cmd Msg )
@@ -56,6 +57,22 @@ update msg char =
             in
             ( c, Cmd.none )
 
+        DeleteTrait i ->
+            let
+                len =
+                    Array.length char.traits
+
+                head =
+                    Array.slice 0 i char.traits
+
+                tail =
+                    Array.slice (i + 1) len char.traits
+
+                c =
+                    { char | traits = Array.append head tail }
+            in
+            ( c, Cmd.none )
+
 
 
 -- 単純な入力
@@ -83,28 +100,50 @@ inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
         ]
 
 
-updateArea : String -> String -> String -> (Int -> String -> msg) -> Int -> Html msg
-updateArea fieldId labelName val updateMsg i =
-    let
-        fid =
-            fieldId ++ String.fromInt i
-    in
-    div [ class "input-field" ]
-        [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg i) ] []
-        , label [ for fid ] [ text labelName ]
-        ]
+
+-- 可変の入力欄
 
 
-inputAreas : String -> String -> Array String -> (Int -> String -> msg) -> msg -> Html msg
-inputAreas fieldId labelName arrays updateMsg addMsg =
+inputAreas : String -> String -> Array String -> (Int -> String -> msg) -> msg -> (Int -> msg) -> Html msg
+inputAreas fieldId labelName arrays updateMsg addMsg deleteMsg =
     div []
         [ div []
             (List.concat
-                [ Array.toList <| Array.indexedMap (\i v -> updateArea fieldId labelName v updateMsg i) arrays
+                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName v updateMsg deleteMsg) arrays
                 , addButton labelName addMsg
                 ]
             )
         ]
+
+
+
+-- インデックス付きの編集
+
+
+updateArea : Int -> String -> String -> String -> (Int -> String -> msg) -> (Int -> msg) -> Html msg
+updateArea index fieldId labelName val updateMsg deleteMsg =
+    let
+        fid =
+            fieldId ++ String.fromInt index
+    in
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index) ] []
+        , label [ for fid ] [ text labelName ]
+        , deleteButton deleteMsg index
+        ]
+
+
+
+-- 削除ボタン
+
+
+deleteButton : (Int -> msg) -> Int -> Html msg
+deleteButton deleteMsg index =
+    button [ class "btn-floating btn-small halfway-fab waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
+
+
+
+-- 追加ボタン
 
 
 addButton : String -> msg -> List (Html msg)
@@ -114,11 +153,15 @@ addButton labelName addMsg =
     ]
 
 
+
+-- 入力エリア
+
+
 editArea : Character -> EditorModel -> Html Msg
 editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.name InputKana
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
-        , inputAreas "traits" "特性" character.traits InputTrait AddTrait
+        , inputAreas "traits" "特性" character.traits InputTrait AddTrait DeleteTrait
         ]
