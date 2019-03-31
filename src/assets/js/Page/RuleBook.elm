@@ -250,17 +250,17 @@ viewRulebook texts =
                 , p [] [ dicText "rulebook.section.character.description.1" "キャラクターとは" ]
                 , h2 [] [ dicText "rulebook.section.character.organ.title" "1. 変異器官の決定" ]
                 , p [] [ dicText "rulebook.section.character.organ.content" "異能の発生源となる変異器官を選択する。" ]
-                , a [ onClick (ModalOrgan (Tx.getText texts "chart.list.organ.title" "変異器官一覧")), class "waves-effect waves-light btn", href "#" ] [ dicText "chart.list.organ.title" "変異器官一覧" ]
+                , modalOpenButton texts ModalOrgan "chart.list.organ.title" "変異器官一覧"
                 , h2 [] [ dicText "rulebook.section.character.trait.title" "2. 特性の決定" ]
                 , p [] [ dicText "rulebook.section.character.trait.content" "異能の特性を選択する。" ]
-                , a [ onClick (ModalTrait (Tx.getText texts "chart.list.trait.title" "特性一覧")), class "waves-effect waves-light btn", href "#" ] [ dicText "chart.list.trait.title" "特性一覧" ]
+                , modalOpenButton texts ModalTrait "chart.list.trait.title" "特性一覧"
                 ]
             ]
         ]
 
 
-modalOpenButton : (String -> msg) -> Dict String String -> String -> String -> Html msg
-modalOpenButton modalMsg texts key defaultValue =
+modalOpenButton : Dict String String -> (String -> msg) -> String -> String -> Html msg
+modalOpenButton texts modalMsg key defaultValue =
     a [ onClick (modalMsg (Tx.getText texts key defaultValue)), class "waves-effect waves-light btn", href "#" ] [ text (Tx.getText texts key defaultValue) ]
 
 
