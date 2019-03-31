@@ -3,7 +3,7 @@ port module Page.RuleBook exposing (Model, Msg(..), init, update, view)
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
 import Dict exposing (Dict)
-import GoogleSpreadSheetApi as GSAPI exposing (Organ)
+import GoogleSpreadSheetApi as GSAPI
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -108,7 +108,7 @@ update msg model =
 
 updateOrgansListModel : Model -> String -> Model
 updateOrgansListModel model json =
-    case GSAPI.organsInObjectDecodeFromString json of
+    case GSAPI.tuplesInObjectDecodeFromString json of
         Ok organs ->
             { model
                 | modalContents = organList organs
@@ -242,13 +242,13 @@ viewRulebook texts =
         ]
 
 
-organList : List Organ -> Html Msg
+organList : List ( String, String ) -> Html Msg
 organList organs =
     dl [ class "collection with-header" ]
         (List.indexedMap
-            (\i organ ->
-                [ dt [] [ text (String.fromInt (i + 1) ++ " : " ++ organ.name) ]
-                , dd [] [ text organ.description ]
+            (\i ( name, description ) ->
+                [ dt [] [ text (String.fromInt (i + 1) ++ " : " ++ name) ]
+                , dd [] [ text description ]
                 ]
             )
             organs

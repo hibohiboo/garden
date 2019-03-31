@@ -1,7 +1,6 @@
 port module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
 
 import Array exposing (Array)
-import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -88,7 +87,7 @@ editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.name InputKana
-        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
+        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\( name, description ) -> name) editor.organs)
         , inputAreas "traits" "特性" character.traits InputTrait AddTrait DeleteTrait
         ]
 

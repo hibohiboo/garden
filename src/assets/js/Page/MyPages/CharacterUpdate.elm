@@ -1,7 +1,7 @@
 port module Page.MyPages.CharacterUpdate exposing (Model, Msg, init, initModel, subscriptions, update, view)
 
 import Browser.Navigation as Navigation
-import GoogleSpreadSheetApi as GSAPI exposing (Organ)
+import GoogleSpreadSheetApi as GSAPI
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -51,7 +51,7 @@ init session apiKey storeUserId characterId =
         organs =
             case Session.getOrgans session of
                 Just sheet ->
-                    GSAPI.organsListFromJson sheet
+                    GSAPI.tuplesListFromJson sheet
 
                 Nothing ->
                     []
@@ -68,7 +68,7 @@ init session apiKey storeUserId characterId =
     )
 
 
-initModel : Session.Data -> String -> String -> List Organ -> Model
+initModel : Session.Data -> String -> String -> List ( String, String ) -> Model
 initModel session apiKey storeUserId organs =
     Model session Close apiKey (initCharacter storeUserId) (EditorModel organs)
 
@@ -119,7 +119,7 @@ update msg model =
             ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
         GotOrgans (Ok json) ->
-            case GSAPI.organsInObjectDecodeFromString json of
+            case GSAPI.tuplesInObjectDecodeFromString json of
                 Ok organs ->
                     let
                         oldEditorModel =

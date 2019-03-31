@@ -58,37 +58,37 @@ sheet =
             \_ ->
                 let
                     actual =
-                        case GSApi.organDecodeFromString "[\"a\", \"b\"]" of
+                        case GSApi.tupleDecodeFromString "[\"a\", \"b\"]" of
                             Ok a ->
                                 a
 
                             Err _ ->
-                                GSApi.Organ "" ""
+                                Tuple.pair "" ""
 
                     expect =
-                        { name = "a", description = "b" }
+                        ( "a", "b" )
                 in
                 Expect.equal actual expect
         , test "配列の配列を処理するテスト" <|
             \_ ->
                 let
                     actual =
-                        case GSApi.organsDecodeFromString "[[\"a\", \"b\"],[\"c\", \"d\"]]" of
+                        case GSApi.tuplesDecodeFromString "[[\"a\", \"b\"],[\"c\", \"d\"]]" of
                             Ok a ->
                                 a
 
                             Err _ ->
-                                [ GSApi.Organ "a" "b" ]
+                                [ Tuple.pair "a" "b" ]
 
                     expect =
-                        [ GSApi.Organ "a" "b", GSApi.Organ "c" "d" ]
+                        [ Tuple.pair "a" "b", Tuple.pair "c" "d" ]
                 in
                 Expect.equal actual expect
         , test "オブジェクトの中の配列を処理するテスト" <|
             \_ ->
                 let
                     actual =
-                        case GSApi.organsInObjectDecodeFromString "{\"values\":[[\"a\", \"b\"],[\"c\", \"d\"]]}" of
+                        case GSApi.tuplesInObjectDecodeFromString "{\"values\":[[\"a\", \"b\"],[\"c\", \"d\"]]}" of
                             Ok a ->
                                 a
 
@@ -96,7 +96,7 @@ sheet =
                                 []
 
                     expect =
-                        [ GSApi.Organ "a" "b", GSApi.Organ "c" "d" ]
+                        [ Tuple.pair "a" "b", Tuple.pair "c" "d" ]
                 in
                 Expect.equal actual expect
         ]

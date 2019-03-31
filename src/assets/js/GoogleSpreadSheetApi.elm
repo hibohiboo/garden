@@ -1,4 +1,4 @@
-module GoogleSpreadSheetApi exposing (Organ, dictFromSpreadSheet, organDecodeFromString, organDecoder, organsDecodeFromString, organsDecoder, organsInObjectDecodeFromString, organsInObjectDecoder, organsListFromJson, sheetUrl)
+module GoogleSpreadSheetApi exposing (dictFromSpreadSheet, sheetUrl, tupleDecodeFromString, tupleDecoder, tuplesDecodeFromString, tuplesDecoder, tuplesInObjectDecodeFromString, tuplesInObjectDecoder, tuplesListFromJson)
 
 import Dict exposing (Dict)
 import Http
@@ -11,55 +11,49 @@ import Url.Builder
 -- 変異器官一覧
 
 
-type alias Organ =
-    { name : String
-    , description : String
-    }
-
-
 sheetUrl : String -> String -> String -> String
 sheetUrl apiKey documentId range =
     Url.Builder.crossOrigin "https://sheets.googleapis.com" [ "v4", "spreadsheets", documentId, "values", range ] [ Url.Builder.string "key" apiKey ]
 
 
-organsListFromJson : String -> List Organ
-organsListFromJson sheet =
-    case organsInObjectDecodeFromString sheet of
-        Ok organs ->
-            organs
+tuplesListFromJson : String -> List ( String, String )
+tuplesListFromJson sheet =
+    case tuplesInObjectDecodeFromString sheet of
+        Ok tuples ->
+            tuples
 
         Err _ ->
             []
 
 
-organsInObjectDecodeFromString : String -> Result Error (List Organ)
-organsInObjectDecodeFromString s =
-    decodeString organsInObjectDecoder s
+tuplesInObjectDecodeFromString : String -> Result Error (List ( String, String ))
+tuplesInObjectDecodeFromString s =
+    decodeString tuplesInObjectDecoder s
 
 
-organsInObjectDecoder : Decoder (List Organ)
-organsInObjectDecoder =
-    field "values" organsDecoder
+tuplesInObjectDecoder : Decoder (List ( String, String ))
+tuplesInObjectDecoder =
+    field "values" tuplesDecoder
 
 
-organsDecodeFromString : String -> Result Error (List Organ)
-organsDecodeFromString s =
-    decodeString organsDecoder s
+tuplesDecodeFromString : String -> Result Error (List ( String, String ))
+tuplesDecodeFromString s =
+    decodeString tuplesDecoder s
 
 
-organsDecoder : Decoder (List Organ)
-organsDecoder =
-    D.list organDecoder
+tuplesDecoder : Decoder (List ( String, String ))
+tuplesDecoder =
+    D.list tupleDecoder
 
 
-organDecodeFromString : String -> Result Error Organ
-organDecodeFromString s =
-    decodeString organDecoder s
+tupleDecodeFromString : String -> Result Error ( String, String )
+tupleDecodeFromString s =
+    decodeString tupleDecoder s
 
 
-organDecoder : Decoder Organ
-organDecoder =
-    D.map2 Organ
+tupleDecoder : Decoder ( String, String )
+tupleDecoder =
+    D.map2 Tuple.pair
         (index 0 string)
         (index 1 string)
 
