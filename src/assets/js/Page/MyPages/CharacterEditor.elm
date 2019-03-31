@@ -80,6 +80,20 @@ update msg char =
 
 
 
+-- 入力エリア
+
+
+editArea : Character -> EditorModel -> Html Msg
+editArea character editor =
+    div [ class "character-edit-area" ]
+        [ inputArea "name" "名前" character.name InputName
+        , inputArea "kana" "フリガナ" character.name InputKana
+        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
+        , inputAreas "traits" "特性" character.traits InputTrait AddTrait DeleteTrait
+        ]
+
+
+
 -- 単純な入力
 
 
@@ -156,17 +170,3 @@ addButton labelName addMsg =
     [ text (labelName ++ "を追加  ")
     , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
     ]
-
-
-
--- 入力エリア
-
-
-editArea : Character -> EditorModel -> Html Msg
-editArea character editor =
-    div [ class "character-edit-area" ]
-        [ inputArea "name" "名前" character.name InputName
-        , inputArea "kana" "フリガナ" character.name InputKana
-        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
-        , inputAreas "traits" "特性" character.traits InputTrait AddTrait DeleteTrait
-        ]
