@@ -2,6 +2,7 @@ port module Page.RuleBook exposing (Model, Msg(..), init, update, view)
 
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
+import Dict exposing (Dict)
 import GoogleSpreadSheetApi as GSAPI exposing (Organ)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -15,6 +16,7 @@ import Url
 import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.Terms as Terms
+import Utils.TextStrings as Tx
 
 
 port openModal : () -> Cmd msg
@@ -27,24 +29,41 @@ type alias Model =
     , id : String
     , modalTitle : String
     , modalContents : Html Msg
+    , texts : Dict String String
     }
 
 
 init : Session.Data -> String -> Maybe String -> ( Model, Cmd Msg )
 init session apiKey s =
+    let
+        texts =
+            case Session.getTextStrings session of
+                Just sheet ->
+                    GSAPI.dictFromSpreadSheet sheet
+
+                Nothing ->
+                    Dict.empty
+
+        cmd =
+            if texts == Dict.empty then
+                Session.fetchTextStrings GotTexts apiKey
+
+            else
+                Cmd.none
+    in
     case s of
         Just id ->
-            ( Model session Close apiKey id "" (text ""), jumpToBottom id )
+            ( Model session Close apiKey id "" (text "") texts, Cmd.batch [ jumpToBottom id, cmd ] )
 
         Nothing ->
             ( initModel session apiKey
-            , Cmd.none
+            , cmd
             )
 
 
 initModel : Session.Data -> String -> Model
 initModel session apiKey =
-    Model session Close apiKey "" "異形器官一覧" (text "")
+    Model session Close apiKey "" "異形器官一覧" (text "") Dict.empty
 
 
 type Msg
@@ -53,6 +72,7 @@ type Msg
     | PageAnchor String
     | ModalOrgan String
     | GotOrgans (Result Http.Error String)
+    | GotTexts (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,6 +101,12 @@ update msg model =
         GotOrgans (Err _) ->
             ( model, Cmd.none )
 
+        GotTexts (Ok json) ->
+            ( updateTextsModel model json, Cmd.none )
+
+        GotTexts (Err _) ->
+            ( model, Cmd.none )
+
 
 updateOrgansListModel : Model -> String -> Model
 updateOrgansListModel model json =
@@ -95,6 +121,14 @@ updateOrgansListModel model json =
             { model | modalContents = text "error" }
 
 
+updateTextsModel : Model -> String -> Model
+updateTextsModel model json =
+    { model
+        | texts = GSAPI.dictFromSpreadSheet json
+        , session = Session.addTextStrings model.session json
+    }
+
+
 view : Model -> Skeleton.Details Msg
 view model =
     let
@@ -106,7 +140,7 @@ view model =
     { title = "基本ルール"
     , attrs = [ class naviClass ]
     , kids =
-        [ viewMain viewRulebook
+        [ viewMain (viewRulebook model.texts)
         , viewNavi (List.map (\( value, text ) -> NavigationMenu value text) tableOfContents)
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
@@ -153,21 +187,41 @@ tableOfContents =
     [ ( "/", "トップに戻る" ), ( "#first", "はじめに" ), ( "#world", "ワールド" ) ]
 
 
-viewRulebook : Html Msg
-viewRulebook =
+viewRulebook : Dict String String -> Html Msg
+viewRulebook texts =
     div []
-        [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ text "Garden 基本ルールブック" ] ]
+        [ div [ class "rulebook-title" ] [ div [] [ text Terms.trpgGenre ], h1 [] [ text (Tx.getText texts "rulebook.title" "Garden 基本ルールブック") ] ]
         , div [ class "content" ]
-            [ first
+            [ img [ src "/assets/images/childrens.png", class "front-cover", alt (Tx.getText texts "rulebook.title" "Garden 基本ルールブック") ] []
+            , section [ id "first" ]
+                [ h1 []
+                    [ text (Tx.getText texts "rulebook.section.first.title" "はじめに") ]
+                , p
+                    [ class "content-doc" ]
+                    [ text (Tx.getText texts "rulebook.section.first.content.1" "舞台設定") ]
+                , p
+                    [ class "content-doc" ]
+                    [ text (Tx.getText texts "rulebook.section.first.content.2" "どういうゲームか") ]
+                , h2 [ id "commonRule" ]
+                    [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.title" "このルールの読み方") ]
+                , div [ class "collection with-header" ]
+                    [ div [ class "collection-header" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type" "かっこの種類") ]
+                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type.1" "【】：キャラクターの〇を表す。") ]
+                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type.2" "《》：特技を表す。") ]
+                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.notes_for_readming.bracket_type.3" "＜＞：このゲームで使われる固有名詞を表す。") ]
+                    ]
+                , div [ class "collection with-header" ]
+                    [ div [ class "collection-header" ] [ text (Tx.getText texts "rulebook.section.first.regarding_fractions.title" "端数の処理") ]
+                    , div [ class "collection-item" ] [ text (Tx.getText texts "rulebook.section.first.regarding_fractions.content" "このゲームでは、割り算を行う場合、常に端数は切り上げとする。") ]
+                    ]
+                ]
             , world
             , section [ id "character", class "content-doc" ]
                 [ h1 []
-                    [ text "キャラクター" ]
+                    [ text (Tx.getText texts "rulebook.section.character.title" "キャラクター") ]
                 , p
                     []
-                    [ text """
-プレイヤーの分身であるキャラクター（以下、PC)は、特異な力を持つ子供となる。
-""" ]
+                    [ text (Tx.getText texts "rulebook.section.character.description.1" "キャラクターとは") ]
                 , h2 [] [ text "1. 変異器官の決定" ]
                 , p
                     []

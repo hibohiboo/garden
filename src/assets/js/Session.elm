@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, getMarkdown, getOrgans, getSpreasSheetData, markdownUrl, organRange, organSheetId, organSheetVersion, toMarkdownKey, toSpreasSheetDataKey)
+module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, markdownUrl, organRange, organSheetId, organSheetVersion, testStringsRange, testStringsSheetId, testStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey)
 
 import Dict
 import GoogleSpreadSheetApi
@@ -122,3 +122,34 @@ addOrgans data json =
 fetchOrgans : (Result Http.Error String -> msg) -> String -> Cmd msg
 fetchOrgans toMsg apiKey =
     fetchSpreasSheetData toMsg apiKey organSheetId organRange
+
+
+
+-- 文字列
+
+
+testStringsSheetId =
+    "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
+
+
+testStringsRange =
+    "textStrings!A2:B8"
+
+
+testStringsSheetVersion =
+    1.0
+
+
+getTextStrings : Data -> Maybe String
+getTextStrings data =
+    getSpreasSheetData data testStringsSheetId testStringsRange testStringsSheetVersion
+
+
+addTextStrings : Data -> String -> Data
+addTextStrings data json =
+    addSpreasSheetData testStringsSheetId testStringsRange testStringsSheetVersion json data
+
+
+fetchTextStrings : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchTextStrings toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey testStringsSheetId testStringsRange

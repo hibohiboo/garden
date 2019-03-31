@@ -33,7 +33,10 @@ let userData;  // nullで初期化すると、Object is possibly 'null'.のエ�
 
 const initMaterialize = () => {
   M.updateTextFields();
-
+  const $modal = $('#mainModal');
+  if ($modal.length !== 0) {
+    $modal.modal(); // モーダル使用準備
+  }
   // // selectボックスの使用 -> 要素の変更を検知しないためうまく動かない
   // const elems = document.querySelectorAll('select');
   // const instances = M.FormSelect.init(elems, {});
@@ -49,11 +52,6 @@ app.ports.initializedToJs.subscribe(() => {
 app.ports.urlChangeToJs.subscribe(() => {
   // 新しく構築されたDOMにmaterializeを適用
   initMaterialize();
-
-  const $modal = $('#mainModal');
-  if ($modal.length !== 0) {
-    $modal.modal(); // モーダル使用準備
-  }
 });
 
 // モーダルを開く

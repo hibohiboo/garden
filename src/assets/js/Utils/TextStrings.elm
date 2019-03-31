@@ -1,18 +1,18 @@
-module Utils.TextStrings exposing (getText)
+module Utils.TextStrings exposing (defaultEmpty, getText)
 
 import Dict exposing (Dict)
 
 
-dict : Dict String String
-dict =
-    Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]
+defaultEmpty : Dict String String -> String -> String
+defaultEmpty d key =
+    getText d key ""
 
 
-getText : String -> String
-getText key =
-    case Dict.get key dict of
+getText : Dict String String -> String -> String -> String
+getText d key defaultValue =
+    case Dict.get key d of
         Just val ->
             val
 
         Nothing ->
-            ""
+            defaultValue

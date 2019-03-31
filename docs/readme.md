@@ -65,6 +65,18 @@
 |o|||||使い勝手|
 ||o||||とにかくシンプルに！|
 
+## メモ
+
+### Google Sheet
+
+* 変異器官一覧
+  * 
+* テキスト一覧
+  * シート
+    * https://docs.google.com/spreadsheets/d/1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w/edit
+  * 取得API
+    * https://sheets.googleapis.com/v4/spreadsheets/1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w/values/textStrings!A2:B7?key=APIKEY
+
 ## 参考
 
 [elm webpack starter][*1]  
@@ -81,6 +93,7 @@
 [JavaScriptでデプロイ環境ごとに設定ファイルを読み込む方法][*12]
 [DefinePlugin][*13]
 [Web Pack define plugin variables are recoginized by ts-loader][*14]
+[Googleスプレッドシートで多言語に翻訳][*15]
 
 [*1]:https://github.com/simonh1000/elm-webpack-starter/blob/master/package.json
 [*2]:https://github.com/elm/package.elm-lang.org
@@ -96,3 +109,4 @@
 [*12]:https://qiita.com/mikakane/items/5ab96c4c7e187ab6c9f1
 [*13]:https://webpack.js.org/plugins/define-plugin/
 [*14]:https://github.com/TypeStrong/ts-loader/issues/37
+[*15]:https://qiita.com/ryohorie/items/291e91003b4e5b4464d5

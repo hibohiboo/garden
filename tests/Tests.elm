@@ -105,16 +105,50 @@ sheet =
 getText : Test
 getText =
     describe "TextStrings"
-        [ test "値を取得するテスト" <|
-            \_ ->
-                let
-                    actual =
-                        Tx.getText "test"
+        [ describe "defaultEmpty"
+            [ test "値を取得するテスト" <|
+                \_ ->
+                    let
+                        actual =
+                            Tx.defaultEmpty (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "test"
 
-                    expect =
-                        "test"
-                in
-                Expect.equal actual expect
+                        expect =
+                            "test"
+                    in
+                    Expect.equal actual expect
+            , test "値がなければ空白を取得するテスト" <|
+                \_ ->
+                    let
+                        actual =
+                            Tx.defaultEmpty (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "bb"
+
+                        expect =
+                            ""
+                    in
+                    Expect.equal actual expect
+            ]
+        , describe "getText"
+            [ test "値を取得するテスト" <|
+                \_ ->
+                    let
+                        actual =
+                            Tx.getText (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "test" "default value"
+
+                        expect =
+                            "test"
+                    in
+                    Expect.equal actual expect
+            , test "値がなければデフォルト値を取得するテスト" <|
+                \_ ->
+                    let
+                        actual =
+                            Tx.getText (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "bb" "default value"
+
+                        expect =
+                            "default value"
+                    in
+                    Expect.equal actual expect
+            ]
         , test "スプレッドから取得した結果をディクショナリにするテスト" <|
             \_ ->
                 let

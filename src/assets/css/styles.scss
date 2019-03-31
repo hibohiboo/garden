@@ -356,6 +356,9 @@ $bgColorHeadFoot: #222;
 
 
 //  =====##### ルールブック #####=====
+.front-cover {
+  max-width: 100%;
+}
 .rulebook-title h1 {
   font-size: 2.5rem;
   padding-bottom: 10px;
