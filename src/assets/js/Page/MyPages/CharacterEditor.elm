@@ -15,6 +15,7 @@ type Msg
     | InputKana String
     | InputOrgan String
     | AddTrait
+    | InputTrait Int String
 
 
 update : Msg -> Character -> ( Character, Cmd Msg )
@@ -48,6 +49,13 @@ update msg char =
             in
             ( c, Cmd.none )
 
+        InputTrait i s ->
+            let
+                c =
+                    { char | traits = Array.set i s char.traits }
+            in
+            ( c, Cmd.none )
+
 
 
 -- 単純な入力
@@ -75,12 +83,24 @@ inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
         ]
 
 
-inputAreas : String -> String -> Array String -> (String -> msg) -> msg -> Html msg
+updateArea : String -> String -> String -> (Int -> String -> msg) -> Int -> Html msg
+updateArea fieldId labelName val updateMsg i =
+    let
+        fid =
+            fieldId ++ String.fromInt i
+    in
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg i) ] []
+        , label [ for fid ] [ text labelName ]
+        ]
+
+
+inputAreas : String -> String -> Array String -> (Int -> String -> msg) -> msg -> Html msg
 inputAreas fieldId labelName arrays updateMsg addMsg =
     div []
         [ div []
             (List.concat
-                [ Array.toList <| Array.map (\v -> inputArea fieldId labelName v updateMsg) arrays
+                [ Array.toList <| Array.indexedMap (\i v -> updateArea fieldId labelName v updateMsg i) arrays
                 , addButton labelName addMsg
                 ]
             )
@@ -100,5 +120,5 @@ editArea character editor =
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.name InputKana
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (List.map (\o -> o.name) editor.organs)
-        , inputAreas "traits" "特性" character.traits InputKana AddTrait
+        , inputAreas "traits" "特性" character.traits InputTrait AddTrait
         ]
