@@ -254,6 +254,9 @@ viewRulebook texts =
                 , h2 [] [ dicText "rulebook.section.character.trait.title" "2. 特性の決定" ]
                 , p [] [ dicText "rulebook.section.character.trait.content" "異能の特性を選択する。" ]
                 , modalOpenButton texts ModalTrait "chart.list.trait.title" "特性一覧"
+                , h2 [] [ dicText "rulebook.section.character.mutagen.title" "2. 変異原の決定" ]
+                , p [] [ dicText "rulebook.section.character.mutagen.content" "変異器官の発生原因を選択する。" ]
+                , modalOpenButton texts ModalTrait "chart.list.mutagen.title" "変異原一覧"
                 ]
             ]
         ]

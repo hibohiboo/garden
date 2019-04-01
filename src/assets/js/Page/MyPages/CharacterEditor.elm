@@ -147,10 +147,16 @@ updateAreaWithAutocomplete index fieldId labelName val updateMsg deleteMsg listI
         fid =
             fieldId ++ String.fromInt index
     in
-    div [ class "input-field" ]
-        [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index), autocomplete True, list listId ] []
-        , label [ for fid ] [ text labelName ]
-        , deleteButton deleteMsg index
+    div [ class "row" ]
+        [ div [ class "col s10" ]
+            [ div [ class "input-field" ]
+                [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index), autocomplete True, list listId ] []
+                , label [ for fid ] [ text labelName ]
+                ]
+            ]
+        , div [ class "col s2" ]
+            [ deleteButton deleteMsg index
+            ]
         ]
 
 
@@ -180,10 +186,16 @@ updateArea index fieldId labelName val updateMsg deleteMsg =
         fid =
             fieldId ++ String.fromInt index
     in
-    div [ class "input-field" ]
-        [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index) ] []
-        , label [ for fid ] [ text labelName ]
-        , deleteButton deleteMsg index
+    div [ class "row" ]
+        [ div [ class "col s11" ]
+            [ div [ class "input-field" ]
+                [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index) ] []
+                , label [ for fid ] [ text labelName ]
+                ]
+            ]
+        , div [ class "col s1" ]
+            [ deleteButton deleteMsg index
+            ]
         ]
 
 

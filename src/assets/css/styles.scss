@@ -414,6 +414,10 @@ $bgColorHeadFoot: #222;
   .edit-area {
     max-width: 360px;
     grid-column: 1;
+
+    .col {
+      position: relative;
+    } 
   }
   .karte {
     grid-column: 2;
