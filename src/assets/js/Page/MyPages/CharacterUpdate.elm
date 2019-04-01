@@ -28,6 +28,16 @@ port getCharacter : ( String, String ) -> Cmd msg
 port gotCharacter : (String -> msg) -> Sub msg
 
 
+port initEditorToJs : () -> Cmd msg
+
+
+
+-- フォーム準備完了を通知
+
+
+port initCharacterEditor : () -> Cmd msg
+
+
 subscriptions : Sub Msg
 subscriptions =
     Sub.batch
@@ -167,7 +177,7 @@ update msg model =
                         | editorModel = newEditorModel
                         , session = Session.addTraits model.session json
                       }
-                    , Cmd.none
+                    , initEditorToJs ()
                     )
 
                 Err _ ->

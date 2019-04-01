@@ -9,6 +9,9 @@ import Url
 import Url.Builder
 
 
+port elementChangeToJs : () -> Cmd msg
+
+
 type Msg
     = InputName String
     | InputKana String
@@ -61,7 +64,7 @@ update msg char =
                 c =
                     { char | traits = Array.push "" char.traits }
             in
-            ( c, Cmd.none )
+            ( c, elementChangeToJs () )
 
         InputTrait i s ->
             let

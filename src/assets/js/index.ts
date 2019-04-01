@@ -53,6 +53,18 @@ app.ports.urlChangeToJs.subscribe(() => {
   // 新しく構築されたDOMにmaterializeを適用
   initMaterialize();
 });
+// 編集画面のDOM要素追加時に呼ばれる
+app.ports.initEditorToJs.subscribe(async () => {
+  // 追加されたDOMにmaterializeを適用。構築まで1秒待つ
+  await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 1000); }); })();
+  initMaterialize();
+});
+// 編集画面でDOM要素追加時に呼ばれる
+app.ports.elementChangeToJs.subscribe(async () => {
+  // 追加されたDOMにmaterializeを適用
+  await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 0); }); })();
+  initMaterialize();
+});
 
 // モーダルを開く
 app.ports.openModal.subscribe(() => {
