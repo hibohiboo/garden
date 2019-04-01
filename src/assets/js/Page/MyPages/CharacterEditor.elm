@@ -205,7 +205,7 @@ updateArea index fieldId labelName val updateMsg deleteMsg =
 
 deleteButton : (Int -> msg) -> Int -> Html msg
 deleteButton deleteMsg index =
-    button [ class "btn-floating btn-small halfway-fab waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
+    button [ class "btn-small waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
 
 
 

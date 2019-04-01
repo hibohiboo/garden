@@ -415,9 +415,10 @@ $bgColorHeadFoot: #222;
     max-width: 360px;
     grid-column: 1;
 
-    .col {
-      position: relative;
-    } 
+    // .col {
+    //   // floatingボタンのabsoluteでデザインが崩れるので要素の起点となるように。。
+    //   position: relative;
+    // } 
   }
   .karte {
     grid-column: 2;
