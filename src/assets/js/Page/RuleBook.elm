@@ -251,6 +251,13 @@ viewRulebook texts =
                 , h2 [] [ dicText "rulebook.section.character.mutagen.title" "3. 変異原の決定" ]
                 , p [] [ dicText "rulebook.section.character.mutagen.content" "変異器官の発生原因を選択する。" ]
                 , modalOpenButton texts ModalTrait "chart.list.mutagen.title" "変異原一覧"
+                , h2 [] [ dicText "rulebook.section.character.skill.title" "4. 能力の決定" ]
+                , p [] [ dicText "rulebook.section.character.skill.content" "能力とは" ]
+                , div []
+                    [ skillCard
+                    ]
+                , h3 [] [ dicText "rulebook.section.character.skill.basic.title" "4.1 基本能力の決定" ]
+                , p [] [ dicText "rulebook.section.character.skill.basic.content" "基本能力を選択する。" ]
                 ]
             , section [ id "world-detail" ]
                 [ h1 [] [ dicText "rulebook.section.world.detail.title" "ワールド詳細" ]
@@ -264,6 +271,38 @@ viewRulebook texts =
                 , p [ class "content-doc" ] [ dicText "rulebook.section.world.date_of_collapse.content" "崩壊の日に起きたこと" ]
                 , h2 [] [ dicText "rulebook.section.world.sakuraba_city_after.title" "崩壊後の桜庭市" ]
                 , p [ class "content-doc" ] [ dicText "rulebook.section.world.sakuraba_city_after.content" "桜庭市ナワバリバトル" ]
+                ]
+            ]
+        ]
+
+
+type alias CardLabelData =
+    { skill : String
+    }
+
+
+type alias CardData =
+    { imgFrame : String
+    , imgMain : String
+    }
+
+
+skillCard =
+    let
+        labelData =
+            CardLabelData "SKILL"
+
+        cardData =
+            CardData "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/search.png"
+    in
+    div [ class "skill-card" ]
+        [ div [ class "wrapper" ]
+            [ div [ class "base" ]
+                [ div [ class "image" ]
+                    [ img [ src cardData.imgMain ] []
+                    , img [ src cardData.imgFrame ] []
+                    ]
+                , div [ class "skillLabel" ] [ text labelData.skill ]
                 ]
             ]
         ]

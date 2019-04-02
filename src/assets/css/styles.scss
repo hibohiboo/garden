@@ -465,6 +465,8 @@ $bgColorHeadFoot: #222;
 
 }
 
+
+
 @media (min-width: 1260px) {
   .page.character-sheet {
     display: grid;
@@ -516,6 +518,67 @@ $bgColorHeadFoot: #222;
   }
 }
 
+
+//#######################################################
+// カード
+//#######################################################
+.skill-card {
+  position: relative;
+  .wrapper {
+    // マジックのカードが8.8cm * 6.3cm なので、その比率に合わせてみる
+    width: 252px;
+    height: 352px;
+    display: grid;
+    border: #fff solid 1px;
+    flex-direction: column; // 子要素をflexboxにより縦方向に揃える 
+    justify-content: center; // 子要素をflexboxにより中央に配置する 
+    align-items: center;  // 子要素をflexboxにより中央に配置する 
+    box-sizing: border-box; // ボックスの幅・高さにborderを含める
+
+    .base {
+      width: 242px;
+      height: 342px;
+      border: #000 solid 1px;
+      border-radius: .8em; // 角を丸める
+      padding: 5px;
+
+      // materializeのカードと同じく影を入れる
+      box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+
+      // フォントサイズ設定
+      font-size: 14px;
+
+
+      // グリッドレイアウトを適用
+      display: grid;
+      grid-template-columns: [leftGap]5px [innerLeft]1fr 5px;
+      grid-template-rows: [topGap]1px [innerTop]20px [pictTop]auto 1fr auto 10px;
+
+      .image {
+        grid-column: innerLeft; // 左端
+        grid-row: pictTop; // 画像行の頭
+        border: #000 solid 1px;
+        width: 74px;
+        height: 94px;
+        outline: solid 1px #000;
+        overflow: hidden;
+        img {
+          position: absolute;
+        }
+      }
+      .skillLabel {
+        grid-column: innerLeft;
+        grid-row: innerTop; // 上端
+
+        font-family: 'Anton', sans-serif;
+      }
+    }
+  }
+
+}
+
+
+//#######################################################
 @media print {
   header,
   footer,
