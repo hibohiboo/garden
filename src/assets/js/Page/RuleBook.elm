@@ -282,7 +282,8 @@ type alias CardLabelData =
 
 
 type alias CardData =
-    { imgFrame : String
+    { cardName : String
+    , imgFrame : String
     , imgMain : String
     }
 
@@ -293,16 +294,25 @@ skillCard =
             CardLabelData "SKILL"
 
         cardData =
-            CardData "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/search.png"
+            CardData "考える" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/search.png"
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
             [ div [ class "base" ]
-                [ div [ class "image" ]
+                [ div [ class "skillLabel" ] [ text labelData.skill ]
+                , div [ class "image" ]
                     [ img [ src cardData.imgMain ] []
                     , img [ src cardData.imgFrame ] []
                     ]
-                , div [ class "skillLabel" ] [ text labelData.skill ]
+                , div [ class "cardName" ] [ text cardData.cardName ]
+                , div [ class "attrTimingLabel border" ] [ text "タイミング" ]
+                , div [ class "attrTimingValue border" ] [ text "常時" ]
+                , div [ class "attrCostLabel border" ] [ text "コスト" ]
+                , div [ class "attrCostValue border" ] [ text "4" ]
+                , div [ class "attrRangeLabel border" ] [ text "射程" ]
+                , div [ class "attrRangeValue border" ] [ text "-" ]
+                , div [ class "attrTargetLabel border" ] [ text "対象" ]
+                , div [ class "attrTargetValue border" ] [ text "自身" ]
                 ]
             ]
         ]
