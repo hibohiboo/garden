@@ -283,6 +283,8 @@ type alias CardLabelData =
 
 type alias CardData =
     { cardName : String
+    , effect : String
+    , description : String
     , imgFrame : String
     , imgMain : String
     , tags : List Tag
@@ -301,7 +303,7 @@ skillCard =
             CardLabelData "SKILL"
 
         cardData =
-            CardData "走る" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ]
+            CardData "走る" "移動1" "逃げてもいいし、向かってもいい。君たちは何処にだっていける。一歩ずつではあるけれど。" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ]
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -321,6 +323,8 @@ skillCard =
                 , div [ class "attrTargetLabel attrLabel border" ] [ text "対象" ]
                 , div [ class "attrTargetValue attrLabel border" ] [ text "自身" ]
                 , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
+                , div [ class "effect border" ] [ text ("▼効果 :" ++ cardData.effect) ]
+                , div [ class "description border" ] [ text ("▼解説 :" ++ cardData.description) ]
                 ]
             ]
         ]
