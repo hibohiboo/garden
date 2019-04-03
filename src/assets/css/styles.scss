@@ -567,8 +567,9 @@ $bgColorHeadFoot: #222;
                           [target_value] 20px // 目標値 画像終わり
                           [tags] 40px //  タグ
                           [cardName] 30px //  カード名
-                          [effect]1fr
-                          [description]1fr auto 10px;
+                          [mainContent] 120px // カード説明
+                          [bottomContent] 1fr // カード番号など 
+                          2px;
       .border{
         border: #000 solid 1px;
         box-sizing: border-box;
@@ -660,17 +661,31 @@ $bgColorHeadFoot: #222;
           display: block;
         }
       }
-      .effect {
+      .mainContent {
         grid-column: innerLeft/innerRight;
-        grid-row:effect;
-
-        border-bottom-style: dotted;
+        grid-row: mainContent;
+        height: 120px;
+        .effect {
+          border-bottom-style: dotted;
+        }
+        .description {
+          border-top-style: none;
+        }
       }
-      .description {
+      .bottomContent {
         grid-column: innerLeft/innerRight;
-        grid-row:description;
+        grid-row: bottomContent;
 
-        border-top-style: none;
+        font-size: 8px;
+        align-self: self-end;
+
+        // 子要素向けの設定
+        display: flex;
+        justify-content: flex-end; // 最初の要素以外は右端
+
+        .cardId {
+          margin-right: auto; // 最初の要素は左端
+        }
       }
     }
   }
