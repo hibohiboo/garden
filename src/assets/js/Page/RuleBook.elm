@@ -301,7 +301,7 @@ skillCard =
             CardLabelData "SKILL"
 
         cardData =
-            CardData "走る" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 1, Tag "アクション" 0 ]
+            CardData "走る" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ]
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -329,14 +329,14 @@ skillCard =
 tag : Tag -> Html msg
 tag t =
     let
-        lv =
+        tagText =
             if t.level == 0 then
-                ""
+                t.name
 
             else
-                String.fromInt t.level ++ ":"
+                t.name ++ ":" ++ String.fromInt t.level
     in
-    span [ class "new teal badge", attribute "data-badge-caption" t.name ] [ text lv ]
+    span [ class "tag" ] [ text tagText ]
 
 
 modalOpenButton : Dict String String -> (String -> msg) -> String -> String -> Html msg

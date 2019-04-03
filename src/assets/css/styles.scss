@@ -564,7 +564,7 @@ $bgColorHeadFoot: #222;
                           [range_] 20px  // 射程
                           [target_] 20px // 対象
                           [target_value] 20px // 目標値 画像終わり
-                          [tags] 30px //  タグ
+                          [tags] 40px //  タグ
                           [cardName] 30px //  カード名
                            1fr auto 10px;
       .border{
@@ -640,8 +640,23 @@ $bgColorHeadFoot: #222;
         font-size: 1.5em;
       }
       .tags {
-        grid-column: innerLeft/rightGap; // カード名の行
+        grid-column: 1/-1; // カード名の行
         grid-row: tags; 
+        justify-self: left;
+        display: flex;
+        flex-wrap: wrap; // 折り返す
+        .tag {
+          background-color: teal;
+          color: #fff;
+          padding: 0 3px;
+          margin-bottom: 3px;
+          margin-left: 5px;
+          font-size: 12px;
+          white-space: nowrap;
+          line-height: 20px;
+          height: 18px;
+          display: block;
+        }
       }
     }
   }
