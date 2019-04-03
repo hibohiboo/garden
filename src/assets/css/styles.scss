@@ -553,7 +553,7 @@ $bgColorHeadFoot: #222;
       display: grid;
       grid-template-columns: [leftGap]5px // 左余白～左端
                              [innerLeft]80px // 左端～
-                             [attrLabel] 80px // 特性～
+                             [attrLabel] 60px // 特性～
                              [attrValue]1fr
                              [rightGap] 5px // 左端
                              ;
@@ -564,6 +564,7 @@ $bgColorHeadFoot: #222;
                           [range_] 20px  // 射程
                           [target_] 20px // 対象
                           [target_value] 20px // 目標値 画像終わり
+                          [tags] 30px //  タグ
                           [cardName] 30px //  カード名
                            1fr auto 10px;
       .border{
@@ -584,7 +585,13 @@ $bgColorHeadFoot: #222;
         overflow: hidden;
         img {
           position: absolute;
+          max-width: 74px;
+          max-height: 94px;
         }
+      }
+      // 右上カード情報
+      .attrLabel {
+        font-size: 0.7em;
       }
       .skillLabel {
         grid-column: innerLeft;
@@ -626,11 +633,15 @@ $bgColorHeadFoot: #222;
       }
       .cardName {
         grid-column: 1/-1; // カード名の行
-        grid-row: cardName; // 上端
+        grid-row: cardName; // 
 
         justify-self: center; // 横方向の位置揃え
         align-self: center; // 縦方向の位置揃え
         font-size: 1.5em;
+      }
+      .tags {
+        grid-column: innerLeft/rightGap; // カード名の行
+        grid-row: tags; 
       }
     }
   }

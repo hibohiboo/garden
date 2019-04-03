@@ -285,6 +285,13 @@ type alias CardData =
     { cardName : String
     , imgFrame : String
     , imgMain : String
+    , tags : List Tag
+    }
+
+
+type alias Tag =
+    { name : String
+    , level : Int
     }
 
 
@@ -294,7 +301,7 @@ skillCard =
             CardLabelData "SKILL"
 
         cardData =
-            CardData "考える" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/search.png"
+            CardData "走る" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 1, Tag "アクション" 0 ]
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -305,17 +312,31 @@ skillCard =
                     , img [ src cardData.imgFrame ] []
                     ]
                 , div [ class "cardName" ] [ text cardData.cardName ]
-                , div [ class "attrTimingLabel border" ] [ text "タイミング" ]
-                , div [ class "attrTimingValue border" ] [ text "常時" ]
-                , div [ class "attrCostLabel border" ] [ text "コスト" ]
+                , div [ class "attrTimingLabel attrLabel border" ] [ text "タイミング" ]
+                , div [ class "attrTimingValue border" ] [ text "アクション" ]
+                , div [ class "attrCostLabel attrLabel border" ] [ text "コスト" ]
                 , div [ class "attrCostValue border" ] [ text "4" ]
-                , div [ class "attrRangeLabel border" ] [ text "射程" ]
-                , div [ class "attrRangeValue border" ] [ text "-" ]
-                , div [ class "attrTargetLabel border" ] [ text "対象" ]
-                , div [ class "attrTargetValue border" ] [ text "自身" ]
+                , div [ class "attrRangeLabel attrLabel border" ] [ text "射程" ]
+                , div [ class "attrRangeValue border" ] [ text "0" ]
+                , div [ class "attrTargetLabel attrLabel border" ] [ text "対象" ]
+                , div [ class "attrTargetValue attrLabel border" ] [ text "自身" ]
+                , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
                 ]
             ]
         ]
+
+
+tag : Tag -> Html msg
+tag t =
+    let
+        lv =
+            if t.level == 0 then
+                ""
+
+            else
+                String.fromInt t.level ++ ":"
+    in
+    span [ class "new teal badge", attribute "data-badge-caption" t.name ] [ text lv ]
 
 
 modalOpenButton : Dict String String -> (String -> msg) -> String -> String -> Html msg
