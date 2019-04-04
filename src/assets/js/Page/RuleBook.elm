@@ -306,7 +306,7 @@ skillCard =
             CardLabelData "SKILL"
 
         cardData =
-            CardData "B-001" "走る" "移動1" "逃げてもいいし、向かってもいい。君たちは何処にだっていける。一歩ずつではあるけれど。" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ] "ヒューマンピクトグラム2.0" "http://pictogram2.com/"
+            CardData "B-001" "走る" "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ] "ヒューマンピクトグラム2.0" "http://pictogram2.com/"
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -327,7 +327,12 @@ skillCard =
                 , div [ class "attrTargetValue attrLabel border" ] [ text "自身" ]
                 , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
                 , div [ class "mainContent border" ]
-                    [ div [ class "effect " ] [ text ("▼効果 :" ++ cardData.effect) ]
+                    [ div [ class "maxLevelLabel border" ] [ text "最大Lv" ]
+                    , div [ class "maxLevel border" ] [ text "1" ]
+
+                    -- , div [ class "lvLavel border" ] [ text "Lv" ]
+                    -- , div [ class "level border" ] [ text "" ]
+                    , div [ class "effect " ] [ text ("▼効果 :" ++ cardData.effect) ]
                     , div [ class "description" ] [ text ("▼解説 :" ++ cardData.description) ]
                     ]
                 , div [ class "bottomContent" ]

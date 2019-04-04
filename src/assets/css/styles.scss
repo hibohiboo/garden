@@ -536,6 +536,8 @@ $bgColorHeadFoot: #222;
     box-sizing: border-box; // ボックスの幅・高さにborderを含める
 
     .base {
+      $mainContentHeight: 140px; // カードのメイン部分の高さ
+
       width: 242px;
       height: 342px;
       border: #000 solid 1px;
@@ -558,6 +560,7 @@ $bgColorHeadFoot: #222;
                              [innerRight] 1px // 右端ターゲット
                              [rightGap] 4px // 右端余白
                              ;
+
       grid-template-rows: [topGap]1px // 上部余白～ 
                           [innerTop]20px // 上部情報 
                           [pictTop]20px // 画像開始 / タイミング
@@ -565,9 +568,9 @@ $bgColorHeadFoot: #222;
                           [range_] 20px  // 射程
                           [target_] 20px // 対象
                           [target_value] 20px // 目標値 画像終わり
-                          [tags] 40px //  タグ
+                          [tags] 20px //  タグ
                           [cardName] 30px //  カード名
-                          [mainContent] 120px // カード説明
+                          [mainContent] $mainContentHeight // カード説明
                           [bottomContent] 1fr // カード番号など 
                           2px;
       .border{
@@ -664,12 +667,60 @@ $bgColorHeadFoot: #222;
       .mainContent {
         grid-column: innerLeft/innerRight;
         grid-row: mainContent;
-        height: 120px;
+        height: $mainContentHeight;
+        padding: 0;
+        display: grid;
+        grid-template-columns: [leftGap]1px // 左余白～左端
+        [maxLevelLabel] 50px 
+        [maxLevel] 20px 
+        [lvLavel] 25px
+        [lv] 20px
+        1fr
+        [innerRight] 1px // 右端ターゲット
+        [rightGap] 1px // 右端余白
+        ;
+
+        grid-template-rows:
+            [innerTop]20px // 上部情報 
+            [effect] auto 
+            [description] auto;
+
+        .maxLevelLabel {
+          grid-column: maxLevelLabel;
+          grid-row: innerTop;
+        }
+        .maxLevel {
+          grid-column: maxLevel;
+          grid-row: innerTop;
+        }
+        .lvLavel {
+          grid-column: lvLavel;
+          grid-row: innerTop;
+        }
+        .level {
+          grid-column: lv;
+          grid-row: innerTop;
+        }
+
+        $mainContentTopPadding: 2px;
+        $mainContentLeftPadding: 5px;
         .effect {
+          grid-column: 1/-1;
+          grid-row: effect;
           border-bottom-style: dotted;
+
+          padding-top: $mainContentTopPadding;
+          padding-left:  $mainContentLeftPadding;
         }
         .description {
+          grid-column: 1/-1;
+          grid-row: description;
           border-top-style: none;
+
+          padding-top: $mainContentTopPadding;
+          padding-left:  $mainContentLeftPadding;
+
+          font-size: 0.8em;
         }
       }
       .bottomContent {
