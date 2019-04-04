@@ -278,12 +278,25 @@ viewRulebook texts =
 
 type alias CardLabelData =
     { skill : String
+    , timing : String
+    , cost : String
+    , range : String
+    , target : String
+    , maxLevel : String
+    , level : String
+    , effect : String
+    , description : String
     }
 
 
 type alias CardData =
     { cardId : String
     , cardName : String
+    , timing : String
+    , cost : Int
+    , range : Int
+    , target : String
+    , maxLevel : Int
     , effect : String
     , description : String
     , imgFrame : String
@@ -303,10 +316,10 @@ type alias Tag =
 skillCard =
     let
         labelData =
-            CardLabelData "SKILL"
+            CardLabelData "SKILL" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
 
         cardData =
-            CardData "B-001" "走る" "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ] "ヒューマンピクトグラム2.0" "http://pictogram2.com/"
+            CardData "B-001" "走る" "アクション" 4 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ] "ヒューマンピクトグラム2.0" "http://pictogram2.com/"
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -317,23 +330,22 @@ skillCard =
                     , img [ src cardData.imgFrame ] []
                     ]
                 , div [ class "cardName" ] [ text cardData.cardName ]
-                , div [ class "attrTimingLabel attrLabel border" ] [ text "タイミング" ]
-                , div [ class "attrTimingValue border" ] [ text "アクション" ]
-                , div [ class "attrCostLabel attrLabel border" ] [ text "コスト" ]
-                , div [ class "attrCostValue border" ] [ text "4" ]
-                , div [ class "attrRangeLabel attrLabel border" ] [ text "射程" ]
-                , div [ class "attrRangeValue border" ] [ text "0" ]
-                , div [ class "attrTargetLabel attrLabel border" ] [ text "対象" ]
-                , div [ class "attrTargetValue attrLabel border" ] [ text "自身" ]
+                , div [ class "attrTimingLabel attrLabel border" ] [ text labelData.timing ]
+                , div [ class "attrTimingValue border" ] [ text cardData.timing ]
+                , div [ class "attrCostLabel attrLabel border" ] [ text labelData.cost ]
+                , div [ class "attrCostValue border" ] [ text (String.fromInt cardData.cost) ]
+                , div [ class "attrRangeLabel attrLabel border" ] [ text labelData.range ]
+                , div [ class "attrRangeValue border" ] [ text (String.fromInt cardData.range) ]
+                , div [ class "attrTargetLabel attrLabel border" ] [ text labelData.target ]
+                , div [ class "attrTargetValue attrLabel border" ] [ text cardData.target ]
                 , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
                 , div [ class "mainContent border" ]
-                    [ div [ class "maxLevelLabel border" ] [ text "最大Lv" ]
-                    , div [ class "maxLevel border" ] [ text "1" ]
-
-                    -- , div [ class "lvLavel border" ] [ text "Lv" ]
-                    -- , div [ class "level border" ] [ text "" ]
-                    , div [ class "effect " ] [ text ("▼効果 :" ++ cardData.effect) ]
-                    , div [ class "description" ] [ text ("▼解説 :" ++ cardData.description) ]
+                    [ div [ class "maxLevelLabel border" ] [ text labelData.maxLevel ]
+                    , div [ class "maxLevel border" ] [ text (String.fromInt cardData.maxLevel) ]
+                    , div [ class "lvLavel border" ] [ text labelData.level ]
+                    , div [ class "level border" ] [ text "" ]
+                    , div [ class "effect " ] [ text (labelData.effect ++ cardData.effect) ]
+                    , div [ class "description" ] [ text (labelData.description ++ cardData.description) ]
                     ]
                 , div [ class "bottomContent" ]
                     [ div [ class "cardId" ] [ text cardData.cardId ]
