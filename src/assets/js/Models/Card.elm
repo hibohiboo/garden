@@ -32,6 +32,7 @@ type alias CardLabelData =
 type alias CardData =
     { cardId : String
     , cardName : String
+    , cardType : String
     , kind : String
     , timing : String
     , cost : Int
@@ -41,11 +42,13 @@ type alias CardData =
     , maxLevel : Int
     , effect : String
     , description : String
-    , imgFrame : String
-    , imgMain : String
     , tags : List Tag
+    , imgMain : String
     , illustedByName : String
     , illustedByUrl : String
+    , imgFrame : String
+    , frameByName : String
+    , frameByUrl : String
     }
 
 
@@ -61,7 +64,7 @@ skillCard =
             CardLabelData "能力" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
 
         cardData =
-            CardData "B-001" "走る" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" "/assets/images/card/frame/report.gif" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "基本能力" 0 ] "ヒューマンピクトグラム2.0" "http://pictogram2.com/"
+            CardData "B-001" "走る" "能力" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com"
 
         range =
             if cardData.range == cardData.maxRange then
@@ -106,9 +109,35 @@ skillCard =
 
 
 illustedBy cardData =
+    let
+        link url name =
+            if name /= "" then
+                a [ href url, target "_blank" ] [ text name ]
+
+            else
+                text ""
+
+        separator a b =
+            if a /= text "" && b /= text "" then
+                text ","
+
+            else
+                text ""
+
+        illust =
+            link cardData.illustedByUrl cardData.illustedByName
+
+        frame =
+            link cardData.frameByUrl cardData.frameByName
+
+        separater1 =
+            separator illust frame
+    in
     div [ class "illustedBy" ]
         [ text "illust:"
-        , a [ href cardData.illustedByUrl ] [ text cardData.illustedByName ]
+        , illust
+        , separater1
+        , frame
         ]
 
 
