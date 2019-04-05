@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, markdownUrl, organRange, organSheetId, organSheetVersion, testStringsRange, testStringsSheetId, testStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion)
+module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion)
 
 import Dict
 import GoogleSpreadSheetApi
@@ -97,31 +97,31 @@ fetchSpreasSheetData toMsg apiKey documentId range =
 -- 文字列
 
 
-testStringsSheetId =
+textStringsSheetId =
     "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
 
 
-testStringsRange =
-    "textStrings!A2:B38"
+textStringsRange =
+    "textStrings!A2:B64"
 
 
-testStringsSheetVersion =
+textStringsSheetVersion =
     1.0
 
 
 getTextStrings : Data -> Maybe String
 getTextStrings data =
-    getSpreasSheetData data testStringsSheetId testStringsRange testStringsSheetVersion
+    getSpreasSheetData data textStringsSheetId textStringsRange textStringsSheetVersion
 
 
 addTextStrings : Data -> String -> Data
 addTextStrings data json =
-    addSpreasSheetData testStringsSheetId testStringsRange testStringsSheetVersion json data
+    addSpreasSheetData textStringsSheetId textStringsRange textStringsSheetVersion json data
 
 
 fetchTextStrings : (Result Http.Error String -> msg) -> String -> Cmd msg
 fetchTextStrings toMsg apiKey =
-    fetchSpreasSheetData toMsg apiKey testStringsSheetId testStringsRange
+    fetchSpreasSheetData toMsg apiKey textStringsSheetId textStringsRange
 
 
 

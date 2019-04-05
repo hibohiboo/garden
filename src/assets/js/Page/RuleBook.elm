@@ -259,6 +259,32 @@ viewRulebook texts =
                 , h3 [] [ dicText "rulebook.section.character.skill.basic.title" "4.1 基本能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.basic.content" "基本能力を選択する。" ]
                 ]
+            , section [ id "battle", class "content-doc" ]
+                [ h1 [] [ dicText "rulebook.section.battle.title" "戦闘" ]
+                , p [] [ dicText "rulebook.section.battle.content" "戦闘序文" ]
+                , h2 [] [ dicText "rulebook.section.battle.pre.title" "戦闘の準備" ]
+                , p [] [ dicText "rulebook.section.battle.pre.content" "戦闘の準備について" ]
+                , h3 [] [ dicText "rulebook.section.battle.pre.battlesheet.title" "戦闘シートとエリア" ]
+                , p [] [ dicText "rulebook.section.battle.pre.battlesheet.content" "エリアへの配置について" ]
+                , h3 [] [ dicText "rulebook.section.battle.pre.victoryCondition.title" "勝利条件" ]
+                , p [] [ dicText "rulebook.section.battle.pre.victoryCondition.content" "勝利条件について" ]
+                , h2 [] [ dicText "rulebook.section.battle.flow.title" "戦闘の流れ" ]
+                , p [] [ dicText "rulebook.section.battle.flow.content" "戦闘の流れについて" ]
+                , h3 [] [ dicText "rulebook.section.battle.flow.turnStart.title" "ターン開始処理" ]
+                , p [] [ dicText "rulebook.section.battle.flow.turnStart.content" "ターン開始処理について" ]
+                , h3 [] [ dicText "rulebook.section.battle.flow.countDown.title" "カウントダウン" ]
+                , p [] [ dicText "rulebook.section.battle.flow.countDown.content" "カウントダウン処理について" ]
+                , h3 [] [ dicText "rulebook.section.battle.flow.turnEnd.title" "ターン終了処理" ]
+                , p [] [ dicText "rulebook.section.battle.flow.turnEnd.content" "ターン終了処理について" ]
+                , h3 [] [ dicText "rulebook.section.battle.end.title" "戦闘の終了" ]
+                , p [] [ dicText "rulebook.section.battle.end.content" "戦闘の終了処理について" ]
+                , h2 [] [ dicText "rulebook.section.battle.action.title" "行動" ]
+                , p [] [ dicText "rulebook.section.battle.action.content" "行動について" ]
+                , h2 [] [ dicText "rulebook.section.battle.attack.title" "攻撃判定" ]
+                , p [] [ dicText "rulebook.section.battle.attack.content" "攻撃判定について" ]
+                , h2 [] [ dicText "rulebook.section.battle.attack.roll.title" "判定時の能力の処理" ]
+                , p [] [ dicText "rulebook.section.battle.attack.roll.content" "判定時の能力の処理について" ]
+                ]
             , section [ id "world-detail" ]
                 [ h1 [] [ dicText "rulebook.section.world.detail.title" "ワールド詳細" ]
                 , h2 [] [ dicText "rulebook.section.world.mutant.title" "異能因子発現個体群" ]
@@ -295,6 +321,7 @@ type alias CardData =
     , timing : String
     , cost : Int
     , range : Int
+    , maxRange : Int
     , target : String
     , maxLevel : Int
     , effect : String
@@ -316,10 +343,17 @@ type alias Tag =
 skillCard =
     let
         labelData =
-            CardLabelData "SKILL" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
+            CardLabelData "能力" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
 
         cardData =
-            CardData "B-001" "走る" "アクション" 4 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" "/assets/images/card/frame/raku_sk57a.png" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "アクション" 0, Tag "基本能力" 0 ] "ヒューマンピクトグラム2.0" "http://pictogram2.com/"
+            CardData "B-001" "走る" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" "/assets/images/card/frame/report.gif" "/assets/images/card/main/run.png" [ Tag "移動" 0, Tag "基本能力" 0 ] "ヒューマンピクトグラム2.0" "http://pictogram2.com/"
+
+        range =
+            if cardData.range == cardData.maxRange then
+                String.fromInt cardData.range
+
+            else
+                String.fromInt cardData.range ++ " ～ " ++ String.fromInt cardData.maxRange
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -335,7 +369,7 @@ skillCard =
                 , div [ class "attrCostLabel attrLabel border" ] [ text labelData.cost ]
                 , div [ class "attrCostValue border" ] [ text (String.fromInt cardData.cost) ]
                 , div [ class "attrRangeLabel attrLabel border" ] [ text labelData.range ]
-                , div [ class "attrRangeValue border" ] [ text (String.fromInt cardData.range) ]
+                , div [ class "attrRangeValue border" ] [ text range ]
                 , div [ class "attrTargetLabel attrLabel border" ] [ text labelData.target ]
                 , div [ class "attrTargetValue attrLabel border" ] [ text cardData.target ]
                 , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
