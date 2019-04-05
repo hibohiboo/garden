@@ -49,6 +49,7 @@ type alias CardData =
     , imgFrame : String
     , frameByName : String
     , frameByUrl : String
+    , deleteFlag : Int
     }
 
 
@@ -64,7 +65,7 @@ skillCard =
             CardLabelData "能力" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
 
         cardData =
-            CardData "B-001" "走る" "能力" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com"
+            CardData "B-001" "走る" "能力" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
 
         range =
             if cardData.range == cardData.maxRange then
