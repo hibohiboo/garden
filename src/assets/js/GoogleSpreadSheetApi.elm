@@ -1,4 +1,15 @@
-module GoogleSpreadSheetApi exposing (dictFromSpreadSheet, sheetUrl, tupleDecodeFromString, tupleDecoder, tuplesDecodeFromString, tuplesDecoder, tuplesInObjectDecodeFromString, tuplesInObjectDecoder, tuplesListFromJson)
+module GoogleSpreadSheetApi exposing
+    ( dictFromSpreadSheet
+    , getTupleBySplitCollonString
+    , sheetUrl
+    , tupleDecodeFromString
+    , tupleDecoder
+    , tuplesDecodeFromString
+    , tuplesDecoder
+    , tuplesInObjectDecodeFromString
+    , tuplesInObjectDecoder
+    , tuplesListFromJson
+    )
 
 import Dict exposing (Dict)
 import Http
@@ -82,3 +93,48 @@ dictFromSpreadSheet sheet =
 
         Err _ ->
             Dict.empty
+
+
+
+-- カード一覧
+
+
+getTupleBySplitCollonString : String -> ( String, Int )
+getTupleBySplitCollonString s =
+    let
+        list =
+            String.split ":" s
+
+        name =
+            case List.head list of
+                Just a ->
+                    a
+
+                _ ->
+                    ""
+
+        value =
+            case List.tail list of
+                Just t ->
+                    case List.head t of
+                        Just a ->
+                            case String.toInt a of
+                                Just n ->
+                                    n
+
+                                _ ->
+                                    0
+
+                        _ ->
+                            0
+
+                _ ->
+                    0
+    in
+    Tuple.pair name value
+
+
+
+-- tuplesDecodeFromString : String -> Result Error (List ( String, String ))
+-- tuplesDecodeFromString s =
+--     decodeString tuplesDecoder s

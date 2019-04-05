@@ -1,4 +1,4 @@
-module Tests exposing (getText, sheet, suite, unitTest)
+module Tests exposing (cardTest, getText, sheet, suite, unitTest)
 
 import Dict exposing (Dict)
 import Expect
@@ -137,4 +137,22 @@ getText =
                         Dict.fromList [ ( "a", "b" ), ( "c", "d" ) ]
                 in
                 Expect.equal actual expect
+        ]
+
+
+cardTest : Test
+cardTest =
+    describe "Card"
+        [ describe "parser"
+            [ test " a:1 形式のテキストをタプルで取得する" <|
+                \_ ->
+                    let
+                        actual =
+                            GSApi.getTupleBySplitCollonString "a:1"
+
+                        expect =
+                            ( "a", 1 )
+                    in
+                    Expect.equal actual expect
+            ]
         ]
