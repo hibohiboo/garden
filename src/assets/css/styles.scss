@@ -600,7 +600,7 @@ $bgColorHeadFoot: #222;
         font-size: 0.7em;
       }
       .skillLabel {
-        grid-column: innerLeft;
+        grid-column: innerLeft/attrValue;
         grid-row: innerTop; // 上端
 
         font-family: 'Anton', sans-serif;
