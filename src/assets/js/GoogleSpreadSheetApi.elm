@@ -1,6 +1,6 @@
 module GoogleSpreadSheetApi exposing
     ( dictFromSpreadSheet
-    , getTupleBySplitCollonString
+    , parseTupleBySplitCollonString
     , sheetUrl
     , tupleDecodeFromString
     , tupleDecoder
@@ -8,6 +8,7 @@ module GoogleSpreadSheetApi exposing
     , tuplesDecoder
     , tuplesInObjectDecodeFromString
     , tuplesInObjectDecoder
+    , tuplesIntDecodeFromString
     , tuplesListFromJson
     )
 
@@ -99,8 +100,8 @@ dictFromSpreadSheet sheet =
 -- カード一覧
 
 
-getTupleBySplitCollonString : String -> ( String, Int )
-getTupleBySplitCollonString s =
+parseTupleBySplitCollonString : String -> ( String, Int )
+parseTupleBySplitCollonString s =
     let
         list =
             String.split ":" s
@@ -111,7 +112,7 @@ getTupleBySplitCollonString s =
                     a
 
                 _ ->
-                    ""
+                    s
 
         value =
             case List.tail list of
@@ -134,7 +135,11 @@ getTupleBySplitCollonString s =
     Tuple.pair name value
 
 
+decoderTupleBySplitCollonString : Decoder ( String, Int )
+decoderTupleBySplitCollonString =
+    D.map parseTupleBySplitCollonString string
 
--- tuplesDecodeFromString : String -> Result Error (List ( String, String ))
--- tuplesDecodeFromString s =
---     decodeString tuplesDecoder s
+
+tuplesIntDecodeFromString : String -> Result Error ( String, Int )
+tuplesIntDecodeFromString s =
+    decodeString decoderTupleBySplitCollonString s

@@ -8,6 +8,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
+import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
+import Json.Decode.Pipeline exposing (hardcoded, optional, required)
+import Json.Encode as E
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)

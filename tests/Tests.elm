@@ -148,7 +148,22 @@ cardTest =
                 \_ ->
                     let
                         actual =
-                            GSApi.getTupleBySplitCollonString "a:1"
+                            GSApi.parseTupleBySplitCollonString "a:1"
+
+                        expect =
+                            ( "a", 1 )
+                    in
+                    Expect.equal actual expect
+            , test "デコーダを使ってタプルで取得する" <|
+                \_ ->
+                    let
+                        actual =
+                            case GSApi.tuplesIntDecodeFromString "\"a:1\"" of
+                                Ok a ->
+                                    a
+
+                                Err err ->
+                                    ( Debug.toString err, 0 )
 
                         expect =
                             ( "a", 1 )
