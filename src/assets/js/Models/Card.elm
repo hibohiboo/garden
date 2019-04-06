@@ -156,3 +156,72 @@ tag t =
                 t.name ++ ":" ++ String.fromInt t.level
     in
     span [ class "tag" ] [ text tagText ]
+
+
+
+-- cardDecoder : Decoder Card
+-- cardDecoder =
+--     Decode.succeed CardData
+--         |> Json.Decode.Pipeline.required "cardId" Decode.string
+--         |> Json.Decode.Pipeline.required "cardType" Decode.string
+--         |> Json.Decode.Pipeline.required "kind" Decode.string
+--         |> Json.Decode.Pipeline.required "timing" Decode.string
+--         |> Json.Decode.Pipeline.required "cost" Decode.int
+--         |> Json.Decode.Pipeline.required "range" Decode.int
+--         |> Json.Decode.Pipeline.required "maxRange" Decode.int
+--         |> Json.Decode.Pipeline.required "target" Decode.string
+--         |> Json.Decode.Pipeline.required "maxLevel" Decode.int
+--         |> Json.Decode.Pipeline.required "effect" Decode.string
+--         |> Json.Decode.Pipeline.required "description" Decode.string
+--         |> Json.Decode.Pipeline.required "tags" Decode.string
+--         |> Json.Decode.Pipeline.required "imgMain" Decode.string
+--         |> Json.Decode.Pipeline.required "illustedByName" Decode.string
+--         |> Json.Decode.Pipeline.required "illustedByUrl" Decode.string
+--         |> Json.Decode.Pipeline.required "imgFrame" Decode.string
+--         |> Json.Decode.Pipeline.required "frameByUrl" Decode.string
+--         |> Json.Decode.Pipeline.required "deleteFlag" Decode.int
+
+
+tagParser : String -> Tag
+tagParser s =
+    let
+        list =
+            String.split ":" s
+
+        name =
+            case List.head list of
+                Just a ->
+                    a
+
+                _ ->
+                    s
+
+        value =
+            case List.tail list of
+                Just t ->
+                    case List.head t of
+                        Just a ->
+                            case String.toInt a of
+                                Just n ->
+                                    n
+
+                                _ ->
+                                    0
+
+                        _ ->
+                            0
+
+                _ ->
+                    0
+    in
+    Tag name value
+
+
+tagDecoder : Decoder Tag
+tagDecoder =
+    Decode.map tagParser string
+
+
+tagsDecoder : Decoder (List Tag)
+tagsDecoder =
+    Decode.list tagDecoder

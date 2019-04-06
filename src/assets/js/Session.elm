@@ -184,3 +184,34 @@ addTraits data json =
 fetchTraits : (Result Http.Error String -> msg) -> String -> Cmd msg
 fetchTraits toMsg apiKey =
     fetchSpreasSheetData toMsg apiKey traitSheetId traitRange
+
+
+
+-- カード
+
+
+cardSheetId =
+    "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
+
+
+cardRange =
+    "cardList!A2:T10"
+
+
+cardSheetVersion =
+    1.0
+
+
+getCards : Data -> Maybe String
+getCards data =
+    getSpreasSheetData data cardSheetId cardRange cardSheetVersion
+
+
+addCards : Data -> String -> Data
+addCards data json =
+    addSpreasSheetData cardSheetId cardRange cardSheetVersion json data
+
+
+fetchCards : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchCards toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey cardSheetId cardRange
