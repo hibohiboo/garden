@@ -8,8 +8,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
-import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
-import Json.Decode.Pipeline exposing (hardcoded, optional, required)
+import Json.Decode as D exposing (..)
+import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
 import Session
 import Skeleton exposing (viewLink, viewMain)
@@ -158,28 +158,29 @@ tag t =
     span [ class "tag" ] [ text tagText ]
 
 
-
--- cardDecoder : Decoder Card
--- cardDecoder =
---     Decode.succeed CardData
---         |> Json.Decode.Pipeline.required "cardId" Decode.string
---         |> Json.Decode.Pipeline.required "cardType" Decode.string
---         |> Json.Decode.Pipeline.required "kind" Decode.string
---         |> Json.Decode.Pipeline.required "timing" Decode.string
---         |> Json.Decode.Pipeline.required "cost" Decode.int
---         |> Json.Decode.Pipeline.required "range" Decode.int
---         |> Json.Decode.Pipeline.required "maxRange" Decode.int
---         |> Json.Decode.Pipeline.required "target" Decode.string
---         |> Json.Decode.Pipeline.required "maxLevel" Decode.int
---         |> Json.Decode.Pipeline.required "effect" Decode.string
---         |> Json.Decode.Pipeline.required "description" Decode.string
---         |> Json.Decode.Pipeline.required "tags" Decode.string
---         |> Json.Decode.Pipeline.required "imgMain" Decode.string
---         |> Json.Decode.Pipeline.required "illustedByName" Decode.string
---         |> Json.Decode.Pipeline.required "illustedByUrl" Decode.string
---         |> Json.Decode.Pipeline.required "imgFrame" Decode.string
---         |> Json.Decode.Pipeline.required "frameByUrl" Decode.string
---         |> Json.Decode.Pipeline.required "deleteFlag" Decode.int
+cardDecoder : Decoder CardData
+cardDecoder =
+    D.succeed CardData
+        |> Json.Decode.Pipeline.custom (D.index 0 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 1 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 2 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 3 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 4 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 5 D.int)
+        |> Json.Decode.Pipeline.custom (D.index 6 D.int)
+        |> Json.Decode.Pipeline.custom (D.index 7 D.int)
+        |> Json.Decode.Pipeline.custom (D.index 8 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 9 D.int)
+        |> Json.Decode.Pipeline.custom (D.index 10 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 11 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 12 tagsDecoder)
+        |> Json.Decode.Pipeline.custom (D.index 13 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 14 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 15 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 16 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 17 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 18 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 19 D.int)
 
 
 tagParser : String -> Tag
@@ -219,9 +220,9 @@ tagParser s =
 
 tagDecoder : Decoder Tag
 tagDecoder =
-    Decode.map tagParser string
+    D.map tagParser string
 
 
 tagsDecoder : Decoder (List Tag)
 tagsDecoder =
-    Decode.list tagDecoder
+    D.list tagDecoder
