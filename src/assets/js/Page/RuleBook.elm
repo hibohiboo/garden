@@ -74,6 +74,8 @@ type Msg
     | GotTexts (Result Http.Error String)
     | ModalTrait String
     | GotTraits (Result Http.Error String)
+    | ModalCard String
+    | GotCards (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -122,6 +124,20 @@ update msg model =
         GotTraits (Err _) ->
             ( model, Cmd.none )
 
+        ModalCard title ->
+            case Session.getCards model.session of
+                Just sheet ->
+                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addCards, openModal () )
+
+                Nothing ->
+                    ( { model | modalTitle = title }, Session.fetchCards GotCards model.googleSheetApiKey )
+
+        GotCards (Ok json) ->
+            ( updateCardListModel model json Session.addCards, openModal () )
+
+        GotCards (Err _) ->
+            ( model, Cmd.none )
+
 
 updateTupleListModel : Model -> String -> (Session.Data -> String -> Session.Data) -> Model
 updateTupleListModel model json addSession =
@@ -142,6 +158,19 @@ updateTextsModel model json =
         | texts = GSAPI.dictFromSpreadSheet json
         , session = Session.addTextStrings model.session json
     }
+
+
+updateCardListModel : Model -> String -> (Session.Data -> String -> Session.Data) -> Model
+updateCardListModel model json addSession =
+    case Card.cardDataListDecodeFromJson json of
+        Ok cards ->
+            { model
+                | modalContents = cardList cards
+                , session = addSession model.session json
+            }
+
+        Err _ ->
+            { model | modalContents = text "error" }
 
 
 view : Model -> Skeleton.Details Msg
@@ -254,6 +283,7 @@ viewRulebook texts =
                 , modalOpenButton texts ModalTrait "chart.list.mutagen.title" "変異原一覧"
                 , h2 [] [ dicText "rulebook.section.character.skill.title" "4. 能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.content" "能力とは" ]
+                , modalOpenButton texts ModalCard "chart.list.card.title" "能力一覧"
                 , div []
                     [ Card.skillCard
                     ]
@@ -320,6 +350,11 @@ tupleList organs =
             organs
             |> List.concat
         )
+
+
+cardList : List Card.CardData -> Html Msg
+cardList cards =
+    div [ class "card-list" ] (List.map Card.cardView cards)
 
 
 jumpToBottom : String -> Cmd Msg

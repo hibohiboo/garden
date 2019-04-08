@@ -522,6 +522,11 @@ $bgColorHeadFoot: #222;
 //#######################################################
 // カード
 //#######################################################
+.card-list {
+  display: flex;
+  flex-wrap: wrap; // 折り返す
+}
+
 .skill-card {
   position: relative;
   .wrapper {

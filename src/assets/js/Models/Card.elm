@@ -5,6 +5,7 @@ port module Models.Card exposing
     , cardDataListDecodeFromJson
     , cardDecodeFromString
     , cardDecoder
+    , cardView
     , illustedBy
     , initCard
     , skillCard
@@ -80,13 +81,25 @@ initCard =
     CardData "" "" "" "" "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0
 
 
+
+-- ==============================================================================================
+-- HTML
+-- ==============================================================================================
+
+
 skillCard =
+    let
+        cardData =
+            CardData "B-001" "走る" "能力" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
+    in
+    cardView cardData
+
+
+cardView : CardData -> Html msg
+cardView cardData =
     let
         labelData =
             CardLabelData "能力" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
-
-        cardData =
-            CardData "B-001" "走る" "能力" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
 
         range =
             if cardData.range == cardData.maxRange then
@@ -174,6 +187,12 @@ tag t =
                 t.name ++ ":" ++ String.fromInt t.level
     in
     span [ class "tag" ] [ text tagText ]
+
+
+
+-- ==============================================================================================
+-- デコーダ
+-- ==============================================================================================
 
 
 cardDataListDecodeFromJson : String -> Result Error (List CardData)

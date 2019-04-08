@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, empty, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion)
+module Session exposing (Data, Version, addCards, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, cardRange, cardSheetId, cardSheetVersion, empty, fetchCards, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, getCards, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion)
 
 import Dict
 import GoogleSpreadSheetApi
