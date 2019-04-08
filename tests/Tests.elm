@@ -3,6 +3,7 @@ module Tests exposing (cardTest, getText, sheet, suite, unitTest)
 import Dict exposing (Dict)
 import Expect
 import GoogleSpreadSheetApi as GSApi
+import Models.Card as Card
 import Route exposing (..)
 import Test exposing (..)
 import Url
@@ -169,5 +170,73 @@ cardTest =
                             ( "a", 1 )
                     in
                     Expect.equal actual expect
+            , test "複数のタグを取得する" <|
+                \_ ->
+                    let
+                        actual =
+                            GSApi.parseTuplesBySplitCommmaString "a:1,b:2"
+
+                        expect =
+                            [ ( "a", 1 ), ( "b", 2 ) ]
+                    in
+                    Expect.equal actual expect
+            , test "デコーダを使って複数のタグを取得する" <|
+                \_ ->
+                    let
+                        actual =
+                            case GSApi.decodeTuplesBySplitCommmaString "\"a:1,b:2\"" of
+                                Ok a ->
+                                    a
+
+                                Err err ->
+                                    [ ( Debug.toString err, 0 ) ]
+
+                        expect =
+                            [ ( "a", 1 ), ( "b", 2 ) ]
+                    in
+                    Expect.equal actual expect
+
+            --         , test "デコーダを使ってCardで取得する" <|
+            --             \_ ->
+            --                 let
+            --                     json =
+            --                         """
+            -- [
+            --   "B000",
+            --   "走る",
+            --   "能力",
+            --   "基本能力",
+            --   "アクション",
+            --   "4",
+            --   "0",
+            --   "0",
+            --   "自身",
+            --   "1",
+            --   "移動1",
+            --   "逃げてもいいし、向かってもいい。",
+            --   "移動:0,基本能力:0",
+            --   "/assets/images/card/main/run.png",
+            --   "ヒューマンピクトグラム2.0",
+            --   "http://pictogram2.com/",
+            --   "/assets/images/card/frame/report.gif",
+            --   "",
+            --   "",
+            --   "0"
+            -- ]
+            --                     """
+            --                     actual =
+            --                         case Card.cardDecodeFromString json of
+            --                             Ok a ->
+            --                                 a
+            --                             Err err ->
+            --                                 let
+            --                                     model =
+            --                                         Card.initCard
+            --                                 in
+            --                                 { model | cardName = Debug.toString err }
+            --                     expect =
+            --                         Card.CardData "B-001" "走る" "能力" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。" [ Card.Tag "移動" 0, Card.Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
+            --                 in
+            --                 Expect.equal actual expect
             ]
         ]

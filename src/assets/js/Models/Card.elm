@@ -1,4 +1,4 @@
-port module Models.Card exposing (CardData, CardLabelData, Tag, illustedBy, skillCard, tag)
+port module Models.Card exposing (CardData, CardLabelData, Tag, cardDecodeFromString, cardDecoder, illustedBy, initCard, skillCard, tag, tagDecoder, tagParser, tagsDecoder)
 
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
@@ -60,6 +60,10 @@ type alias Tag =
     { name : String
     , level : Int
     }
+
+
+initCard =
+    CardData "" "" "" "" "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0
 
 
 skillCard =
@@ -156,6 +160,11 @@ tag t =
                 t.name ++ ":" ++ String.fromInt t.level
     in
     span [ class "tag" ] [ text tagText ]
+
+
+cardDecodeFromString : String -> Result Error CardData
+cardDecodeFromString s =
+    decodeString cardDecoder s
 
 
 cardDecoder : Decoder CardData

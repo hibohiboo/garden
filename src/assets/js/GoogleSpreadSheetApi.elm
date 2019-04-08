@@ -1,6 +1,8 @@
 module GoogleSpreadSheetApi exposing
-    ( dictFromSpreadSheet
+    ( decodeTuplesBySplitCommmaString
+    , dictFromSpreadSheet
     , parseTupleBySplitCollonString
+    , parseTuplesBySplitCommmaString
     , sheetUrl
     , tupleDecodeFromString
     , tupleDecoder
@@ -98,6 +100,25 @@ dictFromSpreadSheet sheet =
 
 
 -- カード一覧
+
+
+parseTuplesBySplitCommmaString : String -> List ( String, Int )
+parseTuplesBySplitCommmaString s =
+    let
+        list =
+            String.split "," s
+    in
+    List.map (\str -> parseTupleBySplitCollonString str) list
+
+
+decoderTuplesBySplitCommmaString : Decoder (List ( String, Int ))
+decoderTuplesBySplitCommmaString =
+    D.map parseTuplesBySplitCommmaString string
+
+
+decodeTuplesBySplitCommmaString : String -> Result Error (List ( String, Int ))
+decodeTuplesBySplitCommmaString s =
+    decodeString decoderTuplesBySplitCommmaString s
 
 
 parseTupleBySplitCollonString : String -> ( String, Int )
