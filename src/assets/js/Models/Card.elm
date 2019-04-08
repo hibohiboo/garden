@@ -1,4 +1,18 @@
-port module Models.Card exposing (CardData, CardLabelData, Tag, cardDecodeFromString, cardDecoder, illustedBy, initCard, skillCard, tag, tagDecoder, tagParser, tagsDecoder)
+port module Models.Card exposing
+    ( CardData
+    , CardLabelData
+    , Tag
+    , cardDataListDecodeFromJson
+    , cardDecodeFromString
+    , cardDecoder
+    , illustedBy
+    , initCard
+    , skillCard
+    , tag
+    , tagDecoder
+    , tagParser
+    , tagsDecoder
+    )
 
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
@@ -162,6 +176,11 @@ tag t =
     span [ class "tag" ] [ text tagText ]
 
 
+cardDataListDecodeFromJson : String -> Result Error (List CardData)
+cardDataListDecodeFromJson s =
+    decodeString (field "values" (D.list cardDecoder)) s
+
+
 cardDecodeFromString : String -> Result Error CardData
 cardDecodeFromString s =
     decodeString cardDecoder s
@@ -175,11 +194,11 @@ cardDecoder =
         |> Json.Decode.Pipeline.custom (D.index 2 D.string)
         |> Json.Decode.Pipeline.custom (D.index 3 D.string)
         |> Json.Decode.Pipeline.custom (D.index 4 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 5 D.int)
-        |> Json.Decode.Pipeline.custom (D.index 6 D.int)
-        |> Json.Decode.Pipeline.custom (D.index 7 D.int)
+        |> Json.Decode.Pipeline.custom (D.index 5 GSAPI.decoderIntFromString)
+        |> Json.Decode.Pipeline.custom (D.index 6 GSAPI.decoderIntFromString)
+        |> Json.Decode.Pipeline.custom (D.index 7 GSAPI.decoderIntFromString)
         |> Json.Decode.Pipeline.custom (D.index 8 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 9 D.int)
+        |> Json.Decode.Pipeline.custom (D.index 9 GSAPI.decoderIntFromString)
         |> Json.Decode.Pipeline.custom (D.index 10 D.string)
         |> Json.Decode.Pipeline.custom (D.index 11 D.string)
         |> Json.Decode.Pipeline.custom (D.index 12 tagsDecoder)
@@ -189,7 +208,26 @@ cardDecoder =
         |> Json.Decode.Pipeline.custom (D.index 16 D.string)
         |> Json.Decode.Pipeline.custom (D.index 17 D.string)
         |> Json.Decode.Pipeline.custom (D.index 18 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 19 D.int)
+        |> Json.Decode.Pipeline.custom (D.index 19 GSAPI.decoderIntFromString)
+
+
+tagsDecoder : Decoder (List Tag)
+tagsDecoder =
+    D.map tagsParser string
+
+
+tagsParser : String -> List Tag
+tagsParser s =
+    let
+        list =
+            String.split "," s
+    in
+    List.map (\str -> tagParser str) list
+
+
+tagDecoder : Decoder Tag
+tagDecoder =
+    D.map tagParser string
 
 
 tagParser : String -> Tag
@@ -225,13 +263,3 @@ tagParser s =
                     0
     in
     Tag name value
-
-
-tagDecoder : Decoder Tag
-tagDecoder =
-    D.map tagParser string
-
-
-tagsDecoder : Decoder (List Tag)
-tagsDecoder =
-    D.list tagDecoder
