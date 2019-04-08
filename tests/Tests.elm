@@ -195,6 +195,21 @@ cardTest =
                             [ ( "a", 1 ), ( "b", 2 ) ]
                     in
                     Expect.equal actual expect
+            , test "デコーダを使って文字から数字を取得する" <|
+                \_ ->
+                    let
+                        actual =
+                            case GSApi.decodeIntFromString "\"1\"" of
+                                Ok a ->
+                                    a
+
+                                Err err ->
+                                    0
+
+                        expect =
+                            1
+                    in
+                    Expect.equal actual expect
 
             --         , test "デコーダを使ってCardで取得する" <|
             --             \_ ->

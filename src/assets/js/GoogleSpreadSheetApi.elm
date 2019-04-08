@@ -1,5 +1,7 @@
 module GoogleSpreadSheetApi exposing
-    ( decodeTuplesBySplitCommmaString
+    ( decodeIntFromString
+    , decodeTuplesBySplitCommmaString
+    , decoderIntFromString
     , dictFromSpreadSheet
     , parseTupleBySplitCollonString
     , parseTuplesBySplitCommmaString
@@ -96,6 +98,25 @@ dictFromSpreadSheet sheet =
 
         Err _ ->
             Dict.empty
+
+
+decoderIntFromString : Decoder Int
+decoderIntFromString =
+    D.map
+        (\s ->
+            case String.toInt s of
+                Just i ->
+                    i
+
+                _ ->
+                    0
+        )
+        D.string
+
+
+decodeIntFromString : String -> Result Error Int
+decodeIntFromString s =
+    decodeString decoderIntFromString s
 
 
 
