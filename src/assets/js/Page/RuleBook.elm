@@ -301,6 +301,8 @@ viewRulebook texts =
                 , h3 [] [ dicText "rulebook.section.character.skill.basic.title" "4.1 基本能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.basic.content" "基本能力を選択する。" ]
                 , modalCardOpenButton texts ModalCard "chart.list.card.title" "基本能力一覧" "基本能力"
+                , h2 [] [ dicText "rulebook.section.character.item.title" "5 アイテムの決定" ]
+                , modalCardOpenButton texts ModalCard "chart.list.item.title" "アイテム一覧" "アイテム"
                 , h3 [] [ dicText "rulebook.section.chart" "チャート" ]
                 , modalCardOpenButton texts ModalCard "chart.list.card.title" "データカード一覧" ""
                 ]
