@@ -29,6 +29,7 @@ type alias Model =
     , modalTitle : String
     , modalContents : Html Msg
     , texts : Dict String String
+    , searchCardKind : String
     }
 
 
@@ -52,7 +53,7 @@ init session apiKey s =
     in
     case s of
         Just id ->
-            ( Model session Close apiKey id "" (text "") texts, Cmd.batch [ jumpToBottom id, cmd ] )
+            ( Model session Close apiKey id "" (text "") texts "", Cmd.batch [ jumpToBottom id, cmd ] )
 
         Nothing ->
             ( initModel session apiKey
@@ -62,7 +63,7 @@ init session apiKey s =
 
 initModel : Session.Data -> String -> Model
 initModel session apiKey =
-    Model session Close apiKey "" "異形器官一覧" (text "") Dict.empty
+    Model session Close apiKey "" "異形器官一覧" (text "") Dict.empty ""
 
 
 type Msg
@@ -74,7 +75,7 @@ type Msg
     | GotTexts (Result Http.Error String)
     | ModalTrait String
     | GotTraits (Result Http.Error String)
-    | ModalCard String
+    | ModalCard String String
     | GotCards (Result Http.Error String)
 
 
@@ -124,10 +125,10 @@ update msg model =
         GotTraits (Err _) ->
             ( model, Cmd.none )
 
-        ModalCard title ->
+        ModalCard title kind ->
             case Session.getCards model.session of
                 Just sheet ->
-                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addCards, openModal () )
+                    ( updateCardListModel { model | modalTitle = title, searchCardKind = kind } sheet Session.addCards, openModal () )
 
                 Nothing ->
                     ( { model | modalTitle = title }, Session.fetchCards GotCards model.googleSheetApiKey )
@@ -164,8 +165,16 @@ updateCardListModel : Model -> String -> (Session.Data -> String -> Session.Data
 updateCardListModel model json addSession =
     case Card.cardDataListDecodeFromJson json of
         Ok cards ->
+            let
+                filteredCards =
+                    if model.searchCardKind == "" then
+                        cards
+
+                    else
+                        List.filter (\card -> card.kind == model.searchCardKind) cards
+            in
             { model
-                | modalContents = cardList cards
+                | modalContents = cardList filteredCards
                 , session = addSession model.session json
             }
 
@@ -272,6 +281,10 @@ viewRulebook texts =
             , section [ id "character", class "content-doc" ]
                 [ h1 [] [ dicText "rulebook.section.character.title" "キャラクター" ]
                 , p [] [ dicText "rulebook.section.character.description.1" "キャラクターとは" ]
+                , h3 [] [ dicText "rulebook.section.character.cardsampel" "データカードサンプル" ]
+                , div []
+                    [ Card.skillCard
+                    ]
                 , h2 [] [ dicText "rulebook.section.character.organ.title" "1. 変異器官の決定" ]
                 , p [] [ dicText "rulebook.section.character.organ.content" "異能の発生源となる変異器官を選択する。" ]
                 , modalOpenButton texts ModalOrgan "chart.list.organ.title" "変異器官一覧"
@@ -283,12 +296,11 @@ viewRulebook texts =
                 , modalOpenButton texts ModalTrait "chart.list.mutagen.title" "変異原一覧"
                 , h2 [] [ dicText "rulebook.section.character.skill.title" "4. 能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.content" "能力とは" ]
-                , modalOpenButton texts ModalCard "chart.list.card.title" "能力一覧"
-                , div []
-                    [ Card.skillCard
-                    ]
                 , h3 [] [ dicText "rulebook.section.character.skill.basic.title" "4.1 基本能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.basic.content" "基本能力を選択する。" ]
+                , modalCardOpenButton texts ModalCard "chart.list.card.title" "基本能力一覧" "基本能力"
+                , h3 [] [ dicText "rulebook.section.chart" "チャート" ]
+                , modalCardOpenButton texts ModalCard "chart.list.card.title" "データカード一覧" ""
                 ]
             , section [ id "battle", class "content-doc" ]
                 [ h1 [] [ dicText "rulebook.section.battle.title" "戦闘" ]
@@ -336,6 +348,11 @@ viewRulebook texts =
 modalOpenButton : Dict String String -> (String -> msg) -> String -> String -> Html msg
 modalOpenButton texts modalMsg key defaultValue =
     a [ onClick (modalMsg (Tx.getText texts key defaultValue)), class "waves-effect waves-light btn", href "#" ] [ text (Tx.getText texts key defaultValue) ]
+
+
+modalCardOpenButton : Dict String String -> (String -> String -> msg) -> String -> String -> String -> Html msg
+modalCardOpenButton texts modalMsg key defaultValue kind =
+    a [ onClick (modalMsg (Tx.getText texts key defaultValue) kind), class "waves-effect waves-light btn", href "#" ] [ text (Tx.getText texts key defaultValue) ]
 
 
 tupleList : List ( String, String ) -> Html Msg
