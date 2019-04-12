@@ -36,6 +36,7 @@ import Utils.TextStrings as Tx
 
 type alias CardLabelData =
     { skill : String
+    , exp : String
     , timing : String
     , cost : String
     , range : String
@@ -52,6 +53,7 @@ type alias CardData =
     , cardName : String
     , cardType : String
     , kind : String
+    , exp : Int
     , timing : String
     , cost : Int
     , range : Int
@@ -78,7 +80,7 @@ type alias Tag =
 
 
 initCard =
-    CardData "" "" "" "" "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0
+    CardData "" "" "" "" 0 "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0
 
 
 
@@ -90,7 +92,7 @@ initCard =
 skillCard =
     let
         cardData =
-            CardData "B-001" "走る" "能力" "基本能力" "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
+            CardData "B-001" "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
     in
     cardView cardData
 
@@ -99,7 +101,7 @@ cardView : CardData -> Html msg
 cardView cardData =
     let
         labelData =
-            CardLabelData "能力" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
+            CardLabelData "能力" "取得経験点" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
 
         range =
             if cardData.range == cardData.maxRange then
@@ -111,7 +113,7 @@ cardView cardData =
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
             [ div [ class "base" ]
-                [ div [ class "skillLabel" ] [ text (labelData.skill ++ "/" ++ cardData.kind) ]
+                [ div [ class "skillLabel" ] [ text (cardData.cardType ++ "/" ++ cardData.kind) ]
                 , div [ class "image" ]
                     [ img [ src cardData.imgMain ] []
                     , img [ src cardData.imgFrame ] []
@@ -125,6 +127,8 @@ cardView cardData =
                 , div [ class "attrRangeValue border" ] [ text range ]
                 , div [ class "attrTargetLabel attrLabel border" ] [ text labelData.target ]
                 , div [ class "attrTargetValue attrLabel border" ] [ text cardData.target ]
+                , div [ class "attrExpLabel attrLabel border" ] [ text labelData.exp ]
+                , div [ class "attrExpValue border" ] [ text (String.fromInt cardData.exp) ]
                 , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
                 , div [ class "mainContent border" ]
                     [ div [ class "maxLevelLabel border" ] [ text labelData.maxLevel ]
@@ -212,22 +216,23 @@ cardDecoder =
         |> Json.Decode.Pipeline.custom (D.index 1 D.string)
         |> Json.Decode.Pipeline.custom (D.index 2 D.string)
         |> Json.Decode.Pipeline.custom (D.index 3 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 4 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 5 GSAPI.decoderIntFromString)
+        |> Json.Decode.Pipeline.custom (D.index 4 GSAPI.decoderIntFromString)
+        |> Json.Decode.Pipeline.custom (D.index 5 D.string)
         |> Json.Decode.Pipeline.custom (D.index 6 GSAPI.decoderIntFromString)
         |> Json.Decode.Pipeline.custom (D.index 7 GSAPI.decoderIntFromString)
-        |> Json.Decode.Pipeline.custom (D.index 8 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 9 GSAPI.decoderIntFromString)
-        |> Json.Decode.Pipeline.custom (D.index 10 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 8 GSAPI.decoderIntFromString)
+        |> Json.Decode.Pipeline.custom (D.index 9 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 10 GSAPI.decoderIntFromString)
         |> Json.Decode.Pipeline.custom (D.index 11 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 12 tagsDecoder)
-        |> Json.Decode.Pipeline.custom (D.index 13 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 12 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 13 tagsDecoder)
         |> Json.Decode.Pipeline.custom (D.index 14 D.string)
         |> Json.Decode.Pipeline.custom (D.index 15 D.string)
         |> Json.Decode.Pipeline.custom (D.index 16 D.string)
         |> Json.Decode.Pipeline.custom (D.index 17 D.string)
         |> Json.Decode.Pipeline.custom (D.index 18 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 19 GSAPI.decoderIntFromString)
+        |> Json.Decode.Pipeline.custom (D.index 19 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 20 GSAPI.decoderIntFromString)
 
 
 tagsDecoder : Decoder (List Tag)

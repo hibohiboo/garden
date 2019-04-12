@@ -572,7 +572,7 @@ $bgColorHeadFoot: #222;
                           [cost]20px     // コスト
                           [range_] 20px  // 射程
                           [target_] 20px // 対象
-                          [target_value] 20px // 目標値 画像終わり
+                          [exp] 20px //経験点 画像終わり
                           [tags] 20px //  タグ
                           [cardName] 30px //  カード名
                           [mainContent] $mainContentHeight // カード説明
@@ -588,7 +588,7 @@ $bgColorHeadFoot: #222;
 
       .image {
         grid-column: innerLeft; // 左端
-        grid-row: pictTop/target_value; // 画像行の頭
+        grid-row: pictTop/exp; // 画像行の頭
         border: #000 solid 1px;
         width: 74px;
         height: 94px;
@@ -641,6 +641,20 @@ $bgColorHeadFoot: #222;
       .attrTargetValue{
         grid-column: attrValue;
         grid-row: target_; 
+      }
+      .attrExpLabel{
+        grid-column: attrLabel;
+        grid-row: exp; 
+        height: 14px; // 下余白調整
+        line-height: 10px;
+        font-size: 10px;
+      }
+      .attrExpValue{
+        grid-column: attrValue;
+        grid-row: exp; 
+        height: 14px; // 下余白調整
+        line-height: 10px;
+        font-size: 10px;
       }
       .cardName {
         grid-column: 1/-1; // カード名の行

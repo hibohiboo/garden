@@ -195,7 +195,7 @@ cardSheetId =
 
 
 cardRange =
-    "cardList!A2:T10"
+    "cardList!A2:U100"
 
 
 cardSheetVersion =
