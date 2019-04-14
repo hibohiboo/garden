@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addCards, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, cardRange, cardSheetId, cardSheetVersion, empty, fetchCards, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, getCards, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion)
+module Session exposing (Data, Version, addCards, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, fetchCards, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
 
 import Dict
 import GoogleSpreadSheetApi
@@ -215,3 +215,34 @@ addCards data json =
 fetchCards : (Result Http.Error String -> msg) -> String -> Cmd msg
 fetchCards toMsg apiKey =
     fetchSpreasSheetData toMsg apiKey cardSheetId cardRange
+
+
+
+-- ユーザカード
+
+
+userCardSheetId =
+    "1JFGLFnPtBfPJdt7YccFSxki2MsqNUzUQmlyIGX4gyZE"
+
+
+userCardRange =
+    "cardList!A2:U100"
+
+
+userCardSheetVersion =
+    1.0
+
+
+getUserCards : Data -> Maybe String
+getUserCards data =
+    getSpreasSheetData data userCardSheetId userCardRange userCardSheetVersion
+
+
+addUserCards : Data -> String -> Data
+addUserCards data json =
+    addSpreasSheetData userCardSheetId userCardRange userCardSheetVersion json data
+
+
+fetchUserCards : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchUserCards toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey userCardSheetId userCardRange

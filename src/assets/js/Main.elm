@@ -13,6 +13,7 @@ import Page.MyPages.CharacterCreate as CharacterCreate
 import Page.MyPages.CharacterUpdate as CharacterUpdate
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
+import Page.SandBox as SandBox
 import Page.Top
 import Route exposing (..)
 import Session
@@ -78,6 +79,7 @@ type Page
     | LoginUserPage Page.LoginUser.Model
     | CharacterCreatePage CharacterCreate.Model
     | CharacterUpdatePage CharacterUpdate.Model
+    | SandBoxPage SandBox.Model
 
 
 init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -119,6 +121,7 @@ type Msg
     | LoginUserMsg Page.LoginUser.Msg
     | CharacterCreateMsg CharacterCreate.Msg
     | CharacterUpdateMsg CharacterUpdate.Msg
+    | SandBoxMsg SandBox.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -230,6 +233,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        SandBoxMsg m ->
+            case model.page of
+                SandBoxPage rmodel ->
+                    let
+                        ( newmodel, newmsg ) =
+                            SandBox.update m rmodel
+                    in
+                    ( { model | page = SandBoxPage newmodel }, Cmd.map SandBoxMsg newmsg )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 -- EXIT
@@ -254,6 +269,9 @@ exit model =
             m.session
 
         CharacterUpdatePage m ->
+            m.session
+
+        SandBoxPage m ->
             m.session
 
         NotFound session ->
@@ -351,6 +369,15 @@ goTo maybeRoute model =
             , Cmd.map CharacterUpdateMsg cmd
             )
 
+        Just (Route.SandBox id) ->
+            let
+                ( m, cmd ) =
+                    SandBox.init session model.googleSheetApiKey id
+            in
+            ( { model | page = SandBoxPage m }
+            , Cmd.map SandBoxMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -412,6 +439,9 @@ view model =
 
         CharacterUpdatePage m ->
             Skeleton.view CharacterUpdateMsg (CharacterUpdate.view m)
+
+        SandBoxPage m ->
+            Skeleton.view SandBoxMsg (SandBox.view m)
 
 
 {-| NotFound ページ
