@@ -111,7 +111,7 @@ cardView cardData =
                 String.fromInt cardData.range ++ " ～ " ++ String.fromInt cardData.maxRange
 
         maxLvElement elm =
-            if cardData.maxLevel == 1 then
+            if cardData.maxLevel <= 1 then
                 text ""
 
             else
