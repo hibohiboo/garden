@@ -104,10 +104,10 @@ updateCardListModel model json addSession =
             let
                 filteredCards =
                     if model.searchCardKind == "" then
-                        List.filter (\card -> card.kind /= "") cards
+                        List.filter (\card -> card.kind /= "" && card.deleteFlag == 0) cards
 
                     else
-                        List.filter (\card -> card.kind == model.searchCardKind) cards
+                        List.filter (\card -> card.kind == model.searchCardKind && card.deleteFlag == 0) cards
             in
             { model
                 | cards = filteredCards
