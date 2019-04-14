@@ -116,6 +116,13 @@ cardView cardData =
 
             else
                 elm
+
+        expElement elm =
+            if cardData.exp == 0 then
+                text ""
+
+            else
+                elm
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -134,8 +141,8 @@ cardView cardData =
                 , div [ class "attrRangeValue border" ] [ text range ]
                 , div [ class "attrTargetLabel attrLabel border" ] [ text labelData.target ]
                 , div [ class "attrTargetValue attrLabel border" ] [ text cardData.target ]
-                , div [ class "attrExpLabel attrLabel border" ] [ text labelData.exp ]
-                , div [ class "attrExpValue border" ] [ text (String.fromInt cardData.exp) ]
+                , expElement (div [ class "attrExpLabel attrLabel border" ] [ text labelData.exp ])
+                , expElement (div [ class "attrExpValue border" ] [ text (String.fromInt cardData.exp) ])
                 , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
                 , div [ class "mainContent border" ]
                     [ maxLvElement (div [ class "maxLevelLabel border" ] [ text labelData.maxLevel ])

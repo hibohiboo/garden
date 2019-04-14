@@ -569,12 +569,13 @@ $bgColorHeadFoot: #222;
       grid-template-rows: [topGap]1px // 上部余白～ 
                           [innerTop]20px // 上部情報 
                           [cardName] 30px //  カード名
+                          [tags] 20px //  タグ
                           [pictTop]20px // 画像開始 / タイミング
                           [cost]20px     // コスト
                           [range_] 20px  // 射程
                           [target_] 20px // 対象
                           [exp] 20px //経験点 画像終わり
-                          [tags] 20px //  タグ
+
 
                           [mainContent] $mainContentHeight // カード説明
                           [bottomContent] 1fr // カード番号など 
@@ -606,8 +607,9 @@ $bgColorHeadFoot: #222;
         font-size: 0.7em;
       }
       .skillLabel {
-        grid-column: innerLeft/attrValue;
+        grid-column: innerLeft/innerRight;
         grid-row: innerTop; // 上端
+        justify-self: right;
 
         font-family: 'Anton', sans-serif;
       }
@@ -661,7 +663,7 @@ $bgColorHeadFoot: #222;
         grid-column: 1/-1; // カード名の行
         grid-row: cardName; // 
 
-        justify-self: center; // 横方向の位置揃え
+        justify-self: left; // 横方向の位置揃え
         align-self: center; // 縦方向の位置揃え
         font-size: 1.5em;
       }
