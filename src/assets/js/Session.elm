@@ -102,7 +102,7 @@ textStringsSheetId =
 
 
 textStringsRange =
-    "textStrings!A2:B64"
+    "textStrings!A2:B100"
 
 
 textStringsSheetVersion =

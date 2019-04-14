@@ -292,10 +292,14 @@ viewRulebook texts =
                 , modalCardOpenButton texts ModalCard "chart.list.card.title" "変異器官一覧" "器官"
                 , h2 [] [ dicText "rulebook.section.character.trait.title" "2. 特性の決定" ]
                 , p [] [ dicText "rulebook.section.character.trait.content" "異能の特性を選択する。" ]
-                , modalOpenButton texts ModalTrait "chart.list.trait.title" "特性一覧"
+
+                -- , modalOpenButton texts ModalTrait "chart.list.trait.title" "特性一覧"
+                , modalCardOpenButton texts ModalCard "chart.list.card.title" "特性一覧" "特性"
                 , h2 [] [ dicText "rulebook.section.character.mutagen.title" "3. 変異原の決定" ]
                 , p [] [ dicText "rulebook.section.character.mutagen.content" "変異器官の発生原因を選択する。" ]
-                , modalOpenButton texts ModalTrait "chart.list.mutagen.title" "変異原一覧"
+
+                -- , modalOpenButton texts ModalTrait "chart.list.mutagen.title" "変異原一覧"
+                , modalCardOpenButton texts ModalCard "chart.list.card.title" "変異原一覧" "変異原"
                 , h2 [] [ dicText "rulebook.section.character.skill.title" "4. 能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.content" "能力とは" ]
                 , h3 [] [ dicText "rulebook.section.character.skill.basic.title" "4.1 基本能力の決定" ]
@@ -327,9 +331,13 @@ viewRulebook texts =
                 , p [] [ dicText "rulebook.section.battle.end.content" "戦闘の終了処理について" ]
                 , h2 [] [ dicText "rulebook.section.battle.action.title" "行動" ]
                 , p [] [ dicText "rulebook.section.battle.action.content" "行動について" ]
+                , h3 [] [ dicText "rulebook.section.battle.action.skill.title" "能力" ]
+                , p [] [ dicText "rulebook.section.battle.action.skill.content" "能力について " ]
                 , h2 [] [ dicText "rulebook.section.battle.attack.title" "攻撃判定" ]
                 , p [] [ dicText "rulebook.section.battle.attack.content" "攻撃判定について" ]
-                , h2 [] [ dicText "rulebook.section.battle.attack.roll.title" "判定時の能力の処理" ]
+                , h3 [] [ dicText "rulebook.section.battle.attack.damage.title" "ダメージ" ]
+                , p [] [ dicText "rulebook.section.battle.attack.damage.content" "ダメージについて" ]
+                , h3 [] [ dicText "rulebook.section.battle.attack.roll.title" "判定時の能力の処理" ]
                 , p [] [ dicText "rulebook.section.battle.attack.roll.content" "判定時の能力の処理について" ]
                 ]
             , section [ id "world-detail" ]
