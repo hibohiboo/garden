@@ -568,13 +568,14 @@ $bgColorHeadFoot: #222;
 
       grid-template-rows: [topGap]1px // 上部余白～ 
                           [innerTop]20px // 上部情報 
+                          [cardName] 30px //  カード名
                           [pictTop]20px // 画像開始 / タイミング
                           [cost]20px     // コスト
                           [range_] 20px  // 射程
                           [target_] 20px // 対象
                           [exp] 20px //経験点 画像終わり
                           [tags] 20px //  タグ
-                          [cardName] 30px //  カード名
+
                           [mainContent] $mainContentHeight // カード説明
                           [bottomContent] 1fr // カード番号など 
                           2px;
@@ -700,9 +701,9 @@ $bgColorHeadFoot: #222;
         ;
 
         grid-template-rows:
-            [innerTop]20px // 上部情報 
+            [innerTop]auto // 上部情報 
             [effect] auto 
-            [description] auto;
+            [description] 1fr;
 
         .maxLevelLabel {
           grid-column: maxLevelLabel;
@@ -726,7 +727,11 @@ $bgColorHeadFoot: #222;
         .effect {
           grid-column: 1/-1;
           grid-row: effect;
-          border-bottom-style: dotted;
+
+          // 効果と解説の境目のスタイルを調整
+          border-bottom-style: dashed;
+          border-bottom-width: 1px;
+          padding-bottom: 5px;
 
           padding-top: $mainContentTopPadding;
           padding-left:  $mainContentLeftPadding;

@@ -101,7 +101,7 @@ cardView : CardData -> Html msg
 cardView cardData =
     let
         labelData =
-            CardLabelData "能力" "取得経験点" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
+            CardLabelData "能力" "経験点" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
 
         range =
             if cardData.range == cardData.maxRange then
@@ -109,6 +109,13 @@ cardView cardData =
 
             else
                 String.fromInt cardData.range ++ " ～ " ++ String.fromInt cardData.maxRange
+
+        maxLvElement elm =
+            if cardData.maxLevel == 1 then
+                text ""
+
+            else
+                elm
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -131,10 +138,10 @@ cardView cardData =
                 , div [ class "attrExpValue border" ] [ text (String.fromInt cardData.exp) ]
                 , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
                 , div [ class "mainContent border" ]
-                    [ div [ class "maxLevelLabel border" ] [ text labelData.maxLevel ]
-                    , div [ class "maxLevel border" ] [ text (String.fromInt cardData.maxLevel) ]
-                    , div [ class "lvLavel border" ] [ text labelData.level ]
-                    , div [ class "level border" ] [ text "" ]
+                    [ maxLvElement (div [ class "maxLevelLabel border" ] [ text labelData.maxLevel ])
+                    , maxLvElement (div [ class "maxLevel border" ] [ text (String.fromInt cardData.maxLevel) ])
+                    , maxLvElement (div [ class "lvLavel border" ] [ text labelData.level ])
+                    , maxLvElement (div [ class "level border" ] [ text "" ])
                     , div [ class "effect " ] [ text (labelData.effect ++ cardData.effect) ]
                     , div [ class "description" ] [ text (labelData.description ++ cardData.description) ]
                     ]
