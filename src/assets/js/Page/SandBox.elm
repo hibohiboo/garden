@@ -79,8 +79,9 @@ viewSandBox cards =
         , p []
             [ a [ href "https://docs.google.com/spreadsheets/d/1JFGLFnPtBfPJdt7YccFSxki2MsqNUzUQmlyIGX4gyZE/edit#gid=0", target "_blank" ] [ text "google spread sheet" ]
             ]
-        , p [] [ text "良識を守ってお使いください。ユーザが作成したデータの責任はユーザが負います。" ]
+        , p [] [ text "良識を守ってお使いください。" ]
         , div [ class "card-list" ] (List.map Card.cardView cards)
+        , p [] [ text "著作権を侵害するような行為は禁止いたします。ユーザが作成したデータの責任はユーザが負います。" ]
         ]
 
 
