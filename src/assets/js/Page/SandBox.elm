@@ -13,6 +13,7 @@ import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
 import Url
 import Url.Builder
+import Utils.NavigationMenu exposing (viewNav)
 import Utils.TextStrings as Tx
 
 
@@ -61,6 +62,7 @@ view model =
     , attrs = []
     , kids =
         [ viewMain (viewSandBox model.cards)
+        , viewNav []
         ]
     }
 
@@ -81,7 +83,7 @@ viewSandBox cards =
             ]
         , p [] [ text "良識を守ってお使いください。" ]
         , div [ class "card-list" ] (List.map Card.cardView cards)
-        , p [] [ text "著作権を侵害するような行為は禁止いたします。ユーザが作成したデータの責任はユーザが負います。" ]
+        , p [ style "font-size" "0.5rem" ] [ text "著作権を侵害するような行為は禁止いたします。ユーザが作成したデータの責任はユーザが負います。" ]
         ]
 
 
