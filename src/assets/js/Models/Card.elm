@@ -1,7 +1,6 @@
 port module Models.Card exposing
     ( CardData
     , CardLabelData
-    , Tag
     , cardDataListDecodeFromJson
     , cardDecodeFromString
     , cardDecoder
@@ -9,10 +8,6 @@ port module Models.Card exposing
     , illustedBy
     , initCard
     , skillCard
-    , tag
-    , tagDecoder
-    , tagParser
-    , tagsDecoder
     )
 
 import Browser.Dom as Dom
@@ -26,6 +21,8 @@ import Http
 import Json.Decode as D exposing (..)
 import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
+import Models.CardId as CardId exposing (CardId, decoder, fromString, toString)
+import Models.Tag exposing (Tag, tagsDecoder)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
@@ -49,7 +46,7 @@ type alias CardLabelData =
 
 
 type alias CardData =
-    { cardId : String
+    { cardId : Maybe CardId
     , cardName : String
     , cardType : String
     , kind : String
@@ -73,14 +70,8 @@ type alias CardData =
     }
 
 
-type alias Tag =
-    { name : String
-    , level : Int
-    }
-
-
 initCard =
-    CardData "" "" "" "" 0 "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0
+    CardData (CardId.fromString "") "" "" "" 0 "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0
 
 
 
@@ -92,7 +83,7 @@ initCard =
 skillCard =
     let
         cardData =
-            CardData "B-001" "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
+            CardData (CardId.fromString "B-001") "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
     in
     cardView cardData
 
@@ -123,6 +114,14 @@ cardView cardData =
 
             else
                 elm
+
+        cardId =
+            case cardData.cardId of
+                Just id ->
+                    CardId.toString id
+
+                Nothing ->
+                    ""
     in
     div [ class "skill-card" ]
         [ div [ class "wrapper" ]
@@ -153,7 +152,7 @@ cardView cardData =
                     , div [ class "description" ] [ text (labelData.description ++ cardData.description) ]
                     ]
                 , div [ class "bottomContent" ]
-                    [ div [ class "cardId" ] [ text cardData.cardId ]
+                    [ div [ class "cardId" ] [ text cardId ]
                     , illustedBy cardData
                     ]
                 ]
@@ -226,7 +225,7 @@ cardDecodeFromString s =
 cardDecoder : Decoder CardData
 cardDecoder =
     D.succeed CardData
-        |> Json.Decode.Pipeline.custom (D.index 0 D.string)
+        |> Json.Decode.Pipeline.custom (D.index 0 CardId.decoder)
         |> Json.Decode.Pipeline.custom (D.index 1 D.string)
         |> Json.Decode.Pipeline.custom (D.index 2 D.string)
         |> Json.Decode.Pipeline.custom (D.index 3 D.string)
@@ -247,57 +246,3 @@ cardDecoder =
         |> Json.Decode.Pipeline.custom (D.index 18 D.string)
         |> Json.Decode.Pipeline.custom (D.index 19 D.string)
         |> Json.Decode.Pipeline.custom (D.index 20 GSAPI.decoderIntFromString)
-
-
-tagsDecoder : Decoder (List Tag)
-tagsDecoder =
-    D.map tagsParser string
-
-
-tagsParser : String -> List Tag
-tagsParser s =
-    let
-        list =
-            String.split "," s
-    in
-    List.map (\str -> tagParser str) list
-
-
-tagDecoder : Decoder Tag
-tagDecoder =
-    D.map tagParser string
-
-
-tagParser : String -> Tag
-tagParser s =
-    let
-        list =
-            String.split ":" s
-
-        name =
-            case List.head list of
-                Just a ->
-                    a
-
-                _ ->
-                    s
-
-        value =
-            case List.tail list of
-                Just t ->
-                    case List.head t of
-                        Just a ->
-                            case String.toInt a of
-                                Just n ->
-                                    n
-
-                                _ ->
-                                    0
-
-                        _ ->
-                            0
-
-                _ ->
-                    0
-    in
-    Tag name value
