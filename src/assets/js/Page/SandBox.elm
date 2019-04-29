@@ -7,7 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
-import Models.Card as Card
+import Models.SandBox.Card as Card
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)

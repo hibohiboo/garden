@@ -606,6 +606,9 @@ $bgColorHeadFoot: #222;
       .attrLabel {
         font-size: 0.7em;
       }
+      .attrValue {
+        white-space: nowrap;
+      }
       .skillLabel {
         grid-column: innerLeft/innerRight;
         grid-row: innerTop; // 上端
