@@ -21,7 +21,7 @@ import Http
 import Json.Decode as D exposing (..)
 import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
-import Models.CardId as CardId exposing (CardId, decoder, fromString, toString)
+import Models.CardId as CardId exposing (CardId)
 import Models.Tag exposing (Tag, tagsDecoder)
 import Session
 import Skeleton exposing (viewLink, viewMain)
