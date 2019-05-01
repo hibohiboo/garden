@@ -281,30 +281,60 @@ viewRulebook texts =
             , section [ id "character", class "content-doc" ]
                 [ h1 [] [ dicText "rulebook.section.character.title" "キャラクター" ]
                 , p [] [ dicText "rulebook.section.character.description.1" "キャラクターとは" ]
-                , h3 [] [ dicText "rulebook.section.character.cardsampel" "データカードサンプル" ]
-                , div []
-                    [ Card.skillCard
-                    ]
+
+                -- , h3 [] [ dicText "rulebook.section.character.cardsampel" "データカードサンプル" ]
+                -- , div []
+                --     [ Card.skillCard
+                --     ]
                 , h2 [] [ dicText "rulebook.section.character.organ.title" "1. 変異器官の決定" ]
                 , p [] [ dicText "rulebook.section.character.organ.content" "異能の発生源となる変異器官を選択する。" ]
 
                 --                , modalOpenButton texts ModalOrgan "chart.list.organ.title" "変異器官一覧"
                 , modalCardOpenButton texts ModalCard "chart.list.card.title" "変異器官一覧" "器官"
-                , h2 [] [ dicText "rulebook.section.character.trait.title" "2. 特性の決定" ]
-                , p [] [ dicText "rulebook.section.character.trait.content" "異能の特性を選択する。" ]
-
-                -- , modalOpenButton texts ModalTrait "chart.list.trait.title" "特性一覧"
-                , modalCardOpenButton texts ModalCard "chart.list.card.title" "特性一覧" "特性"
-                , h2 [] [ dicText "rulebook.section.character.mutagen.title" "3. 変異原の決定" ]
+                , h2 [] [ dicText "rulebook.section.character.mutagen.title" "2. 変異原の決定" ]
                 , p [] [ dicText "rulebook.section.character.mutagen.content" "変異器官の発生原因を選択する。" ]
 
                 -- , modalOpenButton texts ModalTrait "chart.list.mutagen.title" "変異原一覧"
                 , modalCardOpenButton texts ModalCard "chart.list.card.title" "変異原一覧" "変異原"
+                , h2 [] [ dicText "rulebook.section.character.trait.title" "3. 特性の決定" ]
+                , p [] [ dicText "rulebook.section.character.trait.content" "異能の特性を選択する。" ]
+
+                -- , modalOpenButton texts ModalTrait "chart.list.trait.title" "特性一覧"
+                , modalCardOpenButton texts ModalCard "" "特性一覧" "特性"
                 , h2 [] [ dicText "rulebook.section.character.skill.title" "4. 能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.content" "能力とは" ]
                 , h3 [] [ dicText "rulebook.section.character.skill.basic.title" "4.1 基本能力の決定" ]
                 , p [] [ dicText "rulebook.section.character.skill.basic.content" "基本能力を選択する。" ]
-                , modalCardOpenButton texts ModalCard "chart.list.card.title" "基本能力一覧" "基本能力"
+                , modalCardOpenButton texts ModalCard "" "基本能力一覧" "基本能力"
+                , h3 [] [ dicText "" "4.2 共通能力の決定" ]
+                , p [] [ dicText "" "共通能力を選択して取得してもよい。" ]
+                , modalCardOpenButton texts ModalCard "" "共通能力一覧" "共通能力"
+                , h3 [] [ dicText "rulebook.section.character.skill.advance.title" "4.3 特性能力の決定" ]
+                , p [] [ dicText "rulebook.section.character.skill.advance.content" "特性能力を選択して取得してもよい。" ]
+                , ul [ class "skill-button-list" ]
+                    [ li [] [ modalCardOpenButton texts ModalCard "" "特性能力一覧:身体強化" "身体強化" ]
+                    , li [] [ modalCardOpenButton texts ModalCard "" "特性能力一覧:精神感応" "精神感応" ]
+                    , li [] [ modalCardOpenButton texts ModalCard "" "特性能力一覧:外的念力" "外的念力" ]
+                    , li [] [ modalCardOpenButton texts ModalCard "" "特性能力一覧:炎熱" "炎熱" ]
+                    , li [] [ modalCardOpenButton texts ModalCard "" "特性能力一覧:氷冷" "氷冷" ]
+                    , li [] [ modalCardOpenButton texts ModalCard "" "特性能力一覧:電磁" "電磁" ]
+                    , li [] [ modalCardOpenButton texts ModalCard "" "特性能力一覧:流体" "流体" ]
+                    ]
+
+                -- , h3 [] [ dicText "" "4.4 器官能力の決定" ]
+                -- , p [] [ dicText "" "器官能力を選択して取得してもよい。" ]
+                -- , ul [ class "skill-button-list" ]
+                --     [ li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:腕" "腕" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:脚" "脚" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:内臓" "内臓" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:脳" "脳" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:感覚器" "感覚器" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:尾" "尾" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:角" "角" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:翼" "翼" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:寄生" "寄生" ]
+                --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:皮膚" "皮膚" ]
+                --     ]
                 , h2 [] [ dicText "rulebook.section.character.item.title" "5 アイテムの決定" ]
                 , modalCardOpenButton texts ModalCard "chart.list.item.title" "アイテム一覧" "アイテム"
                 , h3 [] [ dicText "rulebook.section.chart" "チャート" ]
