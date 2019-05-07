@@ -77,6 +77,9 @@ type Msg
     | GotTraits (Result Http.Error String)
     | ModalCard String String
     | GotCards (Result Http.Error String)
+    | ModalFaq String
+    | GotFaqs (Result Http.Error String)
+    | ModalSampleCard String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -138,6 +141,25 @@ update msg model =
 
         GotCards (Err _) ->
             ( model, Cmd.none )
+
+        ModalFaq title ->
+            case Session.getFaqs model.session of
+                Just sheet ->
+                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addFaqs, openModal () )
+
+                Nothing ->
+                    ( { model | modalTitle = title }, Session.fetchFaqs GotFaqs model.googleSheetApiKey )
+
+        GotFaqs (Ok json) ->
+            ( updateTupleListModel model json Session.addFaqs, openModal () )
+
+        GotFaqs (Err _) ->
+            ( model, Cmd.none )
+
+        ModalSampleCard title ->
+            ( { model | modalTitle = title, modalContents = viewCardSample model.texts }
+            , openModal ()
+            )
 
 
 updateTupleListModel : Model -> String -> (Session.Data -> String -> Session.Data) -> Model
@@ -286,6 +308,9 @@ viewRulebook texts =
                 -- , div []
                 --     [ Card.skillCard
                 --     ]
+                , modalOpenButton texts ModalSampleCard "" "データカードの見方"
+
+                -- , viewCardSample texts
                 , h2 [] [ dicText "rulebook.section.character.organ.title" "1. 変異器官の決定" ]
                 , p [] [ dicText "rulebook.section.character.organ.content" "異能の発生源となる変異器官を選択する。" ]
 
@@ -336,8 +361,11 @@ viewRulebook texts =
                 --     , li [] [ modalCardOpenButton texts ModalCard "" "器官能力一覧:皮膚" "皮膚" ]
                 --     ]
                 , h2 [] [ dicText "rulebook.section.character.item.title" "5 アイテムの決定" ]
+                , p [] [ dicText "rulebook.section.character.item.content" "アイテムを1つ取得する。" ]
                 , modalCardOpenButton texts ModalCard "chart.list.item.title" "アイテム一覧" "アイテム"
-                , h3 [] [ dicText "rulebook.section.chart" "チャート" ]
+                , h2 [] [ dicText "rulebook.section.actionpower.title" "6 行動力の決定" ]
+                , p [] [ dicText "rulebook.section.actionpower.content" "【 4 + データカードで上昇する行動力】がキャラクターの行動力となる。" ]
+                , h2 [] [ dicText "rulebook.section.chart" "チャート" ]
                 , modalCardOpenButton texts ModalCard "chart.list.card.title" "データカード一覧" ""
                 ]
             , section [ id "battle", class "content-doc" ]
@@ -369,6 +397,8 @@ viewRulebook texts =
                 , p [] [ dicText "rulebook.section.battle.attack.damage.content" "ダメージについて" ]
                 , h3 [] [ dicText "rulebook.section.battle.attack.roll.title" "判定時の能力の処理" ]
                 , p [] [ dicText "rulebook.section.battle.attack.roll.content" "判定時の能力の処理について" ]
+                , h2 [] [ dicText "" "FAQ" ]
+                , modalOpenButton texts ModalFaq "faq.title" "FAQ"
                 ]
             , section [ id "world-detail" ]
                 [ h1 [] [ dicText "rulebook.section.world.detail.title" "ワールド詳細" ]
@@ -383,6 +413,43 @@ viewRulebook texts =
                 , h2 [] [ dicText "rulebook.section.world.sakuraba_city_after.title" "崩壊後の桜庭市" ]
                 , p [ class "content-doc" ] [ dicText "rulebook.section.world.sakuraba_city_after.content" "桜庭市ナワバリバトル" ]
                 ]
+            ]
+        ]
+
+
+viewCardSample : Dict String String -> Html msg
+viewCardSample texts =
+    let
+        dicText key defaultValue =
+            text (Tx.getText texts key defaultValue)
+    in
+    div [ class "skill-sample-wrapper" ]
+        [ div [ class "skill-sample-decoration" ]
+            [ div [ style "top" "10px", style "left" "10px" ] [ text "①" ]
+            , div [ style "top" "10px", style "left" "120px" ] [ text "②" ]
+            , div [ style "top" "50px", style "left" "0px" ] [ text "③" ]
+            , div [ style "top" "80px", style "left" "0px" ] [ text "④" ]
+            , div [ style "top" "80px", style "left" "80px" ] [ text "⑤" ]
+            , div [ style "top" "100px", style "left" "80px" ] [ text "⑥" ]
+            , div [ style "top" "120px", style "left" "80px" ] [ text "⑦" ]
+            , div [ style "top" "140px", style "left" "80px" ] [ text "⑧" ]
+            , div [ style "top" "170px", style "left" "0" ] [ text "⑨" ]
+            , div [ style "top" "210px", style "left" "0" ] [ text "⑩" ]
+            , div [ style "top" "310px", style "left" "60px" ] [ text "⑪" ]
+            ]
+        , Card.skillCard
+        , div []
+            [ div [] [ dicText "rulebook.section.character.card.sample.1" "①：カード名" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.2" "②：タイプ/種類" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.3" "③：タグ" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.4" "④：画像" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.5" "⑤：カードの使用タイミング。\n以下の種類がある。\nアクション以外のカードは使用すると使用済となる。\n・アクション:行動で使用できる。\n・常時：常に効果を発揮している。\n・割込：いつでも割込んで使用できる。\n・判定直後：判定ダイスを振った後に使用できる。\n・ダメージ:ダメージ決定時に使用できる。" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.6" "⑥：カードを使用するために消費する行動値。" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.7" "⑦：対象を選択できるエリアの距離。\nカード使用者のいるエリアを0とする。" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.8" "⑧：効果の対象。\n以下の種類がある。\n・自身:カードの使用者。\n・単体:対象1つ。\n・範囲:選択した1エリアに存在する全員。" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.9" "⑨：カードの効果。\n複数の場合、左から順に処理する。\n「/」で区切る場合、使用時にどちらか選択する。\n「+」で繋ぐ場合、攻撃判定成功で効果を発揮する。\n以下に代表的な効果をあげる。\n・ダメージn:命中判定を行い、n点のダメージを与える。\n・防御n：n点のダメージを減少する。\n・移動n:nマス以内のエリアに移動する。\n・移動妨害n:移動できるマスをnマス減少する。\n・回復n:負傷状態のカードをn個使用済とする。" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.10" "⑩：カードの解説。" ]
+            , div [] [ dicText "rulebook.section.character.card.sample.11" "⑪：画像の著作者サイトへのリンク。" ]
             ]
         ]
 

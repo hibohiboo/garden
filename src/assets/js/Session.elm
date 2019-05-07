@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addCards, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, fetchCards, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
+module Session exposing (Data, Version, addCards, addFaqs, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchFaqs, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getFaqs, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
 
 import Dict
 import GoogleSpreadSheetApi
@@ -246,3 +246,34 @@ addUserCards data json =
 fetchUserCards : (Result Http.Error String -> msg) -> String -> Cmd msg
 fetchUserCards toMsg apiKey =
     fetchSpreasSheetData toMsg apiKey userCardSheetId userCardRange
+
+
+
+-- FAQ
+
+
+faqSheetId =
+    "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
+
+
+faqRange =
+    "faqList!A2:B11"
+
+
+faqSheetVersion =
+    1.0
+
+
+getFaqs : Data -> Maybe String
+getFaqs data =
+    getSpreasSheetData data faqSheetId faqRange faqSheetVersion
+
+
+addFaqs : Data -> String -> Data
+addFaqs data json =
+    addSpreasSheetData faqSheetId faqRange faqSheetVersion json data
+
+
+fetchFaqs : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchFaqs toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey faqSheetId faqRange
