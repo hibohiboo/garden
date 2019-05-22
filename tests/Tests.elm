@@ -4,6 +4,8 @@ import Dict exposing (Dict)
 import Expect
 import GoogleSpreadSheetApi as GSApi
 import Models.Card as Card
+import Models.CardId as CardId exposing (CardId)
+import Models.Tag exposing (Tag)
 import Route exposing (..)
 import Test exposing (..)
 import Url
@@ -253,7 +255,7 @@ cardTest =
                                     { model | cardName = Debug.toString err }
 
                         expect =
-                            Card.CardData "B-001" "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。" [ Card.Tag "移動" 0, Card.Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "" 0
+                            Card.CardData (CardId.fromString "B-001") "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "" 0
                     in
                     Expect.equal actual expect
             , test "デコーダを使ってCardのリストを取得する" <|
@@ -330,7 +332,7 @@ cardTest =
                         expect =
                             let
                                 card =
-                                    Card.CardData "B-001" "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。" [ Card.Tag "移動" 0, Card.Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "" 0
+                                    Card.CardData (CardId.fromString "B-001") "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "" 0
                             in
                             [ card, card ]
                     in
