@@ -4,6 +4,7 @@ port module Models.Card exposing
     , cardDataListDecodeFromJson
     , cardDecodeFromString
     , cardDecoder
+    , cardList
     , cardView
     , illustedBy
     , initCard
@@ -78,6 +79,11 @@ initCard =
 -- ==============================================================================================
 -- HTML
 -- ==============================================================================================
+
+
+cardList : List CardData -> Html msg
+cardList cards =
+    div [ class "card-list" ] (List.map cardView cards)
 
 
 skillCard =

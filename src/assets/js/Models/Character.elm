@@ -1,10 +1,11 @@
-module Models.Character exposing (Character, EditorModel, characterDecoder, encodeCharacter, initCharacter)
+module Models.Character exposing (Character, characterDecoder, encodeCharacter, initCharacter)
 
 import Array exposing (Array)
 import GoogleSpreadSheetApi as GSAPI
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import Json.Encode as E
+import Models.Card as Card
 
 
 type alias Character =
@@ -14,12 +15,6 @@ type alias Character =
     , kana : String
     , organ : String
     , traits : Array String
-    }
-
-
-type alias EditorModel =
-    { organs : List ( String, String )
-    , traits : List ( String, String )
     }
 
 

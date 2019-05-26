@@ -4,12 +4,22 @@ import Array exposing (Array)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Models.Card as Card
 import Models.Character exposing (..)
+import Models.CharacterEditor exposing (..)
 import Url
 import Url.Builder
+import Utils.Modal as Modal
+
+
+
+-- Materializeのイベントを呼び出し
 
 
 port elementChangeToJs : () -> Cmd msg
+
+
+port openModalCharacterUpdate : () -> Cmd msg
 
 
 type Msg
@@ -19,10 +29,11 @@ type Msg
     | AddTrait
     | InputTrait Int String
     | DeleteTrait Int
+    | ModalCard String String
 
 
-update : Msg -> Character -> ( Character, Cmd Msg )
-update msg char =
+update : Msg -> Character -> EditorModel msg -> ( ( Character, EditorModel msg ), Cmd Msg )
+update msg char editor =
     let
         deleteAt i arrays =
             let
@@ -43,55 +54,73 @@ update msg char =
                 c =
                     { char | name = s }
             in
-            ( c, Cmd.none )
+            ( ( c, editor ), Cmd.none )
 
         InputKana s ->
             let
                 c =
                     { char | kana = s }
             in
-            ( c, Cmd.none )
+            ( ( c, editor ), Cmd.none )
 
         InputOrgan s ->
             let
                 c =
                     { char | organ = s }
             in
-            ( c, Cmd.none )
+            ( ( c, editor ), Cmd.none )
 
         AddTrait ->
             let
                 c =
                     { char | traits = Array.push "" char.traits }
             in
-            ( c, elementChangeToJs () )
+            ( ( c, editor ), elementChangeToJs () )
 
         InputTrait i s ->
             let
                 c =
                     { char | traits = Array.set i s char.traits }
             in
-            ( c, Cmd.none )
+            ( ( c, editor ), Cmd.none )
 
         DeleteTrait i ->
             let
                 c =
                     { char | traits = deleteAt i char.traits }
             in
-            ( c, Cmd.none )
+            ( ( c, editor ), Cmd.none )
+
+        ModalCard title kind ->
+            let
+                filteredCards =
+                    if editor.searchCardKind == "" then
+                        editor.cards
+
+                    else
+                        List.filter (\card -> card.kind == editor.searchCardKind) editor.cards
+
+                newEditor =
+                    { editor
+                        | modalContents = Card.cardList filteredCards
+                    }
+            in
+            ( ( char, newEditor ), openModalCharacterUpdate () )
 
 
 
 -- 入力エリア
 
 
-editArea : Character -> EditorModel -> Html Msg
+editArea : Character -> EditorModel Msg -> Html Msg
 editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.kana InputKana
+        , modalCardOpenButton ModalCard "変異器官" ""
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
         , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
+        , Modal.modalWindow editor.modalTitle editor.modalContents
         ]
 
 
@@ -135,7 +164,7 @@ inputAreasWithAutocomplete fieldId labelName arrays updateMsg addMsg deleteMsg l
     div []
         [ div []
             (List.concat
-                [ Array.toList <| Array.indexedMap (\i v -> updateAreaWithAutocomplete i fieldId labelName v updateMsg deleteMsg listId) arrays
+                [ Array.toList <| Array.indexedMap (\i v -> updateAreaWithAutoComplete i fieldId labelName v updateMsg deleteMsg listId) arrays
                 , addButton labelName addMsg
                 ]
             )
@@ -144,8 +173,8 @@ inputAreasWithAutocomplete fieldId labelName arrays updateMsg addMsg deleteMsg l
         ]
 
 
-updateAreaWithAutocomplete : Int -> String -> String -> String -> (Int -> String -> msg) -> (Int -> msg) -> String -> Html msg
-updateAreaWithAutocomplete index fieldId labelName val updateMsg deleteMsg listId =
+updateAreaWithAutoComplete : Int -> String -> String -> String -> (Int -> String -> msg) -> (Int -> msg) -> String -> Html msg
+updateAreaWithAutoComplete index fieldId labelName val updateMsg deleteMsg listId =
     let
         fid =
             fieldId ++ String.fromInt index
@@ -220,3 +249,8 @@ addButton labelName addMsg =
     [ text (labelName ++ "を追加  ")
     , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
     ]
+
+
+modalCardOpenButton : (String -> String -> msg) -> String -> String -> Html msg
+modalCardOpenButton modalMsg title kind =
+    a [ onClick (modalMsg title kind), class "waves-effect waves-light btn", href "#" ] [ text title ]

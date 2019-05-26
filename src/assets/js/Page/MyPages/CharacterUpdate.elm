@@ -7,7 +7,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as D
+import Models.Card as Card
 import Models.Character exposing (..)
+import Models.CharacterEditor exposing (EditorModel)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
 import Session
 import Skeleton exposing (viewLink, viewMain)
@@ -51,7 +53,7 @@ type alias Model =
     , naviState : NaviState
     , googleSheetApiKey : String
     , character : Character
-    , editorModel : EditorModel
+    , editorModel : EditorModel CharacterEditor.Msg
     }
 
 
@@ -87,15 +89,35 @@ init session apiKey storeUserId characterId =
 
             else
                 Cmd.none
+
+        cards =
+            case Session.getCards session of
+                Just sheet ->
+                    case Card.cardDataListDecodeFromJson sheet of
+                        Ok list ->
+                            list
+
+                        Err _ ->
+                            []
+
+                Nothing ->
+                    []
+
+        cardsCmd =
+            if cards == [] then
+                Session.fetchCards GotCards apiKey
+
+            else
+                Cmd.none
     in
-    ( initModel session apiKey storeUserId organs traits
-    , Cmd.batch [ getCharacter ( storeUserId, characterId ), organsCmd, traitsCmd ]
+    ( initModel session apiKey storeUserId organs traits cards
+    , Cmd.batch [ getCharacter ( storeUserId, characterId ), organsCmd, traitsCmd, cardsCmd ]
     )
 
 
-initModel : Session.Data -> String -> String -> List ( String, String ) -> List ( String, String ) -> Model
-initModel session apiKey storeUserId organs traits =
-    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs traits)
+initModel : Session.Data -> String -> String -> List ( String, String ) -> List ( String, String ) -> List Card.CardData -> Model
+initModel session apiKey storeUserId organs traits cards =
+    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs traits cards "" "" (text ""))
 
 
 type Msg
@@ -106,6 +128,7 @@ type Msg
     | UpdatedCharacter Bool
     | GotOrgans (Result Http.Error String)
     | GotTraits (Result Http.Error String)
+    | GotCards (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -117,10 +140,10 @@ update msg model =
         -- キャラクターデータの更新
         EditorMsg emsg ->
             let
-                ( m, s ) =
-                    CharacterEditor.update emsg model.character
+                ( ( char, editor ), s ) =
+                    CharacterEditor.update emsg model.character model.editorModel
             in
-            ( { model | character = m }, Cmd.map EditorMsg s )
+            ( { model | character = char, editorModel = editor }, Cmd.map EditorMsg s )
 
         Save ->
             ( model, model.character |> encodeCharacter |> updateCharacter )
@@ -186,6 +209,29 @@ update msg model =
         GotTraits (Err _) ->
             ( model, Cmd.none )
 
+        GotCards (Ok json) ->
+            case Card.cardDataListDecodeFromJson json of
+                Ok cards ->
+                    let
+                        oldEditorModel =
+                            model.editorModel
+
+                        newEditorModel =
+                            { oldEditorModel | cards = cards }
+                    in
+                    ( { model
+                        | editorModel = newEditorModel
+                        , session = Session.addCards model.session json
+                      }
+                    , initEditorToJs ()
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotCards (Err _) ->
+            ( model, Cmd.none )
+
 
 view : Model -> Skeleton.Details Msg
 view model =
@@ -211,7 +257,8 @@ viewHelper model =
         , div
             [ class "edit-karte" ]
             [ edit model
-            , karte model
+
+            -- , karte model
             ]
         ]
 

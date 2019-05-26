@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Models.Character exposing (..)
+import Models.CharacterEditor as CharacterEditor exposing (..)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
 import Session
 import Skeleton exposing (viewLink, viewMain)
@@ -30,6 +31,7 @@ type alias Model =
     { session : Session.Data
     , naviState : NaviState
     , character : Character
+    , editorModel : EditorModel CharacterEditor.Msg
     }
 
 
@@ -42,7 +44,7 @@ init session storeUserId =
 
 initModel : Session.Data -> String -> Model
 initModel session storeUserId =
-    Model session Close (initCharacter storeUserId)
+    Model session Close (initCharacter storeUserId) CharacterEditor.initEditor
 
 
 type Msg
@@ -61,10 +63,10 @@ update msg model =
         -- キャラクターデータの更新
         EditorMsg emsg ->
             let
-                ( m, s ) =
-                    CharacterEditor.update emsg model.character
+                ( ( char, editor ), s ) =
+                    CharacterEditor.update emsg model.character model.editorModel
             in
-            ( { model | character = m }, Cmd.map EditorMsg s )
+            ( { model | character = char }, Cmd.map EditorMsg s )
 
         Save ->
             ( model, model.character |> encodeCharacter |> saveNewCharacter )
@@ -105,7 +107,7 @@ viewHelper model =
 edit : Model -> Html Msg
 edit model =
     div [ class "edit-area" ]
-        [ Html.map EditorMsg (editArea model.character (EditorModel [] []))
+        [ Html.map EditorMsg (editArea model.character model.editorModel)
         , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
             [ text "保存"
             , i [ class "material-icons right" ] [ text "send" ]

@@ -14,6 +14,7 @@ import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
 import Url
 import Url.Builder
+import Utils.Modal as Modal
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.TextStrings as Tx
 
@@ -196,7 +197,7 @@ updateCardListModel model json addSession =
                         List.filter (\card -> card.kind == model.searchCardKind) cards
             in
             { model
-                | modalContents = cardList filteredCards
+                | modalContents = Card.cardList filteredCards
                 , session = addSession model.session json
             }
 
@@ -219,24 +220,9 @@ view model =
         , viewNavi (List.map (\( value, text ) -> NavigationMenu value text) tableOfContents)
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
-        , modalWindow model.modalTitle model.modalContents
+        , Modal.modalWindow model.modalTitle model.modalContents
         ]
     }
-
-
-modalWindow : String -> Html msg -> Html msg
-modalWindow title content =
-    div [ id "mainModal", class "modal" ]
-        [ div [ class "modal-content" ]
-            [ h4 [] [ text title ]
-            , p [] [ content ]
-            ]
-
-        -- elmの遷移と干渉して、 close のときにM.Modal._modalsOpenの値が １から0にならない
-        -- , div [ class "modal-footer" ]
-        --     [ a [ href "#", class "modal-close waves-effect waves-green btn-flat" ] [ text "閉じる" ]
-        --     ]
-        ]
 
 
 viewNavi : List NavigationMenu -> Html Msg
@@ -476,11 +462,6 @@ tupleList organs =
             organs
             |> List.concat
         )
-
-
-cardList : List Card.CardData -> Html Msg
-cardList cards =
-    div [ class "card-list" ] (List.map Card.cardView cards)
 
 
 jumpToBottom : String -> Cmd Msg

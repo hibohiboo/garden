@@ -67,9 +67,13 @@ app.ports.elementChangeToJs.subscribe(async () => {
 });
 
 // モーダルを開く
-app.ports.openModal.subscribe(() => {
-  $('#mainModal').modal('open');
-});
+const $modal = $('#mainModal');
+const openModal = () => {
+  $modal.modal('open');
+};
+
+app.ports.openModal.subscribe(openModal);
+app.ports.openModalCharacterUpdate.subscribe(openModal);
 
 // ログインが必要なときにfirebaseuiを使って要素を準備する
 const viewLoginPage = () => {

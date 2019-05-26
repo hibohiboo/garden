@@ -240,7 +240,7 @@ cardTest =
               "",
               "0"
             ]
-                                """
+  """
 
                         actual =
                             case Card.cardDecodeFromString json of
@@ -272,7 +272,7 @@ cardTest =
               "走る",
               "能力",
               "基本能力",
-                            "10",
+              "10",
               "アクション",
               "4",
               "0",
@@ -315,7 +315,7 @@ cardTest =
             ]
     ]
 }
-                                """
+ """
 
                         actual =
                             case Card.cardDataListDecodeFromJson json of
