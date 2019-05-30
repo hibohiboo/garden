@@ -218,6 +218,7 @@ update msg model =
 
                         newEditorModel =
                             { oldEditorModel | cards = cards }
+
                     in
                     ( { model
                         | editorModel = newEditorModel

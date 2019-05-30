@@ -95,11 +95,14 @@ update msg char editor =
         UpdateModal title kind ->
             let
                 filteredCards =
-                    if editor.searchCardKind == "" then
+                    if kind == "" then
                         editor.cards
 
                     else
-                        List.filter (\card -> card.kind == editor.searchCardKind) editor.cards
+                        List.filter (\card -> card.kind == kind) editor.cards
+
+                _ =
+                    Debug.log "update" editor.cards
 
                 newEditor =
                     { editor
@@ -121,7 +124,7 @@ editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.kana InputKana
-        , modalCardOpenButton UpdateModal "変異器官" ""
+        , modalCardOpenButton UpdateModal "変異器官" "器官"
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
         , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , Modal.modalWindow editor.modalTitle editor.modalContents
