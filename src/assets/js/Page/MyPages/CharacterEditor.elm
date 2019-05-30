@@ -287,4 +287,4 @@ addButton labelName addMsg =
 
 modalCardOpenButton : (String -> String -> msg) -> String -> String -> Html msg
 modalCardOpenButton modalMsg title kind =
-    a [ onClick (modalMsg title kind), class "waves-effect waves-light btn", href "#" ] [ text title ]
+    div [ onClick (modalMsg title kind), class "waves-effect waves-light btn" ] [ text title ]
