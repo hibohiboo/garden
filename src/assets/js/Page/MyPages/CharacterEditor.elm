@@ -33,7 +33,7 @@ type Msg
     | OpenModal
 
 
-update : Msg -> Character -> EditorModel msg -> ( ( Character, EditorModel msg ), Cmd Msg )
+update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
 update msg char editor =
     let
         deleteAt i arrays =
@@ -101,12 +101,12 @@ update msg char editor =
                     else
                         List.filter (\card -> card.kind == kind) editor.cards
 
-                _ =
-                    Debug.log "update" editor.cards
+                cardElements =
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputOrgan card.cardName)) filteredCards)
 
                 newEditor =
                     { editor
-                        | modalContents = Card.cardList filteredCards
+                        | modalContents = cardElements
                     }
             in
             update OpenModal char newEditor
@@ -137,6 +137,15 @@ getNameList list =
 
 
 
+-- カードをクリックすると変異器官を更新する
+
+
+inputCard : Card.CardData -> Msg -> Html Msg
+inputCard card msg =
+    div [ onClick msg ] [ Card.cardView card ]
+
+
+
 -- 単純な入力
 
 
@@ -155,7 +164,7 @@ inputArea fieldId labelName val toMsg =
 inputAreaWithAutocomplete : String -> String -> String -> (String -> msg) -> String -> List String -> Html msg
 inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
     div [ class "input-field" ]
-        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId ] []
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId, readonly True ] []
         , label [ for fieldId ] [ text labelName ]
         , datalist [ id listId ]
             (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
