@@ -29,7 +29,8 @@ type Msg
     | AddTrait
     | InputTrait Int String
     | DeleteTrait Int
-    | ModalCard String String
+    | UpdateModal String String
+    | OpenModal
 
 
 update : Msg -> Character -> EditorModel msg -> ( ( Character, EditorModel msg ), Cmd Msg )
@@ -91,7 +92,7 @@ update msg char editor =
             in
             ( ( c, editor ), Cmd.none )
 
-        ModalCard title kind ->
+        UpdateModal title kind ->
             let
                 filteredCards =
                     if editor.searchCardKind == "" then
@@ -105,7 +106,10 @@ update msg char editor =
                         | modalContents = Card.cardList filteredCards
                     }
             in
-            ( ( char, newEditor ), openModalCharacterUpdate () )
+            update OpenModal char newEditor
+
+        OpenModal ->
+            ( ( char, editor ), openModalCharacterUpdate () )
 
 
 
@@ -117,7 +121,7 @@ editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.kana InputKana
-        , modalCardOpenButton ModalCard "変異器官" ""
+        , modalCardOpenButton UpdateModal "変異器官" ""
         , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
         , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , Modal.modalWindow editor.modalTitle editor.modalContents

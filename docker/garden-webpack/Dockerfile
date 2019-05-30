@@ -1,4 +1,4 @@
-FROM node:11.14.0
+FROM node:11.15.0
 
 # コンテナ上の作業ディレクトリ作成
 WORKDIR /app
@@ -17,7 +17,6 @@ RUN yarn add --dev @babel/cli
 RUN yarn add --dev elm
 RUN yarn add --dev elm-format
 RUN yarn add --dev elm-minify
-RUN yarn add --dev elm-format
 RUN yarn add --dev elm-hot-webpack-loader
 RUN yarn add --dev elm-test
 RUN yarn add --dev elm-verify-examples
