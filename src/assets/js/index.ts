@@ -71,9 +71,14 @@ const $modal = $('#mainModal');
 const openModal = () => {
   $modal.modal('open');
 };
+const closeModal = () => {
+  $modal.modal('close');
+};
+
 
 app.ports.openModal.subscribe(openModal);
 app.ports.openModalCharacterUpdate.subscribe(openModal);
+app.ports.closeModalCharacterUpdate.subscribe(closeModal);
 
 // ログインが必要なときにfirebaseuiを使って要素を準備する
 const viewLoginPage = () => {

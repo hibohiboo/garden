@@ -22,6 +22,9 @@ port elementChangeToJs : () -> Cmd msg
 port openModalCharacterUpdate : () -> Cmd msg
 
 
+port closeModalCharacterUpdate : () -> Cmd msg
+
+
 type Msg
     = InputName String
     | InputKana String
@@ -69,7 +72,7 @@ update msg char editor =
                 c =
                     { char | organ = s }
             in
-            ( ( c, editor ), Cmd.none )
+            ( ( c, editor ), closeModalCharacterUpdate () )
 
         AddTrait ->
             let
@@ -124,8 +127,10 @@ editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.kana InputKana
-        , modalCardOpenButton UpdateModal "変異器官" "器官"
-        , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
+
+        -- , modalCardOpenButton UpdateModal "変異器官" "器官"
+        -- , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
+        , organArea character
         , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , Modal.modalWindow editor.modalTitle editor.modalContents
         ]
@@ -134,6 +139,19 @@ editArea character editor =
 getNameList : List ( String, String ) -> List String
 getNameList list =
     List.map (\( name, description ) -> name) list
+
+
+organArea character =
+    div [ class "row" ]
+        [ div [ class "col s6" ]
+            [ div [ class "input-field" ]
+                [ inputArea "organ" "変異器官" character.organ InputOrgan
+                ]
+            ]
+        , div [ class "col s6" ]
+            [ modalCardOpenButton UpdateModal "カード選択" "器官"
+            ]
+        ]
 
 
 
@@ -164,7 +182,7 @@ inputArea fieldId labelName val toMsg =
 inputAreaWithAutocomplete : String -> String -> String -> (String -> msg) -> String -> List String -> Html msg
 inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
     div [ class "input-field" ]
-        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId, readonly True ] []
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId, disabled True ] []
         , label [ for fieldId ] [ text labelName ]
         , datalist [ id listId ]
             (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
