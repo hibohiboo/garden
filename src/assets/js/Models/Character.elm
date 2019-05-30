@@ -49,4 +49,4 @@ characterDecoder =
         |> Json.Decode.Pipeline.required "name" Decode.string
         |> Json.Decode.Pipeline.required "kana" Decode.string
         |> Json.Decode.Pipeline.required "organ" Decode.string
-        |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoder) (Array.fromList [])
+        |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoderFromJson) (Array.fromList [])

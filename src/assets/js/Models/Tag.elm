@@ -1,4 +1,4 @@
-module Models.Tag exposing (Tag, encodeTagToValue, tagsDecoder)
+module Models.Tag exposing (Tag, encodeTagToValue, tagDecoder, tagsDecoder)
 
 import Json.Decode as D exposing (Decoder)
 import Json.Encode as E
@@ -34,6 +34,13 @@ tagsDecoder =
                 |> List.filterMap fromString
         )
         D.string
+
+
+tagDecoder : Decoder Tag
+tagDecoder =
+    D.map2 Tag
+        (D.field "name" D.string)
+        (D.field "level" D.int)
 
 
 

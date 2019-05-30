@@ -4,6 +4,7 @@ port module Models.Card exposing
     , cardDataListDecodeFromJson
     , cardDecodeFromString
     , cardDecoder
+    , cardDecoderFromJson
     , cardList
     , cardView
     , encodeCardToValue
@@ -24,7 +25,7 @@ import Json.Decode as D exposing (..)
 import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
 import Models.CardId as CardId exposing (CardId)
-import Models.Tag exposing (Tag, encodeTagToValue, tagsDecoder)
+import Models.Tag exposing (Tag, encodeTagToValue, tagDecoder, tagsDecoder)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
@@ -253,6 +254,32 @@ cardDecoder =
         |> Json.Decode.Pipeline.custom (D.index 18 D.string)
         |> Json.Decode.Pipeline.custom (D.index 19 D.string)
         |> Json.Decode.Pipeline.custom (D.index 20 GSAPI.decoderIntFromString)
+
+
+cardDecoderFromJson : Decoder CardData
+cardDecoderFromJson =
+    D.succeed CardData
+        |> Json.Decode.Pipeline.required "cardId" CardId.decoder
+        |> Json.Decode.Pipeline.required "cardName" D.string
+        |> Json.Decode.Pipeline.required "cardType" D.string
+        |> Json.Decode.Pipeline.required "kind" D.string
+        |> Json.Decode.Pipeline.required "exp" D.int
+        |> Json.Decode.Pipeline.required "timing" D.string
+        |> Json.Decode.Pipeline.required "cost" D.int
+        |> Json.Decode.Pipeline.required "range" D.int
+        |> Json.Decode.Pipeline.required "maxRange" D.int
+        |> Json.Decode.Pipeline.required "target" D.string
+        |> Json.Decode.Pipeline.required "maxLevel" D.int
+        |> Json.Decode.Pipeline.required "effect" D.string
+        |> Json.Decode.Pipeline.required "description" D.string
+        |> Json.Decode.Pipeline.required "tags" (D.list tagDecoder)
+        |> Json.Decode.Pipeline.required "imgMain" D.string
+        |> Json.Decode.Pipeline.required "illustedByName" D.string
+        |> Json.Decode.Pipeline.required "illustedByUrl" D.string
+        |> Json.Decode.Pipeline.required "imgFrame" D.string
+        |> Json.Decode.Pipeline.required "frameByName" D.string
+        |> Json.Decode.Pipeline.required "frameByUrl" D.string
+        |> Json.Decode.Pipeline.required "deleteFlag" D.int
 
 
 
