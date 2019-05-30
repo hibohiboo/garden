@@ -1,5 +1,6 @@
 port module Page.MyPages.CharacterUpdate exposing (Model, Msg, init, initModel, subscriptions, update, view)
 
+import Array
 import Browser.Navigation as Navigation
 import GoogleSpreadSheetApi as GSAPI
 import Html exposing (..)
@@ -218,7 +219,6 @@ update msg model =
 
                         newEditorModel =
                             { oldEditorModel | cards = cards }
-
                     in
                     ( { model
                         | editorModel = newEditorModel
@@ -260,6 +260,7 @@ viewHelper model =
             [ edit model
 
             -- , karte model
+            , cardsView model
             ]
         ]
 
@@ -290,4 +291,15 @@ karte model =
         , div [ class "label-organ" ] [ text "変異器官" ]
         , div [ class "organ" ] [ text char.organ ]
         , div [ class "outer-line" ] []
+        ]
+
+
+cardsView : Model -> Html Msg
+cardsView model =
+    let
+        char =
+            model.character
+    in
+    div [ class "cards" ]
+        [ Card.cardList (Array.toList char.cards)
         ]

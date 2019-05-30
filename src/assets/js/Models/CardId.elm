@@ -1,6 +1,7 @@
-module Models.CardId exposing (CardId, decoder, fromString, toString)
+module Models.CardId exposing (CardId, decoder, encodeIdToValue, fromString, toString)
 
 import Json.Decode as D exposing (Decoder)
+import Json.Encode as E
 
 
 type CardId
@@ -35,3 +36,13 @@ toString (CardId s) =
 decoder : Decoder (Maybe CardId)
 decoder =
     D.map fromString D.string
+
+
+encodeIdToValue : Maybe CardId -> E.Value
+encodeIdToValue id =
+    case id of
+        Just cardId ->
+            E.string (toString cardId)
+
+        Nothing ->
+            E.string ""

@@ -29,11 +29,10 @@ type Msg
     = InputName String
     | InputKana String
     | InputOrgan String
-    | AddTrait
-    | InputTrait Int String
-    | DeleteTrait Int
+    | InputOrganCard Card.CardData
     | UpdateModal String String
     | OpenModal
+    | AddCard
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -74,27 +73,39 @@ update msg char editor =
             in
             ( ( c, editor ), closeModalCharacterUpdate () )
 
-        AddTrait ->
+        InputOrganCard card ->
+            let
+                newCards =
+                    if Array.length char.cards == 0 then
+                        Array.fromList [ card ]
+
+                    else
+                        Array.set 0 card char.cards
+
+                c =
+                    { char | cards = newCards }
+            in
+            update (InputOrgan card.cardName) c editor
+
+        AddCard ->
             let
                 c =
-                    { char | traits = Array.push "" char.traits }
+                    { char | cards = Array.push Card.initCard char.cards }
             in
             ( ( c, editor ), elementChangeToJs () )
 
-        InputTrait i s ->
-            let
-                c =
-                    { char | traits = Array.set i s char.traits }
-            in
-            ( ( c, editor ), Cmd.none )
-
-        DeleteTrait i ->
-            let
-                c =
-                    { char | traits = deleteAt i char.traits }
-            in
-            ( ( c, editor ), Cmd.none )
-
+        -- InputTrait i s ->
+        --     let
+        --         c =
+        --             { char | traits = Array.set i s char.traits }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        -- DeleteTrait i ->
+        --     let
+        --         c =
+        --             { char | traits = deleteAt i char.traits }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
         UpdateModal title kind ->
             let
                 filteredCards =
@@ -105,7 +116,7 @@ update msg char editor =
                         List.filter (\card -> card.kind == kind) editor.cards
 
                 cardElements =
-                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputOrgan card.cardName)) filteredCards)
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputOrganCard card)) filteredCards)
 
                 newEditor =
                     { editor
@@ -131,7 +142,8 @@ editArea character editor =
         -- , modalCardOpenButton UpdateModal "変異器官" "器官"
         -- , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
         , organArea character
-        , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
+
+        -- , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , Modal.modalWindow editor.modalTitle editor.modalContents
         ]
 

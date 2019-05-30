@@ -6,6 +6,7 @@ port module Models.Card exposing
     , cardDecoder
     , cardList
     , cardView
+    , encodeCardToValue
     , illustedBy
     , initCard
     , skillCard
@@ -23,7 +24,7 @@ import Json.Decode as D exposing (..)
 import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
 import Models.CardId as CardId exposing (CardId)
-import Models.Tag exposing (Tag, tagsDecoder)
+import Models.Tag exposing (Tag, encodeTagToValue, tagsDecoder)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
@@ -252,3 +253,36 @@ cardDecoder =
         |> Json.Decode.Pipeline.custom (D.index 18 D.string)
         |> Json.Decode.Pipeline.custom (D.index 19 D.string)
         |> Json.Decode.Pipeline.custom (D.index 20 GSAPI.decoderIntFromString)
+
+
+
+-- ==============================================================================================
+-- エンコーダ
+-- ==============================================================================================
+
+
+encodeCardToValue : CardData -> E.Value
+encodeCardToValue card =
+    E.object
+        [ ( "cardId", CardId.encodeIdToValue card.cardId )
+        , ( "cardName", E.string card.cardName )
+        , ( "cardType", E.string card.cardType )
+        , ( "kind", E.string card.kind )
+        , ( "exp", E.int card.exp )
+        , ( "timing", E.string card.timing )
+        , ( "cost", E.int card.cost )
+        , ( "range", E.int card.range )
+        , ( "maxRange", E.int card.maxRange )
+        , ( "target", E.string card.target )
+        , ( "maxLevel", E.int card.maxLevel )
+        , ( "effect", E.string card.effect )
+        , ( "description", E.string card.description )
+        , ( "tags", E.list encodeTagToValue card.tags )
+        , ( "imgMain", E.string card.imgMain )
+        , ( "illustedByName", E.string card.illustedByName )
+        , ( "illustedByUrl", E.string card.illustedByUrl )
+        , ( "imgFrame", E.string card.imgFrame )
+        , ( "frameByName", E.string card.frameByName )
+        , ( "frameByUrl", E.string card.frameByUrl )
+        , ( "deleteFlag", E.int card.deleteFlag )
+        ]

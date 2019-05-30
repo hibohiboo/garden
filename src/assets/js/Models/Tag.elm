@@ -1,6 +1,7 @@
-module Models.Tag exposing (Tag, tagsDecoder)
+module Models.Tag exposing (Tag, encodeTagToValue, tagsDecoder)
 
 import Json.Decode as D exposing (Decoder)
+import Json.Encode as E
 
 
 type alias Tag =
@@ -33,3 +34,17 @@ tagsDecoder =
                 |> List.filterMap fromString
         )
         D.string
+
+
+
+-- ==============================================================================================
+-- エンコーダ
+-- ==============================================================================================
+
+
+encodeTagToValue : Tag -> E.Value
+encodeTagToValue tag =
+    E.object
+        [ ( "name", E.string tag.name )
+        , ( "level", E.int tag.level )
+        ]
