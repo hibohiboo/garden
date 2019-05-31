@@ -9,6 +9,7 @@ import Models.Character exposing (..)
 import Models.CharacterEditor exposing (..)
 import Url
 import Url.Builder
+import Utils.List.Extra exposing (findIndex)
 import Utils.Modal as Modal
 
 
@@ -80,7 +81,16 @@ update msg char editor =
                         Array.fromList [ card ]
 
                     else
-                        Array.set 0 card char.cards
+                        let
+                            maybeIndex =
+                                findIndex (\x -> x.kind == "器官") (Array.toList char.cards)
+                        in
+                        case maybeIndex of
+                            Just index ->
+                                Array.set index card char.cards
+
+                            _ ->
+                                Array.push card char.cards
 
                 c =
                     { char | cards = newCards }

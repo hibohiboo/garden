@@ -14,13 +14,15 @@ type alias Character =
     , name : String
     , kana : String
     , organ : String
+    , trait : String
+    , mutagen : String
     , cards : Array Card.CardData
     }
 
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" "" (Array.fromList [])
+    Character storeUserId "" "" "" "" "" "" (Array.fromList [])
 
 
 encodeCharacter : Character -> String
@@ -37,6 +39,8 @@ encodeCharacterToValue c =
         , ( "name", E.string c.name )
         , ( "kana", E.string c.kana )
         , ( "organ", E.string c.organ )
+        , ( "trait", E.string c.organ )
+        , ( "mutagen", E.string c.organ )
         , ( "cards", E.array Card.encodeCardToValue c.cards )
         ]
 
@@ -49,4 +53,6 @@ characterDecoder =
         |> Json.Decode.Pipeline.required "name" Decode.string
         |> Json.Decode.Pipeline.required "kana" Decode.string
         |> Json.Decode.Pipeline.required "organ" Decode.string
+        |> Json.Decode.Pipeline.optional "trait" Decode.string ""
+        |> Json.Decode.Pipeline.optional "mutagen" Decode.string ""
         |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoderFromJson) (Array.fromList [])
