@@ -220,7 +220,40 @@ editArea character editor =
 
         -- , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , skillArea character editor
+        , div []
+            (List.concat
+                [ Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
+                , addButton "データカード" AddCard
+                ]
+            )
         , Modal.modalWindow editor.modalTitle editor.modalContents
+        ]
+
+
+updateCardArea : Int -> Card.CardData -> Html Msg
+updateCardArea index card =
+    let
+        fid =
+            "card_" ++ String.fromInt index
+    in
+    div [ class "row" ]
+        [ div [ class "col s10" ]
+            [ div [ class "input-field" ]
+                [ --   input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index), autocomplete True, list listId ] []
+                  -- , label [ for fid ] [ text labelName ]
+                  input [ placeholder "カード名", id fid, type_ "text", class "validate", value card.cardName, disabled True ] []
+                , label [ for fid ] [ text "カード名" ]
+                ]
+            ]
+        , div [ class "col s2" ]
+            [ div [ class "input-field" ]
+                [ input [ placeholder "Ti", id fid, type_ "text", class "validate", value (String.fromInt card.cost), disabled True ] []
+                , label [ for fid ] [ text "Ti" ]
+                ]
+            ]
+        , div [ class "col s2" ]
+            [-- deleteButton deleteMsg index
+            ]
         ]
 
 
