@@ -846,3 +846,9 @@ ul.skill-button-list {
       display: none;
     }
 }
+
+@media (max-width: 799px) {
+  .edit-karte {
+    display: block;
+  }
+}

@@ -35,7 +35,9 @@ type Msg
     | InputMutagenCard Card.CardData
     | InputTrait String
     | InputTraitCard Card.CardData
+    | InputSkillCard Card.CardData
     | UpdateModal String String (Card.CardData -> Msg)
+    | SkillModal
     | OpenModal
     | AddCard
 
@@ -113,6 +115,21 @@ update msg char editor =
             in
             update (InputTrait card.cardName) { char | cards = newCards } editor
 
+        InputSkillCard card ->
+            let
+                maybeIndex =
+                    findIndex (\x -> x.cardName == card.cardName) (Array.toList char.cards)
+
+                newCards =
+                    case maybeIndex of
+                        Just index ->
+                            Array.set index card char.cards
+
+                        _ ->
+                            Array.push card char.cards
+            in
+            update (InputTrait card.cardName) { char | cards = newCards } editor
+
         AddCard ->
             let
                 c =
@@ -143,6 +160,21 @@ update msg char editor =
 
                 cardElements =
                     div [ class "card-list" ] (List.map (\card -> inputCard card (m card)) filteredCards)
+
+                newEditor =
+                    { editor
+                        | modalContents = cardElements
+                    }
+            in
+            update OpenModal char newEditor
+
+        SkillModal ->
+            let
+                filteredCards =
+                    List.filter (\card -> card.kind == "共通能力") editor.cards
+
+                cardElements =
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
 
                 newEditor =
                     { editor
@@ -187,7 +219,16 @@ editArea character editor =
         , cardWithInputArea character "trait" "特性" "特性" character.trait InputTrait InputTraitCard
 
         -- , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
+        , skillArea character editor
         , Modal.modalWindow editor.modalTitle editor.modalContents
+        ]
+
+
+skillArea character editor =
+    div []
+        [ h5 [] [ text "能力" ]
+        , div [] [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象/Ef:効果" ]
+        , div [ onClick SkillModal, class "waves-effect waves-light btn" ] [ text "カード選択" ]
         ]
 
 
