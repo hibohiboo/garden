@@ -31,6 +31,8 @@ type Msg
     | InputKana String
     | InputOrgan String
     | InputOrganCard Card.CardData
+    | InputMutagen String
+    | InputMutagenCard Card.CardData
     | UpdateModal String String
     | OpenModal
     | AddCard
@@ -77,25 +79,23 @@ update msg char editor =
         InputOrganCard card ->
             let
                 newCards =
-                    if Array.length char.cards == 0 then
-                        Array.fromList [ card ]
-
-                    else
-                        let
-                            maybeIndex =
-                                findIndex (\x -> x.kind == "器官") (Array.toList char.cards)
-                        in
-                        case maybeIndex of
-                            Just index ->
-                                Array.set index card char.cards
-
-                            _ ->
-                                Array.push card char.cards
-
-                c =
-                    { char | cards = newCards }
+                    setNewDataCards card "器官" char.cards
             in
-            update (InputOrgan card.cardName) c editor
+            update (InputOrgan card.cardName) { char | cards = newCards } editor
+
+        InputMutagen s ->
+            let
+                c =
+                    { char | mutagen = s }
+            in
+            ( ( c, editor ), closeModalCharacterUpdate () )
+
+        InputMutagenCard card ->
+            let
+                newCards =
+                    setNewDataCards card "変異原" char.cards
+            in
+            update (InputMutagen card.cardName) { char | cards = newCards } editor
 
         AddCard ->
             let
@@ -139,6 +139,23 @@ update msg char editor =
             ( ( char, editor ), openModalCharacterUpdate () )
 
 
+setNewDataCards card kind cards =
+    if Array.length cards == 0 then
+        Array.fromList [ card ]
+
+    else
+        let
+            maybeIndex =
+                findIndex (\x -> x.kind == kind) (Array.toList cards)
+        in
+        case maybeIndex of
+            Just index ->
+                Array.set index card cards
+
+            _ ->
+                Array.push card cards
+
+
 
 -- 入力エリア
 
@@ -152,6 +169,7 @@ editArea character editor =
         -- , modalCardOpenButton UpdateModal "変異器官" "器官"
         -- , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
         , organArea character
+        , cardWithInputArea character "mutagen" "変異原" "変異原" character.mutagen InputMutagen
 
         -- , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , Modal.modalWindow editor.modalTitle editor.modalContents
@@ -164,14 +182,18 @@ getNameList list =
 
 
 organArea character =
+    cardWithInputArea character "organ" "変異器官" "器官" character.organ InputOrgan
+
+
+cardWithInputArea character name label kind value msg =
     div [ class "row" ]
         [ div [ class "col s6" ]
             [ div [ class "input-field" ]
-                [ inputArea "organ" "変異器官" character.organ InputOrgan
+                [ inputArea name label value msg
                 ]
             ]
         , div [ class "col s6" ]
-            [ modalCardOpenButton UpdateModal "カード選択" "器官"
+            [ modalCardOpenButton UpdateModal "カード選択" kind
             ]
         ]
 
