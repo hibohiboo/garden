@@ -155,6 +155,7 @@ update msg char editor =
             ( ( char, editor ), openModalCharacterUpdate () )
 
 
+setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
 setNewDataCards card kind cards =
     if Array.length cards == 0 then
         Array.fromList [ card ]
@@ -195,6 +196,7 @@ getNameList list =
     List.map (\( name, description ) -> name) list
 
 
+cardWithInputArea : Character -> String -> String -> String -> String -> (String -> Msg) -> (Card.CardData -> Msg) -> Html Msg
 cardWithInputArea character name label kind value msg cardMsg =
     div [ class "row" ]
         [ div [ class "col s6" ]
