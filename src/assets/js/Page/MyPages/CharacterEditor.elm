@@ -33,7 +33,7 @@ type Msg
     | InputOrganCard Card.CardData
     | InputMutagen String
     | InputMutagenCard Card.CardData
-    | UpdateModal String String
+    | UpdateModal String String (Card.CardData -> Msg)
     | OpenModal
     | AddCard
 
@@ -116,7 +116,7 @@ update msg char editor =
         --             { char | traits = deleteAt i char.traits }
         --     in
         --     ( ( c, editor ), Cmd.none )
-        UpdateModal title kind ->
+        UpdateModal title kind m ->
             let
                 filteredCards =
                     if kind == "" then
@@ -126,7 +126,7 @@ update msg char editor =
                         List.filter (\card -> card.kind == kind) editor.cards
 
                 cardElements =
-                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputOrganCard card)) filteredCards)
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (m card)) filteredCards)
 
                 newEditor =
                     { editor
@@ -169,7 +169,7 @@ editArea character editor =
         -- , modalCardOpenButton UpdateModal "変異器官" "器官"
         -- , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
         , organArea character
-        , cardWithInputArea character "mutagen" "変異原" "変異原" character.mutagen InputMutagen
+        , cardWithInputArea character "mutagen" "変異原" "変異原" character.mutagen InputMutagen InputMutagenCard
 
         -- , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , Modal.modalWindow editor.modalTitle editor.modalContents
@@ -182,10 +182,10 @@ getNameList list =
 
 
 organArea character =
-    cardWithInputArea character "organ" "変異器官" "器官" character.organ InputOrgan
+    cardWithInputArea character "organ" "変異器官" "器官" character.organ InputOrgan InputOrganCard
 
 
-cardWithInputArea character name label kind value msg =
+cardWithInputArea character name label kind value msg cardMsg =
     div [ class "row" ]
         [ div [ class "col s6" ]
             [ div [ class "input-field" ]
@@ -193,7 +193,7 @@ cardWithInputArea character name label kind value msg =
                 ]
             ]
         , div [ class "col s6" ]
-            [ modalCardOpenButton UpdateModal "カード選択" kind
+            [ modalCardOpenButton UpdateModal "カード選択" kind cardMsg
             ]
         ]
 
@@ -329,6 +329,6 @@ addButton labelName addMsg =
     ]
 
 
-modalCardOpenButton : (String -> String -> msg) -> String -> String -> Html msg
-modalCardOpenButton modalMsg title kind =
-    div [ onClick (modalMsg title kind), class "waves-effect waves-light btn" ] [ text title ]
+modalCardOpenButton : (String -> String -> (Card.CardData -> Msg) -> msg) -> String -> String -> (Card.CardData -> Msg) -> Html msg
+modalCardOpenButton modalMsg title kind cardMsg =
+    div [ onClick (modalMsg title kind cardMsg), class "waves-effect waves-light btn" ] [ text title ]
