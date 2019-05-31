@@ -33,6 +33,8 @@ type Msg
     | InputOrganCard Card.CardData
     | InputMutagen String
     | InputMutagenCard Card.CardData
+    | InputTrait String
+    | InputTraitCard Card.CardData
     | UpdateModal String String (Card.CardData -> Msg)
     | OpenModal
     | AddCard
@@ -96,6 +98,20 @@ update msg char editor =
                     setNewDataCards card "変異原" char.cards
             in
             update (InputMutagen card.cardName) { char | cards = newCards } editor
+
+        InputTrait s ->
+            let
+                c =
+                    { char | trait = s }
+            in
+            ( ( c, editor ), closeModalCharacterUpdate () )
+
+        InputTraitCard card ->
+            let
+                newCards =
+                    setNewDataCards card "特性" char.cards
+            in
+            update (InputTrait card.cardName) { char | cards = newCards } editor
 
         AddCard ->
             let
@@ -165,11 +181,9 @@ editArea character editor =
     div [ class "character-edit-area" ]
         [ inputArea "name" "名前" character.name InputName
         , inputArea "kana" "フリガナ" character.kana InputKana
-
-        -- , modalCardOpenButton UpdateModal "変異器官" "器官"
-        -- , inputAreaWithAutocomplete "organ" "変異器官" character.organ InputOrgan "organs" (getNameList editor.organs)
-        , organArea character
+        , cardWithInputArea character "organ" "変異器官" "器官" character.organ InputOrgan InputOrganCard
         , cardWithInputArea character "mutagen" "変異原" "変異原" character.mutagen InputMutagen InputMutagenCard
+        , cardWithInputArea character "trait" "特性" "特性" character.trait InputTrait InputTraitCard
 
         -- , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , Modal.modalWindow editor.modalTitle editor.modalContents
@@ -179,10 +193,6 @@ editArea character editor =
 getNameList : List ( String, String ) -> List String
 getNameList list =
     List.map (\( name, description ) -> name) list
-
-
-organArea character =
-    cardWithInputArea character "organ" "変異器官" "器官" character.organ InputOrgan InputOrganCard
 
 
 cardWithInputArea character name label kind value msg cardMsg =

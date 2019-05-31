@@ -39,8 +39,8 @@ encodeCharacterToValue c =
         , ( "name", E.string c.name )
         , ( "kana", E.string c.kana )
         , ( "organ", E.string c.organ )
-        , ( "trait", E.string c.organ )
-        , ( "mutagen", E.string c.organ )
+        , ( "trait", E.string c.trait )
+        , ( "mutagen", E.string c.mutagen )
         , ( "cards", E.array Card.encodeCardToValue c.cards )
         ]
 
