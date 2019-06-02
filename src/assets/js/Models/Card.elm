@@ -8,6 +8,7 @@ port module Models.Card exposing
     , cardList
     , cardView
     , encodeCardToValue
+    , getRange
     , illustedBy
     , initCard
     , skillCard
@@ -103,11 +104,7 @@ cardView cardData =
             CardLabelData "能力" "経験点" "タイミング" "コスト" "射程" "対象" "最大Lv" "Lv" "▼効果 :" "▼解説 :"
 
         range =
-            if cardData.range == cardData.maxRange then
-                String.fromInt cardData.range
-
-            else
-                String.fromInt cardData.range ++ " ～ " ++ String.fromInt cardData.maxRange
+            getRange cardData
 
         maxLvElement elm =
             if cardData.maxLevel <= 1 then
@@ -166,6 +163,14 @@ cardView cardData =
                 ]
             ]
         ]
+
+
+getRange cardData =
+    if cardData.range == cardData.maxRange then
+        String.fromInt cardData.range
+
+    else
+        String.fromInt cardData.range ++ " ～ " ++ String.fromInt cardData.maxRange
 
 
 illustedBy cardData =

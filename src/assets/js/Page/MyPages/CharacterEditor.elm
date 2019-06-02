@@ -40,6 +40,7 @@ type Msg
     | SkillModal
     | OpenModal
     | AddCard
+    | DeleteCard Int
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -127,8 +128,11 @@ update msg char editor =
 
                         _ ->
                             Array.push card char.cards
+
+                c =
+                    { char | cards = newCards }
             in
-            update (InputTrait card.cardName) { char | cards = newCards } editor
+            ( ( c, editor ), elementChangeToJs () )
 
         AddCard ->
             let
@@ -143,12 +147,13 @@ update msg char editor =
         --             { char | traits = Array.set i s char.traits }
         --     in
         --     ( ( c, editor ), Cmd.none )
-        -- DeleteTrait i ->
-        --     let
-        --         c =
-        --             { char | traits = deleteAt i char.traits }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
+        DeleteCard i ->
+            let
+                c =
+                    { char | cards = deleteAt i char.cards }
+            in
+            ( ( c, editor ), Cmd.none )
+
         UpdateModal title kind m ->
             let
                 filteredCards =
@@ -217,13 +222,11 @@ editArea character editor =
         , cardWithInputArea character "organ" "変異器官" "器官" character.organ InputOrgan InputOrganCard
         , cardWithInputArea character "mutagen" "変異原" "変異原" character.mutagen InputMutagen InputMutagenCard
         , cardWithInputArea character "trait" "特性" "特性" character.trait InputTrait InputTraitCard
-
-        -- , inputAreasWithAutocomplete "traits" "特性" character.traits InputTrait AddTrait DeleteTrait "traits" (getNameList editor.traits)
         , skillArea character editor
         , div []
             (List.concat
                 [ Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
-                , addButton "データカード" AddCard
+                , addButton "データカード" SkillModal
                 ]
             )
         , Modal.modalWindow editor.modalTitle editor.modalContents
@@ -237,23 +240,35 @@ updateCardArea index card =
             "card_" ++ String.fromInt index
     in
     div [ class "row" ]
-        [ div [ class "col s10" ]
-            [ div [ class "input-field" ]
-                [ --   input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index), autocomplete True, list listId ] []
-                  -- , label [ for fid ] [ text labelName ]
-                  input [ placeholder "カード名", id fid, type_ "text", class "validate", value card.cardName, disabled True ] []
-                , label [ for fid ] [ text "カード名" ]
-                ]
+        [ div [ class "col s2" ]
+            [ updateCardAreaInputField "カード名" card.cardName (fid ++ "-card_name")
             ]
         , div [ class "col s2" ]
-            [ div [ class "input-field" ]
-                [ input [ placeholder "Ti", id fid, type_ "text", class "validate", value (String.fromInt card.cost), disabled True ] []
-                , label [ for fid ] [ text "Ti" ]
-                ]
+            [ updateCardAreaInputField "Ti" card.timing (fid ++ "-card_timing")
+            ]
+        , div [ class "col s1" ]
+            [ updateCardAreaInputField "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
             ]
         , div [ class "col s2" ]
-            [-- deleteButton deleteMsg index
+            [ updateCardAreaInputField "Ra" (Card.getRange card) (fid ++ "-card_range")
             ]
+        , div [ class "col s1" ]
+            [ updateCardAreaInputField "Ta" card.target (fid ++ "-card_target")
+            ]
+        , div [ class "col s2" ]
+            [ updateCardAreaInputField "Ef" card.effect (fid ++ "-card_effect")
+            ]
+        , div [ class "col s1" ]
+            [ deleteButton DeleteCard index
+            ]
+        ]
+
+
+updateCardAreaInputField : String -> String -> String -> Html Msg
+updateCardAreaInputField labelText valueText fieldId =
+    div [ class "input-field" ]
+        [ input [ placeholder labelText, id fieldId, type_ "text", class "validate", value valueText, disabled True ] []
+        , label [ for fieldId ] [ text labelText ]
         ]
 
 
