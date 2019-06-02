@@ -132,7 +132,7 @@ update msg char editor =
                 c =
                     { char | cards = newCards }
             in
-            ( ( c, editor ), elementChangeToJs () )
+            ( ( c, editor ), Cmd.batch [ closeModalCharacterUpdate (), elementChangeToJs () ] )
 
         AddCard ->
             let
@@ -225,8 +225,8 @@ editArea character editor =
         , skillArea character editor
         , div []
             (List.concat
-                [ Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
-                , addButton "データカード" SkillModal
+                [ addButton "データカード" SkillModal
+                , Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
                 ]
             )
         , Modal.modalWindow editor.modalTitle editor.modalContents
@@ -238,28 +238,40 @@ updateCardArea index card =
     let
         fid =
             "card_" ++ String.fromInt index
+
+        delButton =
+            if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" then
+                text ""
+
+            else
+                deleteButton DeleteCard index
     in
-    div [ class "row" ]
-        [ div [ class "col s2" ]
-            [ updateCardAreaInputField "カード名" card.cardName (fid ++ "-card_name")
+    div []
+        [ div [ class "row" ]
+            [ div [ class "col s8" ]
+                [ updateCardAreaInputField "カード名" card.cardName (fid ++ "-card_name")
+                ]
+            , div [ class "col s2" ]
+                [ delButton
+                ]
+
+            -- , div [ class "col s6" ]
+            --     [ updateCardAreaInputField "効果" card.effect (fid ++ "-card_effect")
+            --     ]
             ]
-        , div [ class "col s2" ]
-            [ updateCardAreaInputField "Ti" card.timing (fid ++ "-card_timing")
-            ]
-        , div [ class "col s1" ]
-            [ updateCardAreaInputField "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
-            ]
-        , div [ class "col s2" ]
-            [ updateCardAreaInputField "Ra" (Card.getRange card) (fid ++ "-card_range")
-            ]
-        , div [ class "col s1" ]
-            [ updateCardAreaInputField "Ta" card.target (fid ++ "-card_target")
-            ]
-        , div [ class "col s2" ]
-            [ updateCardAreaInputField "Ef" card.effect (fid ++ "-card_effect")
-            ]
-        , div [ class "col s1" ]
-            [ deleteButton DeleteCard index
+        , div [ class "row" ]
+            [ div [ class "col s4" ]
+                [ updateCardAreaInputField "Ti" card.timing (fid ++ "-card_timing")
+                ]
+            , div [ class "col s2" ]
+                [ updateCardAreaInputField "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
+                ]
+            , div [ class "col s3" ]
+                [ updateCardAreaInputField "Ra" (Card.getRange card) (fid ++ "-card_range")
+                ]
+            , div [ class "col s3" ]
+                [ updateCardAreaInputField "Ta" card.target (fid ++ "-card_target")
+                ]
             ]
         ]
 
@@ -273,10 +285,9 @@ updateCardAreaInputField labelText valueText fieldId =
 
 
 skillArea character editor =
-    div []
+    div [ style "padding-bttom" "5px" ]
         [ h5 [] [ text "能力" ]
-        , div [] [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象/Ef:効果" ]
-        , div [ onClick SkillModal, class "waves-effect waves-light btn" ] [ text "カード選択" ]
+        , div [] [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象" ]
         ]
 
 
@@ -353,20 +364,20 @@ inputAreasWithAutocomplete fieldId labelName arrays updateMsg addMsg deleteMsg l
 
 
 updateAreaWithAutoComplete : Int -> String -> String -> String -> (Int -> String -> msg) -> (Int -> msg) -> String -> Html msg
-updateAreaWithAutoComplete index fieldId labelName val updateMsg deleteMsg listId =
+updateAreaWithAutoComplete idx fieldId labelName val updateMsg deleteMsg listId =
     let
         fid =
-            fieldId ++ String.fromInt index
+            fieldId ++ String.fromInt idx
     in
     div [ class "row" ]
         [ div [ class "col s10" ]
             [ div [ class "input-field" ]
-                [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index), autocomplete True, list listId ] []
+                [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg idx), autocomplete True, list listId ] []
                 , label [ for fid ] [ text labelName ]
                 ]
             ]
         , div [ class "col s2" ]
-            [ deleteButton deleteMsg index
+            [ deleteButton deleteMsg idx
             ]
         ]
 
