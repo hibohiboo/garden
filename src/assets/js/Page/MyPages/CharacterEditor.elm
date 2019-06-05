@@ -37,7 +37,9 @@ type Msg
     | InputTraitCard Card.CardData
     | InputSkillCard Card.CardData
     | UpdateModal String String (Card.CardData -> Msg)
-    | SkillModal
+    | OpenCommonSkillModal
+    | OpenTraitSkillModal
+    | OpenItemModal
     | OpenModal
     | AddCard
     | DeleteCard Int
@@ -141,12 +143,6 @@ update msg char editor =
             in
             ( ( c, editor ), elementChangeToJs () )
 
-        -- InputTrait i s ->
-        --     let
-        --         c =
-        --             { char | traits = Array.set i s char.traits }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
         DeleteCard i ->
             let
                 c =
@@ -173,10 +169,43 @@ update msg char editor =
             in
             update OpenModal char newEditor
 
-        SkillModal ->
+        OpenCommonSkillModal ->
             let
                 filteredCards =
                     List.filter (\card -> card.kind == "共通能力") editor.cards
+
+                cardElements =
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
+
+                newEditor =
+                    { editor
+                        | modalContents = cardElements
+                    }
+            in
+            update OpenModal char newEditor
+
+        OpenItemModal ->
+            let
+                filteredCards =
+                    List.filter (\card -> card.cardType == "アイテム") editor.cards
+
+                cardElements =
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
+
+                newEditor =
+                    { editor
+                        | modalContents = cardElements
+                    }
+            in
+            update OpenModal char newEditor
+
+        OpenTraitSkillModal ->
+            let
+                tagNameList =
+                    char.cards |> Array.map (\card -> card.tags) |> Debug.log "taglist"
+
+                filteredCards =
+                    List.filter (\card -> List.member card.kind [ "炎熱" ]) editor.cards
 
                 cardElements =
                     div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
@@ -223,12 +252,6 @@ editArea character editor =
         , cardWithInputArea character "mutagen" "変異原" "変異原" character.mutagen InputMutagen InputMutagenCard
         , cardWithInputArea character "trait" "特性" "特性" character.trait InputTrait InputTraitCard
         , skillArea character editor
-        , div []
-            (List.concat
-                [ addButton "データカード" SkillModal
-                , Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
-                ]
-            )
         , Modal.modalWindow editor.modalTitle editor.modalContents
         ]
 
@@ -288,6 +311,14 @@ skillArea character editor =
     div [ style "padding-bttom" "5px" ]
         [ h5 [] [ text "能力" ]
         , div [] [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象" ]
+        , div []
+            (List.concat
+                [ [ div [] (addButton "共通能力" OpenCommonSkillModal) ]
+                , [ div [] (addButton "特性能力" OpenTraitSkillModal) ]
+                , [ div [] (addButton "アイテム" OpenItemModal) ]
+                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
+                ]
+            )
         ]
 
 
