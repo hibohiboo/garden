@@ -10,7 +10,7 @@ import Models.CharacterEditor exposing (..)
 import Models.Tag exposing (Tag)
 import Url
 import Url.Builder
-import Utils.List.Extra exposing (findIndex, unique)
+import Utils.List.Extra exposing (findIndex)
 import Utils.Modal as Modal
 
 
@@ -203,14 +203,7 @@ update msg char editor =
         OpenTraitSkillModal ->
             let
                 tagNameList =
-                    char.cards
-                        |> Array.toList
-                        |> List.filter (\card -> List.member (Tag "特性" 0) card.tags)
-                        |> List.map (\card -> card.tags)
-                        |> List.concat
-                        |> List.map (\tag -> tag.name)
-                        |> List.filter (\name -> name /= "特性")
-                        |> unique
+                    Card.getTraitList char.cards
 
                 filteredCards =
                     List.filter (\card -> List.member card.kind tagNameList) editor.cards

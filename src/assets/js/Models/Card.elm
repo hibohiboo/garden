@@ -9,11 +9,13 @@ port module Models.Card exposing
     , cardView
     , encodeCardToValue
     , getRange
+    , getTraitList
     , illustedBy
     , initCard
     , skillCard
     )
 
+import Array exposing (Array)
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
 import Dict exposing (Dict)
@@ -32,6 +34,7 @@ import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
 import Url
 import Url.Builder
+import Utils.List.Extra exposing (findIndex, unique)
 import Utils.TextStrings as Tx
 
 
@@ -318,3 +321,26 @@ encodeCardToValue card =
         , ( "frameByUrl", E.string card.frameByUrl )
         , ( "deleteFlag", E.int card.deleteFlag )
         ]
+
+
+
+-- ==============================================================================================
+-- ユーティリティ
+-- ==============================================================================================
+
+
+getTraitList : Array CardData -> List String
+getTraitList cards =
+    cards
+        |> Array.toList
+        |> List.filter (\card -> List.member traitTag card.tags)
+        |> List.map (\card -> card.tags)
+        |> List.concat
+        |> List.map (\t -> t.name)
+        |> List.filter (\name -> name /= "特性")
+        |> unique
+
+
+traitTag : Tag
+traitTag =
+    Tag "特性" 0
