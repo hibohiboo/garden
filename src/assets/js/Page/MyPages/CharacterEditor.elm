@@ -7,9 +7,10 @@ import Html.Events exposing (onClick, onInput)
 import Models.Card as Card
 import Models.Character exposing (..)
 import Models.CharacterEditor exposing (..)
+import Models.Tag exposing (Tag)
 import Url
 import Url.Builder
-import Utils.List.Extra exposing (findIndex)
+import Utils.List.Extra exposing (findIndex, unique)
 import Utils.Modal as Modal
 
 
@@ -202,10 +203,17 @@ update msg char editor =
         OpenTraitSkillModal ->
             let
                 tagNameList =
-                    char.cards |> Array.map (\card -> card.tags) |> Debug.log "taglist"
+                    char.cards
+                        |> Array.toList
+                        |> List.filter (\card -> List.member (Tag "特性" 0) card.tags)
+                        |> List.map (\card -> card.tags)
+                        |> List.concat
+                        |> List.map (\tag -> tag.name)
+                        |> List.filter (\name -> name /= "特性")
+                        |> unique
 
                 filteredCards =
-                    List.filter (\card -> List.member card.kind [ "炎熱" ]) editor.cards
+                    List.filter (\card -> List.member card.kind tagNameList) editor.cards
 
                 cardElements =
                     div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
@@ -308,14 +316,14 @@ updateCardAreaInputField labelText valueText fieldId =
 
 
 skillArea character editor =
-    div [ style "padding-bttom" "5px" ]
+    div [ style "padding-bottom" "5px" ]
         [ h5 [] [ text "能力" ]
         , div [] [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象" ]
         , div []
             (List.concat
-                [ [ div [] (addButton "共通能力" OpenCommonSkillModal) ]
-                , [ div [] (addButton "特性能力" OpenTraitSkillModal) ]
-                , [ div [] (addButton "アイテム" OpenItemModal) ]
+                [ [ div [ style "padding" "5px" ] (addButton "共通能力" OpenCommonSkillModal) ]
+                , [ div [ style "padding" "5px" ] (addButton "特性能力" OpenTraitSkillModal) ]
+                , [ div [ style "padding" "5px" ] (addButton "アイテム" OpenItemModal) ]
                 , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
                 ]
             )
