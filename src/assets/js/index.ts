@@ -31,61 +31,6 @@ const app = Elm.Main.init({ node: mountNode, flags });
 // DBのユーザ情報。
 let userData;  // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
 
-const initMaterialize = () => {
-  // M.updateTextFields();
-  // const $modal = $('#mainModal');
-  // if ($modal.length !== 0) {
-  //   $modal.modal(); // モーダル使用準備
-  // }
-  // // selectボックスの使用 -> 要素の変更を検知しないためうまく動かない
-  // const elems = document.querySelectorAll('select');
-  // const instances = M.FormSelect.init(elems, {});
-};
-
-// elmのspa構築後に、dom要素に対してイベントを設定
-app.ports.initializedToJs.subscribe(() => {
-  // elmの構築したDOMにmaterializeを適用
-  // initMaterialize();
-});
-
-// ページ遷移後に呼ばれる
-app.ports.urlChangeToJs.subscribe(() => {
-  // 新しく構築されたDOMにmaterializeを適用
-  // initMaterialize();
-});
-// 編集画面のDOM要素追加時に呼ばれる
-app.ports.initEditorToJs.subscribe(async () => {
-  // 追加されたDOMにmaterializeを適用。構築まで1秒待つ
-  // await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 1000); }); })();
-  // initMaterialize();
-});
-// 編集画面でDOM要素追加時に呼ばれる
-app.ports.elementChangeToJs.subscribe(async () => {
-  // 追加されたDOMにmaterializeを適用
-  // await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 0); }); })();
-  // initMaterialize();
-});
-
-// キャラクター作成画面準備後
-app.ports.initNewCharacter.subscribe(async () => {
-  // await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 0); }); })();
-  // initMaterialize();
-});
-
-// モーダルを開く
-const $modal = $('#mainModal');
-const openModal = () => {
-  // $modal.modal('open');
-};
-const closeModal = () => {
-  // $modal.modal('close');
-};
-
-
-app.ports.openModal.subscribe(openModal);
-app.ports.openModalCharacterUpdate.subscribe(openModal);
-app.ports.closeModalCharacterUpdate.subscribe(closeModal);
-
 // ログインが必要なときにfirebaseuiを使って要素を準備する
 const viewLoginPage = () => {
   fireBase.createLoginUi();

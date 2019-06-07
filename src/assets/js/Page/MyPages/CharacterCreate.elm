@@ -13,6 +13,7 @@ import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
+import Utils.ModalWindow as Modal
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 
 
@@ -63,7 +64,7 @@ init session apiKey storeUserId =
             else
                 initNewCharacter ()
     in
-    ( Model session Close (initCharacter storeUserId) (EditorModel [] [] cards "" "" (text ""))
+    ( Model session Close (initCharacter storeUserId) (EditorModel [] [] cards "" "" (text "") Modal.Close)
     , Cmd.batch [ cardsCmd ]
     )
 

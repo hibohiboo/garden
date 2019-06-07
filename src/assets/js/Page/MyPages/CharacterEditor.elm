@@ -11,20 +11,7 @@ import Models.Tag exposing (Tag)
 import Url
 import Url.Builder
 import Utils.List.Extra exposing (findIndex)
-import Utils.Modal as Modal
-
-
-
--- Materializeのイベントを呼び出し
-
-
-port elementChangeToJs : () -> Cmd msg
-
-
-port openModalCharacterUpdate : () -> Cmd msg
-
-
-port closeModalCharacterUpdate : () -> Cmd msg
+import Utils.ModalWindow as Modal
 
 
 type Msg
@@ -44,6 +31,7 @@ type Msg
     | OpenModal
     | AddCard
     | DeleteCard Int
+    | CloseModal
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -82,7 +70,7 @@ update msg char editor =
                 c =
                     { char | organ = s }
             in
-            ( ( c, editor ), closeModalCharacterUpdate () )
+            ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
 
         InputOrganCard card ->
             let
@@ -96,7 +84,7 @@ update msg char editor =
                 c =
                     { char | mutagen = s }
             in
-            ( ( c, editor ), closeModalCharacterUpdate () )
+            ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
 
         InputMutagenCard card ->
             let
@@ -110,7 +98,7 @@ update msg char editor =
                 c =
                     { char | trait = s }
             in
-            ( ( c, editor ), closeModalCharacterUpdate () )
+            ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
 
         InputTraitCard card ->
             let
@@ -135,14 +123,14 @@ update msg char editor =
                 c =
                     { char | cards = newCards }
             in
-            ( ( c, editor ), Cmd.batch [ closeModalCharacterUpdate (), elementChangeToJs () ] )
+            ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
 
         AddCard ->
             let
                 c =
                     { char | cards = Array.push Card.initCard char.cards }
             in
-            ( ( c, editor ), elementChangeToJs () )
+            ( ( c, editor ), Cmd.none )
 
         DeleteCard i ->
             let
@@ -219,7 +207,10 @@ update msg char editor =
             update OpenModal char newEditor
 
         OpenModal ->
-            ( ( char, editor ), openModalCharacterUpdate () )
+            ( ( char, { editor | modalState = Modal.Open } ), Cmd.none )
+
+        CloseModal ->
+            ( ( char, { editor | modalState = Modal.Close } ), Cmd.none )
 
 
 setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
@@ -253,7 +244,7 @@ editArea character editor =
         , cardWithInputArea character "mutagen" "変異原" "変異原" character.mutagen InputMutagen InputMutagenCard
         , cardWithInputArea character "trait" "特性" "特性" character.trait InputTrait InputTraitCard
         , skillArea character editor
-        , Modal.modalWindow editor.modalTitle editor.modalContents
+        , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
         ]
 
 

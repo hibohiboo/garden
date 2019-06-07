@@ -101,7 +101,7 @@ const common = {
     , 'chart.js': 'Chart'
     , firebase: 'firebase'
     , firebaseui: 'firebaseui'
-    , M: 'M' // materialize
+    //, M: 'M' // materialize
   },
 };
 

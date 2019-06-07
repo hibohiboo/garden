@@ -3,6 +3,7 @@ module Models.CharacterEditor exposing (EditorModel, initEditor)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Models.Card as Card
+import Utils.ModalWindow as Modal
 
 
 type alias EditorModel msg =
@@ -12,9 +13,10 @@ type alias EditorModel msg =
     , searchCardKind : String
     , modalTitle : String
     , modalContents : Html msg
+    , modalState : Modal.ModalState
     }
 
 
 initEditor : EditorModel msg
 initEditor =
-    EditorModel [] [] [] "" "" (text "")
+    EditorModel [] [] [] "" "" (text "") Modal.Close

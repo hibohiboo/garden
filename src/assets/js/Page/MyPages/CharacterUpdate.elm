@@ -16,6 +16,7 @@ import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
+import Utils.ModalWindow as Modal
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 
 
@@ -29,9 +30,6 @@ port getCharacter : ( String, String ) -> Cmd msg
 
 
 port gotCharacter : (String -> msg) -> Sub msg
-
-
-port initEditorToJs : () -> Cmd msg
 
 
 subscriptions : Sub Msg
@@ -111,7 +109,7 @@ init session apiKey storeUserId characterId =
 
 initModel : Session.Data -> String -> String -> List ( String, String ) -> List ( String, String ) -> List Card.CardData -> Model
 initModel session apiKey storeUserId organs traits cards =
-    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs traits cards "" "" (text ""))
+    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs traits cards "" "" (text "") Modal.Close)
 
 
 type Msg
@@ -194,7 +192,7 @@ update msg model =
                         | editorModel = newEditorModel
                         , session = Session.addTraits model.session json
                       }
-                    , initEditorToJs ()
+                    , Cmd.none
                     )
 
                 Err _ ->
@@ -217,7 +215,7 @@ update msg model =
                         | editorModel = newEditorModel
                         , session = Session.addCards model.session json
                       }
-                    , initEditorToJs ()
+                    , Cmd.none
                     )
 
                 Err _ ->
