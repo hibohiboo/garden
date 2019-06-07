@@ -304,7 +304,7 @@ updateCardAreaInputField : String -> String -> String -> Html Msg
 updateCardAreaInputField labelText valueText fieldId =
     div [ class "input-field" ]
         [ input [ placeholder labelText, id fieldId, type_ "text", class "validate", value valueText, disabled True ] []
-        , label [ for fieldId ] [ text labelText ]
+        , label [ class "active", for fieldId ] [ text labelText ]
         ]
 
 
@@ -359,7 +359,7 @@ inputArea : String -> String -> String -> (String -> msg) -> Html msg
 inputArea fieldId labelName val toMsg =
     div [ class "input-field" ]
         [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg ] []
-        , label [ for fieldId ] [ text labelName ]
+        , label [ class "active", for fieldId ] [ text labelName ]
         ]
 
 
@@ -371,7 +371,7 @@ inputAreaWithAutocomplete : String -> String -> String -> (String -> msg) -> Str
 inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
     div [ class "input-field" ]
         [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId, disabled True ] []
-        , label [ for fieldId ] [ text labelName ]
+        , label [ class "active", for fieldId ] [ text labelName ]
         , datalist [ id listId ]
             (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
         ]
@@ -405,7 +405,7 @@ updateAreaWithAutoComplete idx fieldId labelName val updateMsg deleteMsg listId 
         [ div [ class "col s10" ]
             [ div [ class "input-field" ]
                 [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg idx), autocomplete True, list listId ] []
-                , label [ for fid ] [ text labelName ]
+                , label [ class "active", for fid ] [ text labelName ]
                 ]
             ]
         , div [ class "col s2" ]
@@ -444,7 +444,7 @@ updateArea index fieldId labelName val updateMsg deleteMsg =
         [ div [ class "col s11" ]
             [ div [ class "input-field" ]
                 [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index) ] []
-                , label [ for fid ] [ text labelName ]
+                , label [ class "active", for fid ] [ text labelName ]
                 ]
             ]
         , div [ class "col s1" ]

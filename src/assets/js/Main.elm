@@ -354,7 +354,7 @@ goTo maybeRoute model =
         Just (Route.CharacterCreate storeUserId) ->
             let
                 ( m, cmd ) =
-                    CharacterCreate.init session storeUserId
+                    CharacterCreate.init session model.googleSheetApiKey storeUserId
             in
             ( { model | page = CharacterCreatePage m }
             , Cmd.map CharacterCreateMsg cmd

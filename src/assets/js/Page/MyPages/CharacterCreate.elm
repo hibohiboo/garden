@@ -1,9 +1,11 @@
-port module Page.MyPages.CharacterCreate exposing (Model, Msg, init, initModel, subscriptions, update, view)
+port module Page.MyPages.CharacterCreate exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser.Navigation as Navigation
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Http
+import Models.Card as Card
 import Models.Character exposing (..)
 import Models.CharacterEditor as CharacterEditor exposing (..)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
@@ -18,6 +20,9 @@ port saveNewCharacter : String -> Cmd msg
 
 
 port createdCharacter : (Bool -> msg) -> Sub msg
+
+
+port initNewCharacter : () -> Cmd msg
 
 
 subscriptions : Sub Msg
@@ -35,16 +40,32 @@ type alias Model =
     }
 
 
-init : Session.Data -> String -> ( Model, Cmd Msg )
-init session storeUserId =
-    ( initModel session storeUserId
-    , Cmd.none
+init : Session.Data -> String -> String -> ( Model, Cmd Msg )
+init session apiKey storeUserId =
+    let
+        cards =
+            case Session.getCards session of
+                Just sheet ->
+                    case Card.cardDataListDecodeFromJson sheet of
+                        Ok list ->
+                            list
+
+                        Err _ ->
+                            []
+
+                Nothing ->
+                    []
+
+        cardsCmd =
+            if cards == [] then
+                Session.fetchCards GotCards apiKey
+
+            else
+                initNewCharacter ()
+    in
+    ( Model session Close (initCharacter storeUserId) (EditorModel [] [] cards "" "" (text ""))
+    , Cmd.batch [ cardsCmd ]
     )
-
-
-initModel : Session.Data -> String -> Model
-initModel session storeUserId =
-    Model session Close (initCharacter storeUserId) CharacterEditor.initEditor
 
 
 type Msg
@@ -52,6 +73,7 @@ type Msg
     | EditorMsg CharacterEditor.Msg
     | Save
     | CreatedCharacter Bool
+    | GotCards (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -73,6 +95,29 @@ update msg model =
 
         CreatedCharacter _ ->
             ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
+
+        GotCards (Ok json) ->
+            case Card.cardDataListDecodeFromJson json of
+                Ok cards ->
+                    let
+                        oldEditorModel =
+                            model.editorModel
+
+                        newEditorModel =
+                            { oldEditorModel | cards = cards }
+                    in
+                    ( { model
+                        | editorModel = newEditorModel
+                        , session = Session.addCards model.session json
+                      }
+                    , initNewCharacter ()
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotCards (Err _) ->
+            ( model, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg
@@ -99,7 +144,8 @@ viewHelper model =
         , div
             [ class "edit-karte" ]
             [ edit model
-            , karte model
+
+            -- , karte model
             ]
         ]
 

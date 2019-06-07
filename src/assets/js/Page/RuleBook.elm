@@ -14,7 +14,7 @@ import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
 import Url
 import Url.Builder
-import Utils.Modal as Modal
+import Utils.ModalWindow as Modal
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 import Utils.TextStrings as Tx
 
@@ -31,6 +31,7 @@ type alias Model =
     , modalContents : Html Msg
     , texts : Dict String String
     , searchCardKind : String
+    , modalState : Modal.ModalState
     }
 
 
@@ -54,7 +55,7 @@ init session apiKey s =
     in
     case s of
         Just id ->
-            ( Model session Close apiKey id "" (text "") texts "", Cmd.batch [ jumpToBottom id, cmd ] )
+            ( Model session Close apiKey id "" (text "") texts "" Modal.Close, Cmd.batch [ jumpToBottom id, cmd ] )
 
         Nothing ->
             ( initModel session apiKey
@@ -64,7 +65,7 @@ init session apiKey s =
 
 initModel : Session.Data -> String -> Model
 initModel session apiKey =
-    Model session Close apiKey "" "異形器官一覧" (text "") Dict.empty ""
+    Model session Close apiKey "" "異形器官一覧" (text "") Dict.empty "" Modal.Close
 
 
 type Msg
@@ -81,6 +82,7 @@ type Msg
     | ModalFaq String
     | GotFaqs (Result Http.Error String)
     | ModalSampleCard String
+    | CloseModal
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -158,8 +160,13 @@ update msg model =
             ( model, Cmd.none )
 
         ModalSampleCard title ->
-            ( { model | modalTitle = title, modalContents = viewCardSample model.texts }
-            , openModal ()
+            ( { model | modalTitle = title, modalContents = viewCardSample model.texts, modalState = Modal.Open }
+            , Cmd.none
+            )
+
+        CloseModal ->
+            ( { model | modalState = Modal.Close }
+            , Cmd.none
             )
 
 
@@ -220,7 +227,7 @@ view model =
         , viewNavi (List.map (\( value, text ) -> NavigationMenu value text) tableOfContents)
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
-        , Modal.modalWindow model.modalTitle model.modalContents
+        , Modal.view model.modalTitle model.modalContents model.modalState CloseModal
         ]
     }
 

@@ -1,6 +1,6 @@
 
 import FireBaseBackEnd from './FireBaseBackEnd';
-import * as M from 'M'; //  tslint-disable-line
+// import * as M from 'M'; //  tslint-disable-line
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import User from './User';
 import { GOOGLE_SHEET_API_KEY } from "./constants";
@@ -32,11 +32,11 @@ const app = Elm.Main.init({ node: mountNode, flags });
 let userData;  // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
 
 const initMaterialize = () => {
-  M.updateTextFields();
-  const $modal = $('#mainModal');
-  if ($modal.length !== 0) {
-    $modal.modal(); // モーダル使用準備
-  }
+  // M.updateTextFields();
+  // const $modal = $('#mainModal');
+  // if ($modal.length !== 0) {
+  //   $modal.modal(); // モーダル使用準備
+  // }
   // // selectボックスの使用 -> 要素の変更を検知しないためうまく動かない
   // const elems = document.querySelectorAll('select');
   // const instances = M.FormSelect.init(elems, {});
@@ -45,34 +45,40 @@ const initMaterialize = () => {
 // elmのspa構築後に、dom要素に対してイベントを設定
 app.ports.initializedToJs.subscribe(() => {
   // elmの構築したDOMにmaterializeを適用
-  initMaterialize();
+  // initMaterialize();
 });
 
 // ページ遷移後に呼ばれる
 app.ports.urlChangeToJs.subscribe(() => {
   // 新しく構築されたDOMにmaterializeを適用
-  initMaterialize();
+  // initMaterialize();
 });
 // 編集画面のDOM要素追加時に呼ばれる
 app.ports.initEditorToJs.subscribe(async () => {
   // 追加されたDOMにmaterializeを適用。構築まで1秒待つ
-  await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 1000); }); })();
-  initMaterialize();
+  // await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 1000); }); })();
+  // initMaterialize();
 });
 // 編集画面でDOM要素追加時に呼ばれる
 app.ports.elementChangeToJs.subscribe(async () => {
   // 追加されたDOMにmaterializeを適用
-  await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 0); }); })();
-  initMaterialize();
+  // await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 0); }); })();
+  // initMaterialize();
+});
+
+// キャラクター作成画面準備後
+app.ports.initNewCharacter.subscribe(async () => {
+  // await (async () => { return new Promise(resolve => { setTimeout(() => { resolve(); }, 0); }); })();
+  // initMaterialize();
 });
 
 // モーダルを開く
 const $modal = $('#mainModal');
 const openModal = () => {
-  $modal.modal('open');
+  // $modal.modal('open');
 };
 const closeModal = () => {
-  $modal.modal('close');
+  // $modal.modal('close');
 };
 
 
