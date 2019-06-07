@@ -7,7 +7,7 @@ import Utils.ModalWindow as Modal
 
 
 type alias EditorModel msg =
-    { organs : List ( String, String )
+    { reasons : List ( String, String )
     , traits : List ( String, String )
     , cards : List Card.CardData
     , searchCardKind : String

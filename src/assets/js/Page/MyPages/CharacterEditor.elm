@@ -261,7 +261,7 @@ editArea character editor =
         , cardWithInputArea character "trait" "特性" "特性" character.trait InputTrait InputTraitCard
         , skillArea character editor
         , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
-        , inputArea "reason" "収容理由" character.reason InputReason
+        , inputAreaWithAutocomplete "reason" "収容理由" character.reason InputReason "reasonList" (List.map (\( t, d ) -> t) editor.reasons)
         , inputArea "labo" "研究所" character.labo InputLabo
         ]
 
@@ -379,7 +379,7 @@ inputArea fieldId labelName val toMsg =
 inputAreaWithAutocomplete : String -> String -> String -> (String -> msg) -> String -> List String -> Html msg
 inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
     div [ class "input-field" ]
-        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId, disabled True ] []
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId ] []
         , label [ class "active", for fieldId ] [ text labelName ]
         , datalist [ id listId ]
             (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)

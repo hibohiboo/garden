@@ -69,8 +69,8 @@ type Msg
     = ToggleNavigation
     | NoOp
     | PageAnchor String
-    | ModalOrgan String
-    | GotOrgans (Result Http.Error String)
+    | ModalReason String
+    | GotReasons (Result Http.Error String)
     | GotTexts (Result Http.Error String)
     | ModalTrait String
     | GotTraits (Result Http.Error String)
@@ -94,18 +94,18 @@ update msg model =
         PageAnchor id ->
             ( model, Navigation.load id )
 
-        ModalOrgan title ->
-            case Session.getOrgans model.session of
+        ModalReason title ->
+            case Session.getReasons model.session of
                 Just sheet ->
-                    ( updateTupleListModel { model | modalTitle = title, modalState = Modal.Open } sheet Session.addOrgans, Cmd.none )
+                    ( updateTupleListModel { model | modalTitle = title, modalState = Modal.Open } sheet Session.addReasons, Cmd.none )
 
                 Nothing ->
-                    ( { model | modalTitle = title, modalState = Modal.Open }, Session.fetchOrgans GotOrgans model.googleSheetApiKey )
+                    ( { model | modalTitle = title, modalState = Modal.Open }, Session.fetchReasons GotReasons model.googleSheetApiKey )
 
-        GotOrgans (Ok json) ->
-            ( updateTupleListModel model json Session.addOrgans, Cmd.none )
+        GotReasons (Ok json) ->
+            ( updateTupleListModel model json Session.addReasons, Cmd.none )
 
-        GotOrgans (Err _) ->
+        GotReasons (Err _) ->
             ( model, Cmd.none )
 
         GotTexts (Ok json) ->
@@ -196,6 +196,9 @@ updateCardListModel model json addSession =
                 filteredCards =
                     if model.searchCardKind == "" then
                         cards
+
+                    else if model.searchCardKind == "アイテム" then
+                        List.filter (\card -> card.cardType == model.searchCardKind) cards
 
                     else
                         List.filter (\card -> card.kind == model.searchCardKind) cards
@@ -342,6 +345,7 @@ viewRulebook texts =
                 , p [] [ dicText "rulebook.section.actionpower.content" "【 4 + データカードで上昇する行動力】がキャラクターの行動力となる。" ]
                 , h2 [] [ dicText "rulebook.section.hcharacter.hitory.title" "7 島にいる理由の決定" ]
                 , p [] [ dicText "rulebook.section.hcharacter.hitory.content" "島にいる理由を設定する" ]
+                , modalOpenButton texts ModalReason "chart.list.reason.title" "理由一覧"
                 , h2 [] [ dicText "rulebook.section.hcharacter.laboratory.title" "8 ラボの決定" ]
                 , p [] [ dicText "rulebook.section.hcharacter.laboratory.content" "収容されていた研究所を設定する" ]
                 , h2 [] [ dicText "rulebook.section.chart" "チャート" ]

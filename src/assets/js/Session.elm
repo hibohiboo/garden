@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addCards, addFaqs, addMarkdown, addOrgans, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchFaqs, fetchMarkdown, fetchOrgans, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getFaqs, getMarkdown, getOrgans, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, organRange, organSheetId, organSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
+module Session exposing (Data, Version, addCards, addFaqs, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchFaqs, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getFaqs, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
 
 import Dict
 import GoogleSpreadSheetApi
@@ -128,31 +128,31 @@ fetchTextStrings toMsg apiKey =
 -- 変異器官
 
 
-organSheetId =
+reasonSheetId =
     "1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w"
 
 
-organRange =
-    "organList!A2:B11"
+reasonRange =
+    "reasonList!A2:B11"
 
 
-organSheetVersion =
+reasonSheetVersion =
     1.0
 
 
-getOrgans : Data -> Maybe String
-getOrgans data =
-    getSpreasSheetData data organSheetId organRange organSheetVersion
+getReasons : Data -> Maybe String
+getReasons data =
+    getSpreasSheetData data reasonSheetId reasonRange reasonSheetVersion
 
 
-addOrgans : Data -> String -> Data
-addOrgans data json =
-    addSpreasSheetData organSheetId organRange organSheetVersion json data
+addReasons : Data -> String -> Data
+addReasons data json =
+    addSpreasSheetData reasonSheetId reasonRange reasonSheetVersion json data
 
 
-fetchOrgans : (Result Http.Error String -> msg) -> String -> Cmd msg
-fetchOrgans toMsg apiKey =
-    fetchSpreasSheetData toMsg apiKey organSheetId organRange
+fetchReasons : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchReasons toMsg apiKey =
+    fetchSpreasSheetData toMsg apiKey reasonSheetId reasonRange
 
 
 

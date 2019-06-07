@@ -53,17 +53,17 @@ type alias Model =
 init : Session.Data -> String -> String -> String -> ( Model, Cmd Msg )
 init session apiKey storeUserId characterId =
     let
-        organs =
-            case Session.getOrgans session of
+        reasons =
+            case Session.getReasons session of
                 Just sheet ->
                     GSAPI.tuplesListFromJson sheet
 
                 Nothing ->
                     []
 
-        organsCmd =
-            if organs == [] then
-                Session.fetchOrgans GotOrgans apiKey
+        reasonsCmd =
+            if reasons == [] then
+                Session.fetchReasons GotReasons apiKey
 
             else
                 Cmd.none
@@ -103,14 +103,14 @@ init session apiKey storeUserId characterId =
             else
                 Cmd.none
     in
-    ( initModel session apiKey storeUserId organs traits cards
-    , Cmd.batch [ getCharacter ( storeUserId, characterId ), organsCmd, traitsCmd, cardsCmd ]
+    ( initModel session apiKey storeUserId reasons traits cards
+    , Cmd.batch [ getCharacter ( storeUserId, characterId ), reasonsCmd, traitsCmd, cardsCmd ]
     )
 
 
 initModel : Session.Data -> String -> String -> List ( String, String ) -> List ( String, String ) -> List Card.CardData -> Model
-initModel session apiKey storeUserId organs traits cards =
-    Model session Close apiKey (initCharacter storeUserId) (EditorModel organs traits cards "" "" (text "") Modal.Close)
+initModel session apiKey storeUserId reasons traits cards =
+    Model session Close apiKey (initCharacter storeUserId) (EditorModel reasons traits cards "" "" (text "") Modal.Close)
 
 
 type Msg
@@ -119,7 +119,7 @@ type Msg
     | Save
     | GotCharacter String
     | UpdatedCharacter Bool
-    | GotOrgans (Result Http.Error String)
+    | GotReasons (Result Http.Error String)
     | GotTraits (Result Http.Error String)
     | GotCards (Result Http.Error String)
 
@@ -156,19 +156,19 @@ update msg model =
         UpdatedCharacter _ ->
             ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
-        GotOrgans (Ok json) ->
+        GotReasons (Ok json) ->
             case GSAPI.tuplesInObjectDecodeFromString json of
-                Ok organs ->
+                Ok reasons ->
                     let
                         oldEditorModel =
                             model.editorModel
 
                         newEditorModel =
-                            { oldEditorModel | organs = organs }
+                            { oldEditorModel | reasons = reasons }
                     in
                     ( { model
                         | editorModel = newEditorModel
-                        , session = Session.addOrgans model.session json
+                        , session = Session.addReasons model.session json
                       }
                     , Cmd.none
                     )
@@ -176,7 +176,7 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
-        GotOrgans (Err _) ->
+        GotReasons (Err _) ->
             ( model, Cmd.none )
 
         GotTraits (Ok json) ->
