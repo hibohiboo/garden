@@ -8,6 +8,7 @@ port module Models.Card exposing
     , cardList
     , cardView
     , encodeCardToValue
+    , getBases
     , getRange
     , getTraitList
     , illustedBy
@@ -344,3 +345,14 @@ getTraitList cards =
 traitTag : Tag
 traitTag =
     Tag "特性" 0
+
+
+baseCardTag : Tag
+baseCardTag =
+    Tag "基本能力" 0
+
+
+getBases : List CardData -> List CardData
+getBases cards =
+    cards
+        |> List.filter (\card -> List.member baseCardTag card.tags)

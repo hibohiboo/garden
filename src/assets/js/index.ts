@@ -165,8 +165,6 @@ app.ports.getCharacter.subscribe(async data => {
   character.storeUserId = storeUserId;
   character.characterId = characterId;
   app.ports.gotCharacter.send(JSON.stringify(character));
-  // 新しく構築されたDOMにmaterializeを適用
-  M.updateTextFields();
 });
 
 // キャラクター更新

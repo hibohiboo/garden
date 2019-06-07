@@ -9,6 +9,7 @@ import Models.Card as Card
 import Models.Character exposing (..)
 import Models.CharacterEditor as CharacterEditor exposing (..)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
+import Page.MyPages.CharacterView exposing (cardsView)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -21,9 +22,6 @@ port saveNewCharacter : String -> Cmd msg
 
 
 port createdCharacter : (Bool -> msg) -> Sub msg
-
-
-port initNewCharacter : () -> Cmd msg
 
 
 subscriptions : Sub Msg
@@ -62,9 +60,19 @@ init session apiKey storeUserId =
                 Session.fetchCards GotCards apiKey
 
             else
-                initNewCharacter ()
+                Cmd.none
+
+        initChar =
+            initCharacter storeUserId
+
+        char =
+            if cards == [] then
+                initChar
+
+            else
+                Models.Character.initBaseCards initChar cards
     in
-    ( Model session Close (initCharacter storeUserId) (EditorModel [] [] cards "" "" (text "") Modal.Close)
+    ( Model session Close char (EditorModel [] [] cards "" "" (text "") Modal.Close)
     , Cmd.batch [ cardsCmd ]
     )
 
@@ -89,7 +97,7 @@ update msg model =
                 ( ( char, editor ), s ) =
                     CharacterEditor.update emsg model.character model.editorModel
             in
-            ( { model | character = char }, Cmd.map EditorMsg s )
+            ( { model | character = char, editorModel = editor }, Cmd.map EditorMsg s )
 
         Save ->
             ( model, model.character |> encodeCharacter |> saveNewCharacter )
@@ -106,12 +114,16 @@ update msg model =
 
                         newEditorModel =
                             { oldEditorModel | cards = cards }
+
+                        newCharacter =
+                            Models.Character.initBaseCards model.character cards
                     in
                     ( { model
                         | editorModel = newEditorModel
+                        , character = newCharacter
                         , session = Session.addCards model.session json
                       }
-                    , initNewCharacter ()
+                    , Cmd.none
                     )
 
                 Err _ ->
@@ -145,6 +157,7 @@ viewHelper model =
         , div
             [ class "edit-karte" ]
             [ edit model
+            , cardsView model.character
 
             -- , karte model
             ]

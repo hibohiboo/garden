@@ -1,4 +1,4 @@
-module Models.Character exposing (Character, characterDecoder, encodeCharacter, initCharacter)
+module Models.Character exposing (Character, characterDecoder, encodeCharacter, initBaseCards, initCharacter)
 
 import Array exposing (Array)
 import GoogleSpreadSheetApi as GSAPI
@@ -56,3 +56,18 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "trait" Decode.string ""
         |> Json.Decode.Pipeline.optional "mutagen" Decode.string ""
         |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoderFromJson) (Array.fromList [])
+
+
+
+-- ==============================================================================================
+-- ユーティリティ
+-- ==============================================================================================
+
+
+initBaseCards : Character -> List Card.CardData -> Character
+initBaseCards char cards =
+    let
+        baseCards =
+            Card.getBases cards
+    in
+    { char | cards = Array.fromList baseCards }

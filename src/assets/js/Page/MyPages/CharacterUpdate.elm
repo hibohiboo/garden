@@ -12,6 +12,7 @@ import Models.Card as Card
 import Models.Character exposing (..)
 import Models.CharacterEditor exposing (EditorModel)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
+import Page.MyPages.CharacterView exposing (cardsView)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -251,7 +252,7 @@ viewHelper model =
             [ edit model
 
             -- , karte model
-            , cardsView model
+            , cardsView model.character
             ]
         ]
 
@@ -282,15 +283,4 @@ karte model =
         , div [ class "label-organ" ] [ text "変異器官" ]
         , div [ class "organ" ] [ text char.organ ]
         , div [ class "outer-line" ] []
-        ]
-
-
-cardsView : Model -> Html Msg
-cardsView model =
-    let
-        char =
-            model.character
-    in
-    div [ class "cards" ]
-        [ Card.cardList (Array.toList char.cards)
         ]

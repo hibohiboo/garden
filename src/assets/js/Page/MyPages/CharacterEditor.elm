@@ -109,16 +109,16 @@ update msg char editor =
 
         InputSkillCard card ->
             let
-                maybeIndex =
-                    findIndex (\x -> x.cardName == card.cardName) (Array.toList char.cards)
-
+                -- maybeIndex =
+                --     findIndex (\x -> x.cardName == card.cardName) (Array.toList char.cards)
+                -- newCards =
+                --     case maybeIndex of
+                --         Just index ->
+                --             Array.set index card char.cards
+                --         _ ->
+                --             Array.push card char.cards
                 newCards =
-                    case maybeIndex of
-                        Just index ->
-                            Array.set index card char.cards
-
-                        _ ->
-                            Array.push card char.cards
+                    Array.push card char.cards
 
                 c =
                     { char | cards = newCards }
@@ -255,7 +255,7 @@ updateCardArea index card =
             "card_" ++ String.fromInt index
 
         delButton =
-            if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" then
+            if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本能力" then
                 text ""
 
             else

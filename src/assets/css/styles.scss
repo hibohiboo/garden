@@ -855,7 +855,7 @@ ul.skill-button-list {
 
 .modal {
 	display: none;
-	-webkit-animation: modalFadeIn 0.3s linear 0s 1;
+	-webkit-animation: modalFadeIn 0.1s linear 0s 1;
 }
 .modal.open {
   display: block;
@@ -872,7 +872,7 @@ ul.skill-button-list {
 }
 .modal-overlay {
   display: block;
-  transition: opacity 0.5s, visibility 0s ease 0.3s;
+  transition: opacity 0.3s, visibility 0s ease 0.1s;
     
   opacity: 0;
   visibility: hidden;
