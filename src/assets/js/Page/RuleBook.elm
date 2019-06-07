@@ -19,9 +19,6 @@ import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNaviga
 import Utils.TextStrings as Tx
 
 
-port openModal : () -> Cmd msg
-
-
 type alias Model =
     { session : Session.Data
     , naviState : NaviState
@@ -100,13 +97,13 @@ update msg model =
         ModalOrgan title ->
             case Session.getOrgans model.session of
                 Just sheet ->
-                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addOrgans, openModal () )
+                    ( updateTupleListModel { model | modalTitle = title, modalState = Modal.Open } sheet Session.addOrgans, Cmd.none )
 
                 Nothing ->
-                    ( { model | modalTitle = title }, Session.fetchOrgans GotOrgans model.googleSheetApiKey )
+                    ( { model | modalTitle = title, modalState = Modal.Open }, Session.fetchOrgans GotOrgans model.googleSheetApiKey )
 
         GotOrgans (Ok json) ->
-            ( updateTupleListModel model json Session.addOrgans, openModal () )
+            ( updateTupleListModel model json Session.addOrgans, Cmd.none )
 
         GotOrgans (Err _) ->
             ( model, Cmd.none )
@@ -120,13 +117,13 @@ update msg model =
         ModalTrait title ->
             case Session.getTraits model.session of
                 Just sheet ->
-                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addTraits, openModal () )
+                    ( updateTupleListModel { model | modalTitle = title, modalState = Modal.Open } sheet Session.addTraits, Cmd.none )
 
                 Nothing ->
-                    ( { model | modalTitle = title }, Session.fetchTraits GotTraits model.googleSheetApiKey )
+                    ( { model | modalTitle = title, modalState = Modal.Open }, Session.fetchTraits GotTraits model.googleSheetApiKey )
 
         GotTraits (Ok json) ->
-            ( updateTupleListModel model json Session.addTraits, openModal () )
+            ( updateTupleListModel model json Session.addTraits, Cmd.none )
 
         GotTraits (Err _) ->
             ( model, Cmd.none )
@@ -134,13 +131,13 @@ update msg model =
         ModalCard title kind ->
             case Session.getCards model.session of
                 Just sheet ->
-                    ( updateCardListModel { model | modalTitle = title, searchCardKind = kind } sheet Session.addCards, openModal () )
+                    ( updateCardListModel { model | modalTitle = title, searchCardKind = kind, modalState = Modal.Open } sheet Session.addCards, Cmd.none )
 
                 Nothing ->
                     ( { model | modalTitle = title, searchCardKind = kind }, Session.fetchCards GotCards model.googleSheetApiKey )
 
         GotCards (Ok json) ->
-            ( updateCardListModel model json Session.addCards, openModal () )
+            ( updateCardListModel { model | modalState = Modal.Open } json Session.addCards, Cmd.none )
 
         GotCards (Err _) ->
             ( model, Cmd.none )
@@ -148,13 +145,13 @@ update msg model =
         ModalFaq title ->
             case Session.getFaqs model.session of
                 Just sheet ->
-                    ( updateTupleListModel { model | modalTitle = title } sheet Session.addFaqs, openModal () )
+                    ( updateTupleListModel { model | modalTitle = title, modalState = Modal.Open } sheet Session.addFaqs, Cmd.none )
 
                 Nothing ->
                     ( { model | modalTitle = title }, Session.fetchFaqs GotFaqs model.googleSheetApiKey )
 
         GotFaqs (Ok json) ->
-            ( updateTupleListModel model json Session.addFaqs, openModal () )
+            ( updateTupleListModel { model | modalState = Modal.Open } json Session.addFaqs, Cmd.none )
 
         GotFaqs (Err _) ->
             ( model, Cmd.none )

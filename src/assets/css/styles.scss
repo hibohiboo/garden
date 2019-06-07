@@ -870,11 +870,16 @@ ul.skill-button-list {
     opacity:1;
 	}
 }
-.modal-overlay.open {
+.modal-overlay {
   display: block;
-  opacity:0.8;
+  transition: opacity 0.5s, visibility 0s ease 0.3s;
+    
+  opacity: 0;
+  visibility: hidden;
 }
-@-webkit-keyframes overlayFadeIn {
-	0%{ opacity:0;}
-	100% { opacity:0.8;}
+.modal-overlay.open {
+  transition-delay: 0s;
+  
+  opacity: 0.8;
+  visibility: visible;
 }

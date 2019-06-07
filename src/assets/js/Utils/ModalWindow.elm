@@ -28,7 +28,7 @@ view title content state closeMsg =
                 , p [] [ content ]
                 ]
             , div [ class "modal-footer" ]
-                [ a [ href "#", class "modal-close waves-effect waves-green btn-flat", onClick closeMsg ] [ text "閉じる" ]
+                [ a [ href "#", class "modal-close waves-effect waves-lignt btn-flat btn", onClick closeMsg ] [ text "閉じる" ]
                 ]
             ]
         , div [ class ("modal-overlay " ++ openClass), style "z-index" "1001", onClick closeMsg ] []
