@@ -32,6 +32,8 @@ type Msg
     | AddCard
     | DeleteCard Int
     | CloseModal
+    | InputReason String
+    | InputLabo String
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -212,6 +214,20 @@ update msg char editor =
         CloseModal ->
             ( ( char, { editor | modalState = Modal.Close } ), Cmd.none )
 
+        InputReason s ->
+            let
+                c =
+                    { char | reason = s }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        InputLabo s ->
+            let
+                c =
+                    { char | labo = s }
+            in
+            ( ( c, editor ), Cmd.none )
+
 
 setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
 setNewDataCards card kind cards =
@@ -245,6 +261,8 @@ editArea character editor =
         , cardWithInputArea character "trait" "特性" "特性" character.trait InputTrait InputTraitCard
         , skillArea character editor
         , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
+        , inputArea "reason" "収容理由" character.reason InputReason
+        , inputArea "labo" "研究所" character.labo InputLabo
         ]
 
 
