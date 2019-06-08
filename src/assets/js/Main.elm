@@ -11,6 +11,7 @@ import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
 import Page.MyPages.CharacterUpdate as CharacterUpdate
+import Page.MyPages.CharacterView as CharacterView
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
 import Page.SandBox as SandBox
@@ -79,6 +80,7 @@ type Page
     | LoginUserPage Page.LoginUser.Model
     | CharacterCreatePage CharacterCreate.Model
     | CharacterUpdatePage CharacterUpdate.Model
+    | CharacterViewPage CharacterView.Model
     | SandBoxPage SandBox.Model
 
 
@@ -121,6 +123,7 @@ type Msg
     | LoginUserMsg Page.LoginUser.Msg
     | CharacterCreateMsg CharacterCreate.Msg
     | CharacterUpdateMsg CharacterUpdate.Msg
+    | CharacterViewMsg CharacterView.Msg
     | SandBoxMsg SandBox.Msg
 
 
@@ -241,6 +244,18 @@ update msg model =
                             SandBox.update m rmodel
                     in
                     ( { model | page = SandBoxPage newmodel }, Cmd.map SandBoxMsg newmsg )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        CharacterViewMsg ms ->
+            case model.page of
+                CharacterViewPage rmodel ->
+                    let
+                        ( newmodel, newmsg ) =
+                            CharacterView.update ms rmodel
+                    in
+                    ( { model | page = CharacterViewPage newmodel }, Cmd.map CharacterViewMsg newmsg )
 
                 _ ->
                     ( model, Cmd.none )
@@ -376,6 +391,15 @@ goTo maybeRoute model =
             in
             ( { model | page = SandBoxPage m }
             , Cmd.map SandBoxMsg cmd
+            )
+
+        Just (Route.CharacterView storeUserId characterId) ->
+            let
+                ( m, cmd ) =
+                    CharacterView.init session model.googleSheetApiKey characterId
+            in
+            ( { model | page = CharacterViewPage m }
+            , Cmd.map CharacterViewMsg cmd
             )
 
 
