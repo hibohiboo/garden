@@ -19,12 +19,13 @@ type alias Character =
     , cards : Array Card.CardData
     , reason : String
     , labo : String
+    , memo : String
     }
 
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" ""
+    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" ""
 
 
 encodeCharacter : Character -> String
@@ -46,6 +47,7 @@ encodeCharacterToValue c =
         , ( "cards", E.array Card.encodeCardToValue c.cards )
         , ( "reason", E.string c.reason )
         , ( "labo", E.string c.labo )
+        , ( "memo", E.string c.memo )
         ]
 
 
@@ -62,6 +64,7 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoderFromJson) (Array.fromList [])
         |> Json.Decode.Pipeline.optional "reason" Decode.string ""
         |> Json.Decode.Pipeline.optional "labo" Decode.string ""
+        |> Json.Decode.Pipeline.optional "memo" Decode.string ""
 
 
 

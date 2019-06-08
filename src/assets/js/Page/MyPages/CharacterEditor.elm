@@ -34,6 +34,7 @@ type Msg
     | CloseModal
     | InputReason String
     | InputLabo String
+    | InputMemo String
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -228,6 +229,13 @@ update msg char editor =
             in
             ( ( c, editor ), Cmd.none )
 
+        InputMemo s ->
+            let
+                c =
+                    { char | memo = s }
+            in
+            ( ( c, editor ), Cmd.none )
+
 
 setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
 setNewDataCards card kind cards =
@@ -263,6 +271,10 @@ editArea character editor =
         , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
         , inputAreaWithAutocomplete "reason" "収容理由" character.reason InputReason "reasonList" (List.map (\( t, d ) -> t) editor.reasons)
         , inputArea "labo" "研究所" character.labo InputLabo
+        , div [ class "input-field" ]
+            [ textarea [ placeholder "メモ", id "memo", class "materialize-textarea", value character.memo, onInput InputMemo, style "height" "200px", style "overflow-y" "auto" ] []
+            , label [ class "active", for "memo" ] [ text "メモ" ]
+            ]
         ]
 
 
