@@ -9,11 +9,6 @@ service cloud.firestore {
       return request.auth.uid == userId;
     }
 
-    match /{documents=**} {
-      allow read;
-      allow write: if isAuthenticated();
-    }
-
     match /users/{userId} {
       allow create, read: if isAuthenticated();
       allow update: if isUserAuthenticated(userId);
@@ -21,6 +16,11 @@ service cloud.firestore {
         allow read, create, update, delete: if isUserAuthenticated(userId);
       }
     }
-
+    match /characters/{characterId} {
+      allow read;
+    }
+    match /{documents=**} {
+      allow read: if isAuthenticated();
+    }
   }
 }

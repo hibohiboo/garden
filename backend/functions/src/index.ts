@@ -2,14 +2,14 @@
 import * as functions from 'firebase-functions';
 import * as express from 'express';
 import * as cors from 'cors';
-import itemRouter from './api/routes/itemRouter';
+import characterRouter from './api/routes/characterRouter';
 import { firestore } from './api/model/firestore';
 
 const app = express();
 app.use(cors({ origin: true }));
 
 // register routes
-app.use('/api/v1', itemRouter);
+app.use('/api/v1', characterRouter);
 
 export const itemApi = functions.https.onRequest(app);
 
