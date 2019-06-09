@@ -18,8 +18,7 @@ service cloud.firestore {
       allow create, read: if isAuthenticated();
       allow update: if isUserAuthenticated(userId);
       match /characters/{characterId} {
-        allow read;
-        allow create, update, delete: if isUserAuthenticated(userId);
+        allow read, create, update, delete: if isUserAuthenticated(userId);
       }
     }
 
