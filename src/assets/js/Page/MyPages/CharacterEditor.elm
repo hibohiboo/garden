@@ -4,6 +4,7 @@ import Array exposing (Array)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Html.Events.Extra exposing (onChange)
 import Models.Card as Card
 import Models.Character exposing (..)
 import Models.CharacterEditor exposing (..)
@@ -399,7 +400,7 @@ inputCard card msg =
 inputArea : String -> String -> String -> (String -> msg) -> Html msg
 inputArea fieldId labelName val toMsg =
     div [ class "input-field" ]
-        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg ] []
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onChange toMsg ] []
         , label [ class "active", for fieldId ] [ text labelName ]
         ]
 
