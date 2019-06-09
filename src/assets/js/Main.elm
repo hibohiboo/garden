@@ -286,6 +286,9 @@ exit model =
         CharacterUpdatePage m ->
             m.session
 
+        CharacterViewPage m ->
+            m.session
+
         SandBoxPage m ->
             m.session
 
@@ -393,7 +396,7 @@ goTo maybeRoute model =
             , Cmd.map SandBoxMsg cmd
             )
 
-        Just (Route.CharacterView storeUserId characterId) ->
+        Just (Route.CharacterView characterId) ->
             let
                 ( m, cmd ) =
                     CharacterView.init session model.googleSheetApiKey characterId
@@ -463,6 +466,9 @@ view model =
 
         CharacterUpdatePage m ->
             Skeleton.view CharacterUpdateMsg (CharacterUpdate.view m)
+
+        CharacterViewPage m ->
+            Skeleton.view CharacterViewMsg (CharacterView.view m)
 
         SandBoxPage m ->
             Skeleton.view SandBoxMsg (SandBox.view m)

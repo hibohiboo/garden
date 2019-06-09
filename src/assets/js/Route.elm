@@ -13,7 +13,7 @@ type Route
     | LoginUser
     | CharacterCreate String
     | CharacterUpdate String String
-    | CharacterView String String
+    | CharacterView String
     | SandBox String
 
 
@@ -34,7 +34,7 @@ parser =
         , map CharacterCreate (s "mypage" </> s "character" </> s "create" </> string)
         , map CharacterUpdate (s "mypage" </> s "character" </> s "edit" </> string </> string)
         , map SandBox (s "sandbox" </> string)
-        , map CharacterView (s "mypage" </> s "character" </> s "view" </> string </> string)
+        , map CharacterView (s "mypage" </> s "character" </> s "view" </> string)
 
         -- , map GitHubUser string
         -- , map Repo (string </> string)

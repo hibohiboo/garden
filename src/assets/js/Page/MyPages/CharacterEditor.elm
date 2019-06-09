@@ -1,4 +1,4 @@
-port module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
+module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
 
 import Array exposing (Array)
 import Html exposing (..)
