@@ -7,7 +7,7 @@ import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as D
 import Models.Card as Card
-import Models.Character exposing (..)
+import Models.Character as Character exposing (Character)
 import Models.CharacterEditor exposing (EditorModel)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
 import Session
@@ -29,14 +29,13 @@ type alias Model =
     { session : Session.Data
     , naviState : NaviState
     , googleSheetApiKey : String
-
-    -- , character : Character
+    , character : Character
     }
 
 
 init : Session.Data -> String -> String -> ( Model, Cmd Msg )
 init session apiKey characterId =
-    ( Model session Close apiKey
+    ( Model session Close apiKey (Character.initCharacter "")
     , Cmd.none
     )
 

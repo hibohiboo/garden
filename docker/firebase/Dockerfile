@@ -23,3 +23,4 @@ RUN cd /app/functions && yarn add --dev typescript
 
 # ローカルでfunctionを実行するために必要
 RUN yarn global add @google-cloud/functions-emulator --ignore-engines
+RUN cd /app/functions && yarn add --dev firebase-functions-test
