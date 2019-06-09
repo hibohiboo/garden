@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/v1/**",
+        "function": "itemApi"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

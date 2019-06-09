@@ -1,12 +1,20 @@
 
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-admin.initializeApp(functions.config().firebase);
-const firestore = admin.firestore();
+import * as express from 'express';
+import * as cors from 'cors';
+import itemRouter from './api/routes/itemRouter';
+import { firestore } from './api/model/firestore';
+
+const app = express();
+app.use(cors({ origin: true }));
+
+// register routes
+app.use('/api/v1', itemRouter);
+
+export const itemApi = functions.https.onRequest(app);
+
 
 // メモ： functions/package.jsonを書き換えるときは、docker/firebase/functions/package.jsonも同様に書き換えること。
-
-
 interface Post {
   readonly title: string;
   readonly body: string;

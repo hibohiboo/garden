@@ -1,4 +1,5 @@
 FROM node:11.15.0
+# elm webpack loaderのバグで１２にあげられない
 
 # コンテナ上の作業ディレクトリ作成
 WORKDIR /app
