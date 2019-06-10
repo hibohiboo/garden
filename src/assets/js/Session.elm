@@ -305,13 +305,13 @@ fetchFaqs toMsg apiKey =
 
 getCharacter : Data -> String -> Maybe String
 getCharacter data characterId =
-    getJsonData data FirestoreApi.characterUrl
+    getJsonData data (FirestoreApi.characterUrl characterId)
 
 
-addCharacter : Data -> String -> Data
-addCharacter data json =
-    addJsonData FirestoreApi.characterUrl json data
+addCharacter : Data -> String -> String -> Data
+addCharacter data json characterId =
+    addJsonData (FirestoreApi.characterUrl characterId) json data
 
 
 fetchCharacter toMsg characterId =
-    fetchJsonData toMsg FirestoreApi.characterUrl
+    fetchJsonData toMsg (FirestoreApi.characterUrl characterId)

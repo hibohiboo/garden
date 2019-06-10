@@ -7,5 +7,10 @@ storeUrl =
     "https://garden-2a6de.firebaseapp.com/api/v1"
 
 
-characterUrl =
-    storeUrl ++ "/characters/" ++ "2fckXdCG5o5ZensdgmBZ"
+characterUrl : String -> String
+characterUrl characterId =
+    storeUrl ++ "/characters/" ++ characterId
+
+
+
+-- "2fckXdCG5o5ZensdgmBZ"

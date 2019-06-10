@@ -86,7 +86,7 @@ update msg model =
                             model
 
                         newCharacterModel =
-                            { oldCharacterModel | character = character, session = Session.addCharacter model.session json }
+                            { oldCharacterModel | character = character, session = Session.addCharacter model.session json character.characterId }
                     in
                     ( newCharacterModel, Cmd.none )
 
