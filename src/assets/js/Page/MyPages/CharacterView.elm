@@ -35,13 +35,41 @@ type alias Model =
 
 init : Session.Data -> String -> String -> ( Model, Cmd Msg )
 init session apiKey characterId =
+    let
+        character =
+            getCharacter session characterId
+
+        characterCmd =
+            case character of
+                Just _ ->
+                    Cmd.none
+
+                Nothing ->
+                    Session.fetchCharacter GotCharacter characterId
+    in
     ( Model session Close apiKey (Character.initCharacter "")
-    , Cmd.none
+    , Cmd.batch [ characterCmd ]
     )
+
+
+getCharacter : Session.Data -> String -> Maybe Character
+getCharacter session characterId =
+    case Session.getCharacter session characterId of
+        Just json ->
+            case D.decodeString Character.characterDecoder json of
+                Err a ->
+                    Nothing
+
+                Ok char ->
+                    Just char
+
+        Nothing ->
+            Nothing
 
 
 type Msg
     = ToggleNavigation
+    | GotCharacter (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -49,6 +77,24 @@ update msg model =
     case msg of
         ToggleNavigation ->
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
+
+        GotCharacter (Ok json) ->
+            case D.decodeString Character.characterDecoder json of
+                Ok character ->
+                    let
+                        oldCharacterModel =
+                            model
+
+                        newCharacterModel =
+                            { oldCharacterModel | character = character, session = Session.addCharacter model.session json }
+                    in
+                    ( newCharacterModel, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotCharacter (Err _) ->
+            ( model, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg
@@ -74,5 +120,5 @@ viewHelper model =
             [ text "キャラクターシート" ]
         , div
             [ class "edit-karte" ]
-            []
+            [ text model.character.name ]
         ]

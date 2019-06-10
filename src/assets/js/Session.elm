@@ -1,6 +1,7 @@
-module Session exposing (Data, Version, addCards, addFaqs, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchFaqs, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getFaqs, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
+module Session exposing (Data, Version, addCards, addCharacter, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
 
 import Dict
+import FirestoreApi
 import GoogleSpreadSheetApi
 import Http
 import Json.Decode as Decode
@@ -18,12 +19,13 @@ type alias Version =
 type alias Data =
     { markdowns : Dict.Dict String String
     , sheets : Dict.Dict String String
+    , json : Dict.Dict String String
     }
 
 
 empty : Data
 empty =
-    Data Dict.empty Dict.empty
+    Data Dict.empty Dict.empty Dict.empty
 
 
 
@@ -89,6 +91,28 @@ fetchSpreasSheetData : (Result Http.Error String -> msg) -> String -> String -> 
 fetchSpreasSheetData toMsg apiKey documentId range =
     Http.get
         { url = GoogleSpreadSheetApi.sheetUrl apiKey documentId range
+        , expect = Http.expectString toMsg
+        }
+
+
+getJsonData : Data -> String -> Maybe String
+getJsonData data url =
+    Dict.get url data.json
+
+
+addJsonData : String -> String -> Data -> Data
+addJsonData url json data =
+    let
+        newDatas =
+            Dict.insert url json data.json
+    in
+    { data | json = newDatas }
+
+
+fetchJsonData : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchJsonData toMsg url =
+    Http.get
+        { url = url
         , expect = Http.expectString toMsg
         }
 
@@ -277,3 +301,17 @@ addFaqs data json =
 fetchFaqs : (Result Http.Error String -> msg) -> String -> Cmd msg
 fetchFaqs toMsg apiKey =
     fetchSpreasSheetData toMsg apiKey faqSheetId faqRange
+
+
+getCharacter : Data -> String -> Maybe String
+getCharacter data characterId =
+    getJsonData data FirestoreApi.characterUrl
+
+
+addCharacter : Data -> String -> Data
+addCharacter data json =
+    addJsonData FirestoreApi.characterUrl json data
+
+
+fetchCharacter toMsg characterId =
+    fetchJsonData toMsg FirestoreApi.characterUrl
