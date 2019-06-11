@@ -12,8 +12,10 @@ service cloud.firestore {
     match /users/{userId} {
       allow create, read: if isAuthenticated();
       allow update: if isUserAuthenticated(userId);
+
       match /characters/{characterId} {
-        allow read, create, update, delete: if isUserAuthenticated(userId);
+        allow create: if isAuthenticated();
+        allow read, update, delete: if isUserAuthenticated(userId);
       }
     }
     match /characters/{characterId} {
