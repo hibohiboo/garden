@@ -118,7 +118,45 @@ viewHelper model =
     div [ class "" ]
         [ h1 []
             [ text "キャラクターシート" ]
-        , div
-            [ class "edit-karte" ]
-            [ text model.character.name ]
+        , characterCard model.character
+        ]
+
+
+characterCard : Character -> Html msg
+characterCard char =
+    let
+        tag tagText =
+            span [ class "tag" ] [ text tagText ]
+
+        tagNameList =
+            Card.getTraitList char.cards
+    in
+    div [ class "character-card" ]
+        [ div [ class "wrapper" ]
+            [ div [ class "base" ]
+                [ div [ class "skillLabel" ] [ text ("キャラクター" ++ "/" ++ "検体") ]
+                , div [ class "image" ]
+                    [ img [ src "" ] []
+                    , img [ src "" ] []
+                    ]
+                , div [ class "cardKana" ] [ text char.kana ]
+                , div [ class "cardName" ] [ text char.name ]
+                , div [ class "attrOrganLabel attrLabel border" ] [ text "変異器官" ]
+                , div [ class "attrOrganValue border" ] [ text char.organ ]
+                , div [ class "attrMutagenLabel attrLabel border" ] [ text "変異原" ]
+                , div [ class "attrMutagenValue border" ] [ text char.mutagen ]
+                , div [ class "attrReasonLabel attrLabel border" ] [ text "収容理由" ]
+                , div [ class "attrReasonValue border" ] [ text char.reason ]
+                , div [ class "attrLaboLabel attrLabel border" ] [ text "研究所" ]
+                , div [ class "attrLaboValue attrLabel border" ] [ text char.labo ]
+                , div [ class "tags" ] (List.map (\t -> tag t) tagNameList)
+                , div [ class "mainContent border" ]
+                    [ div [ class "effect " ] [ text ("行動力 : " ++ String.fromInt char.activePower) ]
+                    , div [ class "description" ] [ text char.memo ]
+                    ]
+                , div [ class "bottomContent" ]
+                    [ div [ class "cardId" ] [ text "" ]
+                    ]
+                ]
+            ]
         ]
