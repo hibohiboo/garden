@@ -30,6 +30,14 @@ type alias Model =
     , naviState : NaviState
     , googleSheetApiKey : String
     , character : Character
+    , cardState : List CardState
+    }
+
+
+type alias CardState =
+    { card : Card.CardData
+    , isUsed : Bool
+    , isDamaged : Bool
     }
 
 
@@ -47,7 +55,7 @@ init session apiKey characterId =
                 Nothing ->
                     Session.fetchCharacter GotCharacter characterId
     in
-    ( Model session Close apiKey (Character.initCharacter "")
+    ( Model session Close apiKey (Character.initCharacter "") []
     , Cmd.batch [ characterCmd ]
     )
 
@@ -86,7 +94,11 @@ update msg model =
                             model
 
                         newCharacterModel =
-                            { oldCharacterModel | character = character, session = Session.addCharacter model.session json character.characterId }
+                            { oldCharacterModel
+                                | character = character
+                                , session = Session.addCharacter model.session json character.characterId
+                                , cardState = character.cards |> Array.toList |> List.map (\c -> CardState c False False)
+                            }
                     in
                     ( newCharacterModel, Cmd.none )
 
