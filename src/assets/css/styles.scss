@@ -1131,15 +1131,33 @@ ul.skill-button-list {
   .wrapper {
     .base {
       display: grid;
-      grid-template-columns:
-        [leftGap]5px // 左余白～左端
-        [innerLeft]80px // 左端～
-        [attrLabel] 60px // 特性～
-        [attrValue]1fr
-        [innerRight] 1px // 右端ターゲット
-        [rightGap] 4px; // 右端余白;;
-      grid-template-rows: [topGap]1px // 上部余白～
-        [innerTop] 20px; // 上部情報;;
+      width: 100%;
+      grid-template-rows: 30px repeat(3, 1fr);
+      grid-template-columns: 80px repeat(3, 40px) 1fr;
+      grid-auto-flow: column;
+      div {
+        border: solid 1px #000;
+        text-align: center;
+      }
+
+      .name {
+        grid-row: 1;
+        grid-column: 1/ -1;
+        font-size: 20px;
+      }
+
+      .effect {
+        grid-row: 4;
+        grid-column: 1/-1;
+        white-space: pre-wrap;
+      }
+      .name,
+      .effect,
+      .used,
+      .injury {
+        text-align: left;
+        padding-left: 10px;
+      }
     }
   }
 }
