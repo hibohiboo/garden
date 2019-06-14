@@ -1,6 +1,6 @@
 module Page.MyPages.CharacterView exposing (Model, Msg(..), cardsView, init, update, view)
 
-import Array
+import Array exposing (Array)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -30,7 +30,7 @@ type alias Model =
     , naviState : NaviState
     , googleSheetApiKey : String
     , character : Character
-    , cardState : List CardState
+    , cardState : Array CardState
     }
 
 
@@ -58,10 +58,10 @@ init session apiKey characterId =
         model =
             case character of
                 Just char ->
-                    Model session Close apiKey char []
+                    Model session Close apiKey char (char.cards |> Array.map (\c -> CardState c False False))
 
                 Nothing ->
-                    Model session Close apiKey (Character.initCharacter "") []
+                    Model session Close apiKey (Character.initCharacter "") Array.empty
     in
     ( model
     , Cmd.batch [ characterCmd ]
@@ -105,7 +105,7 @@ update msg model =
                             { oldCharacterModel
                                 | character = character
                                 , session = Session.addCharacter model.session json character.characterId
-                                , cardState = character.cards |> Array.toList |> List.map (\c -> CardState c False False)
+                                , cardState = character.cards |> Array.map (\c -> CardState c False False)
                             }
                     in
                     ( newCharacterModel, Cmd.none )
@@ -139,26 +139,30 @@ viewHelper model =
         [ h1 [] [ text "キャラクターシート" ]
         , characterCard model.character
         , h2 [] [ text "データカード" ]
-        , dataCardSimpleView
+        , div [] (Array.map (\s -> dataCardSimpleView s) model.cardState |> Array.toList)
         ]
 
 
-dataCardSimpleView =
+dataCardSimpleView cardState =
+    let
+        card =
+            cardState.card
+    in
     div [ class "simple-datacard" ]
         [ div [ class "wrapper" ]
             [ div [ class "base" ]
-                [ div [ class "name" ] [ text "走る" ]
+                [ div [ class "name" ] [ text card.cardName ]
                 , div [ class "timingLabel label" ] [ text "タイミング" ]
-                , div [ class "timingValue" ] [ text "アクション" ]
+                , div [ class "timingValue" ] [ text card.timing ]
                 , div [ class "costLabel label" ] [ text "C" ]
-                , div [ class "costValue" ] [ text "1" ]
+                , div [ class "costValue" ] [ text <| String.fromInt card.cost ]
                 , div [ class "rangeLabel label" ] [ text "R" ]
-                , div [ class "rangeValue" ] [ text "0～1" ]
+                , div [ class "rangeValue" ] [ text (Card.getRange card) ]
                 , div [ class "targetLabel label" ] [ text "対象" ]
-                , div [ class "targetValue" ] [ text "単体" ]
+                , div [ class "targetValue" ] [ text card.target ]
                 , div [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "使用済" ] ] ]
-                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "負傷" ] ] ]
-                , div [ class "effect" ] [ text "効果" ]
+                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in" ] [], span [] [ text "負傷" ] ] ]
+                , div [ class "effect" ] [ text card.effect ]
                 ]
             ]
         ]
