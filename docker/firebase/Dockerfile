@@ -17,7 +17,7 @@ COPY functions /app/functions
 
 # functions用のモジュールをインストールしておく。
 RUN cd /app/functions && yarn add firebase-admin
-RUN cd /app/functions && yarn add firebase-functions
+RUN cd /app/functions && yarn add firebase-functions@latest
 RUN cd /app/functions && yarn add --dev tslint
 RUN cd /app/functions && yarn add --dev typescript
 

@@ -1,4 +1,4 @@
-module Page.MyPages.CharacterView exposing (Model, Msg(..), cardsView, init, update, view)
+port module Page.MyPages.CharacterView exposing (Model, Msg(..), cardsView, init, update, view)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as D
+import Json.Encode as E
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.CharacterEditor exposing (EditorModel)
@@ -16,6 +17,15 @@ import Url
 import Url.Builder
 import Utils.ModalWindow as Modal
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
+
+
+port saveCardState : E.Value -> Cmd msg
+
+
+port getCardState : String -> Cmd msg
+
+
+port gotCardState : (String -> msg) -> Sub msg
 
 
 cardsView : Character -> Html msg
@@ -37,8 +47,24 @@ type alias Model =
 type alias CardState =
     { card : Card.CardData
     , isUsed : Bool
-    , isDamaged : Bool
+    , isInjury : Bool
     }
+
+
+encodeCardStateToValue : CardState -> E.Value
+encodeCardStateToValue state =
+    E.object
+        [ ( "isUsed", E.bool state.isUsed )
+        , ( "isInjury", E.bool state.isInjury )
+        ]
+
+
+encodeCardViewToValue : Model -> E.Value
+encodeCardViewToValue model =
+    E.object
+        [ ( "characterId", E.string model.character.characterId )
+        , ( "states", E.array encodeCardStateToValue model.cardState )
+        ]
 
 
 init : Session.Data -> String -> String -> ( Model, Cmd Msg )
@@ -50,7 +76,7 @@ init session apiKey characterId =
         characterCmd =
             case character of
                 Just _ ->
-                    Cmd.none
+                    getCardState characterId
 
                 Nothing ->
                     Session.fetchCharacter GotCharacter characterId
@@ -61,7 +87,11 @@ init session apiKey characterId =
                     Model session Close apiKey char (char.cards |> Array.map (\c -> CardState c False False))
 
                 Nothing ->
-                    Model session Close apiKey (Character.initCharacter "") Array.empty
+                    let
+                        initChar =
+                            Character.initCharacter ""
+                    in
+                    Model session Close apiKey { initChar | memo = "なうろーでぃんぐ" } Array.empty
     in
     ( model
     , Cmd.batch [ characterCmd ]
@@ -87,6 +117,7 @@ type Msg
     = ToggleNavigation
     | GotCharacter (Result Http.Error String)
     | UnUsedAll
+    | ToggleUsed Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -109,7 +140,7 @@ update msg model =
                                 , cardState = character.cards |> Array.map (\c -> CardState c False False)
                             }
                     in
-                    ( newCharacterModel, Cmd.none )
+                    ( newCharacterModel, getCardState character.characterId )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -119,6 +150,32 @@ update msg model =
 
         UnUsedAll ->
             ( { model | cardState = model.character.cards |> Array.map (\c -> CardState c False False) }, Cmd.none )
+
+        ToggleUsed i ->
+            let
+                beforeStates =
+                    model.cardState
+
+                before =
+                    Array.get i beforeStates
+
+                afterStates =
+                    case before of
+                        Just b ->
+                            let
+                                after =
+                                    { b | isUsed = not b.isUsed }
+                            in
+                            Array.set i after beforeStates
+
+                        -- Todo; なかったときの対応
+                        Nothing ->
+                            beforeStates
+
+                newModel =
+                    { model | cardState = afterStates }
+            in
+            ( newModel, newModel |> encodeCardViewToValue |> saveCardState )
 
 
 view : Model -> Skeleton.Details Msg
@@ -144,11 +201,11 @@ viewHelper model =
         , characterCard model.character
         , h2 [] [ text "データカード" ]
         , button [ onClick UnUsedAll ] [ text "使用済チェックをすべて外す" ]
-        , div [] (Array.map (\s -> dataCardSimpleView s) model.cardState |> Array.toList)
+        , div [] (Array.indexedMap (\i s -> dataCardSimpleView i s) model.cardState |> Array.toList)
         ]
 
 
-dataCardSimpleView cardState =
+dataCardSimpleView i cardState =
     let
         card =
             cardState.card
@@ -165,7 +222,7 @@ dataCardSimpleView cardState =
                 , div [ class "rangeValue" ] [ text (Card.getRange card) ]
                 , div [ class "targetLabel label" ] [ text "対象" ]
                 , div [ class "targetValue" ] [ text card.target ]
-                , div [ class "used" ] [ label [] [ input [ type_ "checkbox", checked cardState.isUsed ] [], span [] [ text "使用済" ] ] ]
+                , div [ class "used" ] [ label [] [ input [ type_ "checkbox", checked cardState.isUsed, onClick (ToggleUsed i) ] [], span [] [ text "使用済" ] ] ]
                 , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in" ] [], span [] [ text "負傷" ] ] ]
                 , div [ class "effect" ] [ text card.effect ]
                 ]

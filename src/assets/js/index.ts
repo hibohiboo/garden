@@ -177,8 +177,17 @@ app.ports.updateCharacter.subscribe(async json => {
   const character = JSON.parse(json);
   const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
   character.updatedAt = fireBase.getTimestamp();
-  console.log(userData);
+
   character.uid = userData.uid;
   await characterRef.update(character);
   app.ports.updatedCharacter.send(true);
+});
+
+// ローカルストレージに、キャラクターのデータカードの使用済/負傷を保存
+app.ports.saveCardState.subscribe(obj => {
+  localStorage.setItem(obj.characterId, JSON.stringify(obj.states));
+});
+
+app.ports.getCardState.subscribe(characterId => {
+  console.log(characterId);
 });
