@@ -86,6 +86,7 @@ getCharacter session characterId =
 type Msg
     = ToggleNavigation
     | GotCharacter (Result Http.Error String)
+    | UnUsedAll
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -116,6 +117,9 @@ update msg model =
         GotCharacter (Err _) ->
             ( model, Cmd.none )
 
+        UnUsedAll ->
+            ( { model | cardState = model.character.cards |> Array.map (\c -> CardState c False False) }, Cmd.none )
+
 
 view : Model -> Skeleton.Details Msg
 view model =
@@ -139,6 +143,7 @@ viewHelper model =
         [ h1 [] [ text "キャラクターシート" ]
         , characterCard model.character
         , h2 [] [ text "データカード" ]
+        , button [ onClick UnUsedAll ] [ text "使用済チェックをすべて外す" ]
         , div [] (Array.map (\s -> dataCardSimpleView s) model.cardState |> Array.toList)
         ]
 
@@ -160,7 +165,7 @@ dataCardSimpleView cardState =
                 , div [ class "rangeValue" ] [ text (Card.getRange card) ]
                 , div [ class "targetLabel label" ] [ text "対象" ]
                 , div [ class "targetValue" ] [ text card.target ]
-                , div [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "使用済" ] ] ]
+                , div [ class "used" ] [ label [] [ input [ type_ "checkbox", checked cardState.isUsed ] [], span [] [ text "使用済" ] ] ]
                 , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in" ] [], span [] [ text "負傷" ] ] ]
                 , div [ class "effect" ] [ text card.effect ]
                 ]
