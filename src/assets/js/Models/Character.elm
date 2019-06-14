@@ -21,12 +21,13 @@ type alias Character =
     , labo : String
     , memo : String
     , activePower : Int
+    , isPublished : Bool
     }
 
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4
+    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4 False
 
 
 encodeCharacter : Character -> String
@@ -50,6 +51,7 @@ encodeCharacterToValue c =
         , ( "labo", E.string c.labo )
         , ( "memo", E.string c.memo )
         , ( "activePower", E.int c.activePower )
+        , ( "isPublished", E.bool c.isPublished )
         ]
 
 
@@ -68,6 +70,7 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "labo" Decode.string ""
         |> Json.Decode.Pipeline.optional "memo" Decode.string ""
         |> Json.Decode.Pipeline.optional "activePower" Decode.int 4
+        |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
 
 
 

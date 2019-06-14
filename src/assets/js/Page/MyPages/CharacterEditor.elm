@@ -36,6 +36,7 @@ type Msg
     | InputLabo String
     | InputMemo String
     | InputAP String
+    | TogglePublish
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -252,6 +253,13 @@ update msg char editor =
             in
             ( ( c, editor ), Cmd.none )
 
+        TogglePublish ->
+            let
+                c =
+                    { char | isPublished = not char.isPublished }
+            in
+            ( ( c, editor ), Cmd.none )
+
 
 setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
 setNewDataCards card kind cards =
@@ -294,6 +302,10 @@ editArea character editor =
         , div [ class "input-field" ]
             [ textarea [ placeholder "メモ", id "memo", class "materialize-textarea", value character.memo, onInput InputMemo, style "height" "200px", style "overflow-y" "auto" ] []
             , label [ class "active", for "memo" ] [ text "メモ" ]
+            ]
+        , div [ class "input-field" ]
+            [ div [] [ text "他の人にシートを公開する場合は以下にチェック" ]
+            , div [] [ label [] [ input [ type_ "checkbox", checked character.isPublished, onClick TogglePublish ] [], span [] [ text "公開する" ] ] ]
             ]
         ]
 
