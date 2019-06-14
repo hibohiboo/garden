@@ -54,8 +54,16 @@ init session apiKey characterId =
 
                 Nothing ->
                     Session.fetchCharacter GotCharacter characterId
+
+        model =
+            case character of
+                Just char ->
+                    Model session Close apiKey char []
+
+                Nothing ->
+                    Model session Close apiKey (Character.initCharacter "") []
     in
-    ( Model session Close apiKey (Character.initCharacter "") []
+    ( model
     , Cmd.batch [ characterCmd ]
     )
 
@@ -127,10 +135,29 @@ view model =
 
 viewHelper : Model -> Html Msg
 viewHelper model =
-    div [ class "" ]
-        [ h1 []
-            [ text "キャラクターシート" ]
+    div [ class "character-sheet" ]
+        [ h1 [] [ text "キャラクターシート" ]
         , characterCard model.character
+        , h2 [] [ text "データカード" ]
+        , dataCardSimpleView
+        ]
+
+
+dataCardSimpleView =
+    div [ class "simple-datacard" ]
+        [ div [ class "wrapper" ]
+            [ div [ class "base" ]
+                [ div [ class "name" ] [ text "走る" ]
+                , div [ class "timingLabel" ] [ text "T" ]
+                , div [ class "timingValue" ] [ text "アクション" ]
+                , div [ class "costLabel" ] [ text "C" ]
+                , div [ class "costValue" ] [ text "1" ]
+                , div [ class "rangeLabel" ] [ text "R" ]
+                , div [ class "rangeValue" ] [ text "0～1" ]
+                , div [ class "targetLabel" ] [ text "対象" ]
+                , div [ class "targetValue" ] [ text "単体" ]
+                ]
+            ]
         ]
 
 
