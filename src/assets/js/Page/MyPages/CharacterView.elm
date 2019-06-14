@@ -1,4 +1,4 @@
-port module Page.MyPages.CharacterView exposing (Model, Msg(..), cardsView, init, update, view)
+port module Page.MyPages.CharacterView exposing (Model, Msg(..), cardsView, init, subscriptions, update, view)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as D
+import Json.Decode.Pipeline
 import Json.Encode as E
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
@@ -51,6 +52,12 @@ type alias CardState =
     }
 
 
+type alias State =
+    { isUsed : Bool
+    , isInjury : Bool
+    }
+
+
 encodeCardStateToValue : CardState -> E.Value
 encodeCardStateToValue state =
     E.object
@@ -65,6 +72,13 @@ encodeCardViewToValue model =
         [ ( "characterId", E.string model.character.characterId )
         , ( "states", E.array encodeCardStateToValue model.cardState )
         ]
+
+
+stateDecoder : D.Decoder State
+stateDecoder =
+    D.succeed State
+        |> Json.Decode.Pipeline.required "isUsed" D.bool
+        |> Json.Decode.Pipeline.required "isInjury" D.bool
 
 
 init : Session.Data -> String -> String -> ( Model, Cmd Msg )
@@ -118,6 +132,7 @@ type Msg
     | GotCharacter (Result Http.Error String)
     | UnUsedAll
     | ToggleUsed Int
+    | GotCardState String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -149,7 +164,11 @@ update msg model =
             ( model, Cmd.none )
 
         UnUsedAll ->
-            ( { model | cardState = model.character.cards |> Array.map (\c -> CardState c False False) }, Cmd.none )
+            let
+                newModel =
+                    { model | cardState = model.character.cards |> Array.map (\c -> CardState c False False) }
+            in
+            ( newModel, newModel |> encodeCardViewToValue |> saveCardState )
 
         ToggleUsed i ->
             let
@@ -176,6 +195,37 @@ update msg model =
                     { model | cardState = afterStates }
             in
             ( newModel, newModel |> encodeCardViewToValue |> saveCardState )
+
+        GotCardState val ->
+            let
+                states =
+                    case D.decodeString (D.array stateDecoder) val of
+                        Ok arr ->
+                            arr
+
+                        Err _ ->
+                            Array.empty
+
+                newStates =
+                    Array.indexedMap
+                        (\i state ->
+                            case Array.get i states of
+                                Just s ->
+                                    { state | isUsed = s.isUsed, isInjury = s.isInjury }
+
+                                Nothing ->
+                                    state
+                        )
+                        model.cardState
+            in
+            ( { model | cardState = newStates }, Cmd.none )
+
+
+subscriptions : Sub Msg
+subscriptions =
+    Sub.batch
+        [ gotCardState GotCardState
+        ]
 
 
 view : Model -> Skeleton.Details Msg

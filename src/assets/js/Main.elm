@@ -416,6 +416,7 @@ subscriptions model =
         [ Sub.map LoginUserMsg Page.LoginUser.subscriptions
         , Sub.map CharacterUpdateMsg CharacterUpdate.subscriptions
         , Sub.map CharacterCreateMsg CharacterCreate.subscriptions
+        , Sub.map CharacterViewMsg CharacterView.subscriptions
         ]
 
 

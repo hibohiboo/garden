@@ -189,5 +189,6 @@ app.ports.saveCardState.subscribe(obj => {
 });
 
 app.ports.getCardState.subscribe(characterId => {
-  console.log(characterId);
+  const json = localStorage.getItem(characterId);
+  app.ports.gotCardState.send(json);
 });

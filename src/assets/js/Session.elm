@@ -4,7 +4,6 @@ import Dict
 import FirestoreApi
 import GoogleSpreadSheetApi
 import Http
-import Json.Decode as Decode
 import Url.Builder as Url
 
 
