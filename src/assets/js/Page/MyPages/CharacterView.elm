@@ -132,6 +132,7 @@ type Msg
     | GotCharacter (Result Http.Error String)
     | UnUsedAll
     | ToggleUsed Int
+    | ToggleInjury Int
     | GotCardState String
 
 
@@ -184,6 +185,32 @@ update msg model =
                             let
                                 after =
                                     { b | isUsed = not b.isUsed }
+                            in
+                            Array.set i after beforeStates
+
+                        -- Todo; なかったときの対応
+                        Nothing ->
+                            beforeStates
+
+                newModel =
+                    { model | cardState = afterStates }
+            in
+            ( newModel, newModel |> encodeCardViewToValue |> saveCardState )
+
+        ToggleInjury i ->
+            let
+                beforeStates =
+                    model.cardState
+
+                before =
+                    Array.get i beforeStates
+
+                afterStates =
+                    case before of
+                        Just b ->
+                            let
+                                after =
+                                    { b | isInjury = not b.isInjury }
                             in
                             Array.set i after beforeStates
 
@@ -273,7 +300,7 @@ dataCardSimpleView i cardState =
                 , div [ class "targetLabel label" ] [ text "対象" ]
                 , div [ class "targetValue" ] [ text card.target ]
                 , div [ class "used" ] [ label [] [ input [ type_ "checkbox", checked cardState.isUsed, onClick (ToggleUsed i) ] [], span [] [ text "使用済" ] ] ]
-                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in" ] [], span [] [ text "負傷" ] ] ]
+                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in", checked cardState.isInjury, onClick (ToggleInjury i) ] [], span [] [ text "負傷" ] ] ]
                 , div [ class "effect" ] [ text card.effect ]
                 ]
             ]
