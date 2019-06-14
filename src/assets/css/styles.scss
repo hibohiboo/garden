@@ -1152,6 +1152,18 @@ ul.skill-button-list {
         grid-row: 1;
         grid-column: 1/ -1;
         font-size: 20px;
+        .tag {
+          background-color: teal;
+          color: #fff;
+          padding: 0 3px;
+          margin-bottom: 3px;
+          margin-left: 5px;
+          font-size: 12px;
+          white-space: nowrap;
+          line-height: 20px;
+          height: 18px;
+          display: inline-block;
+        }
       }
 
       .effect {

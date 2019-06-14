@@ -290,7 +290,7 @@ dataCardSimpleView i cardState =
     div [ class "simple-datacard" ]
         [ div [ class "wrapper" ]
             [ div [ class "base" ]
-                [ div [ class "name" ] [ text card.cardName ]
+                [ div [ class "name" ] (text card.cardName :: List.map (\t -> span [ class "tag" ] [ text t.name ]) card.tags)
                 , div [ class "timingLabel label" ] [ text "タイミング" ]
                 , div [ class "timingValue" ] [ text card.timing ]
                 , div [ class "costLabel label" ] [ text "C" ]
