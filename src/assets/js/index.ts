@@ -30,7 +30,10 @@ const app = Elm.Main.init({ node: mountNode, flags });
 
 // DBのユーザ情報。
 let userData;  // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
-
+if (localStorage[STORAGE_KEY] !== undefined) {
+  const json = localStorage[STORAGE_KEY];
+  userData = JSON.parse(json);
+}
 // ログインが必要なときにfirebaseuiを使って要素を準備する
 const viewLoginPage = () => {
   fireBase.createLoginUi();
@@ -104,12 +107,13 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       storeUserId = userRef.id;
     }
     // console.log(dbuser)
-
-    const json = JSON.stringify({
+    userData = {
       uid: dbuser.uid
       , displayName: dbuser.displayName
       , storeUserId: storeUserId
-    });
+    };
+
+    const json = JSON.stringify(userData);
 
     // ローカルストレージにユーザ情報を保存
     localStorage[STORAGE_KEY] = json;
@@ -152,6 +156,7 @@ app.ports.saveNewCharacter.subscribe(async json => {
   const userRef = db.collection("users").doc(data.storeUserId);
   data.createdAt = fireBase.getTimestamp();
   data.updatedAt = fireBase.getTimestamp();
+  data.uid = userData.uid;
   await userRef.collection('characters').add(data);
   app.ports.createdCharacter.send(true);
 });
@@ -172,6 +177,8 @@ app.ports.updateCharacter.subscribe(async json => {
   const character = JSON.parse(json);
   const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
   character.updatedAt = fireBase.getTimestamp();
+  console.log(userData);
+  character.uid = userData.uid;
   await characterRef.update(character);
   app.ports.updatedCharacter.send(true);
 });
