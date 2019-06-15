@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Json.Decode as D
+import Page.CharacterList
 import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
@@ -82,6 +83,7 @@ type Page
     | CharacterUpdatePage CharacterUpdate.Model
     | CharacterViewPage CharacterView.Model
     | SandBoxPage SandBox.Model
+    | CharacterListPage Page.CharacterList.Model
 
 
 init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -125,6 +127,7 @@ type Msg
     | CharacterUpdateMsg CharacterUpdate.Msg
     | CharacterViewMsg CharacterView.Msg
     | SandBoxMsg SandBox.Msg
+    | CharacterListMsg Page.CharacterList.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -260,6 +263,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        CharacterListMsg pageCharacterListMsg ->
+            case model.page of
+                CharacterListPage topModel ->
+                    let
+                        ( newModel, topCmd ) =
+                            Page.CharacterList.update pageCharacterListMsg topModel
+                    in
+                    ( { model | page = CharacterListPage newModel }, Cmd.map CharacterListMsg topCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 -- EXIT
@@ -297,6 +312,9 @@ exit model =
 
         ErrorPage _ ->
             Session.empty
+
+        CharacterListPage m ->
+            m.session
 
 
 
@@ -405,6 +423,15 @@ goTo maybeRoute model =
             , Cmd.map CharacterViewMsg cmd
             )
 
+        Just Route.CharacterList ->
+            let
+                ( m, cmd ) =
+                    Page.CharacterList.init session
+            in
+            ( { model | page = CharacterListPage m }
+            , Cmd.map CharacterListMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -473,6 +500,9 @@ view model =
 
         SandBoxPage m ->
             Skeleton.view SandBoxMsg (SandBox.view m)
+
+        CharacterListPage m ->
+            Skeleton.view CharacterListMsg (Page.CharacterList.view m)
 
 
 {-| NotFound ページ

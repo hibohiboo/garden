@@ -159,7 +159,7 @@ characterList characters =
 
 characterListItem char =
     div [ class "collection-item" ]
-        [ a [ href (Url.Builder.absolute [ "mypage", "character", "view", char.characterId ] []) ]
+        [ a [ href (Url.Builder.absolute [ "character", "view", char.characterId ] []) ]
             [ text char.name
             ]
         , a [ href (Url.Builder.absolute [ "mypage", "character", "edit", char.storeUserId, char.characterId ] []), class "secondary-content btn-floating btn-small waves-effect waves-light red" ]
