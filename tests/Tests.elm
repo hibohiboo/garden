@@ -417,4 +417,14 @@ getFirestoreApiJson =
                         5
                 in
                 Expect.equal actual expect
+        , test "timestampを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.timestampFromJson "name" """{"fields": {"name": {"timestampValue": "2019-06-15T01:25:14.040Z"}}"""
+
+                    expect =
+                        "2019-06-15T01:25:14.040Z"
+                in
+                Expect.equal actual expect
         ]
