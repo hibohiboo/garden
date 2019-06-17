@@ -86,9 +86,14 @@ timestampFromJson target s =
 
 boolFromJson : String -> String -> Bool
 boolFromJson target s =
-    case D.decodeString (bool target) s of
+    decodeFromJsonHelper bool False target s
+
+
+decodeFromJsonHelper : (String -> D.Decoder a) -> a -> String -> String -> a
+decodeFromJsonHelper decoder defaultValue target s =
+    case D.decodeString (decoder target) s of
         Ok val ->
             val
 
         Err _ ->
-            False
+            defaultValue
