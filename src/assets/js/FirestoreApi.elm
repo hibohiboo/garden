@@ -1,4 +1,4 @@
-module FirestoreApi exposing (characterUrl, int, intFromJson, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (bool, boolFromJson, characterUrl, int, intFromJson, string, stringFromJson, timestamp, timestampFromJson)
 
 import Json.Decode as D
 
@@ -68,3 +68,18 @@ timestampFromJson target s =
 timestamp : String -> D.Decoder String
 timestamp =
     stringHelper "timestampValue"
+
+
+boolFromJson : String -> String -> Bool
+boolFromJson target s =
+    case D.decodeString (bool target) s of
+        Ok val ->
+            val
+
+        Err _ ->
+            False
+
+
+bool : String -> D.Decoder Bool
+bool target =
+    D.at [ "fields", target, "booleanValue" ] D.bool

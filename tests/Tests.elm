@@ -427,4 +427,14 @@ getFirestoreApiJson =
                         "2019-06-15T01:25:14.040Z"
                 in
                 Expect.equal actual expect
+        , test "boolを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.boolFromJson "name" """{"fields": {"name": {"booleanValue": true}}"""
+
+                    expect =
+                        True
+                in
+                Expect.equal actual expect
         ]
