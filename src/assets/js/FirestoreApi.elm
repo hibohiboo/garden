@@ -37,7 +37,12 @@ string target =
 
 stringHelper : String -> String -> D.Decoder String
 stringHelper type_ target =
-    D.at [ "fields", target, type_ ] D.string
+    jsonHelper D.string type_ target
+
+
+jsonHelper : D.Decoder a -> String -> String -> D.Decoder a
+jsonHelper decoder type_ target =
+    D.at [ "fields", target, type_ ] decoder
 
 
 intFromJson : String -> String -> Int
@@ -52,7 +57,7 @@ intFromJson target s =
 
 int : String -> D.Decoder Int
 int target =
-    D.at [ "fields", target, "integerValue" ] D.int
+    jsonHelper D.int "integerValue" target
 
 
 timestampFromJson : String -> String -> String
@@ -82,4 +87,4 @@ boolFromJson target s =
 
 bool : String -> D.Decoder Bool
 bool target =
-    D.at [ "fields", target, "booleanValue" ] D.bool
+    jsonHelper D.bool "booleanValue" target
