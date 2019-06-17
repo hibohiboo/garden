@@ -1,4 +1,8 @@
-module FirestoreApi exposing (characterUrl)
+module FirestoreApi exposing (characterUrl, string, stringFromJson)
+
+import Json.Decode as D
+
+
 
 -- functionsを使った取得URL
 
@@ -13,4 +17,19 @@ characterUrl characterId =
 
 
 
--- "2fckXdCG5o5ZensdgmBZ"
+-- デコーダ
+
+
+stringFromJson : String -> String -> String
+stringFromJson target s =
+    case D.decodeString (string target) s of
+        Ok val ->
+            val
+
+        Err _ ->
+            ""
+
+
+string : String -> D.Decoder String
+string target =
+    D.at [ "fields", target, "stringValue" ] D.string

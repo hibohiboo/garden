@@ -2,6 +2,7 @@ module Tests exposing (cardTest, getText, sheet, suite, unitTest)
 
 import Dict exposing (Dict)
 import Expect
+import FirestoreApi as FSApi
 import GoogleSpreadSheetApi as GSApi
 import Models.Card as Card
 import Models.CardId as CardId exposing (CardId)
@@ -338,4 +339,72 @@ cardTest =
                     in
                     Expect.equal actual expect
             ]
+        ]
+
+
+getFirestoreApiJson : Test
+getFirestoreApiJson =
+    describe "FirestoreApi"
+        [ describe "getText"
+            [ test "値を取得するテスト" <|
+                \_ ->
+                    let
+                        source =
+                            """
+{
+  "documents": [
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/05TsdJiaAyAPH8RLgsqt",
+      "fields": {
+        "labo": {
+          "stringValue": "旧第一研究所"
+        },
+        "name": {
+          "stringValue": "狐狸"
+        },
+        "characterId": {
+          "stringValue": "05TsdJiaAyAPH8RLgsqt"
+        }
+      },
+      "createTime": "2019-06-15T00:13:36.394340Z",
+      "updateTime": "2019-06-15T00:13:36.394340Z"
+    },
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/iUjHq8ohVTI0tmftm1gW",
+      "fields": {
+        "labo": {
+          "stringValue": ""
+        },
+        "name": {
+          "stringValue": "にゅー"
+        },
+        "characterId": {
+          "stringValue": "iUjHq8ohVTI0tmftm1gW"
+        }
+      },
+      "createTime": "2019-06-15T00:22:36.133995Z",
+      "updateTime": "2019-06-15T00:22:36.133995Z"
+    }
+  ]
+}
+                        """
+
+                        actual =
+                            Tx.getText (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "test" "default value"
+
+                        expect =
+                            "test"
+                    in
+                    Expect.equal actual expect
+            ]
+        , test "valueを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.stringFromJson "name" """{"fields": {"name": {"stringValue": "test"}}"""
+
+                    expect =
+                        "test"
+                in
+                Expect.equal actual expect
         ]

@@ -25,6 +25,9 @@ service cloud.firestore {
     match /characters/{characterId} {
       allow read;
     }
+    match /publish/all/characters/{characterId} {
+      allow read;
+    }
     match /{documents=**} {
       allow read: if isAuthenticated();
     }
