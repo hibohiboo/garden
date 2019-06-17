@@ -66,5 +66,5 @@ timestampFromJson target s =
 
 
 timestamp : String -> D.Decoder String
-timestamp target =
-    stringHelper "timestampValue" target
+timestamp =
+    stringHelper "timestampValue"
