@@ -397,7 +397,7 @@ getFirestoreApiJson =
                     in
                     Expect.equal actual expect
             ]
-        , test "valueを取得するテスト" <|
+        , test "stringを取得するテスト" <|
             \_ ->
                 let
                     actual =
@@ -405,6 +405,16 @@ getFirestoreApiJson =
 
                     expect =
                         "test"
+                in
+                Expect.equal actual expect
+        , test "intを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.intFromJson "AP" """{"fields": {"AP": {"integerValue": "5"}}"""
+
+                    expect =
+                        5
                 in
                 Expect.equal actual expect
         ]

@@ -1,4 +1,4 @@
-module FirestoreApi exposing (characterUrl, string, stringFromJson)
+module FirestoreApi exposing (characterUrl, int, intFromJson, string, stringFromJson)
 
 import Json.Decode as D
 
@@ -33,3 +33,18 @@ stringFromJson target s =
 string : String -> D.Decoder String
 string target =
     D.at [ "fields", target, "stringValue" ] D.string
+
+
+intFromJson : String -> String -> Int
+intFromJson target s =
+    case D.decodeString (int target) s of
+        Ok val ->
+            val
+
+        Err _ ->
+            0
+
+
+int : String -> D.Decoder Int
+int target =
+    D.at [ "fields", target, "integerValue" ] D.int
