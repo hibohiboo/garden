@@ -20,16 +20,6 @@ characterUrl characterId =
 -- デコーダ
 
 
-stringFromJson : String -> String -> String
-stringFromJson target s =
-    case D.decodeString (string target) s of
-        Ok val ->
-            val
-
-        Err _ ->
-            ""
-
-
 string : String -> D.Decoder String
 string target =
     stringHelper "stringValue" target
@@ -45,6 +35,35 @@ jsonHelper decoder type_ target =
     D.at [ "fields", target, type_ ] decoder
 
 
+int : String -> D.Decoder Int
+int target =
+    jsonHelper D.int "integerValue" target
+
+
+timestamp : String -> D.Decoder String
+timestamp =
+    stringHelper "timestampValue"
+
+
+bool : String -> D.Decoder Bool
+bool target =
+    jsonHelper D.bool "booleanValue" target
+
+
+
+-- テスト用
+
+
+stringFromJson : String -> String -> String
+stringFromJson target s =
+    case D.decodeString (string target) s of
+        Ok val ->
+            val
+
+        Err _ ->
+            ""
+
+
 intFromJson : String -> String -> Int
 intFromJson target s =
     case D.decodeString (int target) s of
@@ -53,11 +72,6 @@ intFromJson target s =
 
         Err _ ->
             0
-
-
-int : String -> D.Decoder Int
-int target =
-    jsonHelper D.int "integerValue" target
 
 
 timestampFromJson : String -> String -> String
@@ -70,11 +84,6 @@ timestampFromJson target s =
             ""
 
 
-timestamp : String -> D.Decoder String
-timestamp =
-    stringHelper "timestampValue"
-
-
 boolFromJson : String -> String -> Bool
 boolFromJson target s =
     case D.decodeString (bool target) s of
@@ -83,8 +92,3 @@ boolFromJson target s =
 
         Err _ ->
             False
-
-
-bool : String -> D.Decoder Bool
-bool target =
-    jsonHelper D.bool "booleanValue" target
