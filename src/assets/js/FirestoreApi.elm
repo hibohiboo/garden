@@ -1,4 +1,4 @@
-module FirestoreApi exposing (bool, boolFromJson, characterUrl, int, intFromJson, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, int, intFromJson, string, stringFromJson, timestamp, timestampFromJson)
 
 import Json.Decode as D
 
@@ -52,6 +52,11 @@ bool target =
 
 
 -- テスト用
+-- TODO:
+
+
+arrayFromJson target s =
+    True
 
 
 stringFromJson : String -> String -> String
@@ -75,13 +80,8 @@ intFromJson target s =
 
 
 timestampFromJson : String -> String -> String
-timestampFromJson target s =
-    case D.decodeString (timestamp target) s of
-        Ok val ->
-            val
-
-        Err _ ->
-            ""
+timestampFromJson =
+    decodeFromJsonHelper string ""
 
 
 boolFromJson : String -> String -> Bool

@@ -437,4 +437,37 @@ getFirestoreApiJson =
                         True
                 in
                 Expect.equal actual expect
+
+        -- TODO:
+        , test "arrayを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.arrayFromJson "name" """
+                  {
+                    "tags": {
+                      "arrayValue": {
+                        "values": [
+                          {
+                            "mapValue": {
+                              "fields": {
+                                "level": {
+                                  "integerValue": "0"
+                                },
+                                "name": {
+                                  "stringValue": "移動"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                        """
+
+                    expect =
+                        True
+                in
+                Expect.equal actual expect
         ]
