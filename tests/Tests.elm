@@ -351,46 +351,6 @@ getFirestoreApiJson =
             [ test "キャラクターリストのアイテムを取得するテスト" <|
                 \_ ->
                     let
-                        listsource =
-                            """
-{
-  "documents": [
-    {
-      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/05TsdJiaAyAPH8RLgsqt",
-      "fields": {
-        "labo": {
-          "stringValue": "旧第一研究所"
-        },
-        "name": {
-          "stringValue": "狐狸"
-        },
-        "characterId": {
-          "stringValue": "05TsdJiaAyAPH8RLgsqt"
-        }
-      },
-      "createTime": "2019-06-15T00:13:36.394340Z",
-      "updateTime": "2019-06-15T00:13:36.394340Z"
-    },
-    {
-      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/iUjHq8ohVTI0tmftm1gW",
-      "fields": {
-        "labo": {
-          "stringValue": "研究所"
-        },
-        "name": {
-          "stringValue": "にゅー"
-        },
-        "characterId": {
-          "stringValue": "testId"
-        }
-      },
-      "createTime": "2019-06-15T00:22:36.133995Z",
-      "updateTime": "2019-06-15T00:22:36.133995Z"
-    }
-  ]
-}
-                        """
-
                         source =
                             """
     {
@@ -424,6 +384,61 @@ getFirestoreApiJson =
                     in
                     Expect.equal actual expect
             ]
+        , test "キャラクターリストを取得するテスト" <|
+            \_ ->
+                let
+                    source =
+                        """
+{
+  "documents": [
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/05TsdJiaAyAPH8RLgsqt",
+      "fields": {
+        "labo": {
+          "stringValue": "旧第一研究所"
+        },
+        "name": {
+          "stringValue": "狐狸"
+        },
+        "characterId": {
+          "stringValue": "aaa"
+        }
+      },
+      "createTime": "2019-06-15T00:13:36.394340Z",
+      "updateTime": "2019-06-15T00:13:36.394340Z"
+    },
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/iUjHq8ohVTI0tmftm1gW",
+      "fields": {
+        "labo": {
+          "stringValue": "研究所"
+        },
+        "name": {
+          "stringValue": "にゅー"
+        },
+        "characterId": {
+          "stringValue": "testId"
+        }
+      },
+      "createTime": "2019-06-15T00:22:36.133995Z",
+      "updateTime": "2019-06-15T00:22:36.133995Z"
+    }
+  ]
+}
+                        """
+
+                    actual =
+                        case D.decodeString CharacterListItem.characterListDecoder source of
+                            Ok item ->
+                                item
+
+                            Err _ ->
+                                []
+
+                    expect =
+                        [ CharacterListItem "aaa" "狐狸" "旧第一研究所", CharacterListItem "testId" "にゅー" "研究所" ]
+                in
+                Expect.equal actual expect
         , test "stringを取得するテスト" <|
             \_ ->
                 let

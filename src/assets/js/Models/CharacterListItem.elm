@@ -1,4 +1,4 @@
-module Models.CharacterListItem exposing (CharacterListItem, characterListItemDecoder)
+module Models.CharacterListItem exposing (CharacterListItem, characterListDecoder, characterListItemDecoder)
 
 import FirestoreApi as FSApi
 import Json.Decode as D exposing (Decoder)
@@ -10,6 +10,11 @@ type alias CharacterListItem =
     , name : String
     , labo : String
     }
+
+
+characterListDecoder : Decoder (List CharacterListItem)
+characterListDecoder =
+    D.at [ "documents" ] (D.list characterListItemDecoder)
 
 
 characterListItemDecoder : Decoder CharacterListItem
