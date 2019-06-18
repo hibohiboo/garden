@@ -1,4 +1,4 @@
-module Tests exposing (cardTest, getText, sheet, suite, unitTest)
+module Tests exposing (cardTest, getFirestoreApiJson, getText, sheet, suite, unitTest)
 
 import Dict exposing (Dict)
 import Expect
@@ -7,6 +7,7 @@ import GoogleSpreadSheetApi as GSApi
 import Json.Decode as D
 import Models.Card as Card
 import Models.CardId as CardId exposing (CardId)
+import Models.CharacterListItem as CharacterListItem exposing (CharacterListItem)
 import Models.Tag exposing (Tag)
 import Route exposing (..)
 import Test exposing (..)
@@ -347,10 +348,10 @@ getFirestoreApiJson : Test
 getFirestoreApiJson =
     describe "FirestoreApi"
         [ describe "getText"
-            [ test "値を取得するテスト" <|
+            [ test "キャラクターリストのアイテムを取得するテスト" <|
                 \_ ->
                     let
-                        source =
+                        listsource =
                             """
 {
   "documents": [
@@ -374,13 +375,13 @@ getFirestoreApiJson =
       "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/iUjHq8ohVTI0tmftm1gW",
       "fields": {
         "labo": {
-          "stringValue": ""
+          "stringValue": "研究所"
         },
         "name": {
           "stringValue": "にゅー"
         },
         "characterId": {
-          "stringValue": "iUjHq8ohVTI0tmftm1gW"
+          "stringValue": "testId"
         }
       },
       "createTime": "2019-06-15T00:22:36.133995Z",
@@ -390,11 +391,36 @@ getFirestoreApiJson =
 }
                         """
 
+                        source =
+                            """
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/iUjHq8ohVTI0tmftm1gW",
+      "fields": {
+        "labo": {
+          "stringValue": "研究所"
+        },
+        "name": {
+          "stringValue": "にゅー"
+        },
+        "characterId": {
+          "stringValue": "testId"
+        }
+      },
+      "createTime": "2019-06-15T00:22:36.133995Z",
+      "updateTime": "2019-06-15T00:22:36.133995Z"
+    }
+                        """
+
                         actual =
-                            Tx.getText (Dict.fromList [ ( "test", "test" ), ( "a", "b" ) ]) "test" "default value"
+                            case D.decodeString CharacterListItem.characterListItemDecoder source of
+                                Ok item ->
+                                    item
+
+                                Err _ ->
+                                    CharacterListItem "" "" ""
 
                         expect =
-                            "test"
+                            CharacterListItem "testId" "にゅー" "研究所"
                     in
                     Expect.equal actual expect
             ]
@@ -402,7 +428,7 @@ getFirestoreApiJson =
             \_ ->
                 let
                     actual =
-                        FSApi.stringFromJson "name" """{"fields": {"name": {"stringValue": "test"}}"""
+                        FSApi.stringFromJson "name" """{"fields": {"name": {"stringValue": "test"}}}"""
 
                     expect =
                         "test"
@@ -412,7 +438,7 @@ getFirestoreApiJson =
             \_ ->
                 let
                     actual =
-                        FSApi.intFromJson "AP" """{"fields": {"AP": {"integerValue": "5"}}"""
+                        FSApi.intFromJson "ap" """{"fields": {"ap": {"integerValue": "5"}}}"""
 
                     expect =
                         5
@@ -422,7 +448,7 @@ getFirestoreApiJson =
             \_ ->
                 let
                     actual =
-                        FSApi.timestampFromJson "name" """{"fields": {"name": {"timestampValue": "2019-06-15T01:25:14.040Z"}}"""
+                        FSApi.timestampFromJson "name" """{"fields": {"name": {"timestampValue": "2019-06-15T01:25:14.040Z"}}}"""
 
                     expect =
                         "2019-06-15T01:25:14.040Z"
@@ -432,7 +458,7 @@ getFirestoreApiJson =
             \_ ->
                 let
                     actual =
-                        FSApi.boolFromJson "name" """{"fields": {"name": {"booleanValue": true}}"""
+                        FSApi.boolFromJson "name" """{"fields": {"name": {"booleanValue": true}}}"""
 
                     expect =
                         True
@@ -445,7 +471,7 @@ getFirestoreApiJson =
                         D.map2 Tuple.pair (FSApi.bool "x") (FSApi.string "y")
 
                     actual =
-                        case D.decodeString tupleDecoder """{"fields": {"x": {"booleanValue": true}, {"y": {"stringValue":"a"}}}""" of
+                        case D.decodeString tupleDecoder """{"fields": {"x": {"booleanValue": true}, "y": {"stringValue":"a"}}}""" of
                             Ok tuple ->
                                 tuple
 

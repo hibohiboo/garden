@@ -1,4 +1,4 @@
-module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, int, intFromJson, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, int, intFromJson, jsonHelper, string, stringFromJson, timestamp, timestampFromJson)
 
 import Json.Decode as D
 
@@ -27,17 +27,17 @@ string target =
 
 stringHelper : String -> String -> D.Decoder String
 stringHelper type_ target =
-    jsonHelper D.string type_ target
+    jsonHelper type_ target D.string
 
 
-jsonHelper : D.Decoder a -> String -> String -> D.Decoder a
-jsonHelper decoder type_ target =
+jsonHelper : String -> String -> D.Decoder a -> D.Decoder a
+jsonHelper type_ target decoder =
     D.at [ "fields", target, type_ ] decoder
 
 
 int : String -> D.Decoder Int
 int target =
-    jsonHelper D.int "integerValue" target
+    D.map (\x -> Maybe.withDefault 0 (String.toInt x)) <| jsonHelper "integerValue" target D.string
 
 
 timestamp : String -> D.Decoder String
@@ -47,7 +47,7 @@ timestamp =
 
 bool : String -> D.Decoder Bool
 bool target =
-    jsonHelper D.bool "booleanValue" target
+    jsonHelper "booleanValue" target D.bool
 
 
 
@@ -70,18 +70,13 @@ stringFromJson target s =
 
 
 intFromJson : String -> String -> Int
-intFromJson target s =
-    case D.decodeString (int target) s of
-        Ok val ->
-            val
-
-        Err _ ->
-            0
+intFromJson =
+    decodeFromJsonHelper int 0
 
 
 timestampFromJson : String -> String -> String
 timestampFromJson =
-    decodeFromJsonHelper string ""
+    decodeFromJsonHelper timestamp ""
 
 
 boolFromJson : String -> String -> Bool
