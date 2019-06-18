@@ -4,6 +4,7 @@ import Dict exposing (Dict)
 import Expect
 import FirestoreApi as FSApi
 import GoogleSpreadSheetApi as GSApi
+import Json.Decode as D
 import Models.Card as Card
 import Models.CardId as CardId exposing (CardId)
 import Models.Tag exposing (Tag)
@@ -435,6 +436,24 @@ getFirestoreApiJson =
 
                     expect =
                         True
+                in
+                Expect.equal actual expect
+        , test "複数のフィールドを取得するテスト" <|
+            \_ ->
+                let
+                    tupleDecoder =
+                        D.map2 Tuple.pair (FSApi.bool "x") (FSApi.string "y")
+
+                    actual =
+                        case D.decodeString tupleDecoder """{"fields": {"x": {"booleanValue": true}, {"y": {"stringValue":"a"}}}""" of
+                            Ok tuple ->
+                                tuple
+
+                            Err _ ->
+                                ( False, "b" )
+
+                    expect =
+                        ( True, "a" )
                 in
                 Expect.equal actual expect
 
