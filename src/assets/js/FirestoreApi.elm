@@ -1,4 +1,4 @@
-module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, int, intFromJson, jsonHelper, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, charactersUrl, int, intFromJson, jsonHelper, string, stringFromJson, timestamp, timestampFromJson)
 
 import Json.Decode as D
 
@@ -14,6 +14,15 @@ storeUrl =
 characterUrl : String -> String
 characterUrl characterId =
     storeUrl ++ "/characters/" ++ characterId
+
+
+databaseUrl =
+    "https://firestore.googleapis.com/v1/projects/garden-2a6de/databases"
+
+
+charactersUrl : String
+charactersUrl =
+    databaseUrl ++ "/(default)/documents/publish/all/characters/"
 
 
 

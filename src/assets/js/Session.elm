@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addCards, addCharacter, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
+module Session exposing (Data, Version, addCards, addCharacter, addCharacters, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchCharacters, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getCharacters, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
 
 import Dict
 import FirestoreApi
@@ -302,6 +302,10 @@ fetchFaqs toMsg apiKey =
     fetchSpreasSheetData toMsg apiKey faqSheetId faqRange
 
 
+
+-- Character
+
+
 getCharacter : Data -> String -> Maybe String
 getCharacter data characterId =
     getJsonData data (FirestoreApi.characterUrl characterId)
@@ -314,3 +318,21 @@ addCharacter data json characterId =
 
 fetchCharacter toMsg characterId =
     fetchJsonData toMsg (FirestoreApi.characterUrl characterId)
+
+
+
+-- Characters
+
+
+getCharacters : Data -> Maybe String
+getCharacters data =
+    getJsonData data FirestoreApi.charactersUrl
+
+
+addCharacters : Data -> String -> Data
+addCharacters data json =
+    addJsonData FirestoreApi.charactersUrl json data
+
+
+fetchCharacters toMsg =
+    fetchJsonData toMsg FirestoreApi.charactersUrl

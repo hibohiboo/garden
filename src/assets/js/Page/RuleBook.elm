@@ -252,7 +252,7 @@ viewNavi menues =
 
 tableOfContents : List ( String, String )
 tableOfContents =
-    [ ( "/", "トップに戻る" ), ( "#first", "はじめに" ), ( "#world", "ワールド" ) ]
+    [ ( "/", "トップに戻る" ), ( "#first", "はじめに" ), ( "#world", "ワールド" ), ( "/mypage", "マイページ" ), ( "/characters", "キャラクターリスト" ) ]
 
 
 viewRulebook : Dict String String -> Html Msg
