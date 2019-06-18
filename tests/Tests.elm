@@ -428,12 +428,7 @@ getFirestoreApiJson =
                         """
 
                     actual =
-                        case D.decodeString CharacterListItem.characterListDecoder source of
-                            Ok item ->
-                                item
-
-                            Err _ ->
-                                []
+                        CharacterListItem.characterListFromJson source
 
                     expect =
                         [ CharacterListItem "aaa" "狐狸" "旧第一研究所", CharacterListItem "testId" "にゅー" "研究所" ]
