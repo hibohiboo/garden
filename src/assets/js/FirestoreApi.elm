@@ -1,6 +1,7 @@
-module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, charactersUrl, fields, int, intFromJson, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, charactersUrl, fields, int, intFromJson, list, string, stringFromJson, timestamp, timestampFromJson)
 
-import Json.Decode as D
+import Array exposing (Array)
+import Json.Decode as D exposing (Decoder)
 
 
 
@@ -29,27 +30,38 @@ charactersUrl =
 -- デコーダ
 
 
-fields : D.Decoder a -> D.Decoder a
+fields : Decoder a -> Decoder a
 fields decoder =
     D.at [ "fields" ] decoder
 
 
-string : D.Decoder String
+list : Decoder a -> Decoder (List a)
+list decoder =
+    D.at [ "arrayValue", "values" ] <| D.list (D.at [ "mapValue", "fields" ] decoder)
+
+
+
+-- {
+--       "arrayValue": {
+--         "values": [
+
+
+string : Decoder String
 string =
     D.at [ "stringValue" ] D.string
 
 
-int : D.Decoder Int
+int : Decoder Int
 int =
     D.map (\x -> Maybe.withDefault 0 (String.toInt x)) <| D.at [ "integerValue" ] D.string
 
 
-timestamp : D.Decoder String
+timestamp : Decoder String
 timestamp =
     D.at [ "timestampValue" ] D.string
 
 
-bool : D.Decoder Bool
+bool : Decoder Bool
 bool =
     D.at [ "booleanValue" ] D.bool
 
@@ -83,7 +95,7 @@ boolFromJson target s =
     decodeFromJsonHelper (fields (D.at [ target ] bool)) False s
 
 
-decodeFromJsonHelper : D.Decoder a -> a -> String -> a
+decodeFromJsonHelper : Decoder a -> a -> String -> a
 decodeFromJsonHelper decoder defaultValue s =
     case D.decodeString decoder s of
         Ok val ->

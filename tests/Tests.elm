@@ -1,5 +1,6 @@
 module Tests exposing (cardTest, getFirestoreApiJson, getText, sheet, suite, unitTest)
 
+import Array
 import Dict exposing (Dict)
 import Expect
 import FirestoreApi as FSApi
@@ -9,7 +10,7 @@ import Models.Card as Card
 import Models.CardId as CardId exposing (CardId)
 import Models.Character as Character
 import Models.CharacterListItem as CharacterListItem exposing (CharacterListItem)
-import Models.Tag exposing (Tag)
+import Models.Tag as Tag exposing (Tag)
 import Route exposing (..)
 import Test exposing (..)
 import Url
@@ -569,6 +570,57 @@ getFirestoreApiJson =
 
                         expect =
                             Character.Char "testCharId" "testStoreUserId"
+                    in
+                    Expect.equal actual expect
+            , test "タグを取得するテスト" <|
+                \_ ->
+                    let
+                        actualResult =
+                            D.decodeString (D.at [ "tags" ] Tag.tagsDecoderFromFireStoreApi) """
+{
+  "tags": {
+    "arrayValue": {
+      "values": [
+        {
+          "mapValue": {
+            "fields": {
+              "name": {
+                "stringValue": "移動"
+              },
+              "level": {
+                "integerValue": "0"
+              }
+            }
+          }
+        },
+        {
+          "mapValue": {
+            "fields": {
+              "level": {
+                "integerValue": "0"
+              },
+              "name": {
+                "stringValue": "基本能力"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+                        """
+
+                        actual =
+                            case actualResult of
+                                Ok r ->
+                                    r
+
+                                Err _ ->
+                                    []
+
+                        expect =
+                            [ Tag "移動" 0, Tag "基本能力" 0 ]
                     in
                     Expect.equal actual expect
             ]
