@@ -526,30 +526,50 @@ getFirestoreApiJson =
                         True
                 in
                 Expect.equal actual expect
-        , test "キャラクターを取得するテスト" <|
-            \_ ->
-                let
-                    actualResult =
-                        D.decodeString Character.characterDecoderFromFireStoreApi """
+        , describe "キャラクターをStoreApiから取得"
+            [ test "キャラクターを取得するテスト" <|
+                \_ ->
+                    let
+                        actualResult =
+                            D.decodeString Character.characterDecoderFromFireStoreApi """
 {
   "fields": {
     "characterId": {
       "stringValue": "testCharId"
+    },
+    "createdAt": {
+      "timestampValue": "2019-06-11T14:33:54.226Z"
+    },
+    "trait": {
+      "stringValue": "身体強化"
+    },
+    "updatedAt": {
+      "timestampValue": "2019-06-15T01:25:14.040Z"
+    },
+    "kana": {
+      "stringValue": "コリ"
+    },
+    "labo": {
+      "stringValue": "旧第一研究所"
+    },
+    "storeUserId": {
+      "stringValue": "testStoreUserId"
     }
   }
 }
                         """
 
-                    actual =
-                        case actualResult of
-                            Ok r ->
-                                r
+                        actual =
+                            case actualResult of
+                                Ok r ->
+                                    r
 
-                            Err _ ->
-                                Character.Char ""
+                                Err _ ->
+                                    Character.Char "" ""
 
-                    expect =
-                        Character.Char "testCharId"
-                in
-                Expect.equal actual expect
+                        expect =
+                            Character.Char "testCharId" "testStoreUserId"
+                    in
+                    Expect.equal actual expect
+            ]
         ]

@@ -9,6 +9,7 @@ module Models.Character exposing
     )
 
 import Array exposing (Array)
+import FirestoreApi as FSApi
 import GoogleSpreadSheetApi as GSAPI
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
@@ -83,18 +84,16 @@ characterDecoder =
 
 type alias Char =
     { characterId : String
+    , storeUserId : String
     }
 
 
 characterDecoderFromFireStoreApi : Decoder Char
 characterDecoderFromFireStoreApi =
-    Decode.at [ "fields" ] characterDecoderFromFireStoreApiHelper
-
-
-characterDecoderFromFireStoreApiHelper : Decoder Char
-characterDecoderFromFireStoreApiHelper =
     Decode.succeed Char
-        |> Json.Decode.Pipeline.required "characterId" (Decode.at [ "stringValue" ] Decode.string)
+        |> Json.Decode.Pipeline.required "characterId" FSApi.string
+        |> Json.Decode.Pipeline.required "storeUserId" FSApi.string
+        |> FSApi.fields
 
 
 
