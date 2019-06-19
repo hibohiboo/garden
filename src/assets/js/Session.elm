@@ -308,16 +308,16 @@ fetchFaqs toMsg apiKey =
 
 getCharacter : Data -> String -> Maybe String
 getCharacter data characterId =
-    getJsonData data (FirestoreApi.characterUrl characterId)
+    getJsonData data (FirestoreApi.characterUrlFromFireStore characterId)
 
 
 addCharacter : Data -> String -> String -> Data
 addCharacter data json characterId =
-    addJsonData (FirestoreApi.characterUrl characterId) json data
+    addJsonData (FirestoreApi.characterUrlFromFireStore characterId) json data
 
 
 fetchCharacter toMsg characterId =
-    fetchJsonData toMsg (FirestoreApi.characterUrl characterId)
+    fetchJsonData toMsg (FirestoreApi.characterUrlFromFireStore characterId)
 
 
 

@@ -623,5 +623,128 @@ getFirestoreApiJson =
                             [ Tag "移動" 0, Tag "基本能力" 0 ]
                     in
                     Expect.equal actual expect
+            , test "カードを取得するテスト" <|
+                \_ ->
+                    let
+                        actualResult =
+                            D.decodeString (D.at [ "cards" ] <| FSApi.array Card.cardDecoderFromFireStoreApi) """
+{
+"cards": {
+      "arrayValue": {
+        "values": [
+        {
+          "mapValue": {
+            "fields": {
+              "maxRange": {
+                "integerValue": "0"
+              },
+              "imgFrame": {
+                "stringValue": "/assets/images/card/frame/report.gif"
+              },
+              "timing": {
+                "stringValue": "アクション"
+              },
+              "frameByName": {
+                "stringValue": ""
+              },
+              "deleteFlag": {
+                "integerValue": "0"
+              },
+              "cardType": {
+                "stringValue": "能力"
+              },
+              "cardName": {
+                "stringValue": "走る"
+              },
+              "cost": {
+                "integerValue": "4"
+              },
+              "maxLevel": {
+                "integerValue": "1"
+              },
+              "exp": {
+                "integerValue": "0"
+              },
+              "range": {
+                "integerValue": "0"
+              },
+              "description": {
+                "stringValue": "逃げてもいいし、向かってもいい。君たちは何処にだっていける。一歩ずつではあるけれど。"
+              },
+              "kind": {
+                "stringValue": "基本能力"
+              },
+              "illustedByName": {
+                "stringValue": "ヒューマンピクトグラム2.0"
+              },
+              "effect": {
+                "stringValue": "移動1"
+              },
+              "imgMain": {
+                "stringValue": "/assets/images/card/main/run.png"
+              },
+              "target": {
+                "stringValue": "自身"
+              },
+              "frameByUrl": {
+                "stringValue": ""
+              },
+              "illustedByUrl": {
+                "stringValue": "http://pictogram2.com/"
+              },
+              "cardId": {
+                "stringValue": "B000"
+              },
+              "tags": {
+                "arrayValue": {
+                  "values": [
+                    {
+                      "mapValue": {
+                        "fields": {
+                          "name": {
+                            "stringValue": "移動"
+                          },
+                          "level": {
+                            "integerValue": "0"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "mapValue": {
+                        "fields": {
+                          "level": {
+                            "integerValue": "0"
+                          },
+                          "name": {
+                            "stringValue": "基本能力"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+                        """
+
+                        actual =
+                            case actualResult of
+                                Ok r ->
+                                    r
+
+                                Err _ ->
+                                    Array.empty
+
+                        expect =
+                            Array.fromList [ Card.initCard ]
+                    in
+                    Expect.equal actual expect
             ]
         ]

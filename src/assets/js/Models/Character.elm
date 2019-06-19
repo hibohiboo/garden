@@ -1,6 +1,5 @@
 module Models.Character exposing
-    ( Char
-    , Character
+    ( Character
     , characterDecoder
     , characterDecoderFromFireStoreApi
     , encodeCharacter
@@ -82,33 +81,26 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
 
 
-type alias Char =
-    { characterId : String
-    , storeUserId : String
-    }
-
-
-characterDecoderFromFireStoreApi : Decoder Char
+characterDecoderFromFireStoreApi : Decoder Character
 characterDecoderFromFireStoreApi =
-    Decode.succeed Char
-        |> Json.Decode.Pipeline.required "characterId" FSApi.string
-        |> Json.Decode.Pipeline.required "storeUserId" FSApi.string
+    Decode.succeed Character
+        |> required "storeUserId" FSApi.string
+        |> required "characterId" FSApi.string
+        |> required "name" FSApi.string
+        |> required "kana" FSApi.string
+        |> required "organ" FSApi.string
+        |> optional "trait" FSApi.string ""
+        |> optional "mutagen" FSApi.string ""
+        |> optional "cards" (FSApi.array Card.cardDecoderFromFireStoreApi) (Array.fromList [])
+        |> optional "reason" FSApi.string ""
+        |> optional "labo" FSApi.string ""
+        |> optional "memo" FSApi.string ""
+        |> optional "activePower" FSApi.int 4
+        |> optional "isPublished" FSApi.bool False
         |> FSApi.fields
 
 
 
--- |> Json.Decode.Pipeline.required "characterId" Decode.string
--- |> Json.Decode.Pipeline.required "name" Decode.string
--- |> Json.Decode.Pipeline.required "kana" Decode.string
--- |> Json.Decode.Pipeline.required "organ" Decode.string
--- |> Json.Decode.Pipeline.optional "trait" Decode.string ""
--- |> Json.Decode.Pipeline.optional "mutagen" Decode.string ""
--- |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoderFromJson) (Array.fromList [])
--- |> Json.Decode.Pipeline.optional "reason" Decode.string ""
--- |> Json.Decode.Pipeline.optional "labo" Decode.string ""
--- |> Json.Decode.Pipeline.optional "memo" Decode.string ""
--- |> Json.Decode.Pipeline.optional "activePower" Decode.int 4
--- |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
 -- ==============================================================================================
 -- ユーティリティ
 -- ==============================================================================================

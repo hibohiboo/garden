@@ -116,7 +116,7 @@ getCharacter : Session.Data -> String -> Maybe Character
 getCharacter session characterId =
     case Session.getCharacter session characterId of
         Just json ->
-            case D.decodeString Character.characterDecoder json of
+            case D.decodeString Character.characterDecoderFromFireStoreApi json of
                 Err a ->
                     Nothing
 
@@ -143,7 +143,7 @@ update msg model =
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 
         GotCharacter (Ok json) ->
-            case D.decodeString Character.characterDecoder json of
+            case D.decodeString Character.characterDecoderFromFireStoreApi json of
                 Ok character ->
                     let
                         oldCharacterModel =

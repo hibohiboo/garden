@@ -1,4 +1,4 @@
-module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, charactersUrl, fields, int, intFromJson, list, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (array, arrayFromJson, bool, boolFromJson, characterUrl, characterUrlFromFireStore, charactersUrl, fields, int, intFromJson, list, string, stringFromJson, timestamp, timestampFromJson)
 
 import Array exposing (Array)
 import Json.Decode as D exposing (Decoder)
@@ -26,6 +26,10 @@ charactersUrl =
     databaseUrl ++ "/(default)/documents/publish/all/characters/"
 
 
+characterUrlFromFireStore characterId =
+    databaseUrl ++ "/(default)/documents/characters/" ++ characterId
+
+
 
 -- デコーダ
 
@@ -38,6 +42,11 @@ fields decoder =
 list : Decoder a -> Decoder (List a)
 list decoder =
     D.at [ "arrayValue", "values" ] <| D.list (D.at [ "mapValue", "fields" ] decoder)
+
+
+array : Decoder a -> Decoder (Array a)
+array decoder =
+    D.at [ "arrayValue", "values" ] <| D.array (D.at [ "mapValue", "fields" ] decoder)
 
 
 
