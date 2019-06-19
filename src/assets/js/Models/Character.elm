@@ -1,4 +1,12 @@
-module Models.Character exposing (Character, characterDecoder, encodeCharacter, initBaseCards, initCharacter)
+module Models.Character exposing
+    ( Char
+    , Character
+    , characterDecoder
+    , characterDecoderFromFireStoreApi
+    , encodeCharacter
+    , initBaseCards
+    , initCharacter
+    )
 
 import Array exposing (Array)
 import GoogleSpreadSheetApi as GSAPI
@@ -73,7 +81,35 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
 
 
+type alias Char =
+    { characterId : String
+    }
 
+
+characterDecoderFromFireStoreApi : Decoder Char
+characterDecoderFromFireStoreApi =
+    Decode.at [ "fields" ] characterDecoderFromFireStoreApiHelper
+
+
+characterDecoderFromFireStoreApiHelper : Decoder Char
+characterDecoderFromFireStoreApiHelper =
+    Decode.succeed Char
+        |> Json.Decode.Pipeline.required "characterId" (Decode.at [ "stringValue" ] Decode.string)
+
+
+
+-- |> Json.Decode.Pipeline.required "characterId" Decode.string
+-- |> Json.Decode.Pipeline.required "name" Decode.string
+-- |> Json.Decode.Pipeline.required "kana" Decode.string
+-- |> Json.Decode.Pipeline.required "organ" Decode.string
+-- |> Json.Decode.Pipeline.optional "trait" Decode.string ""
+-- |> Json.Decode.Pipeline.optional "mutagen" Decode.string ""
+-- |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoderFromJson) (Array.fromList [])
+-- |> Json.Decode.Pipeline.optional "reason" Decode.string ""
+-- |> Json.Decode.Pipeline.optional "labo" Decode.string ""
+-- |> Json.Decode.Pipeline.optional "memo" Decode.string ""
+-- |> Json.Decode.Pipeline.optional "activePower" Decode.int 4
+-- |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
 -- ==============================================================================================
 -- ユーティリティ
 -- ==============================================================================================

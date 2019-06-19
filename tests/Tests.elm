@@ -7,6 +7,7 @@ import GoogleSpreadSheetApi as GSApi
 import Json.Decode as D
 import Models.Card as Card
 import Models.CardId as CardId exposing (CardId)
+import Models.Character as Character
 import Models.CharacterListItem as CharacterListItem exposing (CharacterListItem)
 import Models.Tag exposing (Tag)
 import Route exposing (..)
@@ -478,7 +479,7 @@ getFirestoreApiJson =
             \_ ->
                 let
                     tupleDecoder =
-                        D.map2 Tuple.pair (FSApi.bool "x") (FSApi.string "y")
+                        D.at [ "fields" ] (D.map2 Tuple.pair (D.at [ "x" ] FSApi.bool) (D.at [ "y" ] FSApi.string))
 
                     actual =
                         case D.decodeString tupleDecoder """{"fields": {"x": {"booleanValue": true}, "y": {"stringValue":"a"}}}""" of
@@ -523,6 +524,32 @@ getFirestoreApiJson =
 
                     expect =
                         True
+                in
+                Expect.equal actual expect
+        , test "キャラクターを取得するテスト" <|
+            \_ ->
+                let
+                    actualResult =
+                        D.decodeString Character.characterDecoderFromFireStoreApi """
+{
+  "fields": {
+    "characterId": {
+      "stringValue": "testCharId"
+    }
+  }
+}
+                        """
+
+                    actual =
+                        case actualResult of
+                            Ok r ->
+                                r
+
+                            Err _ ->
+                                Character.Char ""
+
+                    expect =
+                        Character.Char "testCharId"
                 in
                 Expect.equal actual expect
         ]

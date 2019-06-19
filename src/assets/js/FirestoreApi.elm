@@ -1,4 +1,4 @@
-module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, charactersUrl, int, intFromJson, jsonHelper, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (arrayFromJson, bool, boolFromJson, characterUrl, charactersUrl, fields, int, intFromJson, string, stringFromJson, timestamp, timestampFromJson)
 
 import Json.Decode as D
 
@@ -29,34 +29,29 @@ charactersUrl =
 -- デコーダ
 
 
-string : String -> D.Decoder String
-string target =
-    stringHelper "stringValue" target
+fields : D.Decoder a -> D.Decoder a
+fields decoder =
+    D.at [ "fields" ] decoder
 
 
-stringHelper : String -> String -> D.Decoder String
-stringHelper type_ target =
-    jsonHelper type_ target D.string
+string : D.Decoder String
+string =
+    D.at [ "stringValue" ] D.string
 
 
-jsonHelper : String -> String -> D.Decoder a -> D.Decoder a
-jsonHelper type_ target decoder =
-    D.at [ "fields", target, type_ ] decoder
+int : D.Decoder Int
+int =
+    D.map (\x -> Maybe.withDefault 0 (String.toInt x)) <| D.at [ "integerValue" ] D.string
 
 
-int : String -> D.Decoder Int
-int target =
-    D.map (\x -> Maybe.withDefault 0 (String.toInt x)) <| jsonHelper "integerValue" target D.string
-
-
-timestamp : String -> D.Decoder String
+timestamp : D.Decoder String
 timestamp =
-    stringHelper "timestampValue"
+    D.at [ "timestampValue" ] D.string
 
 
-bool : String -> D.Decoder Bool
-bool target =
-    jsonHelper "booleanValue" target D.bool
+bool : D.Decoder Bool
+bool =
+    D.at [ "booleanValue" ] D.bool
 
 
 
@@ -70,32 +65,27 @@ arrayFromJson target s =
 
 stringFromJson : String -> String -> String
 stringFromJson target s =
-    case D.decodeString (string target) s of
-        Ok val ->
-            val
-
-        Err _ ->
-            ""
+    decodeFromJsonHelper (fields (D.at [ target ] string)) "" s
 
 
 intFromJson : String -> String -> Int
-intFromJson =
-    decodeFromJsonHelper int 0
+intFromJson target s =
+    decodeFromJsonHelper (fields (D.at [ target ] int)) 0 s
 
 
 timestampFromJson : String -> String -> String
-timestampFromJson =
-    decodeFromJsonHelper timestamp ""
+timestampFromJson target s =
+    decodeFromJsonHelper (fields (D.at [ target ] timestamp)) "" s
 
 
 boolFromJson : String -> String -> Bool
 boolFromJson target s =
-    decodeFromJsonHelper bool False target s
+    decodeFromJsonHelper (fields (D.at [ target ] bool)) False s
 
 
-decodeFromJsonHelper : (String -> D.Decoder a) -> a -> String -> String -> a
-decodeFromJsonHelper decoder defaultValue target s =
-    case D.decodeString (decoder target) s of
+decodeFromJsonHelper : D.Decoder a -> a -> String -> a
+decodeFromJsonHelper decoder defaultValue s =
+    case D.decodeString decoder s of
         Ok val ->
             val
 

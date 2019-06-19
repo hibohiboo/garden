@@ -19,7 +19,7 @@ characterListDecoder =
 
 characterListItemDecoder : Decoder CharacterListItem
 characterListItemDecoder =
-    D.map3 CharacterListItem (FSApi.string "characterId") (FSApi.string "name") (FSApi.string "labo")
+    FSApi.fields <| D.map3 CharacterListItem (D.at [ "characterId" ] FSApi.string) (D.at [ "name" ] FSApi.string) (D.at [ "labo" ] FSApi.string)
 
 
 characterListFromJson : String -> List CharacterListItem
