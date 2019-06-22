@@ -276,10 +276,17 @@ update msg char editor =
             , Select.file expectedTypes ImageSelected
             )
 
+        -- 1M 以上のファイルはアップロードしない
         ImageSelected file ->
-            ( ( char, editor )
-            , Task.attempt ImageLoaded <| File.toUrl file
-            )
+            if File.size file < 1048576 then
+                ( ( char, editor )
+                , Task.attempt ImageLoaded <| File.toUrl file
+                )
+
+            else
+                ( ( char, editor )
+                , Cmd.none
+                )
 
         ImageLoaded result ->
             case result of
@@ -356,7 +363,7 @@ editArea character editor =
             , div [] [ label [] [ input [ type_ "checkbox", checked character.isPublished, onClick TogglePublish ] [], span [] [ text "公開する" ] ] ]
             ]
         , div [ class "input-field" ]
-            [ div [] [ text "カードイメージ" ]
+            [ div [] [ text "カードイメージ(74px×94px推奨。1Mb未満。)" ]
             , inputCardImageArea character
             ]
         ]
