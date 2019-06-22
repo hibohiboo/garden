@@ -31,12 +31,13 @@ type alias Character =
     , activePower : Int
     , isPublished : Bool
     , cardImage : String
+    , cardImageData : String
     }
 
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4 False ""
+    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4 False "" ""
 
 
 encodeCharacter : Character -> String
@@ -62,6 +63,7 @@ encodeCharacterToValue c =
         , ( "activePower", E.int c.activePower )
         , ( "isPublished", E.bool c.isPublished )
         , ( "cardImage", E.string c.cardImage )
+        , ( "cardImageData", E.string c.cardImageData )
         ]
 
 
@@ -82,10 +84,16 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "activePower" Decode.int 4
         |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
         |> Json.Decode.Pipeline.optional "cardImage" Decode.string ""
+        |> Json.Decode.Pipeline.optional "cardImageData" Decode.string ""
 
 
 characterDecoderFromFireStoreApi : Decoder Character
 characterDecoderFromFireStoreApi =
+    FSApi.fields characterDecoderFromFireStoreApiHealper
+
+
+characterDecoderFromFireStoreApiHealper : Decoder Character
+characterDecoderFromFireStoreApiHealper =
     Decode.succeed Character
         |> required "storeUserId" FSApi.string
         |> required "characterId" FSApi.string
@@ -101,7 +109,7 @@ characterDecoderFromFireStoreApi =
         |> optional "activePower" FSApi.int 4
         |> optional "isPublished" FSApi.bool False
         |> optional "cardImage" FSApi.string ""
-        |> FSApi.fields
+        |> optional "cardImageData" FSApi.string ""
 
 
 

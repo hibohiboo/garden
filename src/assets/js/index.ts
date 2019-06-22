@@ -179,9 +179,10 @@ app.ports.updateCharacter.subscribe(async json => {
   // 画像アップロード
   if (character.cardImage !== "") {
     const ref = fireBase.storage.ref('card-' + character.characterId);
-    ref.putString(character.cardImage, 'data_url').then(function (snapshot) {
-      console.log('Uploaded a data_url string!');
-    });
+    await ref.putString(character.cardImageData, 'data_url');
+    const url = await ref.getDownloadURL();
+    character.cardImage = url;
+    character.cardImageData = "";
   }
 
   // キャラクター更新

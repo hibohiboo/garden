@@ -286,7 +286,7 @@ update msg char editor =
                 Ok content ->
                     let
                         c =
-                            { char | cardImage = content }
+                            { char | cardImageData = content }
                     in
                     ( ( c, editor )
                     , Cmd.none
@@ -364,7 +364,7 @@ editArea character editor =
 
 inputCardImageArea : Character -> Html Msg
 inputCardImageArea model =
-    case model.cardImage of
+    case model.cardImageData of
         "" ->
             button [ onClick ImageRequested ] [ text "Upload image" ]
 
