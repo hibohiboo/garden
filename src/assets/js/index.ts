@@ -202,9 +202,9 @@ app.ports.updateCharacter.subscribe(async json => {
   app.ports.updatedCharacter.send(true);
 });
 
-// ローカルストレージに、キャラクターのデータカードの使用済/負傷を保存
+// ローカルストレージに、キャラクターのデータカードの使用済/負傷などを保存
 app.ports.saveCardState.subscribe(obj => {
-  localStorage[obj.characterId] = JSON.stringify(obj.states);
+  localStorage[obj.characterId] = JSON.stringify({ states: obj.states, ap: obj.ap, currentAp: obj.currentAp });
 });
 
 app.ports.getCardState.subscribe(characterId => {

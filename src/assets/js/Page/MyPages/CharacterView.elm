@@ -73,6 +73,8 @@ encodeCardViewToValue model =
     E.object
         [ ( "characterId", E.string model.character.characterId )
         , ( "states", E.array encodeCardStateToValue model.cardState )
+        , ( "ap", E.int model.ap )
+        , ( "currentAp", E.int model.currentAp )
         ]
 
 
@@ -230,12 +232,28 @@ update msg model =
         GotCardState val ->
             let
                 states =
-                    case D.decodeString (D.array stateDecoder) val of
+                    case D.decodeString (D.at [ "states" ] (D.array stateDecoder)) val of
                         Ok arr ->
                             arr
 
                         Err _ ->
                             Array.empty
+
+                ap =
+                    case D.decodeString (D.field "ap" D.int) val of
+                        Ok n ->
+                            n
+
+                        Err _ ->
+                            0
+
+                currentAp =
+                    case D.decodeString (D.field "currentAp" D.int) val of
+                        Ok n ->
+                            n
+
+                        Err _ ->
+                            0
 
                 newStates =
                     Array.indexedMap
@@ -249,13 +267,21 @@ update msg model =
                         )
                         model.cardState
             in
-            ( { model | cardState = newStates }, Cmd.none )
+            ( { model | cardState = newStates, ap = ap, currentAp = currentAp }, Cmd.none )
 
         InputAp n ->
-            ( { model | ap = Maybe.withDefault 0 (String.toInt n) }, Cmd.none )
+            let
+                newModel =
+                    { model | ap = Maybe.withDefault 0 (String.toInt n) }
+            in
+            ( newModel, newModel |> encodeCardViewToValue |> saveCardState )
 
         InputCurrentAp n ->
-            ( { model | currentAp = Maybe.withDefault 0 (String.toInt n) }, Cmd.none )
+            let
+                newModel =
+                    { model | currentAp = Maybe.withDefault 0 (String.toInt n) }
+            in
+            ( newModel, newModel |> encodeCardViewToValue |> saveCardState )
 
 
 subscriptions : Sub Msg
