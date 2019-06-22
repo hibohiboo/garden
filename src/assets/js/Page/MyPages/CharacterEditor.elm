@@ -43,6 +43,9 @@ type Msg
     | ImageRequested
     | ImageSelected File
     | ImageLoaded (Result LoadErr String)
+    | CharacterImageRequested
+    | CharacterImageSelected File
+    | CharacterImageLoaded (Result LoadErr String)
     | InputImageCreatorName String
     | InputImageCreatorSite String
     | InputImageCreatorUrl String
@@ -313,6 +316,38 @@ update msg char editor =
                     , Cmd.none
                     )
 
+        CharacterImageRequested ->
+            ( ( char, editor )
+            , Select.file expectedTypes CharacterImageSelected
+            )
+
+        CharacterImageSelected file ->
+            if File.size file < 1048576 then
+                ( ( char, editor )
+                , Task.attempt CharacterImageLoaded <| File.toUrl file
+                )
+
+            else
+                ( ( char, editor )
+                , Cmd.none
+                )
+
+        CharacterImageLoaded result ->
+            case result of
+                Ok content ->
+                    let
+                        c =
+                            { char | characterImageData = content }
+                    in
+                    ( ( c, editor )
+                    , Cmd.none
+                    )
+
+                Err error ->
+                    ( ( char, editor )
+                    , Cmd.none
+                    )
+
         InputImageCreatorName s ->
             ( ( { char | cardImageCreatorName = s }, editor ), Cmd.none )
 
@@ -379,6 +414,11 @@ editArea character editor =
             , div [] [ text "(74×94px推奨。1Mb未満。)" ]
             , inputCardImageArea character
             ]
+        , div [ class "input-field" ]
+            [ div [] [ text "キャラクターイメージ" ]
+            , div [] [ text "(1Mb未満。)" ]
+            , inputCharacterImageArea character
+            ]
         , inputArea "cardImageCreatorName" "画像作者" character.cardImageCreatorName InputImageCreatorName
         , inputArea "cardImageCreatorSite" "画像作者サイト名" character.cardImageCreatorSite InputImageCreatorSite
         , inputArea "cardImageCreatorUrl" "画像作者サイトURL" character.cardImageCreatorUrl InputImageCreatorUrl
@@ -394,6 +434,18 @@ inputCardImageArea model =
         content ->
             img
                 [ class "cardImage", src content, width 74, height 94 ]
+                []
+
+
+inputCharacterImageArea : Character -> Html Msg
+inputCharacterImageArea model =
+    case model.characterImageData of
+        "" ->
+            button [ onClick CharacterImageRequested ] [ text "Upload image" ]
+
+        content ->
+            img
+                [ class "characterImage", src content ]
                 []
 
 

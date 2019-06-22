@@ -284,8 +284,15 @@ view model =
 viewHelper : Model -> Html Msg
 viewHelper model =
     div [ class "character-sheet" ]
-        [ h1 [] [ text "キャラクターシート" ]
-        , viewLeft model
+        [ h1 []
+            [ text "キャラクターシート" ]
+        , div
+            [ class "data-area" ]
+            [ viewLeft model
+            , div []
+                [ img [ src model.character.characterImage ] []
+                ]
+            ]
         ]
 
 

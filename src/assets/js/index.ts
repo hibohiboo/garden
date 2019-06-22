@@ -185,6 +185,14 @@ app.ports.updateCharacter.subscribe(async json => {
     character.cardImageData = "";
   }
 
+  if (character.characterImageData !== "") {
+    const ref = fireBase.storage.ref('character-' + character.characterId);
+    await ref.putString(character.characterImageData, 'data_url');
+    const url = await ref.getDownloadURL();
+    character.characterImage = url;
+    character.characterImageData = "";
+  }
+
   // キャラクター更新
   const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
   character.updatedAt = fireBase.getTimestamp();

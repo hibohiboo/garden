@@ -433,6 +433,10 @@ ul.skill-button-list {
     font-size: 1.8rem;
     margin: 1rem;
   }
+  .data-area {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 .edit-karte {
   display: grid;
