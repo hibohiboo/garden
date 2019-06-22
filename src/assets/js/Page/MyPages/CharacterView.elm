@@ -341,7 +341,33 @@ characterCard char =
                     ]
                 , div [ class "bottomContent" ]
                     [ div [ class "cardId" ] [ text "" ]
+                    , illustedBy char
                     ]
                 ]
             ]
+        ]
+
+
+illustedBy char =
+    let
+        link url name =
+            if name /= "" then
+                a [ href url, target "_blank" ] [ text name ]
+
+            else
+                text ""
+
+        separator a b =
+            if a /= text "" && b /= text "" then
+                text ","
+
+            else
+                text ""
+
+        illust =
+            link char.cardImageCreatorUrl char.cardImageCreatorName
+    in
+    div [ class "illustedBy" ]
+        [ text "illust:"
+        , illust
         ]

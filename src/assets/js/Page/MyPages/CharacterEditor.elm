@@ -43,6 +43,9 @@ type Msg
     | ImageRequested
     | ImageSelected File
     | ImageLoaded (Result LoadErr String)
+    | InputImageCreatorName String
+    | InputImageCreatorSite String
+    | InputImageCreatorUrl String
 
 
 type LoadErr
@@ -310,6 +313,15 @@ update msg char editor =
                     , Cmd.none
                     )
 
+        InputImageCreatorName s ->
+            ( ( { char | cardImageCreatorName = s }, editor ), Cmd.none )
+
+        InputImageCreatorSite s ->
+            ( ( { char | cardImageCreatorSite = s }, editor ), Cmd.none )
+
+        InputImageCreatorUrl s ->
+            ( ( { char | cardImageCreatorUrl = s }, editor ), Cmd.none )
+
 
 expectedTypes : List String
 expectedTypes =
@@ -363,9 +375,13 @@ editArea character editor =
             , div [] [ label [] [ input [ type_ "checkbox", checked character.isPublished, onClick TogglePublish ] [], span [] [ text "公開する" ] ] ]
             ]
         , div [ class "input-field" ]
-            [ div [] [ text "カードイメージ(74px×94px推奨。1Mb未満。)" ]
+            [ div [] [ text "カードイメージ" ]
+            , div [] [ text "(74×94px推奨。1Mb未満。)" ]
             , inputCardImageArea character
             ]
+        , inputArea "cardImageCreatorName" "画像作者" character.cardImageCreatorName InputImageCreatorName
+        , inputArea "cardImageCreatorSite" "画像作者サイト名" character.cardImageCreatorSite InputImageCreatorSite
+        , inputArea "cardImageCreatorUrl" "画像作者サイトURL" character.cardImageCreatorUrl InputImageCreatorUrl
         ]
 
 

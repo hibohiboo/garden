@@ -32,12 +32,15 @@ type alias Character =
     , isPublished : Bool
     , cardImage : String
     , cardImageData : String
+    , cardImageCreatorName : String
+    , cardImageCreatorSite : String
+    , cardImageCreatorUrl : String
     }
 
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4 False "" ""
+    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4 False "" "" "" "" ""
 
 
 encodeCharacter : Character -> String
@@ -64,6 +67,9 @@ encodeCharacterToValue c =
         , ( "isPublished", E.bool c.isPublished )
         , ( "cardImage", E.string c.cardImage )
         , ( "cardImageData", E.string c.cardImageData )
+        , ( "cardImageCreatorName", E.string c.cardImageCreatorName )
+        , ( "cardImageCreatorSite", E.string c.cardImageCreatorSite )
+        , ( "cardImageCreatorUrl", E.string c.cardImageCreatorUrl )
         ]
 
 
@@ -85,6 +91,9 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
         |> Json.Decode.Pipeline.optional "cardImage" Decode.string ""
         |> Json.Decode.Pipeline.optional "cardImageData" Decode.string ""
+        |> Json.Decode.Pipeline.optional "cardImageCreatorName" Decode.string ""
+        |> Json.Decode.Pipeline.optional "cardImageCreatorSite" Decode.string ""
+        |> Json.Decode.Pipeline.optional "cardImageCreatorUrl" Decode.string ""
 
 
 characterDecoderFromFireStoreApi : Decoder Character
@@ -110,6 +119,9 @@ characterDecoderFromFireStoreApiHealper =
         |> optional "isPublished" FSApi.bool False
         |> optional "cardImage" FSApi.string ""
         |> optional "cardImageData" FSApi.string ""
+        |> optional "cardImageCreatorName" FSApi.string ""
+        |> optional "cardImageCreatorSite" FSApi.string ""
+        |> optional "cardImageCreatorUrl" FSApi.string ""
 
 
 

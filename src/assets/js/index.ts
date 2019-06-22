@@ -177,7 +177,7 @@ app.ports.updateCharacter.subscribe(async json => {
   const character = JSON.parse(json);
 
   // 画像アップロード
-  if (character.cardImage !== "") {
+  if (character.cardImageData !== "") {
     const ref = fireBase.storage.ref('card-' + character.characterId);
     await ref.putString(character.cardImageData, 'data_url');
     const url = await ref.getDownloadURL();
