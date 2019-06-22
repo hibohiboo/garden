@@ -935,6 +935,8 @@ ul.skill-button-list {
         height: 94px;
         outline: solid 1px #000;
         overflow: hidden;
+        box-sizing: content-box;
+
         img {
           position: absolute;
           max-width: 74px;

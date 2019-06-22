@@ -321,7 +321,7 @@ characterCard char =
             [ div [ class "base" ]
                 [ div [ class "skillLabel" ] [ text ("キャラクター" ++ "/" ++ "検体") ]
                 , div [ class "image" ]
-                    [ img [ src "" ] []
+                    [ img [ src char.cardImage ] []
                     , img [ src "" ] []
                     ]
                 , div [ class "cardKana" ] [ text char.kana ]
