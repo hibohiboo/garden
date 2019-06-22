@@ -1017,6 +1017,7 @@ ul.skill-button-list {
         align-self: center; // 縦方向の位置揃え
         font-size: 1.5em;
       }
+
       .tags {
         grid-column: 1/-1; // カード名の行
         grid-row: tags;
@@ -1073,7 +1074,9 @@ ul.skill-button-list {
           grid-column: lv;
           grid-row: innerTop;
         }
-
+        .timingLabel {
+          font-size: 14px;
+        }
         $mainContentTopPadding: 2px;
         $mainContentLeftPadding: 5px;
         .effect {
@@ -1146,6 +1149,12 @@ ul.skill-button-list {
       label span {
         vertical-align: middle;
         vertical-align: -webkit-baseline-middle;
+      }
+
+      // 大きい画面で文字が大きくなったときにはみでる
+      .timingLabel,
+      .timingValue {
+        font-size: 14px;
       }
 
       .name {

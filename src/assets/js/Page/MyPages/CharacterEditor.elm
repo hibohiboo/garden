@@ -1,6 +1,8 @@
 module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
 
 import Array exposing (Array)
+import File exposing (File)
+import File.Select as Select
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -8,6 +10,7 @@ import Models.Card as Card
 import Models.Character exposing (..)
 import Models.CharacterEditor exposing (..)
 import Models.Tag exposing (Tag)
+import Task
 import Url
 import Url.Builder
 import Utils.List.Extra exposing (findIndex)
@@ -37,6 +40,14 @@ type Msg
     | InputMemo String
     | InputAP String
     | TogglePublish
+    | ImageRequested
+    | ImageSelected File
+    | ImageLoaded (Result LoadErr String)
+
+
+type LoadErr
+    = ErrToUrlFailed
+    | ErrInvalidFile
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -260,6 +271,43 @@ update msg char editor =
             in
             ( ( c, editor ), Cmd.none )
 
+        ImageRequested ->
+            ( ( char, editor )
+            , Select.file expectedTypes ImageSelected
+            )
+
+        ImageSelected file ->
+            ( ( char, editor )
+            , Task.attempt ImageLoaded <| File.toUrl file
+            )
+
+        ImageLoaded result ->
+            case result of
+                Ok content ->
+                    let
+                        c =
+                            { char | cardImage = content }
+                    in
+                    ( ( c, editor )
+                    , Cmd.none
+                    )
+
+                Err error ->
+                    -- ( { model
+                    --     | error = Just error
+                    --     , status = Default
+                    --   }
+                    -- , Cmd.none
+                    -- )
+                    ( ( char, editor )
+                    , Cmd.none
+                    )
+
+
+expectedTypes : List String
+expectedTypes =
+    [ "image/png", "image/jpeg", "image/gif" ]
+
 
 setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
 setNewDataCards card kind cards =
@@ -307,7 +355,23 @@ editArea character editor =
             [ div [] [ text "他の人にシートを公開する場合は以下にチェック" ]
             , div [] [ label [] [ input [ type_ "checkbox", checked character.isPublished, onClick TogglePublish ] [], span [] [ text "公開する" ] ] ]
             ]
+        , div [ class "input-field" ]
+            [ div [] [ text "カードイメージ" ]
+            , inputCardImageArea character
+            ]
         ]
+
+
+inputCardImageArea : Character -> Html Msg
+inputCardImageArea model =
+    case model.cardImage of
+        "" ->
+            button [ onClick ImageRequested ] [ text "Upload image" ]
+
+        content ->
+            img
+                [ src content, width 74, height 94 ]
+                []
 
 
 updateCardArea : Int -> Card.CardData -> Html Msg

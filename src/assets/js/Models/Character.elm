@@ -30,12 +30,13 @@ type alias Character =
     , memo : String
     , activePower : Int
     , isPublished : Bool
+    , cardImage : String
     }
 
 
 initCharacter : String -> Character
 initCharacter storeUserId =
-    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4 False
+    Character storeUserId "" "" "" "" "" "" (Array.fromList []) "" "" "" 4 False ""
 
 
 encodeCharacter : Character -> String
@@ -60,6 +61,7 @@ encodeCharacterToValue c =
         , ( "memo", E.string c.memo )
         , ( "activePower", E.int c.activePower )
         , ( "isPublished", E.bool c.isPublished )
+        , ( "cardImage", E.string c.cardImage )
         ]
 
 
@@ -79,6 +81,7 @@ characterDecoder =
         |> Json.Decode.Pipeline.optional "memo" Decode.string ""
         |> Json.Decode.Pipeline.optional "activePower" Decode.int 4
         |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
+        |> Json.Decode.Pipeline.optional "cardImage" Decode.string ""
 
 
 characterDecoderFromFireStoreApi : Decoder Character
@@ -97,6 +100,7 @@ characterDecoderFromFireStoreApi =
         |> optional "memo" FSApi.string ""
         |> optional "activePower" FSApi.int 4
         |> optional "isPublished" FSApi.bool False
+        |> optional "cardImage" FSApi.string ""
         |> FSApi.fields
 
 
