@@ -42,6 +42,8 @@ type alias Model =
     , googleSheetApiKey : String
     , character : Character
     , cardState : Array CardState
+    , ap : Int
+    , currentAp : Int
     }
 
 
@@ -98,14 +100,14 @@ init session apiKey characterId =
         model =
             case character of
                 Just char ->
-                    Model session Close apiKey char (char.cards |> Array.map (\c -> CardState c False False))
+                    Model session Close apiKey char (char.cards |> Array.map (\c -> CardState c False False)) 0 0
 
                 Nothing ->
                     let
                         initChar =
                             Character.initCharacter ""
                     in
-                    Model session Close apiKey { initChar | memo = "なうろーでぃんぐ" } Array.empty
+                    Model session Close apiKey { initChar | memo = "なうろーでぃんぐ" } Array.empty 0 0
     in
     ( model
     , Cmd.batch [ characterCmd ]
@@ -134,6 +136,8 @@ type Msg
     | ToggleUsed Int
     | ToggleInjury Int
     | GotCardState String
+    | InputAp String
+    | InputCurrentAp String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -247,6 +251,12 @@ update msg model =
             in
             ( { model | cardState = newStates }, Cmd.none )
 
+        InputAp n ->
+            ( { model | ap = Maybe.withDefault 0 (String.toInt n) }, Cmd.none )
+
+        InputCurrentAp n ->
+            ( { model | currentAp = Maybe.withDefault 0 (String.toInt n) }, Cmd.none )
+
 
 subscriptions : Sub Msg
 subscriptions =
@@ -275,10 +285,30 @@ viewHelper : Model -> Html Msg
 viewHelper model =
     div [ class "character-sheet" ]
         [ h1 [] [ text "キャラクターシート" ]
-        , characterCard model.character
+        , viewLeft model
+        ]
+
+
+viewLeft model =
+    div [ style "max-width" "320px" ]
+        [ characterCard model.character
+
+        -- , h2 [] [ text "状態" ]
+        , div []
+            [ inputArea "ap" "行動力" (String.fromInt model.ap) InputAp
+            , inputArea "currentAp" "行動値" (String.fromInt model.currentAp) InputCurrentAp
+            ]
         , h2 [] [ text "データカード" ]
         , button [ onClick UnUsedAll ] [ text "使用済チェックをすべて外す" ]
         , div [] (Array.indexedMap (\i s -> dataCardSimpleView i s) model.cardState |> Array.toList)
+        ]
+
+
+inputArea : String -> String -> String -> (String -> msg) -> Html msg
+inputArea fieldId labelName val toMsg =
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fieldId, type_ "number", class "validate", value val, onInput toMsg ] []
+        , label [ class "active", for fieldId ] [ text labelName ]
         ]
 
 
