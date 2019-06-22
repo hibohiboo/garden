@@ -370,7 +370,7 @@ inputCardImageArea model =
 
         content ->
             img
-                [ src content, width 74, height 94 ]
+                [ class "cardImage", src content, width 74, height 94 ]
                 []
 
 

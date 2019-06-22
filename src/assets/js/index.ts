@@ -175,6 +175,16 @@ app.ports.getCharacter.subscribe(async data => {
 // キャラクター更新
 app.ports.updateCharacter.subscribe(async json => {
   const character = JSON.parse(json);
+
+  // 画像アップロード
+  if (character.cardImage !== "") {
+    const ref = fireBase.storage.ref('card-' + character.characterId);
+    ref.putString(character.cardImage, 'data_url').then(function (snapshot) {
+      console.log('Uploaded a data_url string!');
+    });
+  }
+
+  // キャラクター更新
   const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
   character.updatedAt = fireBase.getTimestamp();
 
