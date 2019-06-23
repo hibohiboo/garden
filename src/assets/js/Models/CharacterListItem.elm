@@ -14,7 +14,12 @@ type alias CharacterListItem =
 
 characterListDecoder : Decoder (List CharacterListItem)
 characterListDecoder =
-    D.at [ "documents" ] (D.list characterListItemDecoder)
+    D.at [ "documents" ] (D.list characterListItemFieldDecoder)
+
+
+characterListItemFieldDecoder : Decoder CharacterListItem
+characterListItemFieldDecoder =
+    FSApi.fields characterListItemDecoder
 
 
 characterListItemDecoder : Decoder CharacterListItem
@@ -23,7 +28,6 @@ characterListItemDecoder =
         |> required "characterId" FSApi.string
         |> required "name" FSApi.string
         |> required "labo" FSApi.string
-        |> FSApi.fields
 
 
 
