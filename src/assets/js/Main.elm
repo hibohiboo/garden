@@ -7,10 +7,12 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Json.Decode as D
+import Page.CharacterList
 import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
 import Page.MyPages.CharacterUpdate as CharacterUpdate
+import Page.MyPages.CharacterView as CharacterView
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
 import Page.SandBox as SandBox
@@ -79,7 +81,9 @@ type Page
     | LoginUserPage Page.LoginUser.Model
     | CharacterCreatePage CharacterCreate.Model
     | CharacterUpdatePage CharacterUpdate.Model
+    | CharacterViewPage CharacterView.Model
     | SandBoxPage SandBox.Model
+    | CharacterListPage Page.CharacterList.Model
 
 
 init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -121,7 +125,9 @@ type Msg
     | LoginUserMsg Page.LoginUser.Msg
     | CharacterCreateMsg CharacterCreate.Msg
     | CharacterUpdateMsg CharacterUpdate.Msg
+    | CharacterViewMsg CharacterView.Msg
     | SandBoxMsg SandBox.Msg
+    | CharacterListMsg Page.CharacterList.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -245,6 +251,30 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        CharacterViewMsg ms ->
+            case model.page of
+                CharacterViewPage rmodel ->
+                    let
+                        ( newmodel, newmsg ) =
+                            CharacterView.update ms rmodel
+                    in
+                    ( { model | page = CharacterViewPage newmodel }, Cmd.map CharacterViewMsg newmsg )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        CharacterListMsg pageCharacterListMsg ->
+            case model.page of
+                CharacterListPage topModel ->
+                    let
+                        ( newModel, topCmd ) =
+                            Page.CharacterList.update pageCharacterListMsg topModel
+                    in
+                    ( { model | page = CharacterListPage newModel }, Cmd.map CharacterListMsg topCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 -- EXIT
@@ -271,6 +301,9 @@ exit model =
         CharacterUpdatePage m ->
             m.session
 
+        CharacterViewPage m ->
+            m.session
+
         SandBoxPage m ->
             m.session
 
@@ -279,6 +312,9 @@ exit model =
 
         ErrorPage _ ->
             Session.empty
+
+        CharacterListPage m ->
+            m.session
 
 
 
@@ -378,6 +414,24 @@ goTo maybeRoute model =
             , Cmd.map SandBoxMsg cmd
             )
 
+        Just (Route.CharacterView characterId) ->
+            let
+                ( m, cmd ) =
+                    CharacterView.init session model.googleSheetApiKey characterId
+            in
+            ( { model | page = CharacterViewPage m }
+            , Cmd.map CharacterViewMsg cmd
+            )
+
+        Just Route.CharacterList ->
+            let
+                ( m, cmd ) =
+                    Page.CharacterList.init session
+            in
+            ( { model | page = CharacterListPage m }
+            , Cmd.map CharacterListMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -389,6 +443,7 @@ subscriptions model =
         [ Sub.map LoginUserMsg Page.LoginUser.subscriptions
         , Sub.map CharacterUpdateMsg CharacterUpdate.subscriptions
         , Sub.map CharacterCreateMsg CharacterCreate.subscriptions
+        , Sub.map CharacterViewMsg CharacterView.subscriptions
         ]
 
 
@@ -440,8 +495,14 @@ view model =
         CharacterUpdatePage m ->
             Skeleton.view CharacterUpdateMsg (CharacterUpdate.view m)
 
+        CharacterViewPage m ->
+            Skeleton.view CharacterViewMsg (CharacterView.view m)
+
         SandBoxPage m ->
             Skeleton.view SandBoxMsg (SandBox.view m)
+
+        CharacterListPage m ->
+            Skeleton.view CharacterListMsg (Page.CharacterList.view m)
 
 
 {-| NotFound ページ

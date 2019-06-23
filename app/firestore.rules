@@ -8,20 +8,28 @@ service cloud.firestore {
     function isUserAuthenticated(userId) {
       return request.auth.uid == userId;
     }
-
-    match /{documents=**} {
-      allow read;
-      allow write: if isAuthenticated();
+    
+    function isCharacterUser() {
+      return request.auth != null && resource.data.uid == request.auth.uid;
     }
 
     match /users/{userId} {
       allow create, read: if isAuthenticated();
       allow update: if isUserAuthenticated(userId);
+
       match /characters/{characterId} {
-        allow read;
-        allow create, update, delete: if isUserAuthenticated(userId);
+        allow create: if isAuthenticated();
+        allow read, update, delete: if isCharacterUser();
       }
     }
-
+    match /characters/{characterId} {
+      allow read;
+    }
+    match /publish/all/characters/{characterId} {
+      allow read;
+    }
+    match /{documents=**} {
+      allow read: if isAuthenticated();
+    }
   }
 }

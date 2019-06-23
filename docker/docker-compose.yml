@@ -8,6 +8,10 @@ services:
       - ../app/public:/app/public
       - ../backend/functions:/app/functions
       - /app/functions/node_modules
+      # - ../backend/functions/src:/app/functions/src
+      # - ../backend/functions/package.json:/app/functions/package.json
+      # - ../backend/functions/tsconfig.json:/app/functions/tsconfig.json
+      # - ../backend/functions/tslint.json:/app/functions/tslint.json
       - ../app/.firebaserc:/app/.firebaserc
       - ../app/firebase.json:/app/firebase.json
       - ../app/firestore.rules:/app/firestore.rules

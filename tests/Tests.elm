@@ -1,11 +1,16 @@
-module Tests exposing (cardTest, getText, sheet, suite, unitTest)
+module Tests exposing (cardTest, getFirestoreApiJson, getText, sheet, suite, unitTest)
 
+import Array
 import Dict exposing (Dict)
 import Expect
+import FirestoreApi as FSApi
 import GoogleSpreadSheetApi as GSApi
+import Json.Decode as D
 import Models.Card as Card
 import Models.CardId as CardId exposing (CardId)
-import Models.Tag exposing (Tag)
+import Models.Character as Character
+import Models.CharacterListItem as CharacterListItem exposing (CharacterListItem)
+import Models.Tag as Tag exposing (Tag)
 import Route exposing (..)
 import Test exposing (..)
 import Url
@@ -335,6 +340,410 @@ cardTest =
                                     Card.CardData (CardId.fromString "B-001") "走る" "能力" "基本能力" 10 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "" 0
                             in
                             [ card, card ]
+                    in
+                    Expect.equal actual expect
+            ]
+        ]
+
+
+getFirestoreApiJson : Test
+getFirestoreApiJson =
+    describe "FirestoreApi"
+        [ describe "getText"
+            [ test "キャラクターリストのアイテムを取得するテスト" <|
+                \_ ->
+                    let
+                        source =
+                            """
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/iUjHq8ohVTI0tmftm1gW",
+      "fields": {
+        "labo": {
+          "stringValue": "研究所"
+        },
+        "name": {
+          "stringValue": "にゅー"
+        },
+        "characterId": {
+          "stringValue": "testId"
+        }
+      },
+      "createTime": "2019-06-15T00:22:36.133995Z",
+      "updateTime": "2019-06-15T00:22:36.133995Z"
+    }
+                        """
+
+                        actual =
+                            case D.decodeString CharacterListItem.characterListItemDecoder source of
+                                Ok item ->
+                                    item
+
+                                Err _ ->
+                                    CharacterListItem "" "" ""
+
+                        expect =
+                            CharacterListItem "testId" "にゅー" "研究所"
+                    in
+                    Expect.equal actual expect
+            ]
+        , test "キャラクターリストを取得するテスト" <|
+            \_ ->
+                let
+                    source =
+                        """
+{
+  "documents": [
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/05TsdJiaAyAPH8RLgsqt",
+      "fields": {
+        "labo": {
+          "stringValue": "旧第一研究所"
+        },
+        "name": {
+          "stringValue": "狐狸"
+        },
+        "characterId": {
+          "stringValue": "aaa"
+        }
+      },
+      "createTime": "2019-06-15T00:13:36.394340Z",
+      "updateTime": "2019-06-15T00:13:36.394340Z"
+    },
+    {
+      "name": "projects/garden-2a6de/databases/(default)/documents/publish/all/characters/iUjHq8ohVTI0tmftm1gW",
+      "fields": {
+        "labo": {
+          "stringValue": "研究所"
+        },
+        "name": {
+          "stringValue": "にゅー"
+        },
+        "characterId": {
+          "stringValue": "testId"
+        }
+      },
+      "createTime": "2019-06-15T00:22:36.133995Z",
+      "updateTime": "2019-06-15T00:22:36.133995Z"
+    }
+  ]
+}
+                        """
+
+                    actual =
+                        CharacterListItem.characterListFromJson source
+
+                    expect =
+                        [ CharacterListItem "aaa" "狐狸" "旧第一研究所", CharacterListItem "testId" "にゅー" "研究所" ]
+                in
+                Expect.equal actual expect
+        , test "stringを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.stringFromJson "name" """{"fields": {"name": {"stringValue": "test"}}}"""
+
+                    expect =
+                        "test"
+                in
+                Expect.equal actual expect
+        , test "intを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.intFromJson "ap" """{"fields": {"ap": {"integerValue": "5"}}}"""
+
+                    expect =
+                        5
+                in
+                Expect.equal actual expect
+        , test "timestampを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.timestampFromJson "name" """{"fields": {"name": {"timestampValue": "2019-06-15T01:25:14.040Z"}}}"""
+
+                    expect =
+                        "2019-06-15T01:25:14.040Z"
+                in
+                Expect.equal actual expect
+        , test "boolを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.boolFromJson "name" """{"fields": {"name": {"booleanValue": true}}}"""
+
+                    expect =
+                        True
+                in
+                Expect.equal actual expect
+        , test "複数のフィールドを取得するテスト" <|
+            \_ ->
+                let
+                    tupleDecoder =
+                        D.at [ "fields" ] (D.map2 Tuple.pair (D.at [ "x" ] FSApi.bool) (D.at [ "y" ] FSApi.string))
+
+                    actual =
+                        case D.decodeString tupleDecoder """{"fields": {"x": {"booleanValue": true}, "y": {"stringValue":"a"}}}""" of
+                            Ok tuple ->
+                                tuple
+
+                            Err _ ->
+                                ( False, "b" )
+
+                    expect =
+                        ( True, "a" )
+                in
+                Expect.equal actual expect
+
+        -- TODO:
+        , test "arrayを取得するテスト" <|
+            \_ ->
+                let
+                    actual =
+                        FSApi.arrayFromJson "name" """
+                  {
+                    "tags": {
+                      "arrayValue": {
+                        "values": [
+                          {
+                            "mapValue": {
+                              "fields": {
+                                "level": {
+                                  "integerValue": "0"
+                                },
+                                "name": {
+                                  "stringValue": "移動"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                        """
+
+                    expect =
+                        True
+                in
+                Expect.equal actual expect
+        , describe "キャラクターをStoreApiから取得"
+            [ test "キャラクターを取得するテスト" <|
+                \_ ->
+                    let
+                        actualResult =
+                            D.decodeString Character.characterDecoderFromFireStoreApi """
+{
+  "fields": {
+    "characterId": {
+      "stringValue": "testCharId"
+    },
+    "createdAt": {
+      "timestampValue": "2019-06-11T14:33:54.226Z"
+    },
+    "trait": {
+      "stringValue": "身体強化"
+    },
+    "updatedAt": {
+      "timestampValue": "2019-06-15T01:25:14.040Z"
+    },
+    "kana": {
+      "stringValue": "コリ"
+    },
+    "labo": {
+      "stringValue": "旧第一研究所"
+    },
+    "storeUserId": {
+      "stringValue": "testStoreUserId"
+    }
+  }
+}
+                        """
+
+                        actual =
+                            case actualResult of
+                                Ok r ->
+                                    r
+
+                                Err _ ->
+                                    Character.Char "" ""
+
+                        expect =
+                            Character.Char "testCharId" "testStoreUserId"
+                    in
+                    Expect.equal actual expect
+            , test "タグを取得するテスト" <|
+                \_ ->
+                    let
+                        actualResult =
+                            D.decodeString (D.at [ "tags" ] Tag.tagsDecoderFromFireStoreApi) """
+{
+  "tags": {
+    "arrayValue": {
+      "values": [
+        {
+          "mapValue": {
+            "fields": {
+              "name": {
+                "stringValue": "移動"
+              },
+              "level": {
+                "integerValue": "0"
+              }
+            }
+          }
+        },
+        {
+          "mapValue": {
+            "fields": {
+              "level": {
+                "integerValue": "0"
+              },
+              "name": {
+                "stringValue": "基本能力"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+                        """
+
+                        actual =
+                            case actualResult of
+                                Ok r ->
+                                    r
+
+                                Err _ ->
+                                    []
+
+                        expect =
+                            [ Tag "移動" 0, Tag "基本能力" 0 ]
+                    in
+                    Expect.equal actual expect
+            , test "カードを取得するテスト" <|
+                \_ ->
+                    let
+                        actualResult =
+                            D.decodeString (D.at [ "cards" ] <| FSApi.array Card.cardDecoderFromFireStoreApi) """
+{
+"cards": {
+      "arrayValue": {
+        "values": [
+        {
+          "mapValue": {
+            "fields": {
+              "maxRange": {
+                "integerValue": "0"
+              },
+              "imgFrame": {
+                "stringValue": "/assets/images/card/frame/report.gif"
+              },
+              "timing": {
+                "stringValue": "アクション"
+              },
+              "frameByName": {
+                "stringValue": ""
+              },
+              "deleteFlag": {
+                "integerValue": "0"
+              },
+              "cardType": {
+                "stringValue": "能力"
+              },
+              "cardName": {
+                "stringValue": "走る"
+              },
+              "cost": {
+                "integerValue": "4"
+              },
+              "maxLevel": {
+                "integerValue": "1"
+              },
+              "exp": {
+                "integerValue": "0"
+              },
+              "range": {
+                "integerValue": "0"
+              },
+              "description": {
+                "stringValue": "逃げてもいいし、向かってもいい。君たちは何処にだっていける。一歩ずつではあるけれど。"
+              },
+              "kind": {
+                "stringValue": "基本能力"
+              },
+              "illustedByName": {
+                "stringValue": "ヒューマンピクトグラム2.0"
+              },
+              "effect": {
+                "stringValue": "移動1"
+              },
+              "imgMain": {
+                "stringValue": "/assets/images/card/main/run.png"
+              },
+              "target": {
+                "stringValue": "自身"
+              },
+              "frameByUrl": {
+                "stringValue": ""
+              },
+              "illustedByUrl": {
+                "stringValue": "http://pictogram2.com/"
+              },
+              "cardId": {
+                "stringValue": "B000"
+              },
+              "tags": {
+                "arrayValue": {
+                  "values": [
+                    {
+                      "mapValue": {
+                        "fields": {
+                          "name": {
+                            "stringValue": "移動"
+                          },
+                          "level": {
+                            "integerValue": "0"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "mapValue": {
+                        "fields": {
+                          "level": {
+                            "integerValue": "0"
+                          },
+                          "name": {
+                            "stringValue": "基本能力"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+                        """
+
+                        actual =
+                            case actualResult of
+                                Ok r ->
+                                    r
+
+                                Err _ ->
+                                    Array.empty
+
+                        expect =
+                            Array.fromList [ Card.initCard ]
                     in
                     Expect.equal actual expect
             ]

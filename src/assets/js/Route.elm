@@ -13,7 +13,9 @@ type Route
     | LoginUser
     | CharacterCreate String
     | CharacterUpdate String String
+    | CharacterView String
     | SandBox String
+    | CharacterList
 
 
 parse : Url -> Maybe Route
@@ -33,6 +35,8 @@ parser =
         , map CharacterCreate (s "mypage" </> s "character" </> s "create" </> string)
         , map CharacterUpdate (s "mypage" </> s "character" </> s "edit" </> string </> string)
         , map SandBox (s "sandbox" </> string)
+        , map CharacterView (s "character" </> s "view" </> string)
+        , map CharacterList (s "characters")
 
         -- , map GitHubUser string
         -- , map Repo (string </> string)

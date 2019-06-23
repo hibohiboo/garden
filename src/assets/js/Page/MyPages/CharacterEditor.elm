@@ -1,6 +1,8 @@
-port module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
+module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
 
 import Array exposing (Array)
+import File exposing (File)
+import File.Select as Select
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -9,6 +11,7 @@ import Models.Card as Card
 import Models.Character exposing (..)
 import Models.CharacterEditor exposing (..)
 import Models.Tag exposing (Tag)
+import Task
 import Url
 import Url.Builder
 import Utils.List.Extra exposing (findIndex)
@@ -37,6 +40,21 @@ type Msg
     | InputLabo String
     | InputMemo String
     | InputAP String
+    | TogglePublish
+    | ImageRequested
+    | ImageSelected File
+    | ImageLoaded (Result LoadErr String)
+    | CharacterImageRequested
+    | CharacterImageSelected File
+    | CharacterImageLoaded (Result LoadErr String)
+    | InputImageCreatorName String
+    | InputImageCreatorSite String
+    | InputImageCreatorUrl String
+
+
+type LoadErr
+    = ErrToUrlFailed
+    | ErrInvalidFile
 
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
@@ -253,6 +271,98 @@ update msg char editor =
             in
             ( ( c, editor ), Cmd.none )
 
+        TogglePublish ->
+            let
+                c =
+                    { char | isPublished = not char.isPublished }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        ImageRequested ->
+            ( ( char, editor )
+            , Select.file expectedTypes ImageSelected
+            )
+
+        -- 1M 以上のファイルはアップロードしない
+        ImageSelected file ->
+            if File.size file < 1048576 then
+                ( ( char, editor )
+                , Task.attempt ImageLoaded <| File.toUrl file
+                )
+
+            else
+                ( ( char, editor )
+                , Cmd.none
+                )
+
+        ImageLoaded result ->
+            case result of
+                Ok content ->
+                    let
+                        c =
+                            { char | cardImageData = content }
+                    in
+                    ( ( c, editor )
+                    , Cmd.none
+                    )
+
+                Err error ->
+                    -- ( { model
+                    --     | error = Just error
+                    --     , status = Default
+                    --   }
+                    -- , Cmd.none
+                    -- )
+                    ( ( char, editor )
+                    , Cmd.none
+                    )
+
+        CharacterImageRequested ->
+            ( ( char, editor )
+            , Select.file expectedTypes CharacterImageSelected
+            )
+
+        CharacterImageSelected file ->
+            if File.size file < 1048576 then
+                ( ( char, editor )
+                , Task.attempt CharacterImageLoaded <| File.toUrl file
+                )
+
+            else
+                ( ( char, editor )
+                , Cmd.none
+                )
+
+        CharacterImageLoaded result ->
+            case result of
+                Ok content ->
+                    let
+                        c =
+                            { char | characterImageData = content }
+                    in
+                    ( ( c, editor )
+                    , Cmd.none
+                    )
+
+                Err error ->
+                    ( ( char, editor )
+                    , Cmd.none
+                    )
+
+        InputImageCreatorName s ->
+            ( ( { char | cardImageCreatorName = s }, editor ), Cmd.none )
+
+        InputImageCreatorSite s ->
+            ( ( { char | cardImageCreatorSite = s }, editor ), Cmd.none )
+
+        InputImageCreatorUrl s ->
+            ( ( { char | cardImageCreatorUrl = s }, editor ), Cmd.none )
+
+
+expectedTypes : List String
+expectedTypes =
+    [ "image/png", "image/jpeg", "image/gif" ]
+
 
 setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
 setNewDataCards card kind cards =
@@ -296,7 +406,48 @@ editArea character editor =
             [ textarea [ placeholder "メモ", id "memo", class "materialize-textarea", value character.memo, onInput InputMemo, style "height" "200px", style "overflow-y" "auto" ] []
             , label [ class "active", for "memo" ] [ text "メモ" ]
             ]
+        , div [ class "input-field" ]
+            [ div [] [ text "他の人にシートを公開する場合は以下にチェック" ]
+            , div [] [ label [] [ input [ type_ "checkbox", checked character.isPublished, onClick TogglePublish ] [], span [] [ text "公開する" ] ] ]
+            ]
+        , div [ class "input-field" ]
+            [ div [] [ text "カードイメージ" ]
+            , div [] [ text "(74×94px推奨。1Mb未満。)" ]
+            , inputCardImageArea character
+            ]
+        , div [ class "input-field" ]
+            [ div [] [ text "キャラクターイメージ" ]
+            , div [] [ text "(1Mb未満。)" ]
+            , inputCharacterImageArea character
+            ]
+        , inputArea "cardImageCreatorName" "画像作者" character.cardImageCreatorName InputImageCreatorName
+        , inputArea "cardImageCreatorSite" "画像作者サイト名" character.cardImageCreatorSite InputImageCreatorSite
+        , inputArea "cardImageCreatorUrl" "画像作者サイトURL" character.cardImageCreatorUrl InputImageCreatorUrl
         ]
+
+
+inputCardImageArea : Character -> Html Msg
+inputCardImageArea model =
+    case model.cardImageData of
+        "" ->
+            button [ onClick ImageRequested ] [ text "Upload image" ]
+
+        content ->
+            img
+                [ class "cardImage", src content, width 74, height 94 ]
+                []
+
+
+inputCharacterImageArea : Character -> Html Msg
+inputCharacterImageArea model =
+    case model.characterImageData of
+        "" ->
+            button [ onClick CharacterImageRequested ] [ text "Upload image" ]
+
+        content ->
+            img
+                [ class "characterImage", src content ]
+                []
 
 
 updateCardArea : Int -> Card.CardData -> Html Msg

@@ -6,17 +6,39 @@ module Page.Problem exposing
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Skeleton exposing (viewLink, viewMain)
+import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 
 
 
+-- type alias Model =
+--     { naviState : NaviState
+--     }
+-- type Msg
+--     = ToggleNavigation
+-- update : Msg -> Model -> ( Model, Cmd Msg )
+-- update msg model =
+--     case msg of
+--         ToggleNavigation ->
+--             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 -- NOT FOUND
 
 
 notFound : List (Html msg)
 notFound =
-    [ div [ style "font-size" "12em" ] [ text "404" ]
-    , div [ style "font-size" "3em" ] [ text "I cannot find this page!" ]
+    [ viewMain notFoundMain
+    , viewNav [ NavigationMenu "" "トップ" ]
+
+    -- , openNavigationButton ToggleNavigation
+    -- , closeNavigationButton ToggleNavigation
     ]
+
+
+notFoundMain =
+    div []
+        [ div [ style "font-size" "12em" ] [ text "404" ]
+        , div [ style "font-size" "3em" ] [ text "I cannot find this page!" ]
+        ]
 
 
 styles : List (Attribute msg)

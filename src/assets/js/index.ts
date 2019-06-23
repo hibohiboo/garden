@@ -30,7 +30,10 @@ const app = Elm.Main.init({ node: mountNode, flags });
 
 // DBのユーザ情報。
 let userData;  // nullで初期化すると、Object is possibly 'null'.のエラーが発生。 firebase.firestore.DocumentReference | null
-
+if (localStorage[STORAGE_KEY] !== undefined) {
+  const json = localStorage[STORAGE_KEY];
+  userData = JSON.parse(json);
+}
 // ログインが必要なときにfirebaseuiを使って要素を準備する
 const viewLoginPage = () => {
   fireBase.createLoginUi();
@@ -104,12 +107,13 @@ app.ports.urlChangeToLoginPage.subscribe(() => {
       storeUserId = userRef.id;
     }
     // console.log(dbuser)
-
-    const json = JSON.stringify({
+    userData = {
       uid: dbuser.uid
       , displayName: dbuser.displayName
       , storeUserId: storeUserId
-    });
+    };
+
+    const json = JSON.stringify(userData);
 
     // ローカルストレージにユーザ情報を保存
     localStorage[STORAGE_KEY] = json;
@@ -152,6 +156,7 @@ app.ports.saveNewCharacter.subscribe(async json => {
   const userRef = db.collection("users").doc(data.storeUserId);
   data.createdAt = fireBase.getTimestamp();
   data.updatedAt = fireBase.getTimestamp();
+  data.uid = userData.uid;
   await userRef.collection('characters').add(data);
   app.ports.createdCharacter.send(true);
 });
@@ -170,8 +175,42 @@ app.ports.getCharacter.subscribe(async data => {
 // キャラクター更新
 app.ports.updateCharacter.subscribe(async json => {
   const character = JSON.parse(json);
+
+  // 画像アップロード
+  if (character.cardImageData !== "") {
+    const ref = fireBase.storage.ref('card-' + character.characterId);
+    await ref.putString(character.cardImageData, 'data_url');
+    const url = await ref.getDownloadURL();
+    character.cardImage = url;
+    character.cardImageData = "";
+  }
+
+  if (character.characterImageData !== "") {
+    const ref = fireBase.storage.ref('character-' + character.characterId);
+    await ref.putString(character.characterImageData, 'data_url');
+    const url = await ref.getDownloadURL();
+    character.characterImage = url;
+    character.characterImageData = "";
+  }
+
+  // キャラクター更新
   const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
   character.updatedAt = fireBase.getTimestamp();
+
+  character.uid = userData.uid;
   await characterRef.update(character);
   app.ports.updatedCharacter.send(true);
+});
+
+// ローカルストレージに、キャラクターのデータカードの使用済/負傷などを保存
+app.ports.saveCardState.subscribe(obj => {
+  localStorage[obj.characterId] = JSON.stringify({ states: obj.states, ap: obj.ap, currentAp: obj.currentAp });
+});
+
+app.ports.getCardState.subscribe(characterId => {
+  const json = localStorage[characterId];
+  if (json === undefined) {
+    return;
+  }
+  app.ports.gotCardState.send(json);
 });

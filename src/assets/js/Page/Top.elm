@@ -52,7 +52,7 @@ view model =
     , attrs = [ class naviClass ]
     , kids =
         [ viewMain viewTopPage
-        , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック", NavigationMenu "mypage" "マイページ" ]
+        , viewNav [ NavigationMenu "" "トップ", NavigationMenu "rulebook" "ルールブック", NavigationMenu "mypage" "マイページ", NavigationMenu "characters" "キャラクターリスト" ]
         , openNavigationButton ToggleNavigation
         , closeNavigationButton ToggleNavigation
         ]

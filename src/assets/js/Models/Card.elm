@@ -4,6 +4,7 @@ port module Models.Card exposing
     , cardDataListDecodeFromJson
     , cardDecodeFromString
     , cardDecoder
+    , cardDecoderFromFireStoreApi
     , cardDecoderFromJson
     , cardList
     , cardView
@@ -20,6 +21,7 @@ import Array exposing (Array)
 import Browser.Dom as Dom
 import Browser.Navigation as Navigation
 import Dict exposing (Dict)
+import FirestoreApi as FSApi
 import GoogleSpreadSheetApi as GSAPI
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -29,7 +31,7 @@ import Json.Decode as D exposing (..)
 import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
 import Models.CardId as CardId exposing (CardId)
-import Models.Tag exposing (Tag, encodeTagToValue, tagDecoder, tagsDecoder)
+import Models.Tag as Tag exposing (Tag, encodeTagToValue, tagDecoder, tagsDecoder)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
@@ -289,6 +291,32 @@ cardDecoderFromJson =
         |> Json.Decode.Pipeline.required "frameByName" D.string
         |> Json.Decode.Pipeline.required "frameByUrl" D.string
         |> Json.Decode.Pipeline.required "deleteFlag" D.int
+
+
+cardDecoderFromFireStoreApi : Decoder CardData
+cardDecoderFromFireStoreApi =
+    D.succeed CardData
+        |> required "cardId" (D.map CardId.fromString FSApi.string)
+        |> required "cardName" FSApi.string
+        |> required "cardType" FSApi.string
+        |> required "kind" FSApi.string
+        |> required "exp" FSApi.int
+        |> required "timing" FSApi.string
+        |> required "cost" FSApi.int
+        |> required "range" FSApi.int
+        |> required "maxRange" FSApi.int
+        |> required "target" FSApi.string
+        |> required "maxLevel" FSApi.int
+        |> required "effect" FSApi.string
+        |> required "description" FSApi.string
+        |> required "tags" Tag.tagsDecoderFromFireStoreApi
+        |> required "imgMain" FSApi.string
+        |> required "illustedByName" FSApi.string
+        |> required "illustedByUrl" FSApi.string
+        |> required "imgFrame" FSApi.string
+        |> required "frameByName" FSApi.string
+        |> required "frameByUrl" FSApi.string
+        |> required "deleteFlag" FSApi.int
 
 
 

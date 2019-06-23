@@ -4,6 +4,7 @@ import * as firebaseui from 'firebaseui';
 export default class FireBaseBackEnd {
   public auth;
   public db;
+  public storage;
 
   /**
    * FireBaseを使用する準備を行う
@@ -23,6 +24,8 @@ export default class FireBaseBackEnd {
 
     // firestore使用準備
     this.db = firebase.firestore();
+
+    this.storage = firebase.storage();
   }
 
   public getTimestamp() {
