@@ -3,6 +3,7 @@ module Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNaviga
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Html.Keyed as Keyed
 import Url
 import Url.Builder
 
@@ -22,10 +23,11 @@ viewNav : List NavigationMenu -> Html msg
 viewNav menues =
     let
         navigations =
-            List.map (\menu -> li [] [ a [ href (Url.Builder.absolute [ menu.src ] []) ] [ text menu.text ] ]) menues
+            List.map (\menu -> ( menu.src, li [] [ a [ href (Url.Builder.absolute [ menu.src ] []) ] [ text menu.text ] ] )) menues
     in
     nav [ class "page-nav" ]
-        [ ul []
+        [ Keyed.node "ul"
+            []
             navigations
         ]
 
