@@ -298,25 +298,25 @@ cardDecoderFromFireStoreApi =
     D.succeed CardData
         |> required "cardId" (D.map CardId.fromString FSApi.string)
         |> required "cardName" FSApi.string
-        |> required "cardType" FSApi.string
-        |> required "kind" FSApi.string
-        |> required "exp" FSApi.int
+        |> optional "cardType" FSApi.string ""
+        |> optional "kind" FSApi.string ""
+        |> optional "exp" FSApi.int 0
         |> required "timing" FSApi.string
         |> required "cost" FSApi.int
         |> required "range" FSApi.int
-        |> required "maxRange" FSApi.int
+        |> optional "maxRange" FSApi.int 0
         |> required "target" FSApi.string
-        |> required "maxLevel" FSApi.int
+        |> optional "maxLevel" FSApi.int 0
         |> required "effect" FSApi.string
-        |> required "description" FSApi.string
-        |> required "tags" Tag.tagsDecoderFromFireStoreApi
-        |> required "imgMain" FSApi.string
-        |> required "illustedByName" FSApi.string
-        |> required "illustedByUrl" FSApi.string
-        |> required "imgFrame" FSApi.string
-        |> required "frameByName" FSApi.string
-        |> required "frameByUrl" FSApi.string
-        |> required "deleteFlag" FSApi.int
+        |> optional "description" FSApi.string ""
+        |> optional "tags" Tag.tagsDecoderFromFireStoreApi []
+        |> optional "imgMain" FSApi.string ""
+        |> optional "illustedByName" FSApi.string ""
+        |> optional "illustedByUrl" FSApi.string ""
+        |> optional "imgFrame" FSApi.string ""
+        |> optional "frameByName" FSApi.string ""
+        |> optional "frameByUrl" FSApi.string ""
+        |> optional "deleteFlag" FSApi.int 0
 
 
 

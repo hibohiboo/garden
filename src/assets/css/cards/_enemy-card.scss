@@ -265,14 +265,15 @@
         .skill-description {
           font-size: 12px;
         }
+        .injury, .used {
+          text-align: center;
+        }
         tr th {
           padding: 0;
-          &.injury, &.used {
-            text-align: center;
-          }
         }
         tr td {
           padding: 5px 5px;
+          
           input+span {
             padding-left: 15px; // materializeを上書き
           }

@@ -81,7 +81,8 @@ cardList enemy =
 cardListHead =
     tr []
         [ th [ class "skill-name" ] [ text "名前" ]
-        , th [ class "skill-description" ] [ text "効果" ]
+
+        -- , th [ class "skill-description" ] [ text "効果" ]
         , th [ class "used" ] [ text "済" ]
         , th [ class "injury" ] [ text "傷" ]
         ]
@@ -89,13 +90,14 @@ cardListHead =
 
 card name =
     tr []
-        [ td [ class "skill-name" ] [ text "庇う" ]
-        , td [ class "skill-description" ]
-            [ div [] [ text "アクション/4/0/自身" ]
-            , div [] [ text "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。" ]
-            ]
-        , td [] [ label [] [ input [ type_ "checkbox" ] [], span [] [] ] ]
-        , td [] [ label [] [ input [ type_ "checkbox" ] [], span [] [] ] ]
+        [ td [ class "skill-name" ] [ span [] [ text "庇う" ], tag "身体強化" ]
+
+        -- , td [ class "skill-description" ]
+        --     [ div [] [ text "アクション/4/0/自身" ]
+        --     , div [] [ text "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。" ]
+        --     ]
+        , td [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [] ] ]
+        , td [ class "injury" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [] ] ]
         ]
 
 
