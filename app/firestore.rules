@@ -28,6 +28,9 @@ service cloud.firestore {
     match /publish/all/characters/{characterId} {
       allow read;
     }
+    match /publish/all/enemies/{enemyId} {
+      allow read;
+    }
     match /{documents=**} {
       allow read: if isAuthenticated();
     }

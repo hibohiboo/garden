@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Http
 import Json.Decode as D
 import Page.CharacterList
+import Page.EnemyList
 import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
@@ -84,6 +85,7 @@ type Page
     | CharacterViewPage CharacterView.Model
     | SandBoxPage SandBox.Model
     | CharacterListPage Page.CharacterList.Model
+    | EnemyListPage Page.EnemyList.Model
 
 
 init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -128,6 +130,7 @@ type Msg
     | CharacterViewMsg CharacterView.Msg
     | SandBoxMsg SandBox.Msg
     | CharacterListMsg Page.CharacterList.Msg
+    | EnemyListMsg Page.EnemyList.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -275,6 +278,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        EnemyListMsg pageEnemyListMsg ->
+            case model.page of
+                EnemyListPage topModel ->
+                    let
+                        ( newModel, topCmd ) =
+                            Page.EnemyList.update pageEnemyListMsg topModel
+                    in
+                    ( { model | page = EnemyListPage newModel }, Cmd.map EnemyListMsg topCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 -- EXIT
@@ -314,6 +329,9 @@ exit model =
             Session.empty
 
         CharacterListPage m ->
+            m.session
+
+        EnemyListPage m ->
             m.session
 
 
@@ -432,6 +450,15 @@ goTo maybeRoute model =
             , Cmd.map CharacterListMsg cmd
             )
 
+        Just Route.EnemyList ->
+            let
+                ( m, cmd ) =
+                    Page.EnemyList.init session
+            in
+            ( { model | page = EnemyListPage m }
+            , Cmd.map EnemyListMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -503,6 +530,9 @@ view model =
 
         CharacterListPage m ->
             Skeleton.view CharacterListMsg (Page.CharacterList.view m)
+
+        EnemyListPage m ->
+            Skeleton.view EnemyListMsg (Page.EnemyList.view m)
 
 
 {-| NotFound ページ

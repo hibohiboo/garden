@@ -12,6 +12,7 @@ import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.CharacterEditor exposing (EditorModel)
 import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
+import Page.Views.Tag exposing (tag)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -373,9 +374,6 @@ dataCardSimpleView i cardState =
 characterCard : Character -> Html msg
 characterCard char =
     let
-        tag tagText =
-            span [ class "tag" ] [ text tagText ]
-
         tagNameList =
             Card.getTraitList char.cards
     in

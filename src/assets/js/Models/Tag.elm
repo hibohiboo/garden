@@ -2,6 +2,7 @@ module Models.Tag exposing (Tag, encodeTagToValue, tagDecoder, tagsDecoder, tags
 
 import FirestoreApi as FSApi
 import Json.Decode as D exposing (Decoder)
+import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as E
 
 
@@ -51,9 +52,9 @@ tagsDecoderFromFireStoreApi =
 
 tagDecoderFromFireStoreApi : Decoder Tag
 tagDecoderFromFireStoreApi =
-    D.map2 Tag
-        (D.field "name" FSApi.string)
-        (D.field "level" FSApi.int)
+    D.succeed Tag
+        |> required "name" FSApi.string
+        |> optional "level" FSApi.int 0
 
 
 
