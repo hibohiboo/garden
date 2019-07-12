@@ -1,5 +1,6 @@
 module Page.Views.Enemy exposing (enemyList)
 
+import Array
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
@@ -68,36 +69,30 @@ skillsCardMain enemy =
         [ div [ class "wrapper" ]
             [ div [ class "base" ]
                 [ div [ class "enemyName" ] [ text ("エネミー" ++ "/" ++ enemy.name) ]
-                , table [ class "cards" ] (cardList enemy)
+                , ul [ class "cards collection" ] (cardList enemy)
                 ]
             ]
         ]
 
 
+cardList : EnemyListItem -> List (Html msg)
 cardList enemy =
-    cardListHead :: List.map (\t -> card t.name) enemy.tags
-
-
-cardListHead =
-    tr []
-        [ th [ class "skill-name" ] [ text "名前" ]
-
-        -- , th [ class "skill-description" ] [ text "効果" ]
-        , th [ class "used" ] [ text "済" ]
-        , th [ class "injury" ] [ text "傷" ]
-        ]
+    List.map (\t -> card t.cardName) (Array.toList enemy.cards)
 
 
 card name =
-    tr []
-        [ td [ class "skill-name" ] [ span [] [ text "庇う" ], tag "身体強化" ]
-
-        -- , td [ class "skill-description" ]
-        --     [ div [] [ text "アクション/4/0/自身" ]
-        --     , div [] [ text "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。" ]
-        --     ]
-        , td [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [] ] ]
-        , td [ class "injury" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [] ] ]
+    li [ class "collection-item" ]
+        [ div [ style "display" "flex" ]
+            [ div [ class "skill-name", style "min-width" "0" ] [ span [] [ text "庇う" ], tag "身体強化" ]
+            , div [ style "display" "flex", style "margin-left" "auto" ]
+                [ div [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "済" ] ] ]
+                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "傷" ] ] ]
+                ]
+            ]
+        , div [ class "skill-description" ]
+            [ div [] [ text "アクション/4/0/自身" ]
+            , div [] [ text "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。" ]
+            ]
         ]
 
 

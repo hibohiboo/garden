@@ -1,8 +1,10 @@
 module Models.EnemyListItem exposing (EnemyListItem, enemyListDecoder, enemyListFromJson, enemyListItemDecoder)
 
+import Array exposing (Array)
 import FirestoreApi as FSApi
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Pipeline exposing (optional, required)
+import Models.Card as Card exposing (CardData)
 import Models.Tag as Tag exposing (Tag)
 
 
@@ -15,6 +17,7 @@ type alias EnemyListItem =
     , kana : String
     , degreeOfThreat : Int
     , tags : List Tag
+    , cards : Array CardData
     }
 
 
@@ -39,6 +42,7 @@ enemyListItemDecoder =
         |> optional "kana" FSApi.string ""
         |> optional "degreeOfThreat" FSApi.int 0
         |> optional "tags" Tag.tagsDecoderFromFireStoreApi []
+        |> optional "cards" (FSApi.array Card.cardDecoderFromFireStoreApi) (Array.fromList [])
 
 
 enemyListFromJson : String -> List EnemyListItem

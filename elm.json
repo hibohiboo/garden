@@ -18,7 +18,8 @@
       "elm-explorations/markdown": "1.0.0",
       "NoRedInk/elm-json-decode-pipeline": "1.0.0",
       "elm-community/html-extra": "3.2.0",
-      "elm/file": "1.0.5"
+      "elm/file": "1.0.5",
+      "elm-community/list-split": "1.0.3"
     },
     "indirect": {
       "elm/time": "1.0.0",

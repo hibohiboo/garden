@@ -296,7 +296,7 @@ cardDecoderFromJson =
 cardDecoderFromFireStoreApi : Decoder CardData
 cardDecoderFromFireStoreApi =
     D.succeed CardData
-        |> required "cardId" (D.map CardId.fromString FSApi.string)
+        |> optional "cardId" (D.map CardId.fromString FSApi.string) (CardId.fromString "")
         |> required "cardName" FSApi.string
         |> optional "cardType" FSApi.string ""
         |> optional "kind" FSApi.string ""
