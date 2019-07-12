@@ -921,6 +921,94 @@
           "integerValue": "8"
         }
       }
+    },
+    {
+      "fields": {
+        "name": {
+          "stringValue": "スラッシャー"
+        },
+        "memo": {
+          "stringValue": "鋭い刃を備えた攻撃機械"
+        },
+        "degreeOfThreat": {
+          "integerValue": "2"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "機械"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "スラッシュ"
+                    },
+                    "effect": {
+                      "stringValue": "ダメージ2"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "ダッシュ"
+                    },
+                    "effect": {
+                      "stringValue": "移動1～2。"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "3"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "supporter"
+        },
+        "activePower": {
+          "integerValue": "9"
+        }
+      }
     }
   ]
 }
