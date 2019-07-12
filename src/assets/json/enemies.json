@@ -915,7 +915,7 @@
           }
         },
         "enemyId": {
-          "stringValue": "atackers"
+          "stringValue": "shooter"
         },
         "activePower": {
           "integerValue": "8"
@@ -1003,10 +1003,395 @@
           }
         },
         "enemyId": {
-          "stringValue": "supporter"
+          "stringValue": "slasher"
         },
         "activePower": {
           "integerValue": "9"
+        }
+      }
+    },
+    {
+      "fields": {
+        "name": {
+          "stringValue": "暴走異能者"
+        },
+        "memo": {
+          "stringValue": "能力が暴走し、異形の器官が膨れ上がった哀れな元異能者。常に行動力の上がるスキルの効果は反映済。"
+        },
+        "degreeOfThreat": {
+          "integerValue": "20"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "身体強化"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "精神感応"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "怪物の手"
+                    },
+                    "effect": {
+                      "stringValue": "ダメージ3"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "5"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "走る"
+                    },
+                    "effect": {
+                      "stringValue": "移動1"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "這いずる"
+                    },
+                    "effect": {
+                      "stringValue": "移動1"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "5"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "千本髪"
+                    },
+                    "effect": {
+                      "stringValue": "支援2"
+                    },
+                    "timing": {
+                      "stringValue": "判定直後"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "針千本"
+                    },
+                    "effect": {
+                      "stringValue": "ダメージ+2"
+                    },
+                    "timing": {
+                      "stringValue": "ダメージ"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "肥大肉"
+                    },
+                    "effect": {
+                      "stringValue": "防御2"
+                    },
+                    "timing": {
+                      "stringValue": "ダメージ"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "巨体"
+                    },
+                    "effect": {
+                      "stringValue": "移動を無効にしてよい"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "躍る長髪"
+                    },
+                    "effect": {
+                      "stringValue": "アクションの射程+1"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "ぎょろり目玉"
+                    },
+                    "effect": {
+                      "stringValue": "行動力+2"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "脳汁"
+                    },
+                    "effect": {
+                      "stringValue": "行動力+2"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "異形化"
+                    },
+                    "effect": {
+                      "stringValue": "行動力+2"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "あめだま"
+                    },
+                    "effect": {
+                      "stringValue": "効果なし"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "くまさん"
+                    },
+                    "effect": {
+                      "stringValue": "効果なし"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "儚い髪飾り"
+                    },
+                    "effect": {
+                      "stringValue": "このカードが負傷した場合、戦闘中行動力+2。この効果は重複しない。"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "supporter"
+        },
+        "activePower": {
+          "integerValue": "12"
         }
       }
     }
