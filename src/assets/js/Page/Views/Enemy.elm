@@ -3,6 +3,7 @@ module Page.Views.Enemy exposing (enemyList)
 import Array exposing (Array)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import List.Split exposing (chunksOfLeft)
 import Models.Card as Card exposing (CardData)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.Tag exposing (tag)
@@ -63,10 +64,15 @@ enemyCardMain enemy =
 
 skillsCards : EnemyListItem -> List (Html msg)
 skillsCards enemy =
-    [ skillsCardMain enemy.name enemy.cards ]
+    let
+        -- カードの大きさに合わせて1枚当たり4つのスキルを表示
+        list =
+            chunksOfLeft 4 (Array.toList enemy.cards)
+    in
+    List.map (\cards -> skillsCardMain enemy.name cards) list
 
 
-skillsCardMain : String -> Array CardData -> Html msg
+skillsCardMain : String -> List CardData -> Html msg
 skillsCardMain name cards =
     div [ class "skills-card" ]
         [ div [ class "wrapper" ]
@@ -78,23 +84,24 @@ skillsCardMain name cards =
         ]
 
 
-cardList : Array CardData -> List (Html msg)
+cardList : List CardData -> List (Html msg)
 cardList cards =
-    List.map (\t -> card t.cardName) (Array.toList cards)
+    List.map (\d -> card d) cards
 
 
-card name =
+card : CardData -> Html msg
+card data =
     li [ class "collection-item" ]
         [ div [ style "display" "flex" ]
-            [ div [ class "skill-name", style "min-width" "0" ] [ span [] [ text "庇う" ], tag "身体強化" ]
+            [ div [ class "skill-name", style "min-width" "0" ] (span [] [ text data.cardName ] :: List.map (\t -> tag t.name) data.tags)
             , div [ style "display" "flex", style "margin-left" "auto" ]
                 [ div [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "済" ] ] ]
                 , div [ class "injury" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "傷" ] ] ]
                 ]
             ]
         , div [ class "skill-description" ]
-            [ div [] [ text "アクション/4/0/自身" ]
-            , div [] [ text "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。" ]
+            [ div [] [ text (data.timing ++ "/" ++ String.fromInt data.cost ++ "/" ++ Card.getRange data ++ "/" ++ data.target) ]
+            , div [] [ text data.effect ]
             ]
         ]
 
