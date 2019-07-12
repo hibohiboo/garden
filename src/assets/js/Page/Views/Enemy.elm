@@ -1,8 +1,9 @@
 module Page.Views.Enemy exposing (enemyList)
 
-import Array
+import Array exposing (Array)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Models.Card as Card exposing (CardData)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.Tag exposing (tag)
 import Url.Builder
@@ -23,7 +24,7 @@ enemyCard : EnemyListItem -> Html msg
 enemyCard enemy =
     div [ class "enemy-cards" ]
         [ enemyCardMain enemy
-        , skillsCardMain enemy
+        , skillsCards enemy
         ]
 
 
@@ -63,21 +64,26 @@ enemyCardMain enemy =
         ]
 
 
-skillsCardMain : EnemyListItem -> Html msg
-skillsCardMain enemy =
+skillsCards : EnemyListItem -> Html msg
+skillsCards enemy =
+    skillsCardMain enemy.name enemy.cards
+
+
+skillsCardMain : String -> Array CardData -> Html msg
+skillsCardMain name cards =
     div [ class "skills-card" ]
         [ div [ class "wrapper" ]
             [ div [ class "base" ]
-                [ div [ class "enemyName" ] [ text ("エネミー" ++ "/" ++ enemy.name) ]
-                , ul [ class "cards collection" ] (cardList enemy)
+                [ div [ class "enemyName" ] [ text ("エネミー" ++ "/" ++ name) ]
+                , ul [ class "cards collection" ] (cardList cards)
                 ]
             ]
         ]
 
 
-cardList : EnemyListItem -> List (Html msg)
-cardList enemy =
-    List.map (\t -> card t.cardName) (Array.toList enemy.cards)
+cardList : Array CardData -> List (Html msg)
+cardList cards =
+    List.map (\t -> card t.cardName) (Array.toList cards)
 
 
 card name =

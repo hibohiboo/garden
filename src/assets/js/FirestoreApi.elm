@@ -32,7 +32,9 @@ characterUrlFromFireStore characterId =
 
 enemiesUrl : String
 enemiesUrl =
-    databaseUrl ++ "/(default)/documents/publish/all/enemies/"
+    -- 登録画面未作成なので、取得できるjsonに似せたjsonファイルを直接読む。
+    -- databaseUrl ++ "/(default)/documents/publish/all/enemies/"
+    "/assets/json/enemies.json"
 
 
 

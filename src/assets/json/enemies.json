@@ -1,0 +1,306 @@
+{
+  "documents": [
+    {
+      "fields": {
+        "name": {
+          "stringValue": "デコイ"
+        },
+        "memo": {
+          "stringValue": "威力を計る的として用意された浮遊機械。攻撃を感知すると自らぶつかりにいく。"
+        },
+        "degreeOfThreat": {
+          "integerValue": "1"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "機械"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "人形"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "effect": {
+                      "stringValue": "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。"
+                    },
+                    "timing": {
+                      "stringValue": "割込"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "tags": {
+                      "arrayValue": {
+                        "values": [
+                          {
+                            "mapValue": {
+                              "fields": {
+                                "name": {
+                                  "stringValue": "身体強化"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "cardName": {
+                      "stringValue": "庇う"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    },
+                    "maxRange": {
+                      "integerValue": "1"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "kHvKakx3TqLFAeR9eSHZ"
+        },
+        "activePower": {
+          "integerValue": "8"
+        }
+      }
+    },
+    {
+      "fields": {
+        "name": {
+          "stringValue": "シールドデコイ"
+        },
+        "memo": {
+          "stringValue": "軽い衝撃に耐えられるようにしたデコイ。"
+        },
+        "degreeOfThreat": {
+          "integerValue": "1"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "機械"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "人形"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "庇う"
+                    },
+                    "effect": {
+                      "stringValue": "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。"
+                    },
+                    "timing": {
+                      "stringValue": "割込"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    },
+                    "maxRange": {
+                      "integerValue": "1"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "庇う"
+                    },
+                    "effect": {
+                      "stringValue": "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。"
+                    },
+                    "timing": {
+                      "stringValue": "割込"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    },
+                    "maxRange": {
+                      "integerValue": "1"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "庇う"
+                    },
+                    "effect": {
+                      "stringValue": "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。"
+                    },
+                    "timing": {
+                      "stringValue": "割込"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    },
+                    "maxRange": {
+                      "integerValue": "1"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "庇う"
+                    },
+                    "effect": {
+                      "stringValue": "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。"
+                    },
+                    "timing": {
+                      "stringValue": "割込"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    },
+                    "maxRange": {
+                      "integerValue": "1"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "庇う"
+                    },
+                    "effect": {
+                      "stringValue": "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。"
+                    },
+                    "timing": {
+                      "stringValue": "割込"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    },
+                    "maxRange": {
+                      "integerValue": "1"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "庇う"
+                    },
+                    "effect": {
+                      "stringValue": "対象が受けたダメージを、代わりに自身が受ける。このカードは使用済にならない。"
+                    },
+                    "timing": {
+                      "stringValue": "割込"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    },
+                    "maxRange": {
+                      "integerValue": "1"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "kHvKakx3TqLFAeR9eSHZ"
+        },
+        "activePower": {
+          "integerValue": "8"
+        }
+      }
+    }
+  ]
+}
