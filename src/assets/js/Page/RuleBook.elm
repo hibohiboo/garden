@@ -343,11 +343,11 @@ viewRulebook texts =
                 , modalCardOpenButton texts ModalCard "chart.list.item.title" "アイテム一覧" "アイテム"
                 , h2 [] [ dicText "rulebook.section.actionpower.title" "6 行動力の決定" ]
                 , p [] [ dicText "rulebook.section.actionpower.content" "【 4 + データカードで上昇する行動力】がキャラクターの行動力となる。" ]
-                , h2 [] [ dicText "rulebook.section.hcharacter.hitory.title" "7 島にいる理由の決定" ]
-                , p [] [ dicText "rulebook.section.hcharacter.hitory.content" "島にいる理由を設定する" ]
+                , h2 [] [ dicText "rulebook.section.character.reason.title" "7 理由の決定" ]
+                , p [] [ dicText "rulebook.section.character.reason.content" "戦う理由を設定する" ]
                 , modalOpenButton texts ModalReason "chart.list.reason.title" "理由一覧"
-                , h2 [] [ dicText "rulebook.section.hcharacter.laboratory.title" "8 ラボの決定" ]
-                , p [] [ dicText "rulebook.section.hcharacter.laboratory.content" "収容されていた研究所を設定する" ]
+                , h2 [] [ dicText "rulebook.section.character.laboratory.title" "8 ラボの決定" ]
+                , p [] [ dicText "rulebook.section.character.laboratory.content" "収容されていた研究所を設定する" ]
                 , h2 [] [ dicText "rulebook.section.chart" "チャート" ]
                 , modalCardOpenButton texts ModalCard "chart.list.card.title" "データカード一覧" ""
                 ]
