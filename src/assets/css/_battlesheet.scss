@@ -1,0 +1,37 @@
+.page-battlesheet  {
+  .page-head {
+    display: none;
+  }
+  h1 {
+    padding:0;
+    margin:5px;
+  }
+  .wrapper {
+    display: flex;
+    width: 100vw;
+    .count-area {
+      background-color: #000;
+      color: #fff;
+      height: 100vh;
+      font-size: 0.8rem;
+      flex-basis: 3.2rem;
+
+      li {
+        height: 3vh;
+        box-sizing: border-box;
+        border-top: solid #eee 1px;
+        text-align: center;
+        &.current {
+          color: #000;
+          background-color: yellow;
+        }
+      }
+
+      
+    }
+    .main-area{
+      width: 80vw;
+    }
+  }
+
+}

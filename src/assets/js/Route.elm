@@ -17,6 +17,7 @@ type Route
     | SandBox String
     | CharacterList
     | EnemyList
+    | BattleSheet
 
 
 parse : Url -> Maybe Route
@@ -39,6 +40,7 @@ parser =
         , map CharacterView (s "character" </> s "view" </> string)
         , map CharacterList (s "characters")
         , map EnemyList (s "enemies")
+        , map BattleSheet (s "battle-sheet")
 
         -- , map GitHubUser string
         -- , map Repo (string </> string)

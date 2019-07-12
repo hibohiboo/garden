@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Json.Decode as D
+import Page.BattleSheet
 import Page.CharacterList
 import Page.EnemyList
 import Page.LoginUser
@@ -86,6 +87,7 @@ type Page
     | SandBoxPage SandBox.Model
     | CharacterListPage Page.CharacterList.Model
     | EnemyListPage Page.EnemyList.Model
+    | BattleSheetPage Page.BattleSheet.Model
 
 
 init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -131,6 +133,7 @@ type Msg
     | SandBoxMsg SandBox.Msg
     | CharacterListMsg Page.CharacterList.Msg
     | EnemyListMsg Page.EnemyList.Msg
+    | BattleSheetMsg Page.BattleSheet.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -290,6 +293,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        BattleSheetMsg pageBattleSheetMsg ->
+            case model.page of
+                BattleSheetPage topModel ->
+                    let
+                        ( newModel, topCmd ) =
+                            Page.BattleSheet.update pageBattleSheetMsg topModel
+                    in
+                    ( { model | page = BattleSheetPage newModel }, Cmd.map BattleSheetMsg topCmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 -- EXIT
@@ -332,6 +347,9 @@ exit model =
             m.session
 
         EnemyListPage m ->
+            m.session
+
+        BattleSheetPage m ->
             m.session
 
 
@@ -459,6 +477,15 @@ goTo maybeRoute model =
             , Cmd.map EnemyListMsg cmd
             )
 
+        Just Route.BattleSheet ->
+            let
+                ( m, cmd ) =
+                    Page.BattleSheet.init session
+            in
+            ( { model | page = BattleSheetPage m }
+            , Cmd.map BattleSheetMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -533,6 +560,9 @@ view model =
 
         EnemyListPage m ->
             Skeleton.view EnemyListMsg (Page.EnemyList.view m)
+
+        BattleSheetPage m ->
+            Skeleton.view BattleSheetMsg (Page.BattleSheet.view m)
 
 
 {-| NotFound ページ
