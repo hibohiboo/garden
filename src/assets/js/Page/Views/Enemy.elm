@@ -22,10 +22,7 @@ enemyList enemies =
 
 enemyCard : EnemyListItem -> Html msg
 enemyCard enemy =
-    div [ class "enemy-cards" ]
-        [ enemyCardMain enemy
-        , skillsCards enemy
-        ]
+    div [ class "enemy-cards" ] (enemyCardMain enemy :: skillsCards enemy)
 
 
 enemyCardMain : EnemyListItem -> Html msg
@@ -64,9 +61,9 @@ enemyCardMain enemy =
         ]
 
 
-skillsCards : EnemyListItem -> Html msg
+skillsCards : EnemyListItem -> List (Html msg)
 skillsCards enemy =
-    skillsCardMain enemy.name enemy.cards
+    [ skillsCardMain enemy.name enemy.cards ]
 
 
 skillsCardMain : String -> Array CardData -> Html msg
