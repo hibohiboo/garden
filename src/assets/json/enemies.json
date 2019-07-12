@@ -233,7 +233,7 @@
           "stringValue": "浮遊機械制御用の個体"
         },
         "degreeOfThreat": {
-          "integerValue": "1"
+          "integerValue": "2"
         },
         "tags": {
           "arrayValue": {
@@ -327,6 +327,103 @@
                     },
                     "target": {
                       "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "kHvKakx3TqLFAeR9eSHZ"
+        },
+        "activePower": {
+          "integerValue": "8"
+        }
+      }
+    },
+    {
+      "fields": {
+        "name": {
+          "stringValue": "ジャマー"
+        },
+        "memo": {
+          "stringValue": "妨害音波を発生させる浮遊機械。"
+        },
+        "degreeOfThreat": {
+          "integerValue": "1"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "機械"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "人形"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "ノイズ"
+                    },
+                    "effect": {
+                      "stringValue": "妨害1"
+                    },
+                    "timing": {
+                      "stringValue": "判定直後"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "体当たり"
+                    },
+                    "effect": {
+                      "stringValue": "ダメージ1"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "単体"
                     },
                     "cost": {
                       "integerValue": "4"
