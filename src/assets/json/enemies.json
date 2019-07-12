@@ -1271,7 +1271,7 @@
                       "stringValue": "脳汁"
                     },
                     "effect": {
-                      "stringValue": "行動力+2"
+                      "stringValue": "行動力+1"
                     },
                     "timing": {
                       "stringValue": "常時"
@@ -1295,7 +1295,7 @@
                       "stringValue": "異形化"
                     },
                     "effect": {
-                      "stringValue": "行動力+2"
+                      "stringValue": "行動力+1"
                     },
                     "timing": {
                       "stringValue": "常時"
@@ -1391,7 +1391,7 @@
           "stringValue": "supporter"
         },
         "activePower": {
-          "integerValue": "12"
+          "integerValue": "10"
         }
       }
     }
