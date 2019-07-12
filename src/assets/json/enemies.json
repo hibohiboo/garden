@@ -472,6 +472,103 @@
     {
       "fields": {
         "name": {
+          "stringValue": "サポーター"
+        },
+        "memo": {
+          "stringValue": "サポートを行う浮遊機械。"
+        },
+        "degreeOfThreat": {
+          "integerValue": "1"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "機械"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "人形"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "サポート"
+                    },
+                    "effect": {
+                      "stringValue": "支援1"
+                    },
+                    "timing": {
+                      "stringValue": "判定直後"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "サーチ"
+                    },
+                    "effect": {
+                      "stringValue": "使用済のカードを未使用にする"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "supporter"
+        },
+        "activePower": {
+          "integerValue": "8"
+        }
+      }
+    },
+    {
+      "fields": {
+        "name": {
           "stringValue": "アタッカーズ"
         },
         "memo": {
