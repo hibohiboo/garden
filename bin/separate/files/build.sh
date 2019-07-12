@@ -7,5 +7,5 @@ dir_docker=$docker_dir
 name=${1:-garden}
 
 # 拡張子指定に半角空白を入れないように注意。 【{png,jpg}:OK】【{png, jpg}:NG】
-cd $dir_docker && docker-compose run  $name yarn run cpx "/app/src/**/*.{png,jpg,gif,md}" /app/separate/pre-dist 
-cd $dir_docker && docker-compose run  $name yarn run cpx "/app/src/**/*.{png,jpg,gif,md}" /app/separate/pre-pre-dist 
+cd $dir_docker && docker-compose run  $name yarn run cpx "/app/src/**/*.{png,jpg,gif,md,json}" /app/separate/pre-dist 
+cd $dir_docker && docker-compose run  $name yarn run cpx "/app/src/**/*.{png,jpg,gif,md,json}" /app/separate/pre-pre-dist 

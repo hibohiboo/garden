@@ -46,6 +46,13 @@ module.exports = {
       },
     ],
       { context: `${opts.src}/assets/markdown` }),
+    new CopyWebpackPlugin([
+      {
+        from: './',
+        to: 'assets/json/',
+      },
+    ],
+      { context: `${opts.src}/assets/json` }),
     new MiniCssExtractPlugin({
       filename: '[name]-[hash].css',
     })
