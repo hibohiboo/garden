@@ -96,7 +96,7 @@
           "stringValue": "kHvKakx3TqLFAeR9eSHZ"
         },
         "activePower": {
-          "integerValue": "8"
+          "integerValue": "5"
         }
       }
     },
@@ -217,7 +217,7 @@
           }
         },
         "enemyId": {
-          "stringValue": "kHvKakx3TqLFAeR9eSHZ"
+          "stringValue": "shielddecoi"
         },
         "activePower": {
           "integerValue": "6"
@@ -269,7 +269,7 @@
                       "stringValue": "行進指揮"
                     },
                     "effect": {
-                      "stringValue": "移動0～1。対象は拒否可能。移動方向は対象ごとに決定。"
+                      "stringValue": "移動0～1。対象は拒否可能。移動方向は対象ごとに使用者が決定。"
                     },
                     "timing": {
                       "stringValue": "アクション"
@@ -341,7 +341,7 @@
           }
         },
         "enemyId": {
-          "stringValue": "kHvKakx3TqLFAeR9eSHZ"
+          "stringValue": "commandar"
         },
         "activePower": {
           "integerValue": "8"
@@ -433,12 +433,392 @@
                     }
                   }
                 }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "ふよふよ"
+                    },
+                    "effect": {
+                      "stringValue": "移動1"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
               }
             ]
           }
         },
         "enemyId": {
-          "stringValue": "kHvKakx3TqLFAeR9eSHZ"
+          "stringValue": "jammer"
+        },
+        "activePower": {
+          "integerValue": "8"
+        }
+      }
+    },
+    {
+      "fields": {
+        "name": {
+          "stringValue": "アタッカーズ"
+        },
+        "memo": {
+          "stringValue": "連携して攻撃を仕掛けてくる浮遊機械の群れ。"
+        },
+        "degreeOfThreat": {
+          "integerValue": "2"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "機械"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "人形"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "群れ"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "群れ攻撃"
+                    },
+                    "effect": {
+                      "stringValue": "ダメージ1。連撃：命中したらダメージ処理の後、追加で同じ攻撃をコスト不要で可能。命中し続ける限り最大(同エリアのアタッカーズの数)回まで追加で行える。追加の攻撃の対象は別にしてもよい。"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "わらわら"
+                    },
+                    "effect": {
+                      "stringValue": "移動妨害1"
+                    },
+                    "timing": {
+                      "stringValue": "割込み"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "ふよふよ"
+                    },
+                    "effect": {
+                      "stringValue": "移動1"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "群れ"
+                    },
+                    "effect": {
+                      "stringValue": "範囲攻撃でうけるダメージが2倍になる。この効果はこのスキルが負傷しても消滅しない。"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "群れの犠牲"
+                    },
+                    "effect": {
+                      "stringValue": "負傷決定後、負傷を受けるカード１つの代わりにこのカードを負傷させてよい。"
+                    },
+                    "timing": {
+                      "stringValue": "負傷"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "atackers"
+        },
+        "activePower": {
+          "integerValue": "8"
+        }
+      }
+    },
+    {
+      "fields": {
+        "name": {
+          "stringValue": "シューターズ"
+        },
+        "memo": {
+          "stringValue": "連携して射撃を仕掛けてくる浮遊機械の群れ。"
+        },
+        "degreeOfThreat": {
+          "integerValue": "2"
+        },
+        "tags": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "機械"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "人形"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "name": {
+                      "stringValue": "群れ"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cards": {
+          "arrayValue": {
+            "values": [
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "一斉射撃"
+                    },
+                    "effect": {
+                      "stringValue": "ダメージ2。連撃：命中したらダメージ処理の後、追加で同じ攻撃をコスト不要で可能。命中し続ける限り最大(同エリアのシューターズの数)回まで追加で行える。追加の攻撃の対象は別にしてもよい。"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "わらわら"
+                    },
+                    "effect": {
+                      "stringValue": "移動妨害1"
+                    },
+                    "timing": {
+                      "stringValue": "割込み"
+                    },
+                    "target": {
+                      "stringValue": "単体"
+                    },
+                    "cost": {
+                      "integerValue": "1"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "ふよふよ"
+                    },
+                    "effect": {
+                      "stringValue": "移動1"
+                    },
+                    "timing": {
+                      "stringValue": "アクション"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "4"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "群れ"
+                    },
+                    "effect": {
+                      "stringValue": "範囲攻撃でうけるダメージが2倍になる。この効果はこのスキルが負傷しても消滅しない。"
+                    },
+                    "timing": {
+                      "stringValue": "常時"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "mapValue": {
+                  "fields": {
+                    "cardName": {
+                      "stringValue": "群れの犠牲"
+                    },
+                    "effect": {
+                      "stringValue": "負傷決定後、負傷を受けるカード１つの代わりにこのカードを負傷させてよい。"
+                    },
+                    "timing": {
+                      "stringValue": "負傷"
+                    },
+                    "target": {
+                      "stringValue": "自身"
+                    },
+                    "cost": {
+                      "integerValue": "0"
+                    },
+                    "range": {
+                      "integerValue": "0"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "enemyId": {
+          "stringValue": "atackers"
         },
         "activePower": {
           "integerValue": "8"
