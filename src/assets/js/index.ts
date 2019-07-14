@@ -85,7 +85,6 @@ app.ports.getCharacter.subscribe(async data => {
   const storeUserId: string = data[0];
   const characterId: string = data[1];
   const character = await getCharacter(storeUserId, characterId, db);
-  console.log('getChar', character);
   app.ports.gotCharacter.send(JSON.stringify(character));
 });
 
