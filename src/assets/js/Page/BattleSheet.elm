@@ -105,7 +105,7 @@ viewTopPage : Model -> Html Msg
 viewTopPage model =
     div [ class "wrapper" ]
         [ div [ class "main-area" ]
-            [ h1 [ class "center", style "font-size" "3rem" ] [ text "戦闘シート" ]
+            [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
             , countController model.count InputCount IncreaseCount DecreaseCount
             ]
         , countArea (List.reverse <| List.range -10 20) model.count

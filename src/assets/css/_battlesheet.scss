@@ -29,6 +29,11 @@
         box-sizing: border-box;
         border-top: solid #eee 1px;
         text-align: center;
+        &:nth-child(6n),
+        &:nth-child(6n-1),
+        &:nth-child(6n-2), {
+          background-color: #555;
+        }
         &.current {
           color: #000;
           background-color: yellow;
