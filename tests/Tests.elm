@@ -538,42 +538,45 @@ getFirestoreApiJson =
                         actualResult =
                             D.decodeString Character.characterDecoderFromFireStoreApi """
 {
+  "name": "projects/garden-2a6de/databases/(default)/documents/characters/05TsdJiaAyAPH8RLgsqt",
   "fields": {
-    "characterId": {
-      "stringValue": "testCharId"
+    "storeUserId": {
+      "stringValue": "GTujnJoQ7wE1eOvHlfe0"
     },
-    "createdAt": {
-      "timestampValue": "2019-06-11T14:33:54.226Z"
+    "characterId": {
+      "stringValue": "05TsdJiaAyAPH8RLgsqt"
+    },
+    "name": {
+      "stringValue": "狐狸"
+    },
+    "organ": {
+      "stringValue": "脚"
     },
     "trait": {
       "stringValue": "身体強化"
     },
-    "updatedAt": {
-      "timestampValue": "2019-06-15T01:25:14.040Z"
+    "mutagen": {
+      "stringValue": "血"
     },
-    "kana": {
-      "stringValue": "コリ"
-    },
-    "labo": {
-      "stringValue": "旧第一研究所"
-    },
-    "storeUserId": {
-      "stringValue": "testStoreUserId"
+    "activePower": {
+      "integerValue": "4"
     }
   }
 }
                         """
 
-                        -- actual =
-                        --     case actualResult of
-                        --         Ok r ->
-                        --             r
-                        --         Err _ ->
-                        --             Character.Char "" ""
-                        -- expect =
-                        --     Character.Char "testCharId" "testStoreUserId"
+                        actual =
+                            case actualResult of
+                                Ok r ->
+                                    r
+
+                                Err _ ->
+                                    Character.initCharacter "GTujnJoQ7wE1eOvHlfe0"
+
+                        expect =
+                            Character.Character "GTujnJoQ7wE1eOvHlfe0" "05TsdJiaAyAPH8RLgsqt" "狐狸" "" "脚" "身体強化" "血" (Array.fromList []) "" "" "" 4 False "" "" "" "" "" "" ""
                     in
-                    Expect.equal "" ""
+                    Expect.equal actual expect
             , test "タグを取得するテスト" <|
                 \_ ->
                     let

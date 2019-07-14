@@ -84,7 +84,8 @@ app.ports.saveNewCharacter.subscribe(async json => {
 app.ports.getCharacter.subscribe(async data => {
   const storeUserId: string = data[0];
   const characterId: string = data[1];
-  const character = getCharacter(storeUserId, characterId, db);
+  const character = await getCharacter(storeUserId, characterId, db);
+  console.log('getChar', character);
   app.ports.gotCharacter.send(JSON.stringify(character));
 });
 

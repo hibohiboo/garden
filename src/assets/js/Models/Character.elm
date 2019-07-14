@@ -113,7 +113,7 @@ characterDecoderFromFireStoreApiHealper =
         |> required "storeUserId" FSApi.string
         |> required "characterId" FSApi.string
         |> required "name" FSApi.string
-        |> required "kana" FSApi.string
+        |> optional "kana" FSApi.string ""
         |> required "organ" FSApi.string
         |> optional "trait" FSApi.string ""
         |> optional "mutagen" FSApi.string ""
