@@ -3,8 +3,6 @@ module Page.BattleSheet exposing (Model, Msg, init, initModel, update, view)
 import FirestoreApi as FSApi
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
-import Html.Events.Extra exposing (onChange)
 import Http
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.BattleSheet exposing (..)
@@ -53,6 +51,8 @@ initModel session enemies =
 type Msg
     = GotEnemies (Result Http.Error String)
     | InputCount String
+    | IncreaseCount
+    | DecreaseCount
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -75,6 +75,12 @@ update msg model =
                             0
             in
             ( { model | count = newCnt }, Cmd.none )
+
+        IncreaseCount ->
+            ( { model | count = model.count + 1 }, Cmd.none )
+
+        DecreaseCount ->
+            ( { model | count = model.count - 1 }, Cmd.none )
 
 
 updateEnemiesModel : Model -> String -> Model
@@ -100,10 +106,7 @@ viewTopPage model =
     div [ class "wrapper" ]
         [ div [ class "main-area" ]
             [ h1 [ class "center", style "font-size" "3rem" ] [ text "戦闘シート" ]
-            , div [ class "input-field" ]
-                [ input [ id "count", type_ "number", value (String.fromInt model.count), onChange InputCount ] []
-                , label [ class "active" ] [ text "カウント" ]
-                ]
+            , countController model.count InputCount IncreaseCount DecreaseCount
             ]
         , countArea (List.reverse <| List.range -10 20) model.count
         ]

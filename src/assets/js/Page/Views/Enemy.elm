@@ -96,7 +96,7 @@ card data =
             [ div [ class "skill-name", style "min-width" "0" ] (span [] [ text data.cardName ] :: List.map (\t -> tag t.name) data.tags)
             , div [ style "display" "flex", style "margin-left" "auto" ]
                 [ div [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "済" ] ] ]
-                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "傷" ] ] ]
+                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in" ] [], span [] [ text "傷" ] ] ]
                 ]
             ]
         , div [ class "skill-description" ]

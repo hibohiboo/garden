@@ -2,6 +2,9 @@
   .page-head {
     display: none;
   }
+  .page-main {
+    padding: 0;
+  }
   h1 {
     padding:0;
     margin:5px;
@@ -9,15 +12,20 @@
   .wrapper {
     display: flex;
     width: 100vw;
+    overflow: hidden;
     .count-area {
       background-color: #000;
       color: #fff;
       height: 100vh;
       font-size: 0.8rem;
-      flex-basis: 3.2rem;
-
+      flex-basis: 2.8rem;
+      margin-left: auto;
+      ul {
+        margin: 0;
+      }
       li {
-        height: 3vh;
+        height: 1.2rem;
+        line-height: 1.6;
         box-sizing: border-box;
         border-top: solid #eee 1px;
         text-align: center;
@@ -31,6 +39,7 @@
     }
     .main-area{
       width: 80vw;
+      padding: 5px;
     }
   }
 
