@@ -1,4 +1,4 @@
-module FirestoreApi exposing (array, arrayFromJson, bool, boolFromJson, characterUrl, characterUrlFromFireStore, charactersUrl, charactersUrlWithLimit, charactersUrlWithPageToken, enemiesUrl, fields, int, intFromJson, list, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (array, arrayFromJson, bool, boolFromJson, characterDetailsUrlWithPageToken, characterUrl, characterUrlFromFireStore, charactersUrl, charactersUrlWithLimit, charactersUrlWithPageToken, enemiesUrl, fields, int, intFromJson, list, string, stringFromJson, timestamp, timestampFromJson)
 
 import Array exposing (Array)
 import Json.Decode as D exposing (Decoder)
@@ -43,6 +43,16 @@ charactersUrlWithPageToken token =
 
 characterUrlFromFireStore characterId =
     databaseUrl ++ "/(default)/documents/characters/" ++ characterId
+
+
+characterDetailsUrl : String
+characterDetailsUrl =
+    storeUrl ++ "/characters/"
+
+
+characterDetailsUrlWithPageToken : String -> String
+characterDetailsUrlWithPageToken token =
+    characterDetailsUrl ++ "?pageSize=" ++ String.fromInt pageLimit ++ "&pageToken=" ++ token
 
 
 enemiesUrl : String

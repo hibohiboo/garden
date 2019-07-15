@@ -6,6 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
+import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.BattleSheet exposing (countArea, countController, enemyListModal, inputCharacters, inputEnemies)
 import Session
@@ -19,6 +20,7 @@ import Utils.Util exposing (deleteAt)
 type alias Model =
     { session : Session.Data
     , enemyList : List EnemyListItem
+    , characterList : List Character
     , count : Int
     , modalState : Modal.ModalState
     , enemies : Array BattleSheetEnemy
@@ -40,15 +42,30 @@ init session =
                 Nothing ->
                     []
 
+        characterList =
+            case Session.getCharacterDetails session "" of
+                Just json ->
+                    Character.characterListFromJson json
+
+                Nothing ->
+                    []
+
         cmd =
             if enemyList == [] then
                 Session.fetchEnemies GotEnemies
 
             else
                 Cmd.none
+
+        cmd2 =
+            if enemyList == [] then
+                Session.fetchCharacterDetails GotCharacters ""
+
+            else
+                Cmd.none
     in
-    ( initModel session enemyList
-    , cmd
+    ( initModel session enemyList characterList
+    , Cmd.batch [ cmd, cmd2 ]
     )
 
 
@@ -60,9 +77,9 @@ maxAreaCount =
 --openCountAreaNumberを maxAreaCountにすることで0の位置にあわせる
 
 
-initModel : Session.Data -> List EnemyListItem -> Model
-initModel session enemyList =
-    Model session enemyList 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "")
+initModel : Session.Data -> List EnemyListItem -> List Character -> Model
+initModel session enemyList characterList =
+    Model session enemyList characterList 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "")
 
 
 initAreaCount =
@@ -71,6 +88,7 @@ initAreaCount =
 
 type Msg
     = GotEnemies (Result Http.Error String)
+    | GotCharacters (Result Http.Error String)
     | InputCount String
     | IncreaseCount
     | DecreaseCount
@@ -96,6 +114,12 @@ update msg model =
             ( updateEnemiesModel model json, Cmd.none )
 
         GotEnemies (Err _) ->
+            ( model, Cmd.none )
+
+        GotCharacters (Ok json) ->
+            ( updateCharactersModel model json, Cmd.none )
+
+        GotCharacters (Err _) ->
             ( model, Cmd.none )
 
         InputCount count ->
@@ -172,6 +196,14 @@ updateEnemiesModel : Model -> String -> Model
 updateEnemiesModel model json =
     { model
         | enemyList = EnemyListItem.enemyListFromJson json
+        , session = Session.addEnemies model.session json
+    }
+
+
+updateCharactersModel : Model -> String -> Model
+updateCharactersModel model json =
+    { model
+        | characterList = List.concat [ model.characterList, Character.characterListFromJson json ]
         , session = Session.addEnemies model.session json
     }
 

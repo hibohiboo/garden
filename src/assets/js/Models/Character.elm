@@ -2,6 +2,7 @@ module Models.Character exposing
     ( Character
     , characterDecoder
     , characterDecoderFromFireStoreApi
+    , characterListFromJson
     , encodeCharacter
     , initBaseCards
     , initCharacter
@@ -10,7 +11,7 @@ module Models.Character exposing
 import Array exposing (Array)
 import FirestoreApi as FSApi
 import GoogleSpreadSheetApi as GSAPI
-import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
+import Json.Decode as D exposing (Decoder, Value, decodeString, field, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import Json.Encode as E
 import Models.Card as Card
@@ -79,27 +80,27 @@ encodeCharacterToValue c =
 
 characterDecoder : Decoder Character
 characterDecoder =
-    Decode.succeed Character
-        |> Json.Decode.Pipeline.required "storeUserId" Decode.string
-        |> Json.Decode.Pipeline.required "characterId" Decode.string
-        |> Json.Decode.Pipeline.required "name" Decode.string
-        |> Json.Decode.Pipeline.required "kana" Decode.string
-        |> Json.Decode.Pipeline.required "organ" Decode.string
-        |> Json.Decode.Pipeline.optional "trait" Decode.string ""
-        |> Json.Decode.Pipeline.optional "mutagen" Decode.string ""
-        |> Json.Decode.Pipeline.optional "cards" (Decode.array Card.cardDecoderFromJson) (Array.fromList [])
-        |> Json.Decode.Pipeline.optional "reason" Decode.string ""
-        |> Json.Decode.Pipeline.optional "labo" Decode.string ""
-        |> Json.Decode.Pipeline.optional "memo" Decode.string ""
-        |> Json.Decode.Pipeline.optional "activePower" Decode.int 4
-        |> Json.Decode.Pipeline.optional "isPublished" Decode.bool False
-        |> Json.Decode.Pipeline.optional "cardImage" Decode.string ""
-        |> Json.Decode.Pipeline.optional "cardImageData" Decode.string ""
-        |> Json.Decode.Pipeline.optional "characterImage" Decode.string ""
-        |> Json.Decode.Pipeline.optional "characterImageData" Decode.string ""
-        |> Json.Decode.Pipeline.optional "cardImageCreatorName" Decode.string ""
-        |> Json.Decode.Pipeline.optional "cardImageCreatorSite" Decode.string ""
-        |> Json.Decode.Pipeline.optional "cardImageCreatorUrl" Decode.string ""
+    D.succeed Character
+        |> required "storeUserId" D.string
+        |> required "characterId" D.string
+        |> required "name" D.string
+        |> required "kana" D.string
+        |> required "organ" D.string
+        |> optional "trait" D.string ""
+        |> optional "mutagen" D.string ""
+        |> optional "cards" (D.array Card.cardDecoderFromJson) (Array.fromList [])
+        |> optional "reason" D.string ""
+        |> optional "labo" D.string ""
+        |> optional "memo" D.string ""
+        |> optional "activePower" D.int 4
+        |> optional "isPublished" D.bool False
+        |> optional "cardImage" D.string ""
+        |> optional "cardImageData" D.string ""
+        |> optional "characterImage" D.string ""
+        |> optional "characterImageData" D.string ""
+        |> optional "cardImageCreatorName" D.string ""
+        |> optional "cardImageCreatorSite" D.string ""
+        |> optional "cardImageCreatorUrl" D.string ""
 
 
 characterDecoderFromFireStoreApi : Decoder Character
@@ -109,7 +110,7 @@ characterDecoderFromFireStoreApi =
 
 characterDecoderFromFireStoreApiHealper : Decoder Character
 characterDecoderFromFireStoreApiHealper =
-    Decode.succeed Character
+    D.succeed Character
         |> required "storeUserId" FSApi.string
         |> required "characterId" FSApi.string
         |> required "name" FSApi.string
@@ -130,6 +131,21 @@ characterDecoderFromFireStoreApiHealper =
         |> optional "cardImageCreatorName" FSApi.string ""
         |> optional "cardImageCreatorSite" FSApi.string ""
         |> optional "cardImageCreatorUrl" FSApi.string ""
+
+
+characterListDecoder : Decoder (List Character)
+characterListDecoder =
+    D.at [ "documents" ] (D.list characterDecoderFromFireStoreApiHealper)
+
+
+characterListFromJson : String -> List Character
+characterListFromJson json =
+    case D.decodeString characterListDecoder json of
+        Ok item ->
+            item
+
+        Err _ ->
+            []
 
 
 
