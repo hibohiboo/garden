@@ -104,3 +104,14 @@
   }
 
 }
+
+@media (min-width: 1260px) {
+  .page-battlesheet {
+    .page-main {
+      grid-row: 1;
+    }
+    .page-foot {
+      grid-column: -1/1;
+    }
+  } 
+}

@@ -28,15 +28,14 @@ type alias BattleSheetCharacter =
 
 
 type alias CountAreaItem =
-    { isShow : Bool
-    , characters : List String
+    { characters : List String
     , enemies : List String
     }
 
 
 initCountAreaItem : CountAreaItem
 initCountAreaItem =
-    CountAreaItem False [] []
+    CountAreaItem [] []
 
 
 initBatlleSheetEnemy : BattleSheetEnemy
@@ -84,7 +83,7 @@ getCountAreaItems : List Int -> Array BattleSheetCharacter -> Array BattleSheetE
 getCountAreaItems counts characters enemies =
     List.map
         (\i ->
-            CountAreaItem False (filterActivePower i characters) (filterActivePower i enemies)
+            CountAreaItem (filterActivePower i characters) (filterActivePower i enemies)
         )
         counts
 
