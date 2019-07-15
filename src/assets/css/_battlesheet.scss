@@ -11,16 +11,17 @@
   }
   .wrapper {
     display: flex;
-    width: 100vw;
     overflow: hidden;
+
     .count-area {
-      background-color: #000;
-      color: #fff;
       height: 100vh;
       font-size: 0.8rem;
       flex-basis: 2.8rem;
       margin-left: auto;
-      > div{
+      display: flex;
+
+
+      > div > div{
         width: 32px;// アイコンを中央に
       }
       ul {
@@ -30,25 +31,74 @@
         height: 1.2rem;
         line-height: 1.6;
         box-sizing: border-box;
-        border-top: solid #eee 1px;
         text-align: center;
-        width: 30px;
+        position: relative;
+      }
+      .count-numbers {
+        background-color: #000;
+        color: #fff;
 
-        &:nth-child(6n),
-        &:nth-child(6n-1),
-        &:nth-child(6n-2), {
-          background-color: #555;
+        li {
+          width: 30px;
+          border-top: solid #eee 1px;
+
+          &:nth-child(6n),
+          &:nth-child(6n-1),
+          &:nth-child(6n-2) {
+            background-color: #555;
+          }
+          &.current {
+            color: #000;
+            background-color: yellow;
+          }
         }
-        &.current {
-          color: #000;
-          background-color: yellow;
+      }
+    }
+    .count-characters {
+      $bgColor: #000;
+      $fontColor: #fff;
+
+      .character-name {
+        white-space: nowrap;
+        font-size: 0.5rem;
+        padding: 2px;
+      }
+      
+      .multiple-characers {
+        .characters-title {
+          border: solid 1px $bgColor;
+          padding: 1px;
+        }
+        ul {
+          margin-right: 10px;
+          border: solid 1px $bgColor;
+          border-top: none;
+          padding-left :1px;
+          padding-right:1px;
+        }
+        ul.hide {
+          display: none;
+        }
+      }
+      .triangle-wrapper {
+        display: flex;
+        align-items:center;
+
+        .triangle{
+          $size: 5px;
+          width: 0;
+          height: 0;
+          border-left: $size solid #000;
+          border-right: $size solid transparent;
+          border-bottom: $size solid transparent;
+          border-top: $size solid transparent;
+          margin-left: auto; // 右端に寄せる
         }
       }
 
-      
     }
     .main-area{
-      width: 80vw;
+      max-width: 80vw;
       padding: 5px;
     }
   }

@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, initBatlleSheetCharacter, initBatlleSheetEnemy, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
 
 import Array exposing (Array)
 import Models.Character as Character exposing (Character)
@@ -25,6 +25,18 @@ type alias BattleSheetCharacter =
     , position : Int
     , data : Maybe Character
     }
+
+
+type alias CountAreaItem =
+    { isShow : Bool
+    , characters : List String
+    , enemies : List String
+    }
+
+
+initCountAreaItem : CountAreaItem
+initCountAreaItem =
+    CountAreaItem False [] []
 
 
 initBatlleSheetEnemy : BattleSheetEnemy
@@ -66,3 +78,20 @@ updateBatlleSheetItemActivePower index ap enemies =
 
         Nothing ->
             enemies
+
+
+getCountAreaItems : List Int -> Array BattleSheetCharacter -> Array BattleSheetEnemy -> List CountAreaItem
+getCountAreaItems counts characters enemies =
+    List.map
+        (\i ->
+            CountAreaItem False (filterActivePower i characters) (filterActivePower i enemies)
+        )
+        counts
+
+
+filterActivePower : Int -> Array { a | activePower : Int, name : String } -> List String
+filterActivePower i characters =
+    characters
+        |> Array.toList
+        |> List.filter (\x -> x.activePower == i)
+        |> List.map (\x -> x.name)

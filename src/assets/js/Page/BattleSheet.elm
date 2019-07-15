@@ -5,7 +5,7 @@ import FirestoreApi as FSApi
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, initBatlleSheetCharacter, initBatlleSheetEnemy, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
+import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.BattleSheet exposing (countArea, countController, inputCharacters, inputEnemies)
 import Session
@@ -52,6 +52,10 @@ init session =
 initModel : Session.Data -> List EnemyListItem -> Model
 initModel session enemyList =
     Model session enemyList 0 Modal.Close Array.empty Array.empty
+
+
+initAreaCount =
+    List.reverse <| List.range -10 20
 
 
 type Msg
@@ -160,5 +164,5 @@ viewTopPage model =
             , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower model.enemies
             , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower model.characters
             ]
-        , countArea (List.reverse <| List.range -10 20) model.count
+        , countArea initAreaCount model.count (getCountAreaItems initAreaCount model.characters model.enemies)
         ]

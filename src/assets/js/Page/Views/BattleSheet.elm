@@ -8,26 +8,102 @@ import Html.Events.Extra exposing (onChange)
 import Models.BattleSheet exposing (..)
 
 
-countArea : List Int -> Int -> Html msg
-countArea countList current =
+countArea : List Int -> Int -> List CountAreaItem -> Html msg
+countArea countList current areaItems =
     div [ class "count-area" ]
-        [ div [ style "text-align" "center" ] [ i [ class "material-icons" ] [ text "schedule" ] ]
-        , ul [] <|
-            List.map
-                (\i ->
-                    li
-                        [ class
-                            (if i == current then
-                                "current"
-
-                             else
-                                ""
-                            )
-                        ]
-                        [ text (String.fromInt i) ]
-                )
-                countList
+        [ div [ class "count-characters" ]
+            [ div [ style "text-align" "center" ] [ i [ class "material-icons" ] [ text "person" ] ]
+            , ul [ class "" ] <| List.map (\c -> countCharacters c) areaItems
+            ]
+        , div [ class "count-numbers" ]
+            [ div [ style "text-align" "center" ] [ i [ class "material-icons" ] [ text "schedule" ] ]
+            , ul [] <| List.map (\i -> countNumbers i current) countList
+            ]
         ]
+
+
+countNumbers : Int -> Int -> Html msg
+countNumbers i current =
+    let
+        className =
+            if i == current then
+                "current"
+
+            else
+                ""
+    in
+    li [ class className ] [ text (String.fromInt i) ]
+
+
+countCharacters : CountAreaItem -> Html msg
+countCharacters item =
+    let
+        enemiesCnt =
+            List.length item.enemies
+
+        charactersCnt =
+            List.length item.characters
+
+        content =
+            if enemiesCnt == 0 && charactersCnt == 0 then
+                text ""
+
+            else if enemiesCnt == 1 && charactersCnt == 0 then
+                let
+                    name =
+                        item.enemies |> List.head |> Maybe.withDefault ""
+                in
+                div [ class "triangle-wrapper" ]
+                    [ div [ class "character-name" ] [ text name ]
+                    , div [ class "triangle" ] []
+                    ]
+
+            else if enemiesCnt == 0 && charactersCnt == 1 then
+                let
+                    name =
+                        item.characters |> List.head |> Maybe.withDefault ""
+                in
+                div [ class "triangle-wrapper" ]
+                    [ div [ class "character-name" ] [ text name ]
+                    , div [ class "triangle" ] []
+                    ]
+
+            else
+                let
+                    eCnt =
+                        if enemiesCnt == 0 then
+                            ""
+
+                        else
+                            "E:" ++ String.fromInt enemiesCnt
+
+                    cCnt =
+                        if charactersCnt == 0 then
+                            ""
+
+                        else
+                            "C:" ++ String.fromInt charactersCnt
+
+                    title =
+                        if eCnt /= "" && cCnt /= "" then
+                            eCnt ++ "," ++ cCnt
+
+                        else if eCnt /= "" then
+                            eCnt
+
+                        else
+                            cCnt
+                in
+                div [ class "multiple-characers" ]
+                    [ div [ class "triangle-wrapper" ]
+                        [ div [ class "characters-title" ]
+                            [ div [ class "character-name" ] [ text title ] ]
+                        , div [ class "triangle" ] []
+                        ]
+                    , ul [ class "hide" ] (List.concat [ List.map (\name -> li [ class "character-name" ] [ text name ]) item.characters, List.map (\name -> li [ class "character-name" ] [ text name ]) item.enemies ])
+                    ]
+    in
+    li [] [ content ]
 
 
 countController : Int -> (String -> msg) -> msg -> msg -> Html msg
