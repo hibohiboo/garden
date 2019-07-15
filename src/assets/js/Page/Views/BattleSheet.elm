@@ -8,12 +8,12 @@ import Html.Events.Extra exposing (onChange)
 import Models.BattleSheet exposing (..)
 
 
-countArea : List Int -> Int -> List CountAreaItem -> Html msg
-countArea countList current areaItems =
+countArea : List Int -> Int -> Int -> (Int -> msg) -> List CountAreaItem -> Html msg
+countArea countList current openNumber updateMsg areaItems =
     div [ class "count-area" ]
         [ div [ class "count-characters" ]
             [ div [ style "text-align" "center" ] [ i [ class "material-icons" ] [ text "person" ] ]
-            , ul [ class "" ] <| List.map (\c -> countCharacters c) areaItems
+            , ul [ class "" ] <| Array.toList <| Array.indexedMap (\i c -> countCharacters (i == openNumber) c (updateMsg i)) <| Array.fromList <| areaItems
             ]
         , div [ class "count-numbers" ]
             [ div [ style "text-align" "center" ] [ i [ class "material-icons" ] [ text "schedule" ] ]
@@ -35,8 +35,8 @@ countNumbers i current =
     li [ class className ] [ text (String.fromInt i) ]
 
 
-countCharacters : CountAreaItem -> Html msg
-countCharacters item =
+countCharacters : Bool -> CountAreaItem -> msg -> Html msg
+countCharacters isShowDetail item updateMsg =
     let
         enemiesCnt =
             List.length item.enemies
@@ -93,6 +93,13 @@ countCharacters item =
 
                         else
                             cCnt
+
+                    ulClass =
+                        if isShowDetail then
+                            ""
+
+                        else
+                            "hide"
                 in
                 div [ class "multiple-characers" ]
                     [ div [ class "triangle-wrapper" ]
@@ -100,10 +107,10 @@ countCharacters item =
                             [ div [ class "character-name" ] [ text title ] ]
                         , div [ class "triangle" ] []
                         ]
-                    , ul [ class "hide" ] (List.concat [ List.map (\name -> li [ class "character-name" ] [ text name ]) item.characters, List.map (\name -> li [ class "character-name" ] [ text name ]) item.enemies ])
+                    , ul [ class ulClass ] (List.concat [ List.map (\name -> li [ class "character-name" ] [ text name ]) item.characters, List.map (\name -> li [ class "character-name" ] [ text name ]) item.enemies ])
                     ]
     in
-    li [] [ content ]
+    li [ onClick updateMsg ] [ content ]
 
 
 countController : Int -> (String -> msg) -> msg -> msg -> Html msg

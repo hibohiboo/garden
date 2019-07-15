@@ -558,7 +558,7 @@ ul.skill-button-list {
   display: block;
   top: 10%;
 }
-@-webkit-keyframes modalFadeIn {
+@keyframes modalFadeIn {
   0% {
     opacity: 0;
     top: 20%;

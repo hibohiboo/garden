@@ -23,6 +23,7 @@ type alias Model =
     , modalState : Modal.ModalState
     , enemies : Array BattleSheetEnemy
     , characters : Array BattleSheetCharacter
+    , openCountAreaNumber : Int
     }
 
 
@@ -49,13 +50,21 @@ init session =
     )
 
 
+maxAreaCount =
+    20
+
+
+
+--openCountAreaNumberを maxAreaCountにすることで0の位置にあわせる
+
+
 initModel : Session.Data -> List EnemyListItem -> Model
 initModel session enemyList =
-    Model session enemyList 0 Modal.Close Array.empty Array.empty
+    Model session enemyList 0 Modal.Close Array.empty Array.empty maxAreaCount
 
 
 initAreaCount =
-    List.reverse <| List.range -10 20
+    List.reverse <| List.range -10 maxAreaCount
 
 
 type Msg
@@ -73,6 +82,7 @@ type Msg
     | DeleteCharacter Int
     | UpdateCharacterName Int String
     | UpdateCharacterActivePower Int String
+    | UpdateOpenCountAreaNumber Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -132,6 +142,9 @@ update msg model =
         UpdateCharacterActivePower index ap ->
             ( { model | characters = updateBatlleSheetItemActivePower index ap model.characters }, Cmd.none )
 
+        UpdateOpenCountAreaNumber num ->
+            ( { model | openCountAreaNumber = num }, Cmd.none )
+
 
 
 --
@@ -164,5 +177,5 @@ viewTopPage model =
             , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower model.enemies
             , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower model.characters
             ]
-        , countArea initAreaCount model.count (getCountAreaItems initAreaCount model.characters model.enemies)
+        , countArea initAreaCount model.count model.openCountAreaNumber UpdateOpenCountAreaNumber (getCountAreaItems initAreaCount model.characters model.enemies)
         ]
