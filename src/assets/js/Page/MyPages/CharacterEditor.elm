@@ -8,14 +8,15 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Html.Events.Extra exposing (onChange)
 import Models.Card as Card
-import Models.Character exposing (..)
-import Models.CharacterEditor exposing (..)
+import Models.Character exposing (Character)
+import Models.CharacterEditor exposing (EditorModel)
 import Models.Tag exposing (Tag)
 import Task
 import Url
 import Url.Builder
 import Utils.List.Extra exposing (findIndex)
 import Utils.ModalWindow as Modal
+import Utils.Util exposing (deleteAt)
 
 
 type Msg
@@ -59,20 +60,6 @@ type LoadErr
 
 update : Msg -> Character -> EditorModel Msg -> ( ( Character, EditorModel Msg ), Cmd Msg )
 update msg char editor =
-    let
-        deleteAt i arrays =
-            let
-                len =
-                    Array.length arrays
-
-                head =
-                    Array.slice 0 i arrays
-
-                tail =
-                    Array.slice (i + 1) len arrays
-            in
-            Array.append head tail
-    in
     case msg of
         InputName s ->
             let
