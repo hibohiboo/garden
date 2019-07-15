@@ -161,7 +161,7 @@ update msg model =
                 bse =
                     BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 0 (Just enemy)
             in
-            ( { model | enemies = Array.push bse model.enemies }, Cmd.none )
+            update CloseModal { model | enemies = Array.push bse model.enemies }
 
 
 
