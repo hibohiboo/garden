@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addCards, addCharacter, addCharacters, addEnemies, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchCharacters, fetchEnemies, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getCharacters, getEnemies, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
+module Session exposing (Data, Version, addCards, addCharacter, addCharacters, addEnemies, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchCharacters, fetchCharactersWithPageToken, fetchEnemies, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getCharacters, getCharactersWithPageToken, getEnemies, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
 
 import Dict
 import FirestoreApi
@@ -329,6 +329,11 @@ getCharacters data =
     getJsonData data FirestoreApi.charactersUrlWithLimit
 
 
+getCharactersWithPageToken : Data -> String -> Maybe String
+getCharactersWithPageToken data token =
+    getJsonData data (FirestoreApi.charactersUrlWithPageToken token)
+
+
 addCharacters : Data -> String -> Data
 addCharacters data json =
     addJsonData FirestoreApi.charactersUrl json data
@@ -337,6 +342,11 @@ addCharacters data json =
 fetchCharacters : (Result Http.Error String -> msg) -> Cmd msg
 fetchCharacters toMsg =
     fetchJsonData toMsg FirestoreApi.charactersUrlWithLimit
+
+
+fetchCharactersWithPageToken : (Result Http.Error String -> msg) -> String -> Cmd msg
+fetchCharactersWithPageToken toMsg token =
+    fetchJsonData toMsg (FirestoreApi.charactersUrlWithPageToken token)
 
 
 

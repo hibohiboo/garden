@@ -462,7 +462,7 @@ goTo maybeRoute model =
         Just Route.CharacterList ->
             let
                 ( m, cmd ) =
-                    Page.CharacterList.init session
+                    Page.CharacterList.init session ""
             in
             ( { model | page = CharacterListPage m }
             , Cmd.map CharacterListMsg cmd
@@ -471,7 +471,7 @@ goTo maybeRoute model =
         Just (Route.CharacterListNext nextToken) ->
             let
                 ( m, cmd ) =
-                    Page.CharacterList.init session
+                    Page.CharacterList.init session nextToken
             in
             ( { model | page = CharacterListPage m }
             , Cmd.map CharacterListMsg cmd

@@ -22,11 +22,15 @@ type alias Model =
     }
 
 
-init : Session.Data -> ( Model, Cmd Msg )
-init session =
+init : Session.Data -> String -> ( Model, Cmd Msg )
+init session token =
     let
         json =
-            Session.getCharacters session |> Maybe.withDefault ""
+            if token == "" then
+                Session.getCharacters session |> Maybe.withDefault ""
+
+            else
+                Session.getCharactersWithPageToken session token |> Maybe.withDefault ""
 
         characters =
             if json == "" then
@@ -43,8 +47,11 @@ init session =
                 CharacterListItem.nextTokenFromJson json
 
         cmd =
-            if characters == [] then
+            if characters == [] && token == "" then
                 Session.fetchCharacters GotCharacters
+
+            else if characters == [] then
+                Session.fetchCharactersWithPageToken GotCharacters token
 
             else
                 Cmd.none
