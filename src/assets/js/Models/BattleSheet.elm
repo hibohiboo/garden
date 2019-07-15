@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetEnemy, BattleSheetItem, initBatlleSheetEnemy, updateBatlleSheetEnemyActivePower, updateBatlleSheetEnemyName)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, initBatlleSheetCharacter, initBatlleSheetEnemy, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
 
 import Array exposing (Array)
 import Models.Character as Character exposing (Character)
@@ -23,7 +23,7 @@ type alias BattleSheetCharacter =
     , count : Int
     , activePower : Int
     , position : Int
-    , data : Maybe EnemyListItem
+    , data : Maybe Character
     }
 
 
@@ -32,8 +32,13 @@ initBatlleSheetEnemy =
     BattleSheetEnemy "" 0 0 0 Nothing
 
 
-updateBatlleSheetEnemyName : Int -> String -> Array BattleSheetEnemy -> Array BattleSheetEnemy
-updateBatlleSheetEnemyName index name enemies =
+initBatlleSheetCharacter : BattleSheetCharacter
+initBatlleSheetCharacter =
+    BattleSheetCharacter "" 0 0 0 Nothing
+
+
+updateBatlleSheetItemName : Int -> String -> Array { a | name : String } -> Array { a | name : String }
+updateBatlleSheetItemName index name enemies =
     case Array.get index enemies of
         Just oldEnemy ->
             let
@@ -46,8 +51,8 @@ updateBatlleSheetEnemyName index name enemies =
             enemies
 
 
-updateBatlleSheetEnemyActivePower : Int -> String -> Array BattleSheetEnemy -> Array BattleSheetEnemy
-updateBatlleSheetEnemyActivePower index ap enemies =
+updateBatlleSheetItemActivePower : Int -> String -> Array { a | activePower : Int } -> Array { a | activePower : Int }
+updateBatlleSheetItemActivePower index ap enemies =
     case Array.get index enemies of
         Just oldEnemy ->
             let

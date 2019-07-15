@@ -1,4 +1,4 @@
-module Page.Views.BattleSheet exposing (countArea, countController, inputEnemies, inputField)
+module Page.Views.BattleSheet exposing (countArea, countController, inputCharacters, inputEnemies, inputField)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -40,6 +40,11 @@ countController cnt changeMsg increaseMsg decreaseMsg =
         , button [ class "btn-floating waves-effect waves-light red", style "align-self" "center", onClick increaseMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
         , button [ class "btn-floating waves-effect waves-light red", style "align-self" "center", onClick decreaseMsg ] [ i [ class "material-icons" ] [ text "remove" ] ]
         ]
+
+
+inputCharacters : msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array BattleSheetCharacter -> Html msg
+inputCharacters =
+    inputAreas "character" "キャラクター"
 
 
 inputEnemies : msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array BattleSheetEnemy -> Html msg
