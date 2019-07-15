@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.Enemy exposing (..)
+import Page.Views.Enemy exposing (enemyList)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url

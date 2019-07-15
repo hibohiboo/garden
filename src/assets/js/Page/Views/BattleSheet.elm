@@ -1,4 +1,4 @@
-module Page.Views.BattleSheet exposing (countArea, countController, inputCharacters, inputEnemies, inputField)
+module Page.Views.BattleSheet exposing (countArea, countController, enemyListModal, inputCharacters, inputEnemies, inputField)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -6,6 +6,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onChange)
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem)
+import Models.EnemyListItem exposing (EnemyListItem)
+import Page.Views.Enemy exposing (enemyCardMain)
+import Page.Views.Modal exposing (modalCardOpenButton)
 
 
 countArea : List Int -> Int -> Int -> (Int -> msg) -> List CountAreaItem -> Html msg
@@ -129,22 +132,23 @@ type alias OnChangeMsg msg =
     Int -> String -> msg
 
 
-inputCharacters : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> Array BattleSheetCharacter -> Html msg
+inputCharacters : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetCharacter -> Html msg
 inputCharacters =
     inputAreas "character" "キャラクター"
 
 
-inputEnemies : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> Array BattleSheetEnemy -> Html msg
+inputEnemies : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetEnemy -> Html msg
 inputEnemies =
     inputAreas "enemy" "エネミー"
 
 
-inputAreas : String -> String -> msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> Array (BattleSheetItem a) -> Html msg
-inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg arrays =
-    div []
+inputAreas : String -> String -> msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array (BattleSheetItem a) -> Html msg
+inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg openModalMsg arrays =
+    div [ style "padding" "5px" ]
         [ div []
             (List.concat
                 [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName deleteMsg updateNameMsg updateApMsg v) arrays
+                , [ modalCardOpenButton openModalMsg "一覧から追加" ]
                 , addButton labelName addMsg
                 ]
             )
@@ -189,6 +193,11 @@ deleteButton deleteMsg index =
 
 addButton : String -> msg -> List (Html msg)
 addButton labelName addMsg =
-    [ text (labelName ++ "を追加  ")
+    [ span [ style "padding-left" "5px" ] [ text ("空の" ++ labelName ++ "を追加  ") ]
     , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
     ]
+
+
+enemyListModal : (EnemyListItem -> msg) -> List EnemyListItem -> Html msg
+enemyListModal msg enemies =
+    div [ class "card-list" ] (enemies |> List.map (\enemy -> div [ onClick (msg enemy) ] [ enemyCardMain enemy ]))

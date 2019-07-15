@@ -7,7 +7,7 @@ import Html.Attributes exposing (..)
 import Http
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.BattleSheet exposing (countArea, countController, inputCharacters, inputEnemies)
+import Page.Views.BattleSheet exposing (countArea, countController, enemyListModal, inputCharacters, inputEnemies)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -24,6 +24,8 @@ type alias Model =
     , enemies : Array BattleSheetEnemy
     , characters : Array BattleSheetCharacter
     , openCountAreaNumber : Int
+    , modalTitle : String
+    , modalContents : Html Msg
     }
 
 
@@ -60,7 +62,7 @@ maxAreaCount =
 
 initModel : Session.Data -> List EnemyListItem -> Model
 initModel session enemyList =
-    Model session enemyList 0 Modal.Close Array.empty Array.empty maxAreaCount
+    Model session enemyList 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "")
 
 
 initAreaCount =
@@ -74,6 +76,8 @@ type Msg
     | DecreaseCount
     | OpenModal
     | CloseModal
+    | OpenEnemyModal
+    | InputEnemy EnemyListItem
     | AddEnemy
     | DeleteEnemy Int
     | UpdateEnemyName Int String
@@ -145,6 +149,20 @@ update msg model =
         UpdateOpenCountAreaNumber num ->
             ( { model | openCountAreaNumber = num }, Cmd.none )
 
+        OpenEnemyModal ->
+            let
+                content =
+                    enemyListModal InputEnemy model.enemyList
+            in
+            update OpenModal { model | modalContents = content }
+
+        InputEnemy enemy ->
+            let
+                bse =
+                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 0 (Just enemy)
+            in
+            ( { model | enemies = Array.push bse model.enemies }, Cmd.none )
+
 
 
 --
@@ -174,8 +192,9 @@ viewTopPage model =
         [ div [ class "main-area" ]
             [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
             , countController model.count InputCount IncreaseCount DecreaseCount
-            , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower model.characters
-            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower model.enemies
+            , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower OpenEnemyModal model.characters
+            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower OpenEnemyModal model.enemies
             ]
         , countArea initAreaCount model.count model.openCountAreaNumber UpdateOpenCountAreaNumber (getCountAreaItems initAreaCount model.characters model.enemies)
+        , Modal.view model.modalTitle model.modalContents model.modalState CloseModal
         ]

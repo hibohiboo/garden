@@ -1,4 +1,4 @@
-module Page.Views.Enemy exposing (enemyList)
+module Page.Views.Enemy exposing (enemyCardMain, enemyList)
 
 import Array exposing (Array)
 import Html exposing (..)
