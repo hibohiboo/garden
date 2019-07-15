@@ -18,19 +18,29 @@ type alias Model =
     { session : Session.Data
     , naviState : NaviState
     , characters : List CharacterListItem
+    , nextToken : String
     }
 
 
 init : Session.Data -> ( Model, Cmd Msg )
 init session =
     let
-        characters =
-            case Session.getCharacters session of
-                Just json ->
-                    CharacterListItem.characterListFromJson json
+        json =
+            Session.getCharacters session |> Maybe.withDefault ""
 
-                Nothing ->
-                    []
+        characters =
+            if json == "" then
+                []
+
+            else
+                CharacterListItem.characterListFromJson json
+
+        nextToken =
+            if json == "" then
+                ""
+
+            else
+                CharacterListItem.nextTokenFromJson json
 
         cmd =
             if characters == [] then
@@ -39,14 +49,14 @@ init session =
             else
                 Cmd.none
     in
-    ( initModel session characters
+    ( initModel nextToken session characters
     , cmd
     )
 
 
-initModel : Session.Data -> List CharacterListItem -> Model
-initModel session characters =
-    Model session Close characters
+initModel : String -> Session.Data -> List CharacterListItem -> Model
+initModel nextToken session characters =
+    Model session Close characters nextToken
 
 
 type Msg
@@ -72,6 +82,7 @@ updateCharactersModel model json =
     { model
         | characters = CharacterListItem.characterListFromJson json
         , session = Session.addCharacters model.session json
+        , nextToken = CharacterListItem.nextTokenFromJson json
     }
 
 
@@ -124,33 +135,14 @@ viewTopPage model =
                     )
                 ]
             ]
+        , nextPage model.nextToken
         ]
 
 
+nextPage : String -> Html msg
+nextPage token =
+    if token == "" then
+        text ""
 
--- <table>
---         <thead>
---           <tr>
---               <th>Name</th>
---               <th>Item Name</th>
---               <th>Item Price</th>
---           </tr>
---         </thead>
---         <tbody>
---           <tr>
---             <td>Alvin</td>
---             <td>Eclair</td>
---             <td>$0.87</td>
---           </tr>
---           <tr>
---             <td>Alan</td>
---             <td>Jellybean</td>
---             <td>$3.76</td>
---           </tr>
---           <tr>
---             <td>Jonathan</td>
---             <td>Lollipop</td>
---             <td>$7.00</td>
---           </tr>
---         </tbody>
---       </table>
+    else
+        a [ href (Url.Builder.absolute [ "characters/" ++ token ] []) ] [ text "次のページ" ]

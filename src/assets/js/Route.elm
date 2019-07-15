@@ -1,7 +1,7 @@
 module Route exposing (Route(..), parse)
 
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, fragment, map, oneOf, s, string, top)
+import Url.Parser as Parser exposing ((</>), Parser, fragment, int, map, oneOf, s, string, top)
 
 
 type Route
@@ -16,6 +16,7 @@ type Route
     | CharacterView String
     | SandBox String
     | CharacterList
+    | CharacterListNext String
     | EnemyList
     | BattleSheet
 
@@ -38,6 +39,7 @@ parser =
         , map CharacterUpdate (s "mypage" </> s "character" </> s "edit" </> string </> string)
         , map SandBox (s "sandbox" </> string)
         , map CharacterView (s "character" </> s "view" </> string)
+        , map CharacterListNext (s "characters" </> string)
         , map CharacterList (s "characters")
         , map EnemyList (s "enemies")
         , map BattleSheet (s "battle-sheet")

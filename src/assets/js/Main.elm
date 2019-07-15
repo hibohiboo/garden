@@ -468,6 +468,15 @@ goTo maybeRoute model =
             , Cmd.map CharacterListMsg cmd
             )
 
+        Just (Route.CharacterListNext nextToken) ->
+            let
+                ( m, cmd ) =
+                    Page.CharacterList.init session
+            in
+            ( { model | page = CharacterListPage m }
+            , Cmd.map CharacterListMsg cmd
+            )
+
         Just Route.EnemyList ->
             let
                 ( m, cmd ) =

@@ -326,7 +326,7 @@ fetchCharacter toMsg characterId =
 
 getCharacters : Data -> Maybe String
 getCharacters data =
-    getJsonData data FirestoreApi.charactersUrl
+    getJsonData data FirestoreApi.charactersUrlWithLimit
 
 
 addCharacters : Data -> String -> Data
@@ -334,8 +334,9 @@ addCharacters data json =
     addJsonData FirestoreApi.charactersUrl json data
 
 
+fetchCharacters : (Result Http.Error String -> msg) -> Cmd msg
 fetchCharacters toMsg =
-    fetchJsonData toMsg FirestoreApi.charactersUrl
+    fetchJsonData toMsg FirestoreApi.charactersUrlWithLimit
 
 
 
