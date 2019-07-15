@@ -1,4 +1,4 @@
-module Page.Views.BattleSheet exposing (countArea, countController, inputEnemies)
+module Page.Views.BattleSheet exposing (countArea, countController, inputEnemies, inputField)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -42,21 +42,17 @@ countController cnt changeMsg increaseMsg decreaseMsg =
         ]
 
 
-inputEnemies : msg -> (Int -> msg) -> (Int -> String -> msg) -> Array BattleSheetEnemy -> Html msg
+inputEnemies : msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array BattleSheetEnemy -> Html msg
 inputEnemies =
     inputAreas "enemy" "エネミー"
 
 
-
--- 可変の入力欄
-
-
-inputAreas : String -> String -> msg -> (Int -> msg) -> (Int -> String -> msg) -> Array (BattleSheetItem a) -> Html msg
-inputAreas fieldId labelName addMsg deleteMsg updateMsg arrays =
+inputAreas : String -> String -> msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array (BattleSheetItem a) -> Html msg
+inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg arrays =
     div []
         [ div []
             (List.concat
-                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName v updateMsg deleteMsg) arrays
+                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName v deleteMsg updateNameMsg updateApMsg) arrays
                 , addButton labelName addMsg
                 ]
             )
@@ -67,17 +63,17 @@ inputAreas fieldId labelName addMsg deleteMsg updateMsg arrays =
 -- インデックス付きの編集
 
 
-updateArea : Int -> String -> String -> BattleSheetItem a -> (Int -> String -> msg) -> (Int -> msg) -> Html msg
-updateArea index fieldId labelName val updateMsg deleteMsg =
+updateArea : Int -> String -> String -> BattleSheetItem a -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Html msg
+updateArea index fieldId labelName val deleteMsg updateNameMsg updateApMsg =
     let
         fid =
             fieldId ++ String.fromInt index
     in
     div [ class "row" ]
         [ div [ class "col s11" ]
-            [ div [ class "input-field" ]
-                [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val.name, onChange (updateMsg index) ] []
-                , label [ class "active", for fid ] [ text labelName ]
+            [ div [ style "display" "flex" ]
+                [ inputField index (labelName ++ "名") "text" (fid ++ "Name") updateNameMsg val.name
+                , inputField index "行動力" "number" (fid ++ "Ap") updateApMsg (String.fromInt val.activePower)
                 ]
             ]
         , div [ class "col s1" ]
@@ -86,17 +82,17 @@ updateArea index fieldId labelName val updateMsg deleteMsg =
         ]
 
 
-
--- 削除ボタン
+inputField : Int -> String -> String -> String -> (Int -> String -> msg) -> String -> Html msg
+inputField index labelName inputType fid updateMsg val =
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fid, type_ inputType, class "validate", value val, onChange (updateMsg index) ] []
+        , label [ class "active", for fid ] [ text labelName ]
+        ]
 
 
 deleteButton : (Int -> msg) -> Int -> Html msg
 deleteButton deleteMsg index =
     button [ class "btn-small waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
-
-
-
--- 追加ボタン
 
 
 addButton : String -> msg -> List (Html msg)

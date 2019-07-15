@@ -20,6 +20,9 @@
       font-size: 0.8rem;
       flex-basis: 2.8rem;
       margin-left: auto;
+      > div{
+        width: 32px;// アイコンを中央に
+      }
       ul {
         margin: 0;
       }
@@ -29,6 +32,8 @@
         box-sizing: border-box;
         border-top: solid #eee 1px;
         text-align: center;
+        width: 30px;
+
         &:nth-child(6n),
         &:nth-child(6n-1),
         &:nth-child(6n-2), {

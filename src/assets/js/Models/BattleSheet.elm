@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetEnemy, BattleSheetItem, initBatlleSheetEnemy, updateBatlleSheetEnemyName)
+module Models.BattleSheet exposing (BattleSheetEnemy, BattleSheetItem, initBatlleSheetEnemy, updateBatlleSheetEnemyActivePower, updateBatlleSheetEnemyName)
 
 import Array exposing (Array)
 import Models.Character as Character exposing (Character)
@@ -39,6 +39,23 @@ updateBatlleSheetEnemyName index name enemies =
             let
                 enemy =
                     { oldEnemy | name = name }
+            in
+            Array.set index enemy enemies
+
+        Nothing ->
+            enemies
+
+
+updateBatlleSheetEnemyActivePower : Int -> String -> Array BattleSheetEnemy -> Array BattleSheetEnemy
+updateBatlleSheetEnemyActivePower index ap enemies =
+    case Array.get index enemies of
+        Just oldEnemy ->
+            let
+                iAp =
+                    ap |> String.toInt |> Maybe.withDefault 0
+
+                enemy =
+                    { oldEnemy | activePower = iAp }
             in
             Array.set index enemy enemies
 

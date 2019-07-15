@@ -5,7 +5,7 @@ import FirestoreApi as FSApi
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Models.BattleSheet exposing (BattleSheetEnemy, initBatlleSheetEnemy, updateBatlleSheetEnemyName)
+import Models.BattleSheet exposing (BattleSheetEnemy, initBatlleSheetEnemy, updateBatlleSheetEnemyActivePower, updateBatlleSheetEnemyName)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.BattleSheet exposing (countArea, countController, inputEnemies)
 import Session
@@ -63,6 +63,7 @@ type Msg
     | AddEnemy
     | DeleteEnemy Int
     | UpdateEnemyName Int String
+    | UpdateEnemyActivePower Int String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -107,6 +108,9 @@ update msg model =
         UpdateEnemyName index name ->
             ( { model | enemies = updateBatlleSheetEnemyName index name model.enemies }, Cmd.none )
 
+        UpdateEnemyActivePower index name ->
+            ( { model | enemies = updateBatlleSheetEnemyActivePower index name model.enemies }, Cmd.none )
+
 
 
 --
@@ -136,7 +140,7 @@ viewTopPage model =
         [ div [ class "main-area" ]
             [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
             , countController model.count InputCount IncreaseCount DecreaseCount
-            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName model.enemies
+            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower model.enemies
             ]
         , countArea (List.reverse <| List.range -10 20) model.count
         ]

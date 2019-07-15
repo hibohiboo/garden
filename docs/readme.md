@@ -77,6 +77,10 @@
   * 取得API
     * https://sheets.googleapis.com/v4/spreadsheets/1cyGpEw4GPI2k5snngBPKz7rfETklKdSaIBqQKnTta1w/values/textStrings!A2:B7?key=APIKEY
 
+### 可変数の入力欄を作ったときのメモ
+[参考用自作ソース](https://github.com/hibohiboo/garden/tree/7fdaadd158e8d093e63da2a942c3289b23bd1194/)
+
+
 ## 参考
 
 [elm webpack starter][*1]  
