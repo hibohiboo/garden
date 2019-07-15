@@ -47,7 +47,7 @@ inputEnemies =
     inputAreas "enemy" "エネミー"
 
 
-inputAreas : String -> String -> msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array (BattleSheetItem a) -> Html msg
+inputAreas : String -> String -> msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array { a | name : String, activePower : Int } -> Html msg
 inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg arrays =
     div []
         [ div []
@@ -63,7 +63,7 @@ inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg arrays =
 -- インデックス付きの編集
 
 
-updateArea : Int -> String -> String -> BattleSheetItem a -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Html msg
+updateArea : Int -> String -> String -> { a | name : String, activePower : Int } -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Html msg
 updateArea index fieldId labelName val deleteMsg updateNameMsg updateApMsg =
     let
         fid =
