@@ -86,8 +86,11 @@ update msg char editor =
             let
                 newCards =
                     setNewDataCards card "器官" char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
             in
-            update (InputOrgan card.cardName) { char | cards = newCards } editor
+            update (InputOrgan card.cardName) { char | cards = newCards, activePower = newActivePower } editor
 
         InputMutagen s ->
             let
@@ -100,8 +103,11 @@ update msg char editor =
             let
                 newCards =
                     setNewDataCards card "変異原" char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
             in
-            update (InputMutagen card.cardName) { char | cards = newCards } editor
+            update (InputMutagen card.cardName) { char | cards = newCards, activePower = newActivePower } editor
 
         InputTrait s ->
             let
@@ -114,8 +120,11 @@ update msg char editor =
             let
                 newCards =
                     setNewDataCards card "特性" char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
             in
-            update (InputTrait card.cardName) { char | cards = newCards } editor
+            update (InputTrait card.cardName) { char | cards = newCards, activePower = newActivePower } editor
 
         InputSkillCard card ->
             let
@@ -130,22 +139,37 @@ update msg char editor =
                 newCards =
                     Array.push card char.cards
 
+                newActivePower =
+                    Card.getActivePower newCards
+
                 c =
-                    { char | cards = newCards }
+                    { char | cards = newCards, activePower = newActivePower }
             in
             ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
 
         AddCard ->
             let
+                newCards =
+                    Array.push Card.initCard char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
+
                 c =
-                    { char | cards = Array.push Card.initCard char.cards }
+                    { char | cards = newCards, activePower = newActivePower }
             in
             ( ( c, editor ), Cmd.none )
 
         DeleteCard i ->
             let
+                newCards =
+                    deleteAt i char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
+
                 c =
-                    { char | cards = deleteAt i char.cards }
+                    { char | cards = newCards, activePower = newActivePower }
             in
             ( ( c, editor ), Cmd.none )
 
@@ -245,16 +269,8 @@ update msg char editor =
 
         InputAP s ->
             let
-                val =
-                    case String.toInt s of
-                        Just v ->
-                            v
-
-                        _ ->
-                            0
-
                 c =
-                    { char | activePower = val }
+                    { char | activePower = s |> String.toInt |> Maybe.withDefault 0 }
             in
             ( ( c, editor ), Cmd.none )
 

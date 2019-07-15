@@ -9,6 +9,7 @@ port module Models.Card exposing
     , cardList
     , cardView
     , encodeCardToValue
+    , getActivePower
     , getBases
     , getRange
     , getTraitList
@@ -32,6 +33,7 @@ import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
 import Models.CardId as CardId exposing (CardId)
 import Models.Tag as Tag exposing (Tag, encodeTagToValue, tagDecoder, tagsDecoder)
+import Page.Views.Tag exposing (tag)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Task exposing (..)
@@ -153,7 +155,7 @@ cardView cardData =
                 , div [ class "attrTargetValue attrLabel border" ] [ text cardData.target ]
                 , expElement (div [ class "attrExpLabel attrLabel border" ] [ text labelData.exp ])
                 , expElement (div [ class "attrExpValue border" ] [ text (String.fromInt cardData.exp) ])
-                , div [ class "tags" ] (List.map (\t -> tag t) cardData.tags)
+                , div [ class "tags" ] (List.map (\t -> tag t.name) cardData.tags)
                 , div [ class "mainContent border" ]
                     [ maxLvElement (div [ class "maxLevelLabel border" ] [ text labelData.maxLevel ])
                     , maxLvElement (div [ class "maxLevel border" ] [ text (String.fromInt cardData.maxLevel) ])
@@ -212,20 +214,18 @@ illustedBy cardData =
         ]
 
 
-tag : Tag -> Html msg
-tag t =
-    let
-        tagText =
-            if t.level == 0 then
-                t.name
 
-            else
-                t.name ++ ":" ++ String.fromInt t.level
-    in
-    span [ class "tag" ] [ text tagText ]
-
-
-
+-- タグは別のビューで定義
+-- tag : Tag -> Html msg
+-- tag t =
+--     let
+--         tagText =
+--             if t.level == 0 then
+--                 t.name
+--             else
+--                 t.name ++ ":" ++ String.fromInt t.level
+--     in
+--     span [ class "tag" ] [ text tagText ]
 -- ==============================================================================================
 -- デコーダ
 -- ==============================================================================================
@@ -384,3 +384,18 @@ getBases : List CardData -> List CardData
 getBases cards =
     cards
         |> List.filter (\card -> List.member baseCardTag card.tags)
+
+
+
+-- 行動タグのレベルを合計して、4を足したものを行動力とする
+
+
+getActivePower : Array CardData -> Int
+getActivePower cards =
+    cards
+        |> Array.toList
+        |> List.map (\card -> card.tags)
+        |> List.concat
+        |> List.filter (\t -> t.name == "行動力")
+        |> List.map (\t -> t.level)
+        |> List.foldl (+) 4
