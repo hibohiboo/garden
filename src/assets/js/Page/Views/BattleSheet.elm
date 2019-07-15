@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onChange)
+import Html.Lazy exposing (lazy2)
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem)
 import Models.EnemyListItem exposing (EnemyListItem)
 import Page.Views.Enemy exposing (enemyCardMain)
@@ -148,7 +149,7 @@ inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg openModa
         [ div []
             (List.concat
                 [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName deleteMsg updateNameMsg updateApMsg v) arrays
-                , [ modalCardOpenButton openModalMsg "一覧から追加" ]
+                , [ lazy2 modalCardOpenButton openModalMsg "一覧から追加" ]
                 , addButton labelName addMsg
                 ]
             )
