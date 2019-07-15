@@ -5,7 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onChange)
-import Models.BattleSheet exposing (..)
+import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem)
 
 
 countArea : List Int -> Int -> Int -> (Int -> msg) -> List CountAreaItem -> Html msg
@@ -125,22 +125,26 @@ countController cnt changeMsg increaseMsg decreaseMsg =
         ]
 
 
-inputCharacters : msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array BattleSheetCharacter -> Html msg
+type alias OnChangeMsg msg =
+    Int -> String -> msg
+
+
+inputCharacters : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> Array BattleSheetCharacter -> Html msg
 inputCharacters =
     inputAreas "character" "キャラクター"
 
 
-inputEnemies : msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array BattleSheetEnemy -> Html msg
+inputEnemies : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> Array BattleSheetEnemy -> Html msg
 inputEnemies =
     inputAreas "enemy" "エネミー"
 
 
-inputAreas : String -> String -> msg -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Array { a | name : String, activePower : Int } -> Html msg
+inputAreas : String -> String -> msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> Array (BattleSheetItem a) -> Html msg
 inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg arrays =
     div []
         [ div []
             (List.concat
-                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName v deleteMsg updateNameMsg updateApMsg) arrays
+                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName deleteMsg updateNameMsg updateApMsg v) arrays
                 , addButton labelName addMsg
                 ]
             )
@@ -151,8 +155,8 @@ inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg arrays =
 -- インデックス付きの編集
 
 
-updateArea : Int -> String -> String -> { a | name : String, activePower : Int } -> (Int -> msg) -> (Int -> String -> msg) -> (Int -> String -> msg) -> Html msg
-updateArea index fieldId labelName val deleteMsg updateNameMsg updateApMsg =
+updateArea : Int -> String -> String -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> BattleSheetItem a -> Html msg
+updateArea index fieldId labelName deleteMsg updateNameMsg updateApMsg val =
     let
         fid =
             fieldId ++ String.fromInt index
@@ -170,7 +174,7 @@ updateArea index fieldId labelName val deleteMsg updateNameMsg updateApMsg =
         ]
 
 
-inputField : Int -> String -> String -> String -> (Int -> String -> msg) -> String -> Html msg
+inputField : Int -> String -> String -> String -> OnChangeMsg msg -> String -> Html msg
 inputField index labelName inputType fid updateMsg val =
     div [ class "input-field" ]
         [ input [ placeholder labelName, id fid, type_ inputType, class "validate", value val, onChange (updateMsg index) ] []
