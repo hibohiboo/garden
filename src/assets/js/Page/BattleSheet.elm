@@ -174,8 +174,8 @@ viewTopPage model =
         [ div [ class "main-area" ]
             [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
             , countController model.count InputCount IncreaseCount DecreaseCount
-            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower model.enemies
             , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower model.characters
+            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower model.enemies
             ]
         , countArea initAreaCount model.count model.openCountAreaNumber UpdateOpenCountAreaNumber (getCountAreaItems initAreaCount model.characters model.enemies)
         ]

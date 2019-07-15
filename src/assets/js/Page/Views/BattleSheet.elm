@@ -115,8 +115,8 @@ countCharacters isShowDetail item updateMsg =
 
 countController : Int -> (String -> msg) -> msg -> msg -> Html msg
 countController cnt changeMsg increaseMsg decreaseMsg =
-    div [ style "display" "flex", style "margin" "0 auto", style "width" "fit-content" ]
-        [ div [ class "input-field", style "width" "4rem", style "display" "flex", style "margin-right" "10px" ]
+    div [ class "count-controller" ]
+        [ div [ class "input-field" ]
             [ input [ id "count", type_ "number", value (String.fromInt cnt), onChange changeMsg ] []
             , label [ class "active" ] [ text "カウント" ]
             ]
@@ -165,7 +165,7 @@ updateArea index fieldId labelName deleteMsg updateNameMsg updateApMsg val =
         [ div [ class "col s11" ]
             [ div [ style "display" "flex" ]
                 [ inputField index (labelName ++ "名") "text" (fid ++ "Name") updateNameMsg val.name
-                , inputField index "行動力" "number" (fid ++ "Ap") updateApMsg (String.fromInt val.activePower)
+                , inputField index "行動値" "number" (fid ++ "Ap") updateApMsg (String.fromInt val.activePower)
                 ]
             ]
         , div [ class "col s1" ]

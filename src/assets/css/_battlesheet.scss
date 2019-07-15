@@ -12,7 +12,15 @@
   .wrapper {
     display: flex;
     overflow: hidden;
-
+    .count-controller {
+      display: flex;
+      width: fit-content;
+      .input-field {
+        width: 4rem;
+        display: flex;
+        margin-right: 10px;
+      }
+    }
     .count-area {
       height: 100vh;
       font-size: 0.8rem;
