@@ -47,7 +47,12 @@ tagDecoder =
 
 tagsDecoderFromFireStoreApi : Decoder (List Tag)
 tagsDecoderFromFireStoreApi =
-    FSApi.list tagDecoderFromFireStoreApi
+    D.oneOf
+        [ FSApi.list tagDecoderFromFireStoreApi
+
+        -- タグが登録されていないとき、{}が返ってくる。対応しないとデコードに失敗するため、そのような場合のためにデコードができなければ空の配列を返す。
+        , D.succeed []
+        ]
 
 
 tagDecoderFromFireStoreApi : Decoder Tag

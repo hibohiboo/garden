@@ -1,4 +1,4 @@
-module Page.Views.BattleSheet exposing (countArea, countController, enemyListModal, inputCharacters, inputEnemies, inputField)
+module Page.Views.BattleSheet exposing (characterListModal, countArea, countController, enemyListModal, inputCharacters, inputEnemies, inputField)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -7,7 +7,9 @@ import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onChange)
 import Html.Lazy exposing (lazy2)
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem)
+import Models.Character as Character exposing (Character)
 import Models.EnemyListItem exposing (EnemyListItem)
+import Page.Views.CharacterView exposing (characterCard)
 import Page.Views.Enemy exposing (enemyCardMain)
 import Page.Views.Modal exposing (modalCardOpenButton)
 
@@ -202,3 +204,8 @@ addButton labelName addMsg =
 enemyListModal : (EnemyListItem -> msg) -> List EnemyListItem -> Html msg
 enemyListModal msg enemies =
     div [ class "card-list" ] (enemies |> List.map (\enemy -> div [ onClick (msg enemy) ] [ enemyCardMain enemy ]))
+
+
+characterListModal : (Character -> msg) -> List Character -> Html msg
+characterListModal msg characters =
+    div [ class "card-list" ] (characters |> List.map (\char -> div [ onClick (msg char) ] [ characterCard char ]))

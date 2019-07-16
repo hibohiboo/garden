@@ -469,6 +469,7 @@
 
           font-size: 0.8em;
           white-space: pre-wrap; // 改行を反映させる
+          overflow-y:auto; // 長くなったときにスクロールで読めるように。
         }
       }
       .bottomContent {

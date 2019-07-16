@@ -135,7 +135,7 @@ characterDecoderFromFireStoreApiHealper =
 
 characterListDecoder : Decoder (List Character)
 characterListDecoder =
-    D.at [ "documents" ] (D.list characterDecoderFromFireStoreApiHealper)
+    D.at [ "documents" ] (D.list characterDecoderFromFireStoreApi)
 
 
 characterListFromJson : String -> List Character
@@ -144,7 +144,7 @@ characterListFromJson json =
         Ok item ->
             item
 
-        Err _ ->
+        Err e ->
             []
 
 

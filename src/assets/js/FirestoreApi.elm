@@ -47,7 +47,7 @@ characterUrlFromFireStore characterId =
 
 characterDetailsUrl : String
 characterDetailsUrl =
-    storeUrl ++ "/characters/"
+    databaseUrl ++ "/(default)/documents/characters/"
 
 
 characterDetailsUrlWithPageToken : String -> String

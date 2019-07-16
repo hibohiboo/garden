@@ -8,7 +8,7 @@ import Http
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.BattleSheet exposing (countArea, countController, enemyListModal, inputCharacters, inputEnemies)
+import Page.Views.BattleSheet exposing (characterListModal, countArea, countController, enemyListModal, inputCharacters, inputEnemies)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -21,6 +21,7 @@ type alias Model =
     { session : Session.Data
     , enemyList : List EnemyListItem
     , characterList : List Character
+    , charactersPageToken : String
     , count : Int
     , modalState : Modal.ModalState
     , enemies : Array BattleSheetEnemy
@@ -29,6 +30,11 @@ type alias Model =
     , modalTitle : String
     , modalContents : Html Msg
     }
+
+
+initPageToken : String
+initPageToken =
+    ""
 
 
 init : Session.Data -> ( Model, Cmd Msg )
@@ -43,7 +49,7 @@ init session =
                     []
 
         characterList =
-            case Session.getCharacterDetails session "" of
+            case Session.getCharacterDetails session initPageToken of
                 Just json ->
                     Character.characterListFromJson json
 
@@ -59,7 +65,7 @@ init session =
 
         cmd2 =
             if enemyList == [] then
-                Session.fetchCharacterDetails GotCharacters ""
+                Session.fetchCharacterDetails GotCharacters initPageToken
 
             else
                 Cmd.none
@@ -79,7 +85,7 @@ maxAreaCount =
 
 initModel : Session.Data -> List EnemyListItem -> List Character -> Model
 initModel session enemyList characterList =
-    Model session enemyList characterList 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "")
+    Model session enemyList characterList initPageToken 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "")
 
 
 initAreaCount =
@@ -96,6 +102,8 @@ type Msg
     | CloseModal
     | OpenEnemyModal
     | InputEnemy EnemyListItem
+    | OpenCharacterModal
+    | InputCharacter Character
     | AddEnemy
     | DeleteEnemy Int
     | UpdateEnemyName Int String
@@ -187,6 +195,20 @@ update msg model =
             in
             update CloseModal { model | enemies = Array.push bse model.enemies }
 
+        OpenCharacterModal ->
+            let
+                content =
+                    characterListModal InputCharacter model.characterList
+            in
+            update OpenModal { model | modalContents = content }
+
+        InputCharacter char ->
+            let
+                bsc =
+                    BattleSheetCharacter char.name char.activePower char.activePower 0 (Just char)
+            in
+            update CloseModal { model | characters = Array.push bsc model.characters }
+
 
 
 --
@@ -202,9 +224,16 @@ updateEnemiesModel model json =
 
 updateCharactersModel : Model -> String -> Model
 updateCharactersModel model json =
+    let
+        -- _ =
+        --     Debug.log "decodeUser" (Character.characterListFromJson json)
+        characterList =
+            Character.characterListFromJson json
+                |> List.filter (\c -> c.isPublished)
+    in
     { model
-        | characterList = List.concat [ model.characterList, Character.characterListFromJson json ]
-        , session = Session.addEnemies model.session json
+        | characterList = List.concat [ model.characterList, characterList ]
+        , session = Session.addCharacterDetails model.session json model.charactersPageToken
     }
 
 
@@ -224,7 +253,7 @@ viewTopPage model =
         [ div [ class "main-area" ]
             [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
             , countController model.count InputCount IncreaseCount DecreaseCount
-            , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower OpenEnemyModal model.characters
+            , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower OpenCharacterModal model.characters
             , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower OpenEnemyModal model.enemies
             ]
         , countArea initAreaCount model.count model.openCountAreaNumber UpdateOpenCountAreaNumber (getCountAreaItems initAreaCount model.characters model.enemies)
