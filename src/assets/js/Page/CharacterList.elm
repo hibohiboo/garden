@@ -44,7 +44,7 @@ init session token =
                 ""
 
             else
-                CharacterListItem.nextTokenFromJson json
+                FSApi.nextTokenFromJson json
 
         cmd =
             if characters == [] && token == "" then
@@ -89,7 +89,7 @@ updateCharactersModel model json =
     { model
         | characters = CharacterListItem.characterListFromJson json
         , session = Session.addCharacters model.session json
-        , nextToken = CharacterListItem.nextTokenFromJson json
+        , nextToken = FSApi.nextTokenFromJson json
     }
 
 

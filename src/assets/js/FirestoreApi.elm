@@ -1,4 +1,4 @@
-module FirestoreApi exposing (array, arrayFromJson, bool, boolFromJson, characterDetailsUrlWithPageToken, characterUrl, characterUrlFromFireStore, charactersUrl, charactersUrlWithLimit, charactersUrlWithPageToken, enemiesUrl, fields, int, intFromJson, list, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (array, arrayFromJson, bool, boolFromJson, characterDetailsUrlWithPageToken, characterUrl, characterUrlFromFireStore, charactersUrl, charactersUrlWithLimit, charactersUrlWithPageToken, enemiesUrl, fields, int, intFromJson, list, nextTokenFromJson, string, stringFromJson, timestamp, timestampFromJson)
 
 import Array exposing (Array)
 import Json.Decode as D exposing (Decoder)
@@ -138,3 +138,18 @@ decodeFromJsonHelper decoder defaultValue s =
 
         Err _ ->
             defaultValue
+
+
+nextTokenDecoder : Decoder String
+nextTokenDecoder =
+    D.at [ "nextPageToken" ] D.string
+
+
+nextTokenFromJson : String -> String
+nextTokenFromJson json =
+    case D.decodeString nextTokenDecoder json of
+        Ok token ->
+            token
+
+        Err _ ->
+            ""

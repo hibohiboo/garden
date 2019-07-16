@@ -95,6 +95,7 @@ initAreaCount =
 type Msg
     = GotEnemies (Result Http.Error String)
     | GotCharacters (Result Http.Error String)
+    | GetNextCharacters
     | InputCount String
     | IncreaseCount
     | DecreaseCount
@@ -129,6 +130,9 @@ update msg model =
 
         GotCharacters (Err _) ->
             ( model, Cmd.none )
+
+        GetNextCharacters ->
+            ( model, Session.fetchCharacterDetails GotCharacters model.charactersPageToken )
 
         InputCount count ->
             let
@@ -196,11 +200,7 @@ update msg model =
             update CloseModal { model | enemies = Array.push bse model.enemies }
 
         OpenCharacterModal ->
-            let
-                content =
-                    characterListModal InputCharacter model.characterList
-            in
-            update OpenModal { model | modalContents = content }
+            update OpenModal { model | modalContents = characterContent model.charactersPageToken model.characterList }
 
         InputCharacter char ->
             let
@@ -208,6 +208,11 @@ update msg model =
                     BattleSheetCharacter char.name char.activePower char.activePower 0 (Just char)
             in
             update CloseModal { model | characters = Array.push bsc model.characters }
+
+
+characterContent : String -> List Character -> Html Msg
+characterContent token characterList =
+    characterListModal InputCharacter GetNextCharacters token characterList
 
 
 
@@ -230,10 +235,18 @@ updateCharactersModel model json =
         characterList =
             Character.characterListFromJson json
                 |> List.filter (\c -> c.isPublished)
+
+        nexCharacterList =
+            List.concat [ model.characterList, characterList ]
+
+        nextPageToken =
+            FSApi.nextTokenFromJson json
     in
     { model
-        | characterList = List.concat [ model.characterList, characterList ]
+        | characterList = nexCharacterList
         , session = Session.addCharacterDetails model.session json model.charactersPageToken
+        , charactersPageToken = nextPageToken
+        , modalContents = characterContent nextPageToken nexCharacterList
     }
 
 

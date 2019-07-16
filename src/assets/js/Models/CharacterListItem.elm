@@ -1,4 +1,4 @@
-module Models.CharacterListItem exposing (CharacterListItem, characterListDecoder, characterListFromJson, characterListItemDecoder, nextTokenFromJson)
+module Models.CharacterListItem exposing (CharacterListItem, characterListDecoder, characterListFromJson, characterListItemDecoder)
 
 import FirestoreApi as FSApi
 import Json.Decode as D exposing (Decoder)
@@ -30,11 +30,6 @@ characterListItemDecoder =
         |> required "labo" FSApi.string
 
 
-nextTokenDecoder : Decoder String
-nextTokenDecoder =
-    D.at [ "nextPageToken" ] D.string
-
-
 
 -- FSApi.fields <| D.map3 CharacterListItem (D.at [ "characterId" ] FSApi.string) (D.at [ "name" ] FSApi.string) (D.at [ "labo" ] FSApi.string)
 
@@ -47,13 +42,3 @@ characterListFromJson json =
 
         Err _ ->
             []
-
-
-nextTokenFromJson : String -> String
-nextTokenFromJson json =
-    case D.decodeString nextTokenDecoder json of
-        Ok token ->
-            token
-
-        Err _ ->
-            ""

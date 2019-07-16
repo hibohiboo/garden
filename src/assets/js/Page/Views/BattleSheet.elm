@@ -206,6 +206,17 @@ enemyListModal msg enemies =
     div [ class "card-list" ] (enemies |> List.map (\enemy -> div [ onClick (msg enemy) ] [ enemyCardMain enemy ]))
 
 
-characterListModal : (Character -> msg) -> List Character -> Html msg
-characterListModal msg characters =
-    div [ class "card-list" ] (characters |> List.map (\char -> div [ onClick (msg char) ] [ characterCard char ]))
+characterListModal : (Character -> msg) -> msg -> String -> List Character -> Html msg
+characterListModal characterAddMsg fetchMsg token characters =
+    let
+        nextButton =
+            if token /= "" then
+                button [ onClick fetchMsg ] [ text "もっと見る" ]
+
+            else
+                text ""
+    in
+    div []
+        [ div [ class "card-list" ] (characters |> List.map (\char -> div [ onClick (characterAddMsg char) ] [ characterCard char ]))
+        , nextButton
+        ]
