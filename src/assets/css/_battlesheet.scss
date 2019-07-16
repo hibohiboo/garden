@@ -115,6 +115,24 @@
     .main-area{
       max-width: 80vw;
       padding: 5px;
+      .input-field-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        .input-field:first-child{
+          max-width: 6rem;
+        }
+        .input-field:nth-child(2){
+          max-width: 3rem;
+        }
+        .input-field:nth-child(3){
+          max-width: 2rem;
+          margin-right: auto;
+        }
+        .delete-button{
+          padding: 5px;
+
+        }
+      }
     }
   }
 

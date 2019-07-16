@@ -135,22 +135,22 @@ type alias OnChangeMsg msg =
     Int -> String -> msg
 
 
-inputCharacters : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetCharacter -> Html msg
+inputCharacters : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetCharacter -> Html msg
 inputCharacters =
     inputAreas "character" "キャラクター"
 
 
-inputEnemies : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetEnemy -> Html msg
+inputEnemies : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetEnemy -> Html msg
 inputEnemies =
     inputAreas "enemy" "エネミー"
 
 
-inputAreas : String -> String -> msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array (BattleSheetItem a) -> Html msg
-inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg openModalMsg arrays =
+inputAreas : String -> String -> msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array (BattleSheetItem a) -> Html msg
+inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg updatePositionMsg openModalMsg arrays =
     div [ style "padding" "5px" ]
         [ div []
             (List.concat
-                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName deleteMsg updateNameMsg updateApMsg v) arrays
+                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName deleteMsg updateNameMsg updateApMsg updatePositionMsg v) arrays
                 , [ lazy2 modalCardOpenButton openModalMsg "一覧から追加" ]
                 , addButton labelName addMsg
                 ]
@@ -162,21 +162,20 @@ inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg openModa
 -- インデックス付きの編集
 
 
-updateArea : Int -> String -> String -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> BattleSheetItem a -> Html msg
-updateArea index fieldId labelName deleteMsg updateNameMsg updateApMsg val =
+updateArea : Int -> String -> String -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> BattleSheetItem a -> Html msg
+updateArea index fieldId labelName deleteMsg updateNameMsg updateApMsg updatePositionMsg val =
     let
         fid =
             fieldId ++ String.fromInt index
     in
     div [ class "row" ]
-        [ div [ class "col s11" ]
-            [ div [ style "display" "flex" ]
-                [ inputField index (labelName ++ "名") "text" (fid ++ "Name") updateNameMsg val.name
+        [ div [ class "col s12" ]
+            [ div [ class "input-field-wrapper" ]
+                [ inputField index "名前" "text" (fid ++ "Name") updateNameMsg val.name
                 , inputField index "行動値" "number" (fid ++ "Ap") updateApMsg (String.fromInt val.activePower)
+                , inputField index "位置" "number" (fid ++ "position") updatePositionMsg (String.fromInt val.position)
+                , deleteButton deleteMsg index
                 ]
-            ]
-        , div [ class "col s1" ]
-            [ deleteButton deleteMsg index
             ]
         ]
 
@@ -191,13 +190,12 @@ inputField index labelName inputType fid updateMsg val =
 
 deleteButton : (Int -> msg) -> Int -> Html msg
 deleteButton deleteMsg index =
-    button [ class "btn-small waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
+    button [ class "delete-button btn-small waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
 
 
 addButton : String -> msg -> List (Html msg)
 addButton labelName addMsg =
-    [ span [ style "padding-left" "5px" ] [ text ("空の" ++ labelName ++ "を追加  ") ]
-    , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
+    [ div [ onClick addMsg, class "waves-effect waves-light btn" ] [ text "ブランク追加" ]
     ]
 
 

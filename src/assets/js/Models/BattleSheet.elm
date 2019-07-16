@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
 import Models.Character as Character exposing (Character)
@@ -77,6 +77,20 @@ updateBatlleSheetItemActivePower index ap enemies =
 
         Nothing ->
             enemies
+
+
+updateBatlleSheetItemPosition : Int -> String -> Array { a | position : Int } -> Array { a | position : Int }
+updateBatlleSheetItemPosition index stVal items =
+    case Array.get index items of
+        Just oldItem ->
+            let
+                val =
+                    stVal |> String.toInt |> Maybe.withDefault 0
+            in
+            Array.set index { oldItem | position = val } items
+
+        Nothing ->
+            items
 
 
 getCountAreaItems : List Int -> Array BattleSheetCharacter -> Array BattleSheetEnemy -> List CountAreaItem

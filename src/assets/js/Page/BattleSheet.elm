@@ -5,7 +5,7 @@ import FirestoreApi as FSApi
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName)
+import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.BattleSheet exposing (characterListModal, countArea, countController, enemyListModal, inputCharacters, inputEnemies)
@@ -19,11 +19,15 @@ import Utils.Util exposing (deleteAt)
 
 type alias Model =
     { session : Session.Data
+
+    -- モーダルダイアログで選択用のリスト
     , enemyList : List EnemyListItem
     , characterList : List Character
     , charactersPageToken : String
     , count : Int
     , modalState : Modal.ModalState
+
+    -- 選択したキャラクター・エネミーのリスト
     , enemies : Array BattleSheetEnemy
     , characters : Array BattleSheetCharacter
     , openCountAreaNumber : Int
@@ -109,10 +113,12 @@ type Msg
     | DeleteEnemy Int
     | UpdateEnemyName Int String
     | UpdateEnemyActivePower Int String
+    | UpdateEnemyPosition Int String
     | AddCharacter
     | DeleteCharacter Int
     | UpdateCharacterName Int String
     | UpdateCharacterActivePower Int String
+    | UpdateCharacterPosition Int String
     | UpdateOpenCountAreaNumber Int
 
 
@@ -165,6 +171,9 @@ update msg model =
         UpdateEnemyActivePower index ap ->
             ( { model | enemies = updateBatlleSheetItemActivePower index ap model.enemies }, Cmd.none )
 
+        UpdateEnemyPosition index val ->
+            ( { model | enemies = updateBatlleSheetItemPosition index val model.enemies }, Cmd.none )
+
         AddCharacter ->
             ( { model | characters = Array.push initBatlleSheetCharacter model.characters }, Cmd.none )
 
@@ -176,6 +185,9 @@ update msg model =
 
         UpdateCharacterActivePower index ap ->
             ( { model | characters = updateBatlleSheetItemActivePower index ap model.characters }, Cmd.none )
+
+        UpdateCharacterPosition index val ->
+            ( { model | characters = updateBatlleSheetItemPosition index val model.characters }, Cmd.none )
 
         UpdateOpenCountAreaNumber num ->
             ( { model | openCountAreaNumber = num }, Cmd.none )
@@ -261,8 +273,8 @@ viewTopPage model =
         [ div [ class "main-area" ]
             [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
             , countController model.count InputCount IncreaseCount DecreaseCount
-            , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower OpenCharacterModal model.characters
-            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower OpenEnemyModal model.enemies
+            , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower UpdateCharacterPosition OpenCharacterModal model.characters
+            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower UpdateEnemyPosition OpenEnemyModal model.enemies
             ]
         , countArea initAreaCount model.count model.openCountAreaNumber UpdateOpenCountAreaNumber (getCountAreaItems initAreaCount model.characters model.enemies)
         , Modal.view model.modalTitle model.modalContents model.modalState CloseModal
