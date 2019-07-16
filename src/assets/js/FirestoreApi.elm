@@ -28,7 +28,7 @@ charactersUrl =
 
 pageLimit : Int
 pageLimit =
-    3
+    10
 
 
 charactersUrlWithLimit : String

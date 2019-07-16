@@ -175,7 +175,7 @@ update msg model =
         UnUsedAll ->
             let
                 newModel =
-                    { model | cardState = model.character.cards |> Array.map (\c -> CardState c False False) }
+                    { model | cardState = model.cardState |> Array.map (\c -> CardState c.card False c.isUsed) }
             in
             ( newModel, newModel |> encodeCardViewToValue |> saveCardState )
 

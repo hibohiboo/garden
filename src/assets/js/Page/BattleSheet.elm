@@ -137,12 +137,7 @@ update msg model =
         InputCount count ->
             let
                 newCnt =
-                    case String.toInt count of
-                        Just i ->
-                            i
-
-                        Nothing ->
-                            0
+                    count |> String.toInt |> Maybe.withDefault 0
             in
             ( { model | count = newCnt }, Cmd.none )
 
