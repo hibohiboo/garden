@@ -8,7 +8,7 @@ import Http
 import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, TabState(..), getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, mainAreaTabs)
+import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, mainAreaTabs, positionArea)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -340,4 +340,13 @@ cardMainArea model =
 
 positionMainArea : Model -> Html Msg
 positionMainArea model =
-    div [ class "position-area" ] [ text "test" ]
+    positionArea <|
+        List.concat
+            [ model.characters |> Array.toList |> List.map (\x -> { name = x.name, position = x.position })
+            , model.enemies |> Array.toList |> List.map (\x -> { name = x.name, position = x.position })
+            ]
+
+
+toCharacterListItem : { a | name : String, position : Int } -> { name : String, position : Int }
+toCharacterListItem x =
+    { name = x.name, position = x.position }

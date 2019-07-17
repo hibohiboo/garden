@@ -172,6 +172,55 @@
       &.position-main-area {
         .position-area {
           display: block;
+          position: relative;
+          min-width: 60vw;
+          
+           > div {
+            min-height: 18vh;
+            width: 100%;
+            position: relative; // .area-nameのabsoluteの起点にする
+            border: solid 1px #000; // border-top: border-bottomが設定されていないと、子要素のmargin-top, margin-bottomが親要素のものより大きい場合そちらが使われる。
+
+            .area-name {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center; 
+            }
+            .position-card-area {
+              display: flex;
+              flex-wrap: wrap;
+              .position-card-item {
+                border: solid 1px;
+                width: 74px;
+                height: 94px;
+                margin: 2px;
+              }
+            }
+
+          }
+           > div:nth-child(1){
+            background-color: #222;
+            color: #fff;
+            .position-card-item {
+              border-color: #fff;
+            }
+          }
+          > div:nth-child(2){
+            background-color: #555;
+            color: #fff;
+          }
+          > div:nth-child(3){
+            background-color: #aaa;
+          }
+          > div:nth-child(4){
+            background-color: #ccc;
+          }
+          > div:nth-child(4){
+            background-color: #eee;
+          }
         }
       }
     }

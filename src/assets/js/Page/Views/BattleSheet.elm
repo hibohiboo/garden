@@ -1,4 +1,4 @@
-module Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputField, mainAreaTabs)
+module Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputField, mainAreaTabs, positionArea)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -268,4 +268,36 @@ characterCards : List Character -> Html msg
 characterCards characters =
     div []
         [ div [ class "card-list" ] (characters |> List.map (\char -> div [] [ characterCardWithCards char ]))
+        ]
+
+
+positionArea : List { a | name : String } -> Html msg
+positionArea items =
+    div [ class "position-area" ]
+        [ div [] [ positionNameArea "エリア5", positionCardArea ]
+        , div [] [ positionNameArea "エリア4" ]
+        , div [] [ positionNameArea "エリア3" ]
+        , div [] [ positionNameArea "エリア2" ]
+        , div [] [ positionNameArea "エリア1" ]
+        ]
+
+
+positionNameArea : String -> Html msg
+positionNameArea areaName =
+    div [ class "area-name" ] [ text areaName ]
+
+
+positionCardArea =
+    div [ class "position-card-area" ]
+        [ positionCardItem
+        , positionCardItem
+        , positionCardItem
+        , positionCardItem
+        , positionCardItem
+        ]
+
+
+positionCardItem =
+    div [ class "position-card-item" ]
+        [ div [ class "name" ] [ text "name" ]
         ]
