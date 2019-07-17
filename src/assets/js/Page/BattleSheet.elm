@@ -368,7 +368,7 @@ toCharacterListItem x =
 
 
 summaryMainArea =
-    div []
+    div [ class "summary-area" ]
         [ table []
             [ tr []
                 [ th [] [ text "出目" ]
