@@ -150,13 +150,28 @@
           padding: 5px;
         }
       }
+      .card-area, .input-area, .position-area{
+        display: none;
+      }
+      &.input-main-area {
+        .input-area {
+          display: block;
+        }
+      }
+
       &.card-main-area {
         // カードの大きさそのままでは、右のカウンターが見えなくなってしまう。
-        .card-area{
+        .card-area {
+          display: block;
           transform: scale(0.85);
           // transformはレイアウトには影響しないので、小さくした分の幅、位置を調整する
           max-width: 60vw;
           margin-top: -50px;
+        }
+      }
+      &.position-main-area {
+        .position-area {
+          display: block;
         }
       }
     }

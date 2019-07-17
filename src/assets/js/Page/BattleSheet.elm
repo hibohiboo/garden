@@ -300,23 +300,31 @@ viewTopPage model =
 
 mainArea : Model -> Html Msg
 mainArea model =
-    case model.tab of
-        InputTab ->
-            inputMainArea model
+    let
+        current =
+            case model.tab of
+                InputTab ->
+                    "input-main-area"
 
-        CardTab ->
-            cardMainArea model
+                CardTab ->
+                    "card-main-area"
 
-        PositionTab ->
-            positionMainArea model
+                PositionTab ->
+                    "position-main-area"
+    in
+    div [ class "main-area", class current ]
+        [ h1 [] [ text "戦闘シート" ]
+        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
+        , inputMainArea model
+        , cardMainArea model
+        , positionMainArea model
+        ]
 
 
 inputMainArea : Model -> Html Msg
 inputMainArea model =
-    div [ class "main-area" ]
-        [ h1 [] [ text "戦闘シート/入力" ]
-        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
-        , countController model.count InputCount IncreaseCount DecreaseCount
+    div [ class "input-area" ]
+        [ countController model.count InputCount IncreaseCount DecreaseCount
         , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower UpdateCharacterPosition OpenCharacterModal model.characters
         , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower UpdateEnemyPosition OpenEnemyModal model.enemies
         ]
@@ -324,20 +332,12 @@ inputMainArea model =
 
 cardMainArea : Model -> Html Msg
 cardMainArea model =
-    div [ class "main-area card-main-area" ]
-        [ h1 [] [ text "戦闘シート/カード" ]
-        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
-        , div [ class "card-area" ]
-            [ characterCards (BS.getCharacters model.characters)
-            , enemyCards (BS.getEnemies model.enemies)
-            ]
+    div [ class "card-area" ]
+        [ characterCards (BS.getCharacters model.characters)
+        , enemyCards (BS.getEnemies model.enemies)
         ]
 
 
 positionMainArea : Model -> Html Msg
 positionMainArea model =
-    div [ class "main-area" ]
-        [ h1 [] [ text "戦闘シート/カード" ]
-        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
-        , countController model.count InputCount IncreaseCount DecreaseCount
-        ]
+    div [ class "position-area" ] [ text "test" ]
