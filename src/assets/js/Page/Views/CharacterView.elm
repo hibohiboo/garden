@@ -73,6 +73,14 @@ illustedBy char =
         ]
 
 
-characterCardWithCards : Character -> Html msg
-characterCardWithCards character =
-    div [ class "card-set" ] (characterCard character :: skillsCards character)
+characterCardWithCards : Character -> Bool -> Html msg
+characterCardWithCards character isDisplaySkills =
+    let
+        className =
+            if isDisplaySkills then
+                ""
+
+            else
+                "skills-hide"
+    in
+    div [ class "card-set", class className ] (characterCard character :: skillsCards character)

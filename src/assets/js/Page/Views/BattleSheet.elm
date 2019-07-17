@@ -286,11 +286,16 @@ enemyCards enemies =
     enemies |> enemyList
 
 
-characterCards : List Character -> Html msg
-characterCards characters =
+characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> Html msg
+characterCards characters toggleMsg =
     div []
-        [ div [ class "card-list" ] (characters |> List.map (\char -> div [] [ characterCardWithCards char ]))
+        [ div [ class "card-list" ] (characters |> List.map (\( i, bsc ) -> characterCardWithCardsWrapper i bsc toggleMsg))
         ]
+
+
+characterCardWithCardsWrapper : Int -> BattleSheetCharacter -> (Int -> msg) -> Html msg
+characterCardWithCardsWrapper i bsc toggleMsg =
+    div [ onClick (toggleMsg i) ] [ characterCardWithCards (Maybe.withDefault (Character.initCharacter "") bsc.data) bsc.isDisplaySkills ]
 
 
 positionArea : List { a | name : String, cardImage : String, position : Int } -> Html msg

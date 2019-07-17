@@ -58,6 +58,11 @@
 .card-set {
   display: flex;
   flex-wrap: wrap;
+  &.skills-hide {
+    .skills-card {
+      display: none;
+    }
+  }
 }
 @import "skill-card";
 @import "character-card";

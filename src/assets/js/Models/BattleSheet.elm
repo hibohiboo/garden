@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCharacters, getCountAreaItems, getEnemies, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCharacters, getCountAreaItems, getEnemies, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
 import Models.Character as Character exposing (Character)
@@ -6,7 +6,7 @@ import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 
 
 type alias BattleSheetItem a =
-    { a | name : String, count : Int, activePower : Int, position : Int }
+    { a | name : String, count : Int, activePower : Int, position : Int, isDisplaySkills : Bool }
 
 
 type TabState
@@ -24,6 +24,7 @@ type alias BattleSheetEnemy =
     , position : Int
     , cardImage : String
     , data : Maybe EnemyListItem
+    , isDisplaySkills : Bool
     }
 
 
@@ -34,6 +35,7 @@ type alias BattleSheetCharacter =
     , position : Int
     , cardImage : String
     , data : Maybe Character
+    , isDisplaySkills : Bool
     }
 
 
@@ -50,12 +52,12 @@ initCountAreaItem =
 
 initBatlleSheetEnemy : BattleSheetEnemy
 initBatlleSheetEnemy =
-    BattleSheetEnemy "" 0 0 0 "" Nothing
+    BattleSheetEnemy "" 0 0 0 "" Nothing True
 
 
 initBatlleSheetCharacter : BattleSheetCharacter
 initBatlleSheetCharacter =
-    BattleSheetCharacter "" 0 0 0 "" Nothing
+    BattleSheetCharacter "" 0 0 0 "" Nothing True
 
 
 updateBatlleSheetItemName : Int -> String -> Array { a | name : String } -> Array { a | name : String }
@@ -103,6 +105,16 @@ updateBatlleSheetItemPosition index stVal items =
             items
 
 
+updateBatlleSheetItemIsDisplay : Int -> Array { a | isDisplaySkills : Bool } -> Array { a | isDisplaySkills : Bool }
+updateBatlleSheetItemIsDisplay index items =
+    case Array.get index items of
+        Just oldItem ->
+            Array.set index { oldItem | isDisplaySkills = not oldItem.isDisplaySkills } items
+
+        Nothing ->
+            items
+
+
 getCountAreaItems : List Int -> Array BattleSheetCharacter -> Array BattleSheetEnemy -> List CountAreaItem
 getCountAreaItems counts characters enemies =
     List.map
@@ -120,12 +132,16 @@ filterActivePower i characters =
         |> List.map (\x -> x.name)
 
 
-getCharacters : Array BattleSheetCharacter -> List Character
+getCharacters : Array BattleSheetCharacter -> List ( Int, BattleSheetCharacter )
 getCharacters characters =
     characters
+        |> Array.indexedMap (\i x -> ( i, x ))
         |> Array.toList
-        |> List.filter (\x -> x.data /= Nothing)
-        |> List.map (\x -> Maybe.withDefault (Character.initCharacter "") x.data)
+        |> List.filter (\( i, x ) -> x.data /= Nothing)
+
+
+
+--      |> List.map (\( i, x ) -> ( i, Maybe.withDefault (Character.initCharacter "") x.data ))
 
 
 getEnemies : Array BattleSheetEnemy -> List EnemyListItem

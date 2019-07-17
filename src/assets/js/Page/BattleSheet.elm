@@ -126,6 +126,7 @@ type Msg
     | SetPositionTab
     | SetSummaryTab
     | SetAllTab
+    | ToggleCharacterCardSkillsDisplay Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -217,7 +218,7 @@ update msg model =
         InputEnemy enemy ->
             let
                 bse =
-                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 0 enemy.cardImage (Just enemy)
+                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 0 enemy.cardImage (Just enemy) True
             in
             update CloseModal { model | enemies = Array.push bse model.enemies }
 
@@ -227,7 +228,7 @@ update msg model =
         InputCharacter char ->
             let
                 bsc =
-                    BattleSheetCharacter char.name char.activePower char.activePower 0 char.cardImage (Just char)
+                    BattleSheetCharacter char.name char.activePower char.activePower 0 char.cardImage (Just char) True
             in
             update CloseModal { model | characters = Array.push bsc model.characters }
 
@@ -245,6 +246,13 @@ update msg model =
 
         SetAllTab ->
             ( { model | tab = AllTab }, Cmd.none )
+
+        ToggleCharacterCardSkillsDisplay iCharacter ->
+            let
+                characters =
+                    BS.updateBatlleSheetItemIsDisplay iCharacter model.characters
+            in
+            ( { model | characters = characters }, Cmd.none )
 
 
 characterContent : String -> List Character -> Html Msg
@@ -348,7 +356,7 @@ inputMainArea model =
 cardMainArea : Model -> Html Msg
 cardMainArea model =
     div [ class "card-area" ]
-        [ characterCards (BS.getCharacters model.characters)
+        [ characterCards (BS.getCharacters model.characters) ToggleCharacterCardSkillsDisplay
         , enemyCards (BS.getEnemies model.enemies)
         ]
 
