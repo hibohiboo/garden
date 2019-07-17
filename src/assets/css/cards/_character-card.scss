@@ -1,4 +1,8 @@
-.enemy-card {
+
+//#######################################################
+
+
+.character-card {
   position: relative;
   .wrapper {
     @extend %card-wrapper;
@@ -135,18 +139,7 @@
         justify-self: left;
         display: flex;
         flex-wrap: wrap; // 折り返す
-        .tag {
-          background-color: teal;
-          color: #fff;
-          padding: 0 3px;
-          margin-bottom: 3px;
-          margin-left: 5px;
-          font-size: 12px;
-          white-space: nowrap;
-          line-height: 20px;
-          height: 18px;
-          display: block;
-        }
+
       }
       .mainContent {
         grid-column: innerLeft/innerRight;
@@ -212,6 +205,7 @@
 
           font-size: 0.8em;
           white-space: pre-wrap; // 改行を反映させる
+          overflow-y:auto; // 長くなったときにスクロールで読めるように。
         }
       }
       .bottomContent {
@@ -233,5 +227,10 @@
   }
 }
 
-
-
+@media (max-width: 799px) {
+  .character-card {
+    .wrapper {
+      margin: 0 auto; // スマホでは中央にカードを寄せる。
+    }
+  }
+}

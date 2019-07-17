@@ -1,4 +1,4 @@
-module Page.Views.CharacterView exposing (characterCard)
+module Page.Views.CharacterView exposing (characterCard, characterCardWithCards)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
+import Page.Views.Card exposing (skillsCards)
 import Page.Views.Tag exposing (tag)
 
 
@@ -70,3 +71,8 @@ illustedBy char =
         [ text "illust:"
         , illust
         ]
+
+
+characterCardWithCards : Character -> Html msg
+characterCardWithCards character =
+    div [ class "card-set" ] (characterCard character :: skillsCards character)

@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import List.Split exposing (chunksOfLeft)
 import Models.Card as Card exposing (CardData)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
+import Page.Views.Card exposing (skillsCards)
 import Page.Views.Tag exposing (tag)
 import Url.Builder
 
@@ -23,7 +24,7 @@ enemyList enemies =
 
 enemyCard : EnemyListItem -> Html msg
 enemyCard enemy =
-    div [ class "enemy-cards" ] (enemyCardMain enemy :: skillsCards enemy)
+    div [ class "card-set" ] (enemyCardMain enemy :: skillsCards enemy)
 
 
 enemyCardMain : EnemyListItem -> Html msg
@@ -58,50 +59,6 @@ enemyCardMain enemy =
                     -- , illustedBy char
                     ]
                 ]
-            ]
-        ]
-
-
-skillsCards : EnemyListItem -> List (Html msg)
-skillsCards enemy =
-    let
-        -- カードの大きさに合わせて1枚当たり4つのスキルを表示
-        list =
-            chunksOfLeft 4 (Array.toList enemy.cards)
-    in
-    List.map (\cards -> skillsCardMain enemy.name cards) list
-
-
-skillsCardMain : String -> List CardData -> Html msg
-skillsCardMain name cards =
-    div [ class "skills-card" ]
-        [ div [ class "wrapper" ]
-            [ div [ class "base" ]
-                [ div [ class "enemyName" ] [ text ("エネミー" ++ "/" ++ name) ]
-                , ul [ class "cards collection" ] (cardList cards)
-                ]
-            ]
-        ]
-
-
-cardList : List CardData -> List (Html msg)
-cardList cards =
-    List.map (\d -> card d) cards
-
-
-card : CardData -> Html msg
-card data =
-    li [ class "collection-item" ]
-        [ div [ style "display" "flex" ]
-            [ div [ class "skill-name", style "min-width" "0" ] (span [] [ text data.cardName ] :: List.map (\t -> tag t.name) data.tags)
-            , div [ style "display" "flex", style "margin-left" "auto" ]
-                [ div [ class "used" ] [ label [] [ input [ type_ "checkbox" ] [], span [] [ text "済" ] ] ]
-                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in" ] [], span [] [ text "傷" ] ] ]
-                ]
-            ]
-        , div [ class "skill-description" ]
-            [ div [] [ text (data.timing ++ "/" ++ String.fromInt data.cost ++ "/" ++ Card.getRange data ++ "/" ++ data.target) ]
-            , div [] [ text data.effect ]
             ]
         ]
 

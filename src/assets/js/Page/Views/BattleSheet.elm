@@ -10,7 +10,7 @@ import Json.Decode as D
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..))
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem exposing (EnemyListItem)
-import Page.Views.CharacterView exposing (characterCard)
+import Page.Views.CharacterView exposing (characterCard, characterCardWithCards)
 import Page.Views.Enemy exposing (enemyCardMain, enemyList)
 import Page.Views.Modal exposing (modalCardOpenButton)
 
@@ -267,5 +267,5 @@ enemyCards enemies =
 characterCards : List Character -> Html msg
 characterCards characters =
     div []
-        [ div [ class "card-list" ] (characters |> List.map (\char -> div [] [ characterCard char ]))
+        [ div [ class "card-list" ] (characters |> List.map (\char -> div [] [ characterCardWithCards char ]))
         ]

@@ -1,27 +1,27 @@
-.enemy-card {
+
+.skill-card {
   position: relative;
   .wrapper {
     @extend %card-wrapper;
 
     .base {
-      $mainContentHeight: 125px; // カードのメイン部分の高さ
+      $mainContentHeight: 140px; // カードのメイン部分の高さ
       @extend %card-base;
 
       grid-template-columns:
         [leftGap] 5px // 左余白～左端
         [innerLeft] 80px // 左端～
         [attrLabel] 60px // 特性～
-        [attrValue] 1fr
+        [attrValue]1fr
         [innerRight] 1px // 右端ターゲット
         [rightGap] 4px; // 右端余白;
 
       grid-template-rows: [topGap]1px // 上部余白～
-        [innerTop] 20px // 上部情報
-        [cardKana] 15px //  カード名カナ
+        [innerTop]20px // 上部情報
         [cardName] 30px //  カード名
         [tags] 20px //  タグ
-        [pictTop] 20px // 画像開始 / 変異器官
-        [mutagen] 20px // 変異原
+        [pictTop]20px // 画像開始 / タイミング
+        [cost]20px // コスト
         [range_] 20px // 射程
         [target_] 20px // 対象
         [exp] 20px //経験点 画像終わり
@@ -44,8 +44,6 @@
         height: 94px;
         outline: solid 1px #000;
         overflow: hidden;
-        box-sizing: content-box;
-
         img {
           position: absolute;
           max-width: 74px;
@@ -54,7 +52,7 @@
       }
       // 右上カード情報
       .attrLabel {
-        font-size: 0.8em;
+        font-size: 0.7em;
       }
       .attrValue {
         white-space: nowrap;
@@ -66,35 +64,35 @@
 
         font-family: "Anton", sans-serif;
       }
-      .attrOrganLabel {
+      .attrTimingLabel {
         grid-column: attrLabel; // 左端
         grid-row: pictTop; // 画像 / タイミング
       }
-      .attrOrganValue {
+      .attrTimingValue {
         grid-column: attrValue; // 左端
         grid-row: pictTop; // 画像 / タイミング
       }
-      .attrMutagenLabel {
+      .attrCostLabel {
         grid-column: attrLabel;
-        grid-row: mutagen;
+        grid-row: cost;
       }
-      .attrMutagenValue {
+      .attrCostValue {
         grid-column: attrValue;
-        grid-row: mutagen;
+        grid-row: cost;
       }
-      .attrReasonLabel {
+      .attrRangeLabel {
         grid-column: attrLabel;
         grid-row: range_;
       }
-      .attrReasonValue {
+      .attrRangeValue {
         grid-column: attrValue;
         grid-row: range_;
       }
-      .attrLaboLabel {
+      .attrTargetLabel {
         grid-column: attrLabel;
         grid-row: target_;
       }
-      .attrLaboValue {
+      .attrTargetValue {
         grid-column: attrValue;
         grid-row: target_;
       }
@@ -112,14 +110,6 @@
         line-height: 10px;
         font-size: 10px;
       }
-      .cardKana {
-        grid-column: 1/-1; // カード名の行
-        grid-row: cardKana; //
-
-        justify-self: left; // 横方向の位置揃え
-        align-self: center; // 縦方向の位置揃え
-        font-size: 0.8em;
-      }
       .cardName {
         grid-column: 1/-1; // カード名の行
         grid-row: cardName; //
@@ -128,25 +118,13 @@
         align-self: center; // 縦方向の位置揃え
         font-size: 1.5em;
       }
-
       .tags {
         grid-column: 1/-1; // カード名の行
         grid-row: tags;
         justify-self: left;
         display: flex;
         flex-wrap: wrap; // 折り返す
-        .tag {
-          background-color: teal;
-          color: #fff;
-          padding: 0 3px;
-          margin-bottom: 3px;
-          margin-left: 5px;
-          font-size: 12px;
-          white-space: nowrap;
-          line-height: 20px;
-          height: 18px;
-          display: block;
-        }
+
       }
       .mainContent {
         grid-column: innerLeft/innerRight;
@@ -162,7 +140,7 @@
           [lv] 20px
           1fr
           [innerRight] 1px // 右端ターゲット
-          [rightGap] 1px; // 右端余白;;
+          [rightGap] 1px; // 右端余白;
 
         grid-template-rows:
           [innerTop]auto // 上部情報
@@ -185,9 +163,7 @@
           grid-column: lv;
           grid-row: innerTop;
         }
-        .timingLabel {
-          font-size: 14px;
-        }
+
         $mainContentTopPadding: 2px;
         $mainContentLeftPadding: 5px;
         .effect {
@@ -211,7 +187,6 @@
           padding-left: $mainContentLeftPadding;
 
           font-size: 0.8em;
-          white-space: pre-wrap; // 改行を反映させる
         }
       }
       .bottomContent {
@@ -235,3 +210,49 @@
 
 
 
+.skills-card {
+  position: relative;
+  .wrapper {
+    @extend %card-wrapper;
+
+    .base {
+      @extend %card-base;
+      grid-template-rows: [topGap]1px // 上部余白～
+      [innerTop] 20px // 上部情報
+      [list] 1fr //  カード名カナ
+      ;
+      .enemyName {
+        grid-row: innerTop; // 上端
+        justify-self: right;
+  
+        font-family: "Anton", sans-serif;
+      }
+      .cards {
+        grid-row: list;
+        margin: 1px;
+
+        li {
+          padding: 1px;
+        }
+
+        .skill-name {
+          white-space: nowrap;
+          display:flex;
+          flex-wrap: wrap;
+        }
+        .skill-description {
+          font-size: 0.6rem;
+          line-height: 1.3;
+          height: 45px;
+          overflow-y: auto;
+        }
+        .injury, .used {
+          padding-left: 5px;
+        }
+        [type="checkbox"]+span {
+          padding-left: 20px;
+        }
+      }
+    }
+  }
+}
