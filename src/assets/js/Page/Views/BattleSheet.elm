@@ -293,7 +293,7 @@ characterCards characters =
         ]
 
 
-positionArea : List { a | name : String, position : Int } -> Html msg
+positionArea : List { a | name : String, cardImage : String, position : Int } -> Html msg
 positionArea items =
     div [ class "position-area" ]
         [ div [] [ positionNameArea "エリア5", positionCardArea <| List.filter (\item -> item.position == 5) <| items ]
@@ -309,14 +309,15 @@ positionNameArea areaName =
     div [ class "area-name" ] [ text areaName ]
 
 
-positionCardArea : List { a | name : String, position : Int } -> Html msg
+positionCardArea : List { a | name : String, cardImage : String, position : Int } -> Html msg
 positionCardArea items =
     div [ class "position-card-area" ]
         (List.map (\item -> positionCardItem item) items)
 
 
-positionCardItem : { a | name : String } -> Html msg
+positionCardItem : { a | name : String, cardImage : String } -> Html msg
 positionCardItem item =
     div [ class "position-card-item" ]
         [ div [ class "name" ] [ text item.name ]
+        , img [ src item.cardImage ] []
         ]

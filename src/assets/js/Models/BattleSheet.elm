@@ -9,15 +9,6 @@ type alias BattleSheetItem a =
     { a | name : String, count : Int, activePower : Int, position : Int }
 
 
-type alias BattleSheetEnemy =
-    { name : String
-    , count : Int
-    , activePower : Int
-    , position : Int
-    , data : Maybe EnemyListItem
-    }
-
-
 type TabState
     = InputTab
     | CardTab
@@ -26,11 +17,22 @@ type TabState
     | AllTab
 
 
+type alias BattleSheetEnemy =
+    { name : String
+    , count : Int
+    , activePower : Int
+    , position : Int
+    , cardImage : String
+    , data : Maybe EnemyListItem
+    }
+
+
 type alias BattleSheetCharacter =
     { name : String
     , count : Int
     , activePower : Int
     , position : Int
+    , cardImage : String
     , data : Maybe Character
     }
 
@@ -48,12 +50,12 @@ initCountAreaItem =
 
 initBatlleSheetEnemy : BattleSheetEnemy
 initBatlleSheetEnemy =
-    BattleSheetEnemy "" 0 0 0 Nothing
+    BattleSheetEnemy "" 0 0 0 "" Nothing
 
 
 initBatlleSheetCharacter : BattleSheetCharacter
 initBatlleSheetCharacter =
-    BattleSheetCharacter "" 0 0 0 Nothing
+    BattleSheetCharacter "" 0 0 0 "" Nothing
 
 
 updateBatlleSheetItemName : Int -> String -> Array { a | name : String } -> Array { a | name : String }

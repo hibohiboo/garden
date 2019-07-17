@@ -217,7 +217,7 @@ update msg model =
         InputEnemy enemy ->
             let
                 bse =
-                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 0 (Just enemy)
+                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 0 enemy.cardImage (Just enemy)
             in
             update CloseModal { model | enemies = Array.push bse model.enemies }
 
@@ -227,7 +227,7 @@ update msg model =
         InputCharacter char ->
             let
                 bsc =
-                    BattleSheetCharacter char.name char.activePower char.activePower 0 (Just char)
+                    BattleSheetCharacter char.name char.activePower char.activePower 0 char.cardImage (Just char)
             in
             update CloseModal { model | characters = Array.push bsc model.characters }
 
@@ -362,9 +362,9 @@ positionMainArea model =
             ]
 
 
-toCharacterListItem : { a | name : String, position : Int } -> { name : String, position : Int }
+toCharacterListItem : { a | name : String, position : Int, cardImage : String } -> { name : String, position : Int, cardImage : String }
 toCharacterListItem x =
-    { name = x.name, position = x.position }
+    { name = x.name, position = x.position, cardImage = x.cardImage }
 
 
 summaryMainArea =
