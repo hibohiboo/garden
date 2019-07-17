@@ -342,8 +342,8 @@ positionMainArea : Model -> Html Msg
 positionMainArea model =
     positionArea <|
         List.concat
-            [ model.characters |> Array.toList |> List.map (\x -> { name = x.name, position = x.position })
-            , model.enemies |> Array.toList |> List.map (\x -> { name = x.name, position = x.position })
+            [ model.characters |> Array.toList |> List.map toCharacterListItem
+            , model.enemies |> Array.toList |> List.map toCharacterListItem
             ]
 
 

@@ -271,14 +271,14 @@ characterCards characters =
         ]
 
 
-positionArea : List { a | name : String } -> Html msg
+positionArea : List { a | name : String, position : Int } -> Html msg
 positionArea items =
     div [ class "position-area" ]
-        [ div [] [ positionNameArea "エリア5", positionCardArea ]
-        , div [] [ positionNameArea "エリア4" ]
-        , div [] [ positionNameArea "エリア3" ]
-        , div [] [ positionNameArea "エリア2" ]
-        , div [] [ positionNameArea "エリア1" ]
+        [ div [] [ positionNameArea "エリア5", positionCardArea <| List.filter (\item -> item.position == 5) <| items ]
+        , div [] [ positionNameArea "エリア4", positionCardArea <| List.filter (\item -> item.position == 4) <| items ]
+        , div [] [ positionNameArea "エリア3", positionCardArea <| List.filter (\item -> item.position == 3) <| items ]
+        , div [] [ positionNameArea "エリア2", positionCardArea <| List.filter (\item -> item.position == 2) <| items ]
+        , div [] [ positionNameArea "エリア1", positionCardArea <| List.filter (\item -> item.position == 1) <| items ]
         ]
 
 
@@ -287,17 +287,14 @@ positionNameArea areaName =
     div [ class "area-name" ] [ text areaName ]
 
 
-positionCardArea =
+positionCardArea : List { a | name : String, position : Int } -> Html msg
+positionCardArea items =
     div [ class "position-card-area" ]
-        [ positionCardItem
-        , positionCardItem
-        , positionCardItem
-        , positionCardItem
-        , positionCardItem
-        ]
+        (List.map (\item -> positionCardItem item) items)
 
 
-positionCardItem =
+positionCardItem : { a | name : String } -> Html msg
+positionCardItem item =
     div [ class "position-card-item" ]
-        [ div [ class "name" ] [ text "name" ]
+        [ div [ class "name" ] [ text item.name ]
         ]
