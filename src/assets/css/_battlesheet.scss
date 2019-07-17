@@ -37,7 +37,7 @@
       }
       li {
         height: 1.2rem;
-        line-height: 1.6;
+        line-height: 1.5;
         box-sizing: border-box;
         text-align: center;
         position: relative;
@@ -76,23 +76,27 @@
         .characters-title {
           border: solid 1px $bgColor;
           padding: 1px;
+          background-color: #fff;
         }
         ul {
           margin-right: 10px;
           margin-top: -1px; // bordreを.characters-titleと重ねる
           border: solid 1px $bgColor;
-          padding-left :1px;
-          padding-right:1px;
-
-          // 重なったものより、開いているものを優先にする
-          li {
-            background-color: #fff;
+          display: none;
+        }
+        &.show-detail {
+          // z-index:で重なったものより、開いているものを優先にする
+          div{
             z-index: 1;
           }
-
-        }
-        ul.hide {
-          display: none;
+          ul {
+            display: block;
+            // ulにz-indexやbackground-colorを設定しても効いていないので、liに設定
+            li {
+              z-index: 1;
+              background-color: #fff;
+            }
+          }
         }
       }
       .triangle-wrapper {
@@ -118,9 +122,7 @@
       .input-field-wrapper {
         display: flex;
         flex-wrap: wrap;
-        .input-field:first-child{
-          max-width: 6rem;
-        }
+
         .input-field:nth-child(2){
           max-width: 3rem;
         }
@@ -130,7 +132,6 @@
         }
         .delete-button{
           padding: 5px;
-
         }
       }
     }

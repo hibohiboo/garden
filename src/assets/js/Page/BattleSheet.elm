@@ -33,7 +33,14 @@ type alias Model =
     , openCountAreaNumber : Int
     , modalTitle : String
     , modalContents : Html Msg
+    , tab : TabState
     }
+
+
+type TabState
+    = InputTab
+    | CardTab
+    | PositionTab
 
 
 initPageToken : String
@@ -89,7 +96,7 @@ maxAreaCount =
 
 initModel : Session.Data -> List EnemyListItem -> List Character -> Model
 initModel session enemyList characterList =
-    Model session enemyList characterList initPageToken 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "")
+    Model session enemyList characterList initPageToken 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "") InputTab
 
 
 initAreaCount =
@@ -190,7 +197,16 @@ update msg model =
             ( { model | characters = updateBatlleSheetItemPosition index val model.characters }, Cmd.none )
 
         UpdateOpenCountAreaNumber num ->
-            ( { model | openCountAreaNumber = num }, Cmd.none )
+            let
+                -- 2回目に同じところをクリックした場合は閉じる（開くタブの数字を範囲外にする)
+                newNumber =
+                    if model.openCountAreaNumber == num then
+                        maxAreaCount + 1
+
+                    else
+                        num
+            in
+            ( { model | openCountAreaNumber = newNumber }, Cmd.none )
 
         OpenEnemyModal ->
             let
@@ -270,12 +286,30 @@ view model =
 viewTopPage : Model -> Html Msg
 viewTopPage model =
     div [ class "wrapper" ]
-        [ div [ class "main-area" ]
-            [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
-            , countController model.count InputCount IncreaseCount DecreaseCount
-            , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower UpdateCharacterPosition OpenCharacterModal model.characters
-            , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower UpdateEnemyPosition OpenEnemyModal model.enemies
-            ]
+        [ mainArea model
         , countArea initAreaCount model.count model.openCountAreaNumber UpdateOpenCountAreaNumber (getCountAreaItems initAreaCount model.characters model.enemies)
         , Modal.view model.modalTitle model.modalContents model.modalState CloseModal
+        ]
+
+
+mainArea : Model -> Html Msg
+mainArea model =
+    case model.tab of
+        InputTab ->
+            inputMainArea model
+
+        CardTab ->
+            text ""
+
+        PositionTab ->
+            text ""
+
+
+inputMainArea : Model -> Html Msg
+inputMainArea model =
+    div [ class "main-area" ]
+        [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
+        , countController model.count InputCount IncreaseCount DecreaseCount
+        , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower UpdateCharacterPosition OpenCharacterModal model.characters
+        , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower UpdateEnemyPosition OpenEnemyModal model.enemies
         ]

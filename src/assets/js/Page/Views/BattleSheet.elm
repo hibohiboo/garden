@@ -100,20 +100,20 @@ countCharacters isShowDetail item updateMsg =
                         else
                             cCnt
 
-                    ulClass =
+                    stateClass =
                         if isShowDetail then
-                            ""
+                            "show-detail"
 
                         else
-                            "hide"
+                            ""
                 in
-                div [ class "multiple-characers" ]
+                div [ class "multiple-characers", class stateClass ]
                     [ div [ class "triangle-wrapper" ]
                         [ div [ class "characters-title" ]
                             [ div [ class "character-name" ] [ text title ] ]
                         , div [ class "triangle" ] []
                         ]
-                    , ul [ class ulClass ] (List.concat [ List.map (\name -> li [ class "character-name" ] [ text name ]) item.characters, List.map (\name -> li [ class "character-name" ] [ text name ]) item.enemies ])
+                    , ul [] (List.concat [ List.map (\name -> li [ class "character-name" ] [ text name ]) item.characters, List.map (\name -> li [ class "character-name" ] [ text name ]) item.enemies ])
                     ]
     in
     li [ onClick updateMsg ] [ content ]
@@ -137,7 +137,7 @@ type alias OnChangeMsg msg =
 
 inputCharacters : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetCharacter -> Html msg
 inputCharacters =
-    inputAreas "character" "キャラクター"
+    inputAreas "character" "PC"
 
 
 inputEnemies : msg -> (Int -> msg) -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> msg -> Array BattleSheetEnemy -> Html msg
@@ -151,7 +151,7 @@ inputAreas fieldId labelName addMsg deleteMsg updateNameMsg updateApMsg updatePo
         [ div []
             (List.concat
                 [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName deleteMsg updateNameMsg updateApMsg updatePositionMsg v) arrays
-                , [ lazy2 modalCardOpenButton openModalMsg "一覧から追加" ]
+                , [ lazy2 modalCardOpenButton openModalMsg (labelName ++ "一覧から追加") ]
                 , addButton labelName addMsg
                 ]
             )

@@ -1,0 +1,39 @@
+
+.modal {
+  display: none;
+  -webkit-animation: modalFadeIn 0.1s linear 0s 1;
+}
+.modal.open {
+  display: block;
+  top: 10%;
+}
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    top: 20%;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.modal-overlay {
+  display: block;
+  transition: opacity 0.3s, visibility 0s ease 0.1s;
+
+  opacity: 0;
+  visibility: hidden;
+}
+.modal-overlay.open {
+  transition-delay: 0s;
+
+  opacity: 0.8;
+  visibility: visible;
+}
+
+
+@media (max-width: 320px) {
+  // カードを表示したときにiphone5だとスクロールができてしまう
+  .modal-content {
+    padding: 0;
+  }
+}
