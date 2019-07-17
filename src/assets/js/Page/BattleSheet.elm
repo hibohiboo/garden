@@ -5,10 +5,10 @@ import FirestoreApi as FSApi
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, TabState(..), getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.BattleSheet exposing (characterListModal, countArea, countController, enemyListModal, inputCharacters, inputEnemies)
+import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, mainAreaTabs)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -35,12 +35,6 @@ type alias Model =
     , modalContents : Html Msg
     , tab : TabState
     }
-
-
-type TabState
-    = InputTab
-    | CardTab
-    | PositionTab
 
 
 initPageToken : String
@@ -127,6 +121,9 @@ type Msg
     | UpdateCharacterActivePower Int String
     | UpdateCharacterPosition Int String
     | UpdateOpenCountAreaNumber Int
+    | SetInputTab
+    | SetCardTab
+    | SetPositionTab
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -232,6 +229,15 @@ update msg model =
             in
             update CloseModal { model | characters = Array.push bsc model.characters }
 
+        SetInputTab ->
+            ( { model | tab = InputTab }, Cmd.none )
+
+        SetCardTab ->
+            ( { model | tab = CardTab }, Cmd.none )
+
+        SetPositionTab ->
+            ( { model | tab = PositionTab }, Cmd.none )
+
 
 characterContent : String -> List Character -> Html Msg
 characterContent token characterList =
@@ -299,17 +305,39 @@ mainArea model =
             inputMainArea model
 
         CardTab ->
-            text ""
+            cardMainArea model
 
         PositionTab ->
-            text ""
+            positionMainArea model
 
 
 inputMainArea : Model -> Html Msg
 inputMainArea model =
     div [ class "main-area" ]
-        [ h1 [ class "center", style "font-size" "2rem" ] [ text "戦闘シート" ]
+        [ h1 [] [ text "戦闘シート/入力" ]
+        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
         , countController model.count InputCount IncreaseCount DecreaseCount
         , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower UpdateCharacterPosition OpenCharacterModal model.characters
         , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower UpdateEnemyPosition OpenEnemyModal model.enemies
+        ]
+
+
+cardMainArea : Model -> Html Msg
+cardMainArea model =
+    div [ class "main-area card-main-area" ]
+        [ h1 [] [ text "戦闘シート/カード" ]
+        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
+        , div [ class "card-area" ]
+            [ characterCards (BS.getCharacters model.characters)
+            , enemyCards (BS.getEnemies model.enemies)
+            ]
+        ]
+
+
+positionMainArea : Model -> Html Msg
+positionMainArea model =
+    div [ class "main-area" ]
+        [ h1 [] [ text "戦闘シート/カード" ]
+        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
+        , countController model.count InputCount IncreaseCount DecreaseCount
         ]

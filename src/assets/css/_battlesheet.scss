@@ -8,10 +8,17 @@
   h1 {
     padding:0;
     margin:5px;
+    font-size:1.9rem;
+  }
+  .tabs {
+    .tab.active {
+      background-color: #2bbbad;
+    }
   }
   .wrapper {
     display: flex;
     overflow: hidden;
+
     .count-controller {
       display: flex;
       width: fit-content;
@@ -24,9 +31,16 @@
     .count-area {
       height: 100vh;
       font-size: 0.8rem;
-      flex-basis: 2.8rem;
       margin-left: auto;
+      
       display: flex;
+      .count-characters{
+        flex: 1; // こちらを可変
+      }
+      .count-numbers {
+        width: 30px; // こちらは固定
+      }
+
 
 
       > div > div{
@@ -69,7 +83,7 @@
       .character-name {
         white-space: nowrap;
         font-size: 0.5rem;
-        padding: 2px;
+        padding: 0 2px;
       }
       
       .multiple-characers {
@@ -77,6 +91,8 @@
           border: solid 1px $bgColor;
           padding: 1px;
           background-color: #fff;
+          line-height: 1.2;
+
         }
         ul {
           margin-right: 10px;
@@ -134,9 +150,26 @@
           padding: 5px;
         }
       }
+      &.card-main-area {
+        // カードの大きさそのままでは、右のカウンターが見えなくなってしまう。
+        .card-area{
+          transform: scale(0.85);
+          // transformはレイアウトには影響しないので、小さくした分の幅、位置を調整する
+          max-width: 60vw;
+          margin-top: -50px;
+        }
+      }
     }
   }
 
+}
+
+
+@media (min-width: 992px) {
+  // コンテンツ幅だけだとボタンが詰まりすぎてしまうため、最低値を設定
+  .tabs li {
+    min-width: 50px;
+  }
 }
 
 @media (min-width: 1260px) {

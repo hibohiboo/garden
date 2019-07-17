@@ -1,4 +1,4 @@
-module Page.Views.BattleSheet exposing (characterListModal, countArea, countController, enemyListModal, inputCharacters, inputEnemies, inputField)
+module Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputField, mainAreaTabs)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -6,11 +6,12 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onChange)
 import Html.Lazy exposing (lazy2)
-import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem)
+import Json.Decode as D
+import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..))
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem exposing (EnemyListItem)
 import Page.Views.CharacterView exposing (characterCard)
-import Page.Views.Enemy exposing (enemyCardMain)
+import Page.Views.Enemy exposing (enemyCardMain, enemyList)
 import Page.Views.Modal exposing (modalCardOpenButton)
 
 
@@ -217,4 +218,54 @@ characterListModal characterAddMsg fetchMsg token characters =
     div []
         [ div [ class "card-list" ] (characters |> List.map (\char -> div [ onClick (characterAddMsg char) ] [ characterCard char ]))
         , nextButton
+        ]
+
+
+
+-- メインエリア切替
+
+
+mainAreaTabs : msg -> msg -> msg -> TabState -> Html msg
+mainAreaTabs inputTabMsg cardTabMsg positionTabMsg current =
+    let
+        inputTabClass =
+            case current of
+                InputTab ->
+                    "active"
+
+                _ ->
+                    ""
+
+        cardTabClass =
+            case current of
+                CardTab ->
+                    "active"
+
+                _ ->
+                    ""
+
+        positionTabClass =
+            case current of
+                PositionTab ->
+                    "active"
+
+                _ ->
+                    ""
+    in
+    ul [ class "tabs" ]
+        [ li [ onClick inputTabMsg, class "tab waves-effect waves-light btn", class inputTabClass ] [ span [] [ text "入力" ] ]
+        , li [ onClick cardTabMsg, class "tab waves-effect waves-light btn", class cardTabClass ] [ span [] [ text "カード" ] ]
+        , li [ onClick positionTabMsg, class "tab waves-effect waves-light btn", class positionTabClass ] [ span [] [ text "盤面" ] ]
+        ]
+
+
+enemyCards : List EnemyListItem -> Html msg
+enemyCards enemies =
+    enemies |> enemyList
+
+
+characterCards : List Character -> Html msg
+characterCards characters =
+    div []
+        [ div [ class "card-list" ] (characters |> List.map (\char -> div [] [ characterCard char ]))
         ]

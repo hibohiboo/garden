@@ -1,4 +1,4 @@
-module Models.EnemyListItem exposing (EnemyListItem, enemyListDecoder, enemyListFromJson, enemyListItemDecoder)
+module Models.EnemyListItem exposing (EnemyListItem, enemyListDecoder, enemyListFromJson, enemyListItemDecoder, init)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -19,6 +19,10 @@ type alias EnemyListItem =
     , tags : List Tag
     , cards : Array CardData
     }
+
+
+init =
+    EnemyListItem "" "" 0 "" "" "" 0 [] Array.empty
 
 
 enemyListDecoder : Decoder (List EnemyListItem)

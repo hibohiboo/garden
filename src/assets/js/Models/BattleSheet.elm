@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCharacters, getCountAreaItems, getEnemies, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
 import Models.Character as Character exposing (Character)
@@ -16,6 +16,12 @@ type alias BattleSheetEnemy =
     , position : Int
     , data : Maybe EnemyListItem
     }
+
+
+type TabState
+    = InputTab
+    | CardTab
+    | PositionTab
 
 
 type alias BattleSheetCharacter =
@@ -108,3 +114,19 @@ filterActivePower i characters =
         |> Array.toList
         |> List.filter (\x -> x.activePower == i)
         |> List.map (\x -> x.name)
+
+
+getCharacters : Array BattleSheetCharacter -> List Character
+getCharacters characters =
+    characters
+        |> Array.toList
+        |> List.filter (\x -> x.data /= Nothing)
+        |> List.map (\x -> Maybe.withDefault (Character.initCharacter "") x.data)
+
+
+getEnemies : Array BattleSheetEnemy -> List EnemyListItem
+getEnemies enemies =
+    enemies
+        |> Array.toList
+        |> List.filter (\x -> x.data /= Nothing)
+        |> List.map (\x -> Maybe.withDefault EnemyListItem.init x.data)

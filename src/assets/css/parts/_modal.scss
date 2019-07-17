@@ -1,7 +1,7 @@
 
 .modal {
   display: none;
-  -webkit-animation: modalFadeIn 0.1s linear 0s 1;
+  animation: modalFadeIn 0.1s linear 0s 1;
 }
 .modal.open {
   display: block;
@@ -33,7 +33,7 @@
 
 @media (max-width: 320px) {
   // カードを表示したときにiphone5だとスクロールができてしまう
-  .modal-content {
+  .modal .modal-content {
     padding: 0;
   }
 }
