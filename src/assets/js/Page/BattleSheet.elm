@@ -218,7 +218,7 @@ update msg model =
         InputEnemy enemy ->
             let
                 bse =
-                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 0 enemy.cardImage (Just enemy) True
+                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 5 enemy.cardImage (Just enemy) True
             in
             update CloseModal { model | enemies = Array.push bse model.enemies }
 
@@ -228,7 +228,7 @@ update msg model =
         InputCharacter char ->
             let
                 bsc =
-                    BattleSheetCharacter char.name char.activePower char.activePower 0 char.cardImage (Just char) True
+                    BattleSheetCharacter char.name char.activePower char.activePower 1 char.cardImage (Just char) True
             in
             update CloseModal { model | characters = Array.push bsc model.characters }
 

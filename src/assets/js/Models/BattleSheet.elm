@@ -52,12 +52,12 @@ initCountAreaItem =
 
 initBatlleSheetEnemy : BattleSheetEnemy
 initBatlleSheetEnemy =
-    BattleSheetEnemy "" 0 0 0 "" Nothing True
+    BattleSheetEnemy "" 0 0 1 "" Nothing True
 
 
 initBatlleSheetCharacter : BattleSheetCharacter
 initBatlleSheetCharacter =
-    BattleSheetCharacter "" 0 0 0 "" Nothing True
+    BattleSheetCharacter "" 0 0 1 "" Nothing True
 
 
 updateBatlleSheetItemName : Int -> String -> Array { a | name : String } -> Array { a | name : String }
