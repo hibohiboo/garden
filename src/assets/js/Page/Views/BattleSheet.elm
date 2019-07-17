@@ -225,8 +225,8 @@ characterListModal characterAddMsg fetchMsg token characters =
 -- メインエリア切替
 
 
-mainAreaTabs : msg -> msg -> msg -> TabState -> Html msg
-mainAreaTabs inputTabMsg cardTabMsg positionTabMsg current =
+mainAreaTabs : msg -> msg -> msg -> msg -> msg -> TabState -> Html msg
+mainAreaTabs inputTabMsg cardTabMsg positionTabMsg summaryTabMsg allTabMsg current =
     let
         inputTabClass =
             case current of
@@ -251,12 +251,34 @@ mainAreaTabs inputTabMsg cardTabMsg positionTabMsg current =
 
                 _ ->
                     ""
+
+        summaryTabClass =
+            case current of
+                SummaryTab ->
+                    "active"
+
+                _ ->
+                    ""
+
+        allTabClass =
+            getCurrentClassName AllTab current
     in
     ul [ class "tabs" ]
         [ li [ onClick inputTabMsg, class "tab waves-effect waves-light btn", class inputTabClass ] [ span [] [ text "入力" ] ]
         , li [ onClick cardTabMsg, class "tab waves-effect waves-light btn", class cardTabClass ] [ span [] [ text "カード" ] ]
         , li [ onClick positionTabMsg, class "tab waves-effect waves-light btn", class positionTabClass ] [ span [] [ text "盤面" ] ]
+        , li [ onClick summaryTabMsg, class "tab waves-effect waves-light btn", class summaryTabClass ] [ span [] [ text "サマリ" ] ]
+        , li [ onClick allTabMsg, class "tab waves-effect waves-light btn", class allTabClass ] [ span [] [ text "全て" ] ]
         ]
+
+
+getCurrentClassName : TabState -> TabState -> String
+getCurrentClassName expect actual =
+    if expect == actual then
+        "active"
+
+    else
+        ""
 
 
 enemyCards : List EnemyListItem -> Html msg

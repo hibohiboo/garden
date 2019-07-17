@@ -22,6 +22,8 @@ type TabState
     = InputTab
     | CardTab
     | PositionTab
+    | SummaryTab
+    | AllTab
 
 
 type alias BattleSheetCharacter =

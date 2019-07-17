@@ -124,6 +124,8 @@ type Msg
     | SetInputTab
     | SetCardTab
     | SetPositionTab
+    | SetSummaryTab
+    | SetAllTab
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -238,6 +240,12 @@ update msg model =
         SetPositionTab ->
             ( { model | tab = PositionTab }, Cmd.none )
 
+        SetSummaryTab ->
+            ( { model | tab = SummaryTab }, Cmd.none )
+
+        SetAllTab ->
+            ( { model | tab = AllTab }, Cmd.none )
+
 
 characterContent : String -> List Character -> Html Msg
 characterContent token characterList =
@@ -311,13 +319,20 @@ mainArea model =
 
                 PositionTab ->
                     "position-main-area"
+
+                SummaryTab ->
+                    "summary-main-area"
+
+                AllTab ->
+                    "input-main-area  card-main-area position-main-area summary-main-area"
     in
     div [ class "main-area", class current ]
         [ h1 [] [ text "戦闘シート" ]
-        , mainAreaTabs SetInputTab SetCardTab SetPositionTab model.tab
+        , mainAreaTabs SetInputTab SetCardTab SetPositionTab SetSummaryTab SetAllTab model.tab
         , inputMainArea model
         , cardMainArea model
         , positionMainArea model
+        , summaryMainArea
         ]
 
 
@@ -350,3 +365,34 @@ positionMainArea model =
 toCharacterListItem : { a | name : String, position : Int } -> { name : String, position : Int }
 toCharacterListItem x =
     { name = x.name, position = x.position }
+
+
+summaryMainArea =
+    div []
+        [ table []
+            [ tr []
+                [ th [] [ text "出目" ]
+                , th [] [ text "効果" ]
+                ]
+            , tr []
+                [ th [] [ text "6" ]
+                , td [] [ text "攻撃された側が選んだカード" ]
+                ]
+            , tr []
+                [ th [] [ text "7" ]
+                , td [] [ text "攻撃された側が選んだ手札のカード" ]
+                ]
+            , tr []
+                [ th [] [ text "8" ]
+                , td [] [ text "攻撃された側が選んだ使用済置き場のカード" ]
+                ]
+            , tr []
+                [ th [] [ text "9" ]
+                , td [] [ text "攻撃した側が選んだ使用済置き場のカード" ]
+                ]
+            , tr []
+                [ th [] [ text "10以上" ]
+                , td [] [ text "ランダムに選んだ手札のカード" ]
+                ]
+            ]
+        ]
