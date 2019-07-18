@@ -41,13 +41,6 @@ enemyCardMain enemy =
                 , div [ class "cardName" ] [ text enemy.name ]
                 , div [ class "attrOrganLabel attrLabel border" ] [ text "脅威度" ]
                 , div [ class "attrOrganValue border" ] [ text (String.fromInt enemy.degreeOfThreat) ]
-
-                -- , div [ class "attrMutagenLabel attrLabel border" ] [ text "変異原" ]
-                -- , div [ class "attrMutagenValue border" ] [ text "" ]
-                -- , div [ class "attrReasonLabel attrLabel border" ] [ text "収容理由" ]
-                -- , div [ class "attrReasonValue border" ] [ text "" ]
-                -- , div [ class "attrLaboLabel attrLabel border" ] [ text "研究所" ]
-                -- , div [ class "attrLaboValue attrLabel border" ] [ text "enemy.labo" ]
                 , div [ class "tags" ] (List.map (\t -> tag t.name) enemy.tags)
                 , div [ class "mainContent border" ]
                     [ div [ class "effect " ] [ text ("行動力 : " ++ String.fromInt enemy.activePower) ]
@@ -87,7 +80,3 @@ enemyCardWithCardsUpdatable enemy isDisplaySkills toggleUsed toggleDamaged =
                 "skills-hide"
     in
     div [ class "card-set", class className ] (enemyCardMain enemy :: skillsCardsUpdatable enemy toggleUsed toggleDamaged)
-
-
-
--- input [ type_ "checkbox", checked cardState.isUsed, onClick (ToggleUsed i) ] []
