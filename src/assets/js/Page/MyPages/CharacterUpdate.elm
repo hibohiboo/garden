@@ -154,7 +154,8 @@ update msg model =
             ( { model | character = m }, Cmd.none )
 
         UpdatedCharacter _ ->
-            ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
+            -- 一旦キャラシートのキャッシュを削除
+            ( { model | session = Session.deleteCharacter model.session model.character.characterId }, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
         GotReasons (Ok json) ->
             case GSAPI.tuplesInObjectDecodeFromString json of

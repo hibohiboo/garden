@@ -1,4 +1,71 @@
-module Session exposing (Data, Version, addCards, addCharacter, addCharacterDetails, addCharacters, addEnemies, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchCharacterDetails, fetchCharacters, fetchCharactersWithPageToken, fetchEnemies, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getCharacterDetails, getCharacters, getCharactersWithPageToken, getEnemies, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
+module Session exposing
+    ( Data
+    , Version
+    , addCards
+    , addCharacter
+    , addCharacterDetails
+    , addCharacters
+    , addEnemies
+    , addFaqs
+    , addJsonData
+    , addMarkdown
+    , addReasons
+    , addSpreasSheetData
+    , addTextStrings
+    , addTraits
+    , addUserCards
+    , cardRange
+    , cardSheetId
+    , cardSheetVersion
+    , deleteCharacter
+    , empty
+    , faqRange
+    , faqSheetId
+    , faqSheetVersion
+    , fetchCards
+    , fetchCharacter
+    , fetchCharacterDetails
+    , fetchCharacters
+    , fetchCharactersWithPageToken
+    , fetchEnemies
+    , fetchFaqs
+    , fetchJsonData
+    , fetchMarkdown
+    , fetchReasons
+    , fetchSpreasSheetData
+    , fetchTextStrings
+    , fetchTraits
+    , fetchUserCards
+    , getCards
+    , getCharacter
+    , getCharacterDetails
+    , getCharacters
+    , getCharactersWithPageToken
+    , getEnemies
+    , getFaqs
+    , getJsonData
+    , getMarkdown
+    , getReasons
+    , getSpreasSheetData
+    , getTextStrings
+    , getTraits
+    , getUserCards
+    , markdownUrl
+    , reasonRange
+    , reasonSheetId
+    , reasonSheetVersion
+    , textStringsRange
+    , textStringsSheetId
+    , textStringsSheetVersion
+    , toMarkdownKey
+    , toSpreasSheetDataKey
+    , traitRange
+    , traitSheetId
+    , traitSheetVersion
+    , userCardRange
+    , userCardSheetId
+    , userCardSheetVersion
+    )
 
 import Dict
 import FirestoreApi
@@ -114,6 +181,15 @@ fetchJsonData toMsg url =
         { url = url
         , expect = Http.expectString toMsg
         }
+
+
+deleteJsonData : String -> Data -> Data
+deleteJsonData url data =
+    let
+        newDatas =
+            Dict.remove url data.json
+    in
+    { data | json = newDatas }
 
 
 
@@ -318,6 +394,11 @@ addCharacter data json characterId =
 
 fetchCharacter toMsg characterId =
     fetchJsonData toMsg (FirestoreApi.characterUrlFromFireStore characterId)
+
+
+deleteCharacter : Data -> String -> Data
+deleteCharacter data characterId =
+    deleteJsonData (FirestoreApi.characterUrlFromFireStore characterId) data
 
 
 
