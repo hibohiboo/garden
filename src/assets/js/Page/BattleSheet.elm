@@ -259,10 +259,6 @@ update msg model =
         GotBattleSheet json ->
             case BS.decodeBattleSheetFromJson json of
                 Ok m ->
-                    let
-                        _ =
-                            Debug.log "decodeUser" m.enemies
-                    in
                     ( { model | sheetName = m.sheetName, count = m.count, enemies = m.enemies, characters = m.characters }, Cmd.none )
 
                 Err _ ->
