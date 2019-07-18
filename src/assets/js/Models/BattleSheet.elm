@@ -1,9 +1,85 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemCardDamaged, updateBatlleSheetItemCardUsed, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, BattleSheetModel, BattleSheetMsg(..), CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initBattleSheetModel, initCountAreaItem, initPageToken, maxAreaCount, updateBatlleSheetItemActivePower, updateBatlleSheetItemCardDamaged, updateBatlleSheetItemCardUsed, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
+import Html exposing (Html, text)
+import Http
 import Models.Card as Card exposing (CardData)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
+import Session
+import Utils.ModalWindow as Modal
+
+
+type alias BattleSheetModel =
+    { session : Session.Data
+
+    -- モーダルダイアログで選択用のリスト
+    , enemyList : List EnemyListItem
+    , characterList : List Character
+    , charactersPageToken : String
+    , count : Int
+    , modalState : Modal.ModalState
+
+    -- 選択したキャラクター・エネミーのリスト
+    , enemies : Array BattleSheetEnemy
+    , characters : Array BattleSheetCharacter
+    , openCountAreaNumber : Int
+    , modalTitle : String
+    , modalContents : Html BattleSheetMsg
+    , tab : TabState
+    }
+
+
+maxAreaCount =
+    20
+
+
+initPageToken : String
+initPageToken =
+    ""
+
+
+initBattleSheetModel : Session.Data -> List EnemyListItem -> List Character -> BattleSheetModel
+initBattleSheetModel session enemyList characterList =
+    BattleSheetModel session enemyList characterList initPageToken 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "") InputTab
+
+
+type BattleSheetMsg
+    = GotEnemies (Result Http.Error String)
+    | GotCharacters (Result Http.Error String)
+    | GetNextCharacters
+    | InputCount String
+    | IncreaseCount
+    | DecreaseCount
+    | OpenModal
+    | CloseModal
+    | OpenEnemyModal
+    | InputEnemy EnemyListItem
+    | OpenCharacterModal
+    | InputCharacter Character
+    | AddEnemy
+    | DeleteEnemy Int
+    | UpdateEnemyName Int String
+    | UpdateEnemyActivePower Int String
+    | UpdateEnemyPosition Int String
+    | AddCharacter
+    | DeleteCharacter Int
+    | UpdateCharacterName Int String
+    | UpdateCharacterActivePower Int String
+    | UpdateCharacterPosition Int String
+    | UpdateOpenCountAreaNumber Int
+    | SetInputTab
+    | SetCardTab
+    | SetPositionTab
+    | SetSummaryTab
+    | SetAllTab
+    | ToggleCharacterCardSkillsDisplay Int
+    | ToggleCharacterSkillCardUsed Int Int
+    | ToggleCharacterSkillCardDamaged Int Int
+    | ToggleEnemyCardSkillsDisplay Int
+    | ToggleEnemySkillCardUsed Int Int
+    | ToggleEnemySkillCardDamaged Int Int
+    | GotBattleSheet String
 
 
 type alias BattleSheetItem a =
@@ -46,6 +122,10 @@ type alias CountAreaItem =
     { characters : List String
     , enemies : List String
     }
+
+
+
+-- encodeBattleSheet =
 
 
 initCountAreaItem : CountAreaItem

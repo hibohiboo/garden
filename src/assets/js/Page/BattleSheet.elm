@@ -1,11 +1,12 @@
-module Page.BattleSheet exposing (Model, Msg, init, initModel, update, view)
+port module Page.BattleSheet exposing (Model, Msg, init, initModel, subscriptions, update, view)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, TabState(..), getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+import Json.Encode as E
+import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetModel, BattleSheetMsg(..), CountAreaItem, TabState(..), getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initBattleSheetModel, initCountAreaItem, initPageToken, maxAreaCount, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
@@ -18,29 +19,28 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
+port saveBattleSheet : E.Value -> Cmd msg
+
+
+port getBattleSheet : String -> Cmd msg
+
+
+port gotBattleSheet : (String -> msg) -> Sub msg
+
+
+subscriptions : Sub Msg
+subscriptions =
+    Sub.batch
+        [ gotBattleSheet GotBattleSheet
+        ]
+
+
+type alias Msg =
+    BattleSheetMsg
+
+
 type alias Model =
-    { session : Session.Data
-
-    -- モーダルダイアログで選択用のリスト
-    , enemyList : List EnemyListItem
-    , characterList : List Character
-    , charactersPageToken : String
-    , count : Int
-    , modalState : Modal.ModalState
-
-    -- 選択したキャラクター・エネミーのリスト
-    , enemies : Array BattleSheetEnemy
-    , characters : Array BattleSheetCharacter
-    , openCountAreaNumber : Int
-    , modalTitle : String
-    , modalContents : Html Msg
-    , tab : TabState
-    }
-
-
-initPageToken : String
-initPageToken =
-    ""
+    BattleSheetModel
 
 
 init : Session.Data -> ( Model, Cmd Msg )
@@ -81,58 +81,17 @@ init session =
     )
 
 
-maxAreaCount =
-    20
+initModel : Session.Data -> List EnemyListItem -> List Character -> Model
+initModel =
+    initBattleSheetModel
 
 
 
 --openCountAreaNumberを maxAreaCountにすることで0の位置にあわせる
 
 
-initModel : Session.Data -> List EnemyListItem -> List Character -> Model
-initModel session enemyList characterList =
-    Model session enemyList characterList initPageToken 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "") InputTab
-
-
 initAreaCount =
     List.reverse <| List.range -10 maxAreaCount
-
-
-type Msg
-    = GotEnemies (Result Http.Error String)
-    | GotCharacters (Result Http.Error String)
-    | GetNextCharacters
-    | InputCount String
-    | IncreaseCount
-    | DecreaseCount
-    | OpenModal
-    | CloseModal
-    | OpenEnemyModal
-    | InputEnemy EnemyListItem
-    | OpenCharacterModal
-    | InputCharacter Character
-    | AddEnemy
-    | DeleteEnemy Int
-    | UpdateEnemyName Int String
-    | UpdateEnemyActivePower Int String
-    | UpdateEnemyPosition Int String
-    | AddCharacter
-    | DeleteCharacter Int
-    | UpdateCharacterName Int String
-    | UpdateCharacterActivePower Int String
-    | UpdateCharacterPosition Int String
-    | UpdateOpenCountAreaNumber Int
-    | SetInputTab
-    | SetCardTab
-    | SetPositionTab
-    | SetSummaryTab
-    | SetAllTab
-    | ToggleCharacterCardSkillsDisplay Int
-    | ToggleCharacterSkillCardUsed Int Int
-    | ToggleCharacterSkillCardDamaged Int Int
-    | ToggleEnemyCardSkillsDisplay Int
-    | ToggleEnemySkillCardUsed Int Int
-    | ToggleEnemySkillCardDamaged Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -294,6 +253,9 @@ update msg model =
                     BS.updateBatlleSheetItemCardDamaged indexEnemy indexSkill model.enemies
             in
             ( { model | enemies = enemies }, Cmd.none )
+
+        GotBattleSheet json ->
+            ( model, Cmd.none )
 
 
 characterContent : String -> List Character -> Html Msg
