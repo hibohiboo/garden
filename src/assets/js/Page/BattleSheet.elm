@@ -127,6 +127,7 @@ type Msg
     | SetSummaryTab
     | SetAllTab
     | ToggleCharacterCardSkillsDisplay Int
+    | ToggleEnemyCardSkillsDisplay Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -254,6 +255,13 @@ update msg model =
             in
             ( { model | characters = characters }, Cmd.none )
 
+        ToggleEnemyCardSkillsDisplay iEnemy ->
+            let
+                enemies =
+                    BS.updateBatlleSheetItemIsDisplay iEnemy model.enemies
+            in
+            ( { model | enemies = enemies }, Cmd.none )
+
 
 characterContent : String -> List Character -> Html Msg
 characterContent token characterList =
@@ -356,8 +364,8 @@ inputMainArea model =
 cardMainArea : Model -> Html Msg
 cardMainArea model =
     div [ class "card-area" ]
-        [ characterCards (BS.getCharacters model.characters) ToggleCharacterCardSkillsDisplay
-        , enemyCards (BS.getEnemies model.enemies)
+        [ characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay
+        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay
         ]
 
 

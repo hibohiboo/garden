@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCharacters, getCountAreaItems, getEnemies, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
 import Models.Character as Character exposing (Character)
@@ -132,8 +132,8 @@ filterActivePower i characters =
         |> List.map (\x -> x.name)
 
 
-getCharacters : Array BattleSheetCharacter -> List ( Int, BattleSheetCharacter )
-getCharacters characters =
+getIndexedCharacterCard : Array BattleSheetCharacter -> List ( Int, BattleSheetCharacter )
+getIndexedCharacterCard characters =
     characters
         |> Array.indexedMap (\i x -> ( i, x ))
         |> Array.toList
@@ -144,9 +144,9 @@ getCharacters characters =
 --      |> List.map (\( i, x ) -> ( i, Maybe.withDefault (Character.initCharacter "") x.data ))
 
 
-getEnemies : Array BattleSheetEnemy -> List EnemyListItem
-getEnemies enemies =
+getIndexedEnemyCard : Array BattleSheetEnemy -> List ( Int, BattleSheetEnemy )
+getIndexedEnemyCard enemies =
     enemies
+        |> Array.indexedMap (\i x -> ( i, x ))
         |> Array.toList
-        |> List.filter (\x -> x.data /= Nothing)
-        |> List.map (\x -> Maybe.withDefault EnemyListItem.init x.data)
+        |> List.filter (\( i, x ) -> x.data /= Nothing)

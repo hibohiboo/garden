@@ -9,9 +9,9 @@ import Html.Lazy exposing (lazy2)
 import Json.Decode as D
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..))
 import Models.Character as Character exposing (Character)
-import Models.EnemyListItem exposing (EnemyListItem)
+import Models.EnemyListItem as Enemy exposing (EnemyListItem)
 import Page.Views.CharacterView exposing (characterCard, characterCardWithCards)
-import Page.Views.Enemy exposing (enemyCardMain, enemyList)
+import Page.Views.Enemy exposing (enemyCardMain, enemyCardWithCards, enemyList)
 import Page.Views.Modal exposing (modalCardOpenButton)
 
 
@@ -281,9 +281,16 @@ getCurrentClassName expect actual =
         ""
 
 
-enemyCards : List EnemyListItem -> Html msg
-enemyCards enemies =
-    enemies |> enemyList
+enemyCards : List ( Int, BattleSheetEnemy ) -> (Int -> msg) -> Html msg
+enemyCards enemies toggleMsg =
+    div []
+        [ div [ class "card-list" ] (enemies |> List.map (\( i, bse ) -> enemyCardWithCardsWrapper i bse toggleMsg))
+        ]
+
+
+enemyCardWithCardsWrapper : Int -> BattleSheetEnemy -> (Int -> msg) -> Html msg
+enemyCardWithCardsWrapper i bse toggleMsg =
+    div [ onClick (toggleMsg i) ] [ enemyCardWithCards (Maybe.withDefault Enemy.init bse.data) bse.isDisplaySkills ]
 
 
 characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> Html msg

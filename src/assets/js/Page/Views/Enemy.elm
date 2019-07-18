@@ -1,4 +1,4 @@
-module Page.Views.Enemy exposing (enemyCardMain, enemyList)
+module Page.Views.Enemy exposing (enemyCardMain, enemyCardWithCards, enemyList)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -61,6 +61,19 @@ enemyCardMain enemy =
                 ]
             ]
         ]
+
+
+enemyCardWithCards : EnemyListItem -> Bool -> Html msg
+enemyCardWithCards enemy isDisplaySkills =
+    let
+        className =
+            if isDisplaySkills then
+                ""
+
+            else
+                "skills-hide"
+    in
+    div [ class "card-set", class className ] (enemyCard enemy :: skillsCards enemy)
 
 
 
