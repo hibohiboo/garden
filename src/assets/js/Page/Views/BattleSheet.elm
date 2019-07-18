@@ -348,7 +348,15 @@ positionCardArea items =
 
 positionCardItem : { a | name : String, cardImage : String } -> Html msg
 positionCardItem item =
+    let
+        cardImage =
+            if item.cardImage == "" then
+                text ""
+
+            else
+                img [ src item.cardImage ] []
+    in
     div [ class "position-card-item" ]
         [ div [ class "name" ] [ text item.name ]
-        , img [ src item.cardImage ] []
+        , cardImage
         ]
