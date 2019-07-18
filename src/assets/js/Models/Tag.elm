@@ -1,4 +1,11 @@
-module Models.Tag exposing (Tag, encodeTagToValue, tagDecoder, tagsDecoder, tagsDecoderFromFireStoreApi)
+module Models.Tag exposing
+    ( Tag
+    , encodeTagToValue
+    , tagDecoder
+    , tagsDecoder
+    , tagsDecoderFromFireStoreApi
+    , tagsDecoderFromJson
+    )
 
 import FirestoreApi as FSApi
 import Json.Decode as D exposing (Decoder)
@@ -36,6 +43,14 @@ tagsDecoder =
                 |> List.filterMap fromString
         )
         D.string
+
+
+tagsDecoderFromJson : Decoder (List Tag)
+tagsDecoderFromJson =
+    D.oneOf
+        [ D.list tagDecoder
+        , D.succeed []
+        ]
 
 
 tagDecoder : Decoder Tag

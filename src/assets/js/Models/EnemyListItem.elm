@@ -1,4 +1,10 @@
-module Models.EnemyListItem exposing (EnemyListItem, encodeEnemyListItem, enemyListDecoder, enemyListFromJson, enemyListItemDecoder, init)
+module Models.EnemyListItem exposing
+    ( EnemyListItem
+    , encodeEnemyListItem
+    , enemyListFromFireStoreApi
+    , enemyListItemDecoder
+    , init
+    )
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -41,20 +47,34 @@ encodeEnemyListItem enemy =
         ]
 
 
-enemyListDecoder : Decoder (List EnemyListItem)
-enemyListDecoder =
-    D.at [ "documents" ] (D.list enemyListItemFieldDecoder)
-
-
-enemyListItemFieldDecoder : Decoder EnemyListItem
-enemyListItemFieldDecoder =
-    FSApi.fields enemyListItemDecoder
-
-
 enemyListItemDecoder : Decoder EnemyListItem
 enemyListItemDecoder =
     D.succeed EnemyListItem
-        |> required "enemyId" FSApi.string
+        |> optional "enemyId" D.string ""
+        |> required "name" D.string
+        |> required "activePower" D.int
+        |> optional "memo" D.string ""
+        |> optional "cardImage" D.string ""
+        |> optional "kana" D.string ""
+        |> optional "degreeOfThreat" D.int 0
+        |> optional "tags" Tag.tagsDecoderFromJson []
+        |> optional "cards" (D.array Card.cardDecoderFromJson) Array.empty
+
+
+enemyListDecoderFromFireStoreApi : Decoder (List EnemyListItem)
+enemyListDecoderFromFireStoreApi =
+    D.at [ "documents" ] (D.list enemyListItemFieldDecoderFromFireStoreApi)
+
+
+enemyListItemFieldDecoderFromFireStoreApi : Decoder EnemyListItem
+enemyListItemFieldDecoderFromFireStoreApi =
+    FSApi.fields enemyListItemDecoderFromFireStoreApi
+
+
+enemyListItemDecoderFromFireStoreApi : Decoder EnemyListItem
+enemyListItemDecoderFromFireStoreApi =
+    D.succeed EnemyListItem
+        |> optional "enemyId" FSApi.string ""
         |> required "name" FSApi.string
         |> required "activePower" FSApi.int
         |> required "memo" FSApi.string
@@ -65,9 +85,9 @@ enemyListItemDecoder =
         |> optional "cards" (FSApi.array Card.cardDecoderFromFireStoreApi) (Array.fromList [])
 
 
-enemyListFromJson : String -> List EnemyListItem
-enemyListFromJson json =
-    case D.decodeString enemyListDecoder json of
+enemyListFromFireStoreApi : String -> List EnemyListItem
+enemyListFromFireStoreApi json =
+    case D.decodeString enemyListDecoderFromFireStoreApi json of
         Ok item ->
             item
 

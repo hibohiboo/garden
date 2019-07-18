@@ -6,6 +6,7 @@ module Models.BattleSheet exposing
     , BattleSheetMsg(..)
     , CountAreaItem
     , TabState(..)
+    , decodeBattleSheetFromJson
     , encodeBattleSheetToJson
     , getCountAreaItems
     , getIndexedCharacterCard
@@ -27,6 +28,8 @@ module Models.BattleSheet exposing
 import Array exposing (Array)
 import Html exposing (Html, text)
 import Http
+import Json.Decode as D exposing (Decoder)
+import Json.Decode.Pipeline exposing (custom, hardcoded, optional, required)
 import Json.Encode as E
 import Models.Card as Card exposing (CardData)
 import Models.Character as Character exposing (Character)
@@ -37,6 +40,7 @@ import Utils.ModalWindow as Modal
 
 type alias BattleSheetModel =
     { session : Session.Data
+    , sheetName : String
 
     -- モーダルダイアログで選択用のリスト
     , enemyList : List EnemyListItem
@@ -66,13 +70,14 @@ initPageToken =
 
 initBattleSheetModel : Session.Data -> List EnemyListItem -> List Character -> BattleSheetModel
 initBattleSheetModel session enemyList characterList =
-    BattleSheetModel session enemyList characterList initPageToken 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "") InputTab
+    BattleSheetModel session "" enemyList characterList initPageToken 0 Modal.Close Array.empty Array.empty maxAreaCount "" (text "") InputTab
 
 
 type BattleSheetMsg
     = GotEnemies (Result Http.Error String)
     | GotCharacters (Result Http.Error String)
     | GetNextCharacters
+    | InputSheetName String
     | InputCount String
     | IncreaseCount
     | DecreaseCount
@@ -158,7 +163,8 @@ encodeBattleSheetToJson model =
 encodeBattleSheetToValue : BattleSheetModel -> E.Value
 encodeBattleSheetToValue model =
     E.object
-        [ ( "count", E.int model.count )
+        [ ( "sheetName", E.string model.sheetName )
+        , ( "count", E.int model.count )
         , ( "enemies", E.array encodeBattleSheetEnemy model.enemies )
         , ( "characters", E.array encodeBattleSheetCharacter model.characters )
         ]
@@ -208,6 +214,55 @@ encodeCharacter maybeItem =
 
         Nothing ->
             E.null
+
+
+decodeBattleSheetFromJson : String -> Result D.Error BattleSheetModel
+decodeBattleSheetFromJson json =
+    D.decodeString battleSheetDecoder json
+
+
+battleSheetDecoder : Decoder BattleSheetModel
+battleSheetDecoder =
+    D.succeed BattleSheetModel
+        |> hardcoded Session.empty
+        |> required "sheetName" D.string
+        |> hardcoded []
+        |> hardcoded []
+        |> hardcoded ""
+        |> optional "count" D.int 0
+        |> hardcoded Modal.Close
+        |> optional "enemies" (D.array battleSheetEnemyDecoder) Array.empty
+        |> optional "characters" (D.array battleSheetCharacterDecoder) Array.empty
+        |> hardcoded 0
+        |> hardcoded ""
+        |> hardcoded (text "")
+        |> hardcoded InputTab
+
+
+battleSheetEnemyDecoder : Decoder BattleSheetEnemy
+battleSheetEnemyDecoder =
+    D.succeed BattleSheetEnemy
+        |> required "name" D.string
+        |> required "count" D.int
+        |> required "activePower" D.int
+        |> required "position" D.int
+        |> optional "cardImage" D.string ""
+        |> optional "data" (D.maybe EnemyListItem.enemyListItemDecoder) Nothing
+        |> hardcoded True
+        |> optional "notDamagedCardNumber" D.int 0
+
+
+battleSheetCharacterDecoder : Decoder BattleSheetCharacter
+battleSheetCharacterDecoder =
+    D.succeed BattleSheetCharacter
+        |> required "name" D.string
+        |> required "count" D.int
+        |> required "activePower" D.int
+        |> required "position" D.int
+        |> optional "cardImage" D.string ""
+        |> optional "data" (D.maybe Character.characterDecoder) Nothing
+        |> hardcoded True
+        |> optional "notDamagedCardNumber" D.int 0
 
 
 initCountAreaItem : CountAreaItem

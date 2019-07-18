@@ -9,7 +9,7 @@ import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, mainAreaTabs, positionArea)
+import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputSheetName, mainAreaTabs, positionArea)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -48,7 +48,7 @@ init session =
         enemyList =
             case Session.getEnemies session of
                 Just json ->
-                    EnemyListItem.enemyListFromJson json
+                    EnemyListItem.enemyListFromFireStoreApi json
 
                 Nothing ->
                     []
@@ -116,49 +116,52 @@ update msg model =
                 newCnt =
                     count |> String.toInt |> Maybe.withDefault 0
             in
-            ( { model | count = newCnt }, Cmd.none )
+            saveLocalStorage ( { model | count = newCnt }, Cmd.none )
+
+        InputSheetName name ->
+            saveLocalStorage ( { model | sheetName = name }, Cmd.none )
 
         IncreaseCount ->
-            ( { model | count = model.count + 1 }, Cmd.none )
+            saveLocalStorage ( { model | count = model.count + 1 }, Cmd.none )
 
         DecreaseCount ->
-            ( { model | count = model.count - 1 }, Cmd.none )
+            saveLocalStorage ( { model | count = model.count - 1 }, Cmd.none )
 
         OpenModal ->
             ( { model | modalState = Modal.Open }, Cmd.none )
 
         CloseModal ->
-            ( { model | modalState = Modal.Close }, Cmd.none )
+            saveLocalStorage ( { model | modalState = Modal.Close }, Cmd.none )
 
         AddEnemy ->
-            ( { model | enemies = Array.push initBatlleSheetEnemy model.enemies }, Cmd.none )
+            saveLocalStorage ( { model | enemies = Array.push initBatlleSheetEnemy model.enemies }, Cmd.none )
 
         DeleteEnemy index ->
-            ( { model | enemies = deleteAt index model.enemies }, Cmd.none )
+            saveLocalStorage ( { model | enemies = deleteAt index model.enemies }, Cmd.none )
 
         UpdateEnemyName index name ->
-            ( { model | enemies = updateBatlleSheetItemName index name model.enemies }, Cmd.none )
+            saveLocalStorage ( { model | enemies = updateBatlleSheetItemName index name model.enemies }, Cmd.none )
 
         UpdateEnemyActivePower index ap ->
-            ( { model | enemies = updateBatlleSheetItemActivePower index ap model.enemies }, Cmd.none )
+            saveLocalStorage ( { model | enemies = updateBatlleSheetItemActivePower index ap model.enemies }, Cmd.none )
 
         UpdateEnemyPosition index val ->
-            ( { model | enemies = updateBatlleSheetItemPosition index val model.enemies }, Cmd.none )
+            saveLocalStorage ( { model | enemies = updateBatlleSheetItemPosition index val model.enemies }, Cmd.none )
 
         AddCharacter ->
-            ( { model | characters = Array.push initBatlleSheetCharacter model.characters }, Cmd.none )
+            saveLocalStorage ( { model | characters = Array.push initBatlleSheetCharacter model.characters }, Cmd.none )
 
         DeleteCharacter index ->
-            ( { model | characters = deleteAt index model.characters }, Cmd.none )
+            saveLocalStorage ( { model | characters = deleteAt index model.characters }, Cmd.none )
 
         UpdateCharacterName index name ->
-            ( { model | characters = updateBatlleSheetItemName index name model.characters }, Cmd.none )
+            saveLocalStorage ( { model | characters = updateBatlleSheetItemName index name model.characters }, Cmd.none )
 
         UpdateCharacterActivePower index ap ->
-            ( { model | characters = updateBatlleSheetItemActivePower index ap model.characters }, Cmd.none )
+            saveLocalStorage ( { model | characters = updateBatlleSheetItemActivePower index ap model.characters }, Cmd.none )
 
         UpdateCharacterPosition index val ->
-            ( { model | characters = updateBatlleSheetItemPosition index val model.characters }, Cmd.none )
+            saveLocalStorage ( { model | characters = updateBatlleSheetItemPosition index val model.characters }, Cmd.none )
 
         UpdateOpenCountAreaNumber num ->
             let
@@ -230,14 +233,14 @@ update msg model =
                 characters =
                     BS.updateBatlleSheetItemCardUsed indexCharacter indexSkill model.characters
             in
-            ( { model | characters = characters }, Cmd.none )
+            saveLocalStorage ( { model | characters = characters }, Cmd.none )
 
         ToggleCharacterSkillCardDamaged indexCharacter indexSkill ->
             let
                 characters =
                     BS.updateBatlleSheetItemCardDamaged indexCharacter indexSkill model.characters
             in
-            ( { model | characters = characters }, Cmd.none )
+            saveLocalStorage ( { model | characters = characters }, Cmd.none )
 
         ToggleEnemySkillCardUsed indexEnemy indexSkill ->
             let
@@ -254,7 +257,16 @@ update msg model =
             saveLocalStorage ( { model | enemies = enemies }, Cmd.none )
 
         GotBattleSheet json ->
-            ( model, Cmd.none )
+            case BS.decodeBattleSheetFromJson json of
+                Ok m ->
+                    let
+                        _ =
+                            Debug.log "decodeUser" m.enemies
+                    in
+                    ( { model | sheetName = m.sheetName, count = m.count, enemies = m.enemies, characters = m.characters }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 saveLocalStorage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
@@ -274,7 +286,7 @@ characterContent token characterList =
 updateEnemiesModel : Model -> String -> Model
 updateEnemiesModel model json =
     { model
-        | enemyList = EnemyListItem.enemyListFromJson json
+        | enemyList = EnemyListItem.enemyListFromFireStoreApi json
         , session = Session.addEnemies model.session json
     }
 
@@ -354,7 +366,8 @@ mainArea model =
 inputMainArea : Model -> Html Msg
 inputMainArea model =
     div [ class "input-area" ]
-        [ countController model.count InputCount IncreaseCount DecreaseCount
+        [ inputSheetName model.sheetName InputSheetName
+        , countController model.count InputCount IncreaseCount DecreaseCount
         , inputCharacters AddCharacter DeleteCharacter UpdateCharacterName UpdateCharacterActivePower UpdateCharacterPosition OpenCharacterModal model.characters
         , inputEnemies AddEnemy DeleteEnemy UpdateEnemyName UpdateEnemyActivePower UpdateEnemyPosition OpenEnemyModal model.enemies
         ]

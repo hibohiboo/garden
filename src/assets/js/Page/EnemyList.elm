@@ -28,7 +28,7 @@ init session =
         enemies =
             case Session.getEnemies session of
                 Just json ->
-                    EnemyListItem.enemyListFromJson json
+                    EnemyListItem.enemyListFromFireStoreApi json
 
                 Nothing ->
                     []
@@ -71,7 +71,7 @@ update msg model =
 updateEnemiesModel : Model -> String -> Model
 updateEnemiesModel model json =
     { model
-        | enemies = EnemyListItem.enemyListFromJson json
+        | enemies = EnemyListItem.enemyListFromFireStoreApi json
         , session = Session.addEnemies model.session json
     }
 

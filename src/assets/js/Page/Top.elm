@@ -71,7 +71,7 @@ viewTopPage =
         , p
             [ class "content-doc" ]
             [ text """
-コワレタセカイデアソビタイ
+トビラノムコウニナニガアルノ
 """ ]
         , ul []
             [ li [] [ a [ href (Url.Builder.absolute [ "rulebook" ] []) ] [ text "ルールを読む" ] ]

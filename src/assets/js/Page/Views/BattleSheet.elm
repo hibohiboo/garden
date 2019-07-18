@@ -1,4 +1,17 @@
-module Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputField, mainAreaTabs, positionArea)
+module Page.Views.BattleSheet exposing
+    ( characterCards
+    , characterListModal
+    , countArea
+    , countController
+    , enemyCards
+    , enemyListModal
+    , inputCharacters
+    , inputEnemies
+    , inputField
+    , inputSheetName
+    , mainAreaTabs
+    , positionArea
+    )
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -118,6 +131,14 @@ countCharacters isShowDetail item updateMsg =
                     ]
     in
     li [ onClick updateMsg ] [ content ]
+
+
+inputSheetName : String -> (String -> msg) -> Html msg
+inputSheetName name msg =
+    div [ class "input-field" ]
+        [ input [ id "sheetName", type_ "text", value name, onChange msg ] []
+        , label [ class "active" ] [ text "戦闘シート名" ]
+        ]
 
 
 countController : Int -> (String -> msg) -> msg -> msg -> Html msg

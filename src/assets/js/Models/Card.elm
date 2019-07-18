@@ -3,7 +3,6 @@ port module Models.Card exposing
     , CardLabelData
     , cardDataListDecodeFromJson
     , cardDecodeFromString
-    , cardDecoder
     , cardDecoderFromFireStoreApi
     , cardDecoderFromJson
     , cardList
@@ -236,16 +235,16 @@ illustedBy cardData =
 
 cardDataListDecodeFromJson : String -> Result Error (List CardData)
 cardDataListDecodeFromJson s =
-    decodeString (field "values" (D.list cardDecoder)) s
+    decodeString (field "values" (D.list cardDecoderFromSpreadSheet)) s
 
 
 cardDecodeFromString : String -> Result Error CardData
 cardDecodeFromString s =
-    decodeString cardDecoder s
+    decodeString cardDecoderFromSpreadSheet s
 
 
-cardDecoder : Decoder CardData
-cardDecoder =
+cardDecoderFromSpreadSheet : Decoder CardData
+cardDecoderFromSpreadSheet =
     D.succeed CardData
         |> custom (D.index 0 CardId.decoder)
         |> custom (D.index 1 D.string)
