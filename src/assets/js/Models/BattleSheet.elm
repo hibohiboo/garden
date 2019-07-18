@@ -1,13 +1,13 @@
 module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemCardDamaged, updateBatlleSheetItemCardUsed, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
-import Models.Card exposing (CardData)
+import Models.Card as Card exposing (CardData)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 
 
 type alias BattleSheetItem a =
-    { a | name : String, count : Int, activePower : Int, position : Int, isDisplaySkills : Bool }
+    { a | name : String, count : Int, activePower : Int, position : Int, isDisplaySkills : Bool, notDamagedCardNumber : Int }
 
 
 type TabState
@@ -26,6 +26,7 @@ type alias BattleSheetEnemy =
     , cardImage : String
     , data : Maybe EnemyListItem
     , isDisplaySkills : Bool
+    , notDamagedCardNumber : Int
     }
 
 
@@ -37,6 +38,7 @@ type alias BattleSheetCharacter =
     , cardImage : String
     , data : Maybe Character
     , isDisplaySkills : Bool
+    , notDamagedCardNumber : Int
     }
 
 
@@ -53,12 +55,12 @@ initCountAreaItem =
 
 initBatlleSheetEnemy : BattleSheetEnemy
 initBatlleSheetEnemy =
-    BattleSheetEnemy "" 0 0 1 "" Nothing True
+    BattleSheetEnemy "" 0 0 1 "" Nothing True 0
 
 
 initBatlleSheetCharacter : BattleSheetCharacter
 initBatlleSheetCharacter =
-    BattleSheetCharacter "" 0 0 1 "" Nothing True
+    BattleSheetCharacter "" 0 0 1 "" Nothing True 0
 
 
 updateBatlleSheetItemName : Int -> String -> Array { a | name : String } -> Array { a | name : String }
@@ -144,15 +146,18 @@ updateCardUsed index data =
             Nothing
 
 
-updateBatlleSheetItemCardDamaged : Int -> Int -> Array { a | data : Maybe { b | cards : Array CardData } } -> Array { a | data : Maybe { b | cards : Array CardData } }
+updateBatlleSheetItemCardDamaged : Int -> Int -> Array { a | data : Maybe { b | cards : Array CardData }, notDamagedCardNumber : Int } -> Array { a | data : Maybe { b | cards : Array CardData }, notDamagedCardNumber : Int }
 updateBatlleSheetItemCardDamaged itemIndex skillIndex items =
     case Array.get itemIndex items of
         Just oldItem ->
             let
                 data =
                     oldItem.data |> Maybe.andThen (updateCardDamaged skillIndex)
+
+                notDamagedCardNumber =
+                    data |> Maybe.andThen (\d -> Just (Card.getNotDamagedCardNumber d.cards)) |> Maybe.withDefault 0
             in
-            Array.set itemIndex { oldItem | data = data } items
+            Array.set itemIndex { oldItem | data = data, notDamagedCardNumber = notDamagedCardNumber } items
 
         Nothing ->
             items

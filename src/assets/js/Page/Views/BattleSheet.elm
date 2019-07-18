@@ -324,7 +324,7 @@ characterCardWithCardsWrapper bsc toggleMsg toggleCardUsedMsg toggleCardDamagedM
     div [ onClick toggleMsg ] [ characterCardWithCardsUpdatable (Maybe.withDefault (Character.initCharacter "") bsc.data) bsc.isDisplaySkills toggleCardUsedMsg toggleCardDamagedMsg ]
 
 
-positionArea : List { a | name : String, cardImage : String, position : Int } -> Html msg
+positionArea : List { a | name : String, cardImage : String, position : Int, notDamagedCardNumber : Int } -> Html msg
 positionArea items =
     div [ class "position-area" ]
         [ div [] [ positionNameArea "エリア5", positionCardArea <| List.filter (\item -> item.position == 5) <| items ]
@@ -340,13 +340,13 @@ positionNameArea areaName =
     div [ class "area-name" ] [ text areaName ]
 
 
-positionCardArea : List { a | name : String, cardImage : String, position : Int } -> Html msg
+positionCardArea : List { a | name : String, cardImage : String, position : Int, notDamagedCardNumber : Int } -> Html msg
 positionCardArea items =
     div [ class "position-card-area" ]
         (List.map (\item -> positionCardItem item) items)
 
 
-positionCardItem : { a | name : String, cardImage : String } -> Html msg
+positionCardItem : { a | name : String, cardImage : String, notDamagedCardNumber : Int } -> Html msg
 positionCardItem item =
     let
         cardImage =
@@ -355,8 +355,16 @@ positionCardItem item =
 
             else
                 img [ src item.cardImage ] []
+
+        notDamagedCardNumber =
+            if item.notDamagedCardNumber == 0 then
+                text ""
+
+            else
+                div [ class "not-damaged-card-number" ] [ text (String.fromInt item.notDamagedCardNumber) ]
     in
     div [ class "position-card-item" ]
         [ div [ class "name" ] [ text item.name ]
+        , notDamagedCardNumber
         , cardImage
         ]

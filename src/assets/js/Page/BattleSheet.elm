@@ -6,6 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy, CountAreaItem, TabState(..), getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, mainAreaTabs, positionArea)
@@ -223,7 +224,7 @@ update msg model =
         InputEnemy enemy ->
             let
                 bse =
-                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 5 enemy.cardImage (Just enemy) True
+                    BattleSheetEnemy enemy.name enemy.activePower enemy.activePower 5 enemy.cardImage (Just enemy) True (Card.getNotDamagedCardNumber enemy.cards)
             in
             update CloseModal { model | enemies = Array.push bse model.enemies }
 
@@ -233,7 +234,7 @@ update msg model =
         InputCharacter char ->
             let
                 bsc =
-                    BattleSheetCharacter char.name char.activePower char.activePower 1 char.cardImage (Just char) True
+                    BattleSheetCharacter char.name char.activePower char.activePower 1 char.cardImage (Just char) True (Card.getNotDamagedCardNumber char.cards)
             in
             update CloseModal { model | characters = Array.push bsc model.characters }
 
@@ -411,9 +412,9 @@ positionMainArea model =
             ]
 
 
-toCharacterListItem : { a | name : String, position : Int, cardImage : String } -> { name : String, position : Int, cardImage : String }
+toCharacterListItem : { a | name : String, position : Int, cardImage : String, notDamagedCardNumber : Int } -> { name : String, position : Int, cardImage : String, notDamagedCardNumber : Int }
 toCharacterListItem x =
-    { name = x.name, position = x.position, cardImage = x.cardImage }
+    { name = x.name, position = x.position, cardImage = x.cardImage, notDamagedCardNumber = x.notDamagedCardNumber }
 
 
 summaryMainArea =

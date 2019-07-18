@@ -11,6 +11,7 @@ port module Models.Card exposing
     , encodeCardToValue
     , getActivePower
     , getBases
+    , getNotDamagedCardNumber
     , getRange
     , getTraitList
     , illustedBy
@@ -407,3 +408,10 @@ getActivePower cards =
         |> List.filter (\t -> t.name == "行動力")
         |> List.map (\t -> t.level)
         |> List.foldl (+) 4
+
+
+getNotDamagedCardNumber : Array CardData -> Int
+getNotDamagedCardNumber cards =
+    cards
+        |> Array.filter (\card -> not card.isDamaged)
+        |> Array.length
