@@ -203,7 +203,7 @@ selectField min max labelName fid updateMsg index val =
     div [ class "input-field" ]
         [ select
             [ placeholder labelName, id fid, class "browser-default", value val, onChange (updateMsg index), style "min-width" "60px" ]
-            (List.range min max |> List.map (\i -> String.fromInt i) |> List.map (\num -> option [ value num, selected (val == num) ] [ text num ]))
+            (List.range min max |> List.reverse |> List.map (\i -> String.fromInt i) |> List.map (\num -> option [ value num, selected (val == num) ] [ text num ]))
         , label [ class "active", for fid ] [ text labelName ]
         ]
 

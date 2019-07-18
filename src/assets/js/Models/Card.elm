@@ -79,11 +79,13 @@ type alias CardData =
     , frameByName : String
     , frameByUrl : String
     , deleteFlag : Int
+    , isUsed : Bool
+    , isDameged : Bool
     }
 
 
 initCard =
-    CardData (CardId.fromString "") "" "" "" 0 "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0
+    CardData (CardId.fromString "") "" "" "" 0 "" 0 0 0 "" 0 "" "" [] "" "" "" "" "" "" 0 False False
 
 
 
@@ -100,7 +102,7 @@ cardList cards =
 skillCard =
     let
         cardData =
-            CardData (CardId.fromString "B-001") "走る" "能力" "基本能力" 0 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0
+            CardData (CardId.fromString "B-001") "走る" "能力" "基本能力" 0 "アクション" 4 0 0 "自身" 1 "移動1" "逃げてもいいし、向かってもいい。\n君たちは何処にだっていける。\n一歩ずつではあるけれど。" [ Tag "移動" 0, Tag "基本能力" 0 ] "/assets/images/card/main/run.png" "ヒューマンピクトグラム2.0" "http://pictogram2.com/" "/assets/images/card/frame/report.gif" "" "https://google.com" 0 False False
     in
     cardView cardData
 
@@ -244,53 +246,57 @@ cardDecodeFromString s =
 cardDecoder : Decoder CardData
 cardDecoder =
     D.succeed CardData
-        |> Json.Decode.Pipeline.custom (D.index 0 CardId.decoder)
-        |> Json.Decode.Pipeline.custom (D.index 1 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 2 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 3 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 4 GSAPI.decoderIntFromString)
-        |> Json.Decode.Pipeline.custom (D.index 5 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 6 GSAPI.decoderIntFromString)
-        |> Json.Decode.Pipeline.custom (D.index 7 GSAPI.decoderIntFromString)
-        |> Json.Decode.Pipeline.custom (D.index 8 GSAPI.decoderIntFromString)
-        |> Json.Decode.Pipeline.custom (D.index 9 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 10 GSAPI.decoderIntFromString)
-        |> Json.Decode.Pipeline.custom (D.index 11 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 12 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 13 tagsDecoder)
-        |> Json.Decode.Pipeline.custom (D.index 14 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 15 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 16 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 17 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 18 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 19 D.string)
-        |> Json.Decode.Pipeline.custom (D.index 20 GSAPI.decoderIntFromString)
+        |> custom (D.index 0 CardId.decoder)
+        |> custom (D.index 1 D.string)
+        |> custom (D.index 2 D.string)
+        |> custom (D.index 3 D.string)
+        |> custom (D.index 4 GSAPI.decoderIntFromString)
+        |> custom (D.index 5 D.string)
+        |> custom (D.index 6 GSAPI.decoderIntFromString)
+        |> custom (D.index 7 GSAPI.decoderIntFromString)
+        |> custom (D.index 8 GSAPI.decoderIntFromString)
+        |> custom (D.index 9 D.string)
+        |> custom (D.index 10 GSAPI.decoderIntFromString)
+        |> custom (D.index 11 D.string)
+        |> custom (D.index 12 D.string)
+        |> custom (D.index 13 tagsDecoder)
+        |> custom (D.index 14 D.string)
+        |> custom (D.index 15 D.string)
+        |> custom (D.index 16 D.string)
+        |> custom (D.index 17 D.string)
+        |> custom (D.index 18 D.string)
+        |> custom (D.index 19 D.string)
+        |> custom (D.index 20 GSAPI.decoderIntFromString)
+        |> hardcoded False
+        |> hardcoded False
 
 
 cardDecoderFromJson : Decoder CardData
 cardDecoderFromJson =
     D.succeed CardData
-        |> Json.Decode.Pipeline.required "cardId" CardId.decoder
-        |> Json.Decode.Pipeline.required "cardName" D.string
-        |> Json.Decode.Pipeline.required "cardType" D.string
-        |> Json.Decode.Pipeline.required "kind" D.string
-        |> Json.Decode.Pipeline.required "exp" D.int
-        |> Json.Decode.Pipeline.required "timing" D.string
-        |> Json.Decode.Pipeline.required "cost" D.int
-        |> Json.Decode.Pipeline.required "range" D.int
-        |> Json.Decode.Pipeline.required "maxRange" D.int
-        |> Json.Decode.Pipeline.required "target" D.string
-        |> Json.Decode.Pipeline.required "maxLevel" D.int
-        |> Json.Decode.Pipeline.required "effect" D.string
-        |> Json.Decode.Pipeline.required "description" D.string
-        |> Json.Decode.Pipeline.required "tags" (D.list tagDecoder)
-        |> Json.Decode.Pipeline.required "imgMain" D.string
-        |> Json.Decode.Pipeline.required "illustedByName" D.string
-        |> Json.Decode.Pipeline.required "illustedByUrl" D.string
-        |> Json.Decode.Pipeline.required "imgFrame" D.string
-        |> Json.Decode.Pipeline.required "frameByName" D.string
-        |> Json.Decode.Pipeline.required "frameByUrl" D.string
-        |> Json.Decode.Pipeline.required "deleteFlag" D.int
+        |> required "cardId" CardId.decoder
+        |> required "cardName" D.string
+        |> required "cardType" D.string
+        |> required "kind" D.string
+        |> required "exp" D.int
+        |> required "timing" D.string
+        |> required "cost" D.int
+        |> required "range" D.int
+        |> required "maxRange" D.int
+        |> required "target" D.string
+        |> required "maxLevel" D.int
+        |> required "effect" D.string
+        |> required "description" D.string
+        |> required "tags" (D.list tagDecoder)
+        |> required "imgMain" D.string
+        |> required "illustedByName" D.string
+        |> required "illustedByUrl" D.string
+        |> required "imgFrame" D.string
+        |> required "frameByName" D.string
+        |> required "frameByUrl" D.string
+        |> required "deleteFlag" D.int
+        |> optional "isUsed" D.bool False
+        |> optional "isDameged" D.bool False
 
 
 cardDecoderFromFireStoreApi : Decoder CardData
@@ -317,6 +323,8 @@ cardDecoderFromFireStoreApi =
         |> optional "frameByName" FSApi.string ""
         |> optional "frameByUrl" FSApi.string ""
         |> optional "deleteFlag" FSApi.int 0
+        |> optional "isUsed" FSApi.bool False
+        |> optional "isDameged" FSApi.bool False
 
 
 

@@ -52,13 +52,13 @@ type alias Model =
 type alias CardState =
     { card : Card.CardData
     , isUsed : Bool
-    , isInjury : Bool
+    , isDameged : Bool
     }
 
 
 type alias State =
     { isUsed : Bool
-    , isInjury : Bool
+    , isDameged : Bool
     }
 
 
@@ -66,7 +66,7 @@ encodeCardStateToValue : CardState -> E.Value
 encodeCardStateToValue state =
     E.object
         [ ( "isUsed", E.bool state.isUsed )
-        , ( "isInjury", E.bool state.isInjury )
+        , ( "isDameged", E.bool state.isDameged )
         ]
 
 
@@ -84,7 +84,7 @@ stateDecoder : D.Decoder State
 stateDecoder =
     D.succeed State
         |> Json.Decode.Pipeline.required "isUsed" D.bool
-        |> Json.Decode.Pipeline.required "isInjury" D.bool
+        |> Json.Decode.Pipeline.required "isDameged" D.bool
 
 
 init : Session.Data -> String -> String -> ( Model, Cmd Msg )
@@ -218,7 +218,7 @@ update msg model =
                         Just b ->
                             let
                                 after =
-                                    { b | isInjury = not b.isInjury }
+                                    { b | isDameged = not b.isDameged }
                             in
                             Array.set i after beforeStates
 
@@ -262,7 +262,7 @@ update msg model =
                         (\i state ->
                             case Array.get i states of
                                 Just s ->
-                                    { state | isUsed = s.isUsed, isInjury = s.isInjury }
+                                    { state | isUsed = s.isUsed, isDameged = s.isDameged }
 
                                 Nothing ->
                                     state
@@ -365,7 +365,7 @@ dataCardSimpleView i cardState =
                 , div [ class "targetLabel label" ] [ text "対象" ]
                 , div [ class "targetValue" ] [ text card.target ]
                 , div [ class "used" ] [ label [] [ input [ type_ "checkbox", checked cardState.isUsed, onClick (ToggleUsed i) ] [], span [] [ text "使用済" ] ] ]
-                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in", checked cardState.isInjury, onClick (ToggleInjury i) ] [], span [] [ text "負傷" ] ] ]
+                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in", checked cardState.isDameged, onClick (ToggleInjury i) ] [], span [] [ text "負傷" ] ] ]
                 , div [ class "effect" ] [ text card.effect ]
                 ]
             ]
