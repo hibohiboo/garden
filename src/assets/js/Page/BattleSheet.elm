@@ -364,7 +364,8 @@ inputMainArea model =
 cardMainArea : Model -> Html Msg
 cardMainArea model =
     div [ class "card-area" ]
-        [ characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay
+        [ p [] [ text "カードをクリックすると、スキルカードの表示/非表示が切替られます。" ]
+        , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay
         , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay
         ]
 
