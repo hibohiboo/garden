@@ -5,7 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onChange)
-import Html.Lazy exposing (lazy2)
+import Html.Lazy exposing (lazy2, lazy4)
 import Json.Decode as D
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..))
 import Models.Character as Character exposing (Character)
@@ -173,8 +173,8 @@ updateArea index fieldId labelName deleteMsg updateNameMsg updateApMsg updatePos
         [ div [ class "col s12" ]
             [ div [ class "input-field-wrapper" ]
                 [ inputField index "名前" "text" (fid ++ "Name") updateNameMsg val.name
-                , inputField index "行動値" "number" (fid ++ "Ap") updateApMsg (String.fromInt val.activePower)
-                , inputField index "位置" "number" (fid ++ "position") updatePositionMsg (String.fromInt val.position)
+                , lazy4 apSelectedField (fid ++ "Ap") updateApMsg index (String.fromInt val.activePower)
+                , positionSelectdField (fid ++ "position") updatePositionMsg index (String.fromInt val.position)
                 , deleteButton deleteMsg index
                 ]
             ]
@@ -185,6 +185,25 @@ inputField : Int -> String -> String -> String -> OnChangeMsg msg -> String -> H
 inputField index labelName inputType fid updateMsg val =
     div [ class "input-field" ]
         [ input [ placeholder labelName, id fid, type_ inputType, class "validate", value val, onChange (updateMsg index) ] []
+        , label [ class "active", for fid ] [ text labelName ]
+        ]
+
+
+apSelectedField fid updateMsg index val =
+    selectField -10 20 "行動値" (fid ++ "Ap") updateMsg index val
+
+
+positionSelectdField : String -> OnChangeMsg msg -> Int -> String -> Html msg
+positionSelectdField fid updateMsg index val =
+    selectField 1 5 "位置" (fid ++ "position") updateMsg index val
+
+
+selectField : Int -> Int -> String -> String -> OnChangeMsg msg -> Int -> String -> Html msg
+selectField min max labelName fid updateMsg index val =
+    div [ class "input-field" ]
+        [ select
+            [ placeholder labelName, id fid, class "browser-default", value val, onChange (updateMsg index), style "min-width" "60px" ]
+            (List.range min max |> List.map (\i -> String.fromInt i) |> List.map (\num -> option [ value num, selected (val == num) ] [ text num ]))
         , label [ class "active", for fid ] [ text labelName ]
         ]
 
