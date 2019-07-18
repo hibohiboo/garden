@@ -1,4 +1,4 @@
-module Page.Views.Enemy exposing (enemyCardMain, enemyCardWithCards, enemyList)
+module Page.Views.Enemy exposing (enemyCardMain, enemyCardWithCards, enemyCardWithCardsUpdatable, enemyList)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 import List.Split exposing (chunksOfLeft)
 import Models.Card as Card exposing (CardData)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.Card exposing (skillsCards)
+import Page.Views.Card exposing (skillsCards, skillsCardsUpdatable)
 import Page.Views.Tag exposing (tag)
 import Url.Builder
 
@@ -74,6 +74,19 @@ enemyCardWithCards enemy isDisplaySkills =
                 "skills-hide"
     in
     div [ class "card-set", class className ] (enemyCard enemy :: skillsCards enemy)
+
+
+enemyCardWithCardsUpdatable : EnemyListItem -> Bool -> (Int -> msg) -> Html msg
+enemyCardWithCardsUpdatable enemy isDisplaySkills toggleUsed =
+    let
+        className =
+            if isDisplaySkills then
+                ""
+
+            else
+                "skills-hide"
+    in
+    div [ class "card-set", class className ] (enemyCardMain enemy :: skillsCardsUpdatable enemy toggleUsed)
 
 
 

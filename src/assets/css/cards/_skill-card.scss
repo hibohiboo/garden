@@ -209,7 +209,6 @@
 }
 
 
-
 .skills-card {
   position: relative;
   .wrapper {
@@ -255,4 +254,8 @@
       }
     }
   }
+}
+
+.collection .collection-item.disabled-skill {
+  background-color: #aaa;
 }

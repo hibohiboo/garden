@@ -11,7 +11,7 @@ import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, Batt
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as Enemy exposing (EnemyListItem)
 import Page.Views.CharacterView exposing (characterCard, characterCardWithCards)
-import Page.Views.Enemy exposing (enemyCardMain, enemyCardWithCards, enemyList)
+import Page.Views.Enemy exposing (enemyCardMain, enemyCardWithCards, enemyCardWithCardsUpdatable, enemyList)
 import Page.Views.Modal exposing (modalCardOpenButton)
 
 
@@ -300,16 +300,16 @@ getCurrentClassName expect actual =
         ""
 
 
-enemyCards : List ( Int, BattleSheetEnemy ) -> (Int -> msg) -> Html msg
-enemyCards enemies toggleMsg =
+enemyCards : List ( Int, BattleSheetEnemy ) -> (Int -> msg) -> (Int -> Int -> msg) -> Html msg
+enemyCards enemies toggleMsg toggleCardMsg =
     div []
-        [ div [ class "card-list" ] (enemies |> List.map (\( i, bse ) -> enemyCardWithCardsWrapper i bse toggleMsg))
+        [ div [ class "card-list" ] (enemies |> List.map (\( i, bse ) -> enemyCardWithCardsWrapper bse (toggleMsg i) (toggleCardMsg i)))
         ]
 
 
-enemyCardWithCardsWrapper : Int -> BattleSheetEnemy -> (Int -> msg) -> Html msg
-enemyCardWithCardsWrapper i bse toggleMsg =
-    div [ onClick (toggleMsg i) ] [ enemyCardWithCards (Maybe.withDefault Enemy.init bse.data) bse.isDisplaySkills ]
+enemyCardWithCardsWrapper : BattleSheetEnemy -> msg -> (Int -> msg) -> Html msg
+enemyCardWithCardsWrapper bse toggleMsg toggleCardUsedMsg =
+    div [ onClick toggleMsg ] [ enemyCardWithCardsUpdatable (Maybe.withDefault Enemy.init bse.data) bse.isDisplaySkills toggleCardUsedMsg ]
 
 
 characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> Html msg

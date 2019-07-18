@@ -1,6 +1,7 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemCardUsed, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
+import Models.Card exposing (CardData)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 
@@ -113,6 +114,34 @@ updateBatlleSheetItemIsDisplay index items =
 
         Nothing ->
             items
+
+
+updateBatlleSheetItemCardUsed : Int -> Int -> Array { a | data : Maybe { b | cards : Array CardData } } -> Array { a | data : Maybe { b | cards : Array CardData } }
+updateBatlleSheetItemCardUsed itemIndex skillIndex items =
+    case Array.get itemIndex items of
+        Just oldItem ->
+            let
+                data =
+                    oldItem.data |> Maybe.andThen (updateCardUsed skillIndex)
+            in
+            Array.set itemIndex { oldItem | data = data } items
+
+        Nothing ->
+            items
+
+
+updateCardUsed : Int -> { b | cards : Array CardData } -> Maybe { b | cards : Array CardData }
+updateCardUsed index data =
+    case Array.get index data.cards of
+        Just card ->
+            let
+                cards =
+                    Array.set index { card | isUsed = not card.isUsed } data.cards
+            in
+            Just { data | cards = cards }
+
+        Nothing ->
+            Nothing
 
 
 getCountAreaItems : List Int -> Array BattleSheetCharacter -> Array BattleSheetEnemy -> List CountAreaItem

@@ -128,6 +128,7 @@ type Msg
     | SetAllTab
     | ToggleCharacterCardSkillsDisplay Int
     | ToggleEnemyCardSkillsDisplay Int
+    | ToggleSkillCardUsed Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -255,10 +256,17 @@ update msg model =
             in
             ( { model | characters = characters }, Cmd.none )
 
-        ToggleEnemyCardSkillsDisplay iEnemy ->
+        ToggleEnemyCardSkillsDisplay indexEnemy ->
             let
                 enemies =
-                    BS.updateBatlleSheetItemIsDisplay iEnemy model.enemies
+                    BS.updateBatlleSheetItemIsDisplay indexEnemy model.enemies
+            in
+            ( { model | enemies = enemies }, Cmd.none )
+
+        ToggleSkillCardUsed indexEnemy indexSkill ->
+            let
+                enemies =
+                    BS.updateBatlleSheetItemCardUsed indexEnemy indexSkill model.enemies
             in
             ( { model | enemies = enemies }, Cmd.none )
 
@@ -366,7 +374,7 @@ cardMainArea model =
     div [ class "card-area" ]
         [ p [] [ text "カードクリックでスキルカードの表示/非表示を切替。" ]
         , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay
-        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay
+        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleSkillCardUsed
         ]
 
 
