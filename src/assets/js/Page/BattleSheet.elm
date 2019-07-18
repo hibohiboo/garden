@@ -127,9 +127,11 @@ type Msg
     | SetSummaryTab
     | SetAllTab
     | ToggleCharacterCardSkillsDisplay Int
+    | ToggleCharacterSkillCardUsed Int Int
+    | ToggleCharacterSkillCardDamaged Int Int
     | ToggleEnemyCardSkillsDisplay Int
-    | ToggleSkillCardUsed Int Int
-    | ToggleSkillCardDamaged Int Int
+    | ToggleEnemySkillCardUsed Int Int
+    | ToggleEnemySkillCardDamaged Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -264,14 +266,28 @@ update msg model =
             in
             ( { model | enemies = enemies }, Cmd.none )
 
-        ToggleSkillCardUsed indexEnemy indexSkill ->
+        ToggleCharacterSkillCardUsed indexCharacter indexSkill ->
+            let
+                characters =
+                    BS.updateBatlleSheetItemCardUsed indexCharacter indexSkill model.characters
+            in
+            ( { model | characters = characters }, Cmd.none )
+
+        ToggleCharacterSkillCardDamaged indexCharacter indexSkill ->
+            let
+                characters =
+                    BS.updateBatlleSheetItemCardDamaged indexCharacter indexSkill model.characters
+            in
+            ( { model | characters = characters }, Cmd.none )
+
+        ToggleEnemySkillCardUsed indexEnemy indexSkill ->
             let
                 enemies =
                     BS.updateBatlleSheetItemCardUsed indexEnemy indexSkill model.enemies
             in
             ( { model | enemies = enemies }, Cmd.none )
 
-        ToggleSkillCardDamaged indexEnemy indexSkill ->
+        ToggleEnemySkillCardDamaged indexEnemy indexSkill ->
             let
                 enemies =
                     BS.updateBatlleSheetItemCardDamaged indexEnemy indexSkill model.enemies
@@ -381,8 +397,8 @@ cardMainArea : Model -> Html Msg
 cardMainArea model =
     div [ class "card-area" ]
         [ p [] [ text "カードクリックでスキルカードの表示/非表示を切替。" ]
-        , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay
-        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleSkillCardUsed ToggleSkillCardDamaged
+        , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay ToggleCharacterSkillCardUsed ToggleCharacterSkillCardDamaged
+        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleEnemySkillCardUsed ToggleEnemySkillCardDamaged
         ]
 
 

@@ -1,4 +1,4 @@
-module Page.Views.CharacterView exposing (characterCard, characterCardWithCards)
+module Page.Views.CharacterView exposing (characterCard, characterCardWithCardsUpdatable)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
-import Page.Views.Card exposing (skillsCards)
+import Page.Views.Card exposing (skillsCards, skillsCardsUpdatable)
 import Page.Views.Tag exposing (tag)
 
 
@@ -73,8 +73,8 @@ illustedBy char =
         ]
 
 
-characterCardWithCards : Character -> Bool -> Html msg
-characterCardWithCards character isDisplaySkills =
+characterCardWithCardsUpdatable : Character -> Bool -> (Int -> msg) -> (Int -> msg) -> Html msg
+characterCardWithCardsUpdatable character isDisplaySkills toggleUsed toggleDamaged =
     let
         className =
             if isDisplaySkills then
@@ -83,4 +83,4 @@ characterCardWithCards character isDisplaySkills =
             else
                 "skills-hide"
     in
-    div [ class "card-set", class className ] (characterCard character :: skillsCards character)
+    div [ class "card-set", class className ] (characterCard character :: skillsCardsUpdatable character toggleUsed toggleDamaged)

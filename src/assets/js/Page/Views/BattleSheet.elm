@@ -10,7 +10,7 @@ import Json.Decode as D
 import Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..))
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as Enemy exposing (EnemyListItem)
-import Page.Views.CharacterView exposing (characterCard, characterCardWithCards)
+import Page.Views.CharacterView exposing (characterCard, characterCardWithCardsUpdatable)
 import Page.Views.Enemy exposing (enemyCardMain, enemyCardWithCards, enemyCardWithCardsUpdatable, enemyList)
 import Page.Views.Modal exposing (modalCardOpenButton)
 
@@ -312,16 +312,16 @@ enemyCardWithCardsWrapper bse toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
     div [ onClick toggleMsg ] [ enemyCardWithCardsUpdatable (Maybe.withDefault Enemy.init bse.data) bse.isDisplaySkills toggleCardUsedMsg toggleCardDamagedMsg ]
 
 
-characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> Html msg
-characterCards characters toggleMsg =
+characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> (Int -> Int -> msg) -> (Int -> Int -> msg) -> Html msg
+characterCards characters toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
     div []
-        [ div [ class "card-list" ] (characters |> List.map (\( i, bsc ) -> characterCardWithCardsWrapper i bsc toggleMsg))
+        [ div [ class "card-list" ] (characters |> List.map (\( i, bsc ) -> characterCardWithCardsWrapper bsc (toggleMsg i) (toggleCardUsedMsg i) (toggleCardDamagedMsg i)))
         ]
 
 
-characterCardWithCardsWrapper : Int -> BattleSheetCharacter -> (Int -> msg) -> Html msg
-characterCardWithCardsWrapper i bsc toggleMsg =
-    div [ onClick (toggleMsg i) ] [ characterCardWithCards (Maybe.withDefault (Character.initCharacter "") bsc.data) bsc.isDisplaySkills ]
+characterCardWithCardsWrapper : BattleSheetCharacter -> msg -> (Int -> msg) -> (Int -> msg) -> Html msg
+characterCardWithCardsWrapper bsc toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
+    div [ onClick toggleMsg ] [ characterCardWithCardsUpdatable (Maybe.withDefault (Character.initCharacter "") bsc.data) bsc.isDisplaySkills toggleCardUsedMsg toggleCardDamagedMsg ]
 
 
 positionArea : List { a | name : String, cardImage : String, position : Int } -> Html msg
