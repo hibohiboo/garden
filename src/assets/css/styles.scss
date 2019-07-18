@@ -267,6 +267,7 @@ $bgColorHeadFoot: #222;
   .page-nav {
     background-color: $bgColorHeadFoot;
     display: block;
+    min-height: 100vh;
   }
 
   // ボタン
