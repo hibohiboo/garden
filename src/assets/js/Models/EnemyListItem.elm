@@ -1,9 +1,10 @@
-module Models.EnemyListItem exposing (EnemyListItem, enemyListDecoder, enemyListFromJson, enemyListItemDecoder, init)
+module Models.EnemyListItem exposing (EnemyListItem, encodeEnemyListItem, enemyListDecoder, enemyListFromJson, enemyListItemDecoder, init)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Pipeline exposing (optional, required)
+import Json.Encode as E
 import Models.Card as Card exposing (CardData)
 import Models.Tag as Tag exposing (Tag)
 
@@ -23,6 +24,21 @@ type alias EnemyListItem =
 
 init =
     EnemyListItem "" "" 0 "" "" "" 0 [] Array.empty
+
+
+encodeEnemyListItem : EnemyListItem -> E.Value
+encodeEnemyListItem enemy =
+    E.object
+        [ ( "enemyId", E.string enemy.enemyId )
+        , ( "name", E.string enemy.name )
+        , ( "activePower", E.int enemy.activePower )
+        , ( "memo", E.string enemy.memo )
+        , ( "cardImage", E.string enemy.cardImage )
+        , ( "kana", E.string enemy.kana )
+        , ( "degreeOfThreat", E.int enemy.degreeOfThreat )
+        , ( "tags", E.list Tag.encodeTagToValue enemy.tags )
+        , ( "cards", E.array Card.encodeCardToValue enemy.cards )
+        ]
 
 
 enemyListDecoder : Decoder (List EnemyListItem)

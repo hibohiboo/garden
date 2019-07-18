@@ -4,6 +4,7 @@ module Models.Character exposing
     , characterDecoderFromFireStoreApi
     , characterListFromJson
     , encodeCharacter
+    , encodeCharacterToValue
     , initBaseCards
     , initCharacter
     )

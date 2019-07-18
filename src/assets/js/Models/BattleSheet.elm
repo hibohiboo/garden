@@ -1,8 +1,33 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, BattleSheetModel, BattleSheetMsg(..), CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initBattleSheetModel, initCountAreaItem, initPageToken, maxAreaCount, updateBatlleSheetItemActivePower, updateBatlleSheetItemCardDamaged, updateBatlleSheetItemCardUsed, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+module Models.BattleSheet exposing
+    ( BattleSheetCharacter
+    , BattleSheetEnemy
+    , BattleSheetItem
+    , BattleSheetModel
+    , BattleSheetMsg(..)
+    , CountAreaItem
+    , TabState(..)
+    , encodeBattleSheetToJson
+    , getCountAreaItems
+    , getIndexedCharacterCard
+    , getIndexedEnemyCard
+    , initBatlleSheetCharacter
+    , initBatlleSheetEnemy
+    , initBattleSheetModel
+    , initCountAreaItem
+    , initPageToken
+    , maxAreaCount
+    , updateBatlleSheetItemActivePower
+    , updateBatlleSheetItemCardDamaged
+    , updateBatlleSheetItemCardUsed
+    , updateBatlleSheetItemIsDisplay
+    , updateBatlleSheetItemName
+    , updateBatlleSheetItemPosition
+    )
 
 import Array exposing (Array)
 import Html exposing (Html, text)
 import Http
+import Json.Encode as E
 import Models.Card as Card exposing (CardData)
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
@@ -124,8 +149,65 @@ type alias CountAreaItem =
     }
 
 
+encodeBattleSheetToJson : BattleSheetModel -> String
+encodeBattleSheetToJson model =
+    -- エンコード後のインデント0。
+    model |> encodeBattleSheetToValue |> E.encode 0
 
--- encodeBattleSheet =
+
+encodeBattleSheetToValue : BattleSheetModel -> E.Value
+encodeBattleSheetToValue model =
+    E.object
+        [ ( "count", E.int model.count )
+        , ( "enemies", E.array encodeBattleSheetEnemy model.enemies )
+        , ( "characters", E.array encodeBattleSheetCharacter model.characters )
+        ]
+
+
+encodeBattleSheetEnemy : BattleSheetEnemy -> E.Value
+encodeBattleSheetEnemy enemy =
+    E.object
+        [ ( "name", E.string enemy.name )
+        , ( "count", E.int enemy.count )
+        , ( "activePower", E.int enemy.activePower )
+        , ( "cardImage", E.string enemy.cardImage )
+        , ( "position", E.int enemy.position )
+        , ( "data", encodeEnemyListItem enemy.data )
+        , ( "notDamagedCardNumber", E.int enemy.notDamagedCardNumber )
+        ]
+
+
+encodeEnemyListItem : Maybe EnemyListItem -> E.Value
+encodeEnemyListItem maybeItem =
+    case maybeItem of
+        Just enemy ->
+            EnemyListItem.encodeEnemyListItem enemy
+
+        Nothing ->
+            E.null
+
+
+encodeBattleSheetCharacter : BattleSheetCharacter -> E.Value
+encodeBattleSheetCharacter item =
+    E.object
+        [ ( "name", E.string item.name )
+        , ( "count", E.int item.count )
+        , ( "activePower", E.int item.activePower )
+        , ( "cardImage", E.string item.cardImage )
+        , ( "position", E.int item.position )
+        , ( "data", encodeCharacter item.data )
+        , ( "notDamagedCardNumber", E.int item.notDamagedCardNumber )
+        ]
+
+
+encodeCharacter : Maybe Character -> E.Value
+encodeCharacter maybeItem =
+    case maybeItem of
+        Just char ->
+            Character.encodeCharacterToValue char
+
+        Nothing ->
+            E.null
 
 
 initCountAreaItem : CountAreaItem

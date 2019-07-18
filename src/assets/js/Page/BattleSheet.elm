@@ -5,7 +5,6 @@ import FirestoreApi as FSApi
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import Json.Encode as E
 import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetModel, BattleSheetMsg(..), CountAreaItem, TabState(..), getCountAreaItems, initBatlleSheetCharacter, initBatlleSheetEnemy, initBattleSheetModel, initCountAreaItem, initPageToken, maxAreaCount, updateBatlleSheetItemActivePower, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
@@ -19,7 +18,7 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
-port saveBattleSheet : E.Value -> Cmd msg
+port saveBattleSheet : String -> Cmd msg
 
 
 port getBattleSheet : String -> Cmd msg
@@ -77,7 +76,7 @@ init session =
                 Cmd.none
     in
     ( initModel session enemyList characterList
-    , Cmd.batch [ cmd, cmd2 ]
+    , Cmd.batch [ cmd, cmd2, getBattleSheet "" ]
     )
 
 
@@ -245,17 +244,22 @@ update msg model =
                 enemies =
                     BS.updateBatlleSheetItemCardUsed indexEnemy indexSkill model.enemies
             in
-            ( { model | enemies = enemies }, Cmd.none )
+            saveLocalStorage ( { model | enemies = enemies }, Cmd.none )
 
         ToggleEnemySkillCardDamaged indexEnemy indexSkill ->
             let
                 enemies =
                     BS.updateBatlleSheetItemCardDamaged indexEnemy indexSkill model.enemies
             in
-            ( { model | enemies = enemies }, Cmd.none )
+            saveLocalStorage ( { model | enemies = enemies }, Cmd.none )
 
         GotBattleSheet json ->
             ( model, Cmd.none )
+
+
+saveLocalStorage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+saveLocalStorage ( model, cmd ) =
+    ( model, Cmd.batch [ cmd, saveBattleSheet (BS.encodeBattleSheetToJson model) ] )
 
 
 characterContent : String -> List Character -> Html Msg

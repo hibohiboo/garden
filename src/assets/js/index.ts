@@ -107,3 +107,20 @@ app.ports.getCardState.subscribe(characterId => {
   }
   app.ports.gotCardState.send(json);
 });
+const battleSheetLocalStorageId = "battle-sheet-tmp";
+app.ports.saveBattleSheet.subscribe(json => {
+  // TODO: jsonだけではなく、追加でシートIDを受け取るようにして、シートIDを受け取ったらDBに保存するようにしたい。
+  localStorage[battleSheetLocalStorageId] = json;
+});
+
+// ローカルストレージから、シートの状態を読み出し
+app.ports.getBattleSheet.subscribe(async sheetId => {
+  let json = localStorage[battleSheetLocalStorageId];
+  if (sheetId !== "") {
+    // TODO: DBから読み出し
+  }
+  if (json === undefined) {
+    return;
+  }
+  app.ports.gotBattleSheet.send(json);
+});

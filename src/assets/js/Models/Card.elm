@@ -358,6 +358,8 @@ encodeCardToValue card =
         , ( "frameByName", E.string card.frameByName )
         , ( "frameByUrl", E.string card.frameByUrl )
         , ( "deleteFlag", E.int card.deleteFlag )
+        , ( "isUsed", E.bool card.isUsed )
+        , ( "isDamaged", E.bool card.isDamaged )
         ]
 
 
