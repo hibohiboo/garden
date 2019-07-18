@@ -54,33 +54,36 @@ card data =
         ]
 
 
-skillsCardsUpdatable : { a | name : String, cards : Array CardData } -> (Int -> msg) -> List (Html msg)
-skillsCardsUpdatable item toggleUsedMsg =
+skillsCardsUpdatable : { a | name : String, cards : Array CardData } -> (Int -> msg) -> (Int -> msg) -> List (Html msg)
+skillsCardsUpdatable item toggleUsedMsg toggleDamagedMsg =
     let
         -- カードの大きさに合わせて1枚当たり4つのスキルを表示
         list =
             chunksOfLeft 4 <| Array.toList <| Array.indexedMap (\i c -> ( i, c )) <| item.cards
     in
-    List.map (\cards -> skillsCardMainUpdatable item.name toggleUsedMsg cards) list
+    List.map (\cards -> skillsCardMainUpdatable item.name toggleUsedMsg toggleDamagedMsg cards) list
 
 
-skillsCardMainUpdatable : String -> (Int -> msg) -> List ( Int, CardData ) -> Html msg
-skillsCardMainUpdatable name toggleUsedMsg cards =
+skillsCardMainUpdatable : String -> (Int -> msg) -> (Int -> msg) -> List ( Int, CardData ) -> Html msg
+skillsCardMainUpdatable name toggleUsedMsg toggleDamagedMsg cards =
     div [ class "skills-card" ]
         [ div [ class "wrapper" ]
             [ div [ class "base" ]
                 [ div [ class "enemyName" ] [ text ("カード" ++ "/" ++ name) ]
-                , ul [ class "cards collection" ] (List.map (\( i, c ) -> cardUpdatable (toggleUsedMsg i) c) cards)
+                , ul [ class "cards collection" ] (List.map (\( i, c ) -> cardUpdatable (toggleUsedMsg i) (toggleDamagedMsg i) c) cards)
                 ]
             ]
         ]
 
 
-cardUpdatable : msg -> CardData -> Html msg
-cardUpdatable toggleUsedMsg data =
+cardUpdatable : msg -> msg -> CardData -> Html msg
+cardUpdatable toggleUsedMsg toggleDamagedMsg data =
     let
         disableSkillClass =
-            if data.isUsed then
+            if data.isDamaged then
+                "damaged-skill"
+
+            else if data.isUsed then
                 "disabled-skill"
 
             else
@@ -91,7 +94,7 @@ cardUpdatable toggleUsedMsg data =
             [ div [ class "skill-name", style "min-width" "0" ] (span [] [ text data.cardName ] :: List.map (\t -> tag t.name) data.tags)
             , div [ style "display" "flex", style "margin-left" "auto" ]
                 [ div [ class "used" ] [ label [] [ input [ type_ "checkbox", onClick toggleUsedMsg ] [], span [] [ text "済" ] ] ]
-                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", class "filled-in" ] [], span [] [ text "傷" ] ] ]
+                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", onClick toggleDamagedMsg, class "filled-in" ] [], span [] [ text "傷" ] ] ]
                 ]
             ]
         , div [ class "skill-description" ]

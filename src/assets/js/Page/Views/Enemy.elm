@@ -76,8 +76,8 @@ enemyCardWithCards enemy isDisplaySkills =
     div [ class "card-set", class className ] (enemyCard enemy :: skillsCards enemy)
 
 
-enemyCardWithCardsUpdatable : EnemyListItem -> Bool -> (Int -> msg) -> Html msg
-enemyCardWithCardsUpdatable enemy isDisplaySkills toggleUsed =
+enemyCardWithCardsUpdatable : EnemyListItem -> Bool -> (Int -> msg) -> (Int -> msg) -> Html msg
+enemyCardWithCardsUpdatable enemy isDisplaySkills toggleUsed toggleDamaged =
     let
         className =
             if isDisplaySkills then
@@ -86,7 +86,7 @@ enemyCardWithCardsUpdatable enemy isDisplaySkills toggleUsed =
             else
                 "skills-hide"
     in
-    div [ class "card-set", class className ] (enemyCardMain enemy :: skillsCardsUpdatable enemy toggleUsed)
+    div [ class "card-set", class className ] (enemyCardMain enemy :: skillsCardsUpdatable enemy toggleUsed toggleDamaged)
 
 
 

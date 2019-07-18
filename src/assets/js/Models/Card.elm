@@ -80,7 +80,7 @@ type alias CardData =
     , frameByUrl : String
     , deleteFlag : Int
     , isUsed : Bool
-    , isDameged : Bool
+    , isDamaged : Bool
     }
 
 
@@ -296,7 +296,7 @@ cardDecoderFromJson =
         |> required "frameByUrl" D.string
         |> required "deleteFlag" D.int
         |> optional "isUsed" D.bool False
-        |> optional "isDameged" D.bool False
+        |> optional "isDamaged" D.bool False
 
 
 cardDecoderFromFireStoreApi : Decoder CardData
@@ -324,7 +324,7 @@ cardDecoderFromFireStoreApi =
         |> optional "frameByUrl" FSApi.string ""
         |> optional "deleteFlag" FSApi.int 0
         |> optional "isUsed" FSApi.bool False
-        |> optional "isDameged" FSApi.bool False
+        |> optional "isDamaged" FSApi.bool False
 
 
 

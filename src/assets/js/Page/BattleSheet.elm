@@ -129,6 +129,7 @@ type Msg
     | ToggleCharacterCardSkillsDisplay Int
     | ToggleEnemyCardSkillsDisplay Int
     | ToggleSkillCardUsed Int Int
+    | ToggleSkillCardDamaged Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -270,6 +271,13 @@ update msg model =
             in
             ( { model | enemies = enemies }, Cmd.none )
 
+        ToggleSkillCardDamaged indexEnemy indexSkill ->
+            let
+                enemies =
+                    BS.updateBatlleSheetItemCardDamaged indexEnemy indexSkill model.enemies
+            in
+            ( { model | enemies = enemies }, Cmd.none )
+
 
 characterContent : String -> List Character -> Html Msg
 characterContent token characterList =
@@ -374,7 +382,7 @@ cardMainArea model =
     div [ class "card-area" ]
         [ p [] [ text "カードクリックでスキルカードの表示/非表示を切替。" ]
         , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay
-        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleSkillCardUsed
+        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleSkillCardUsed ToggleSkillCardDamaged
         ]
 
 

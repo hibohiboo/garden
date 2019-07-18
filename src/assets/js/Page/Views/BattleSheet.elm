@@ -300,16 +300,16 @@ getCurrentClassName expect actual =
         ""
 
 
-enemyCards : List ( Int, BattleSheetEnemy ) -> (Int -> msg) -> (Int -> Int -> msg) -> Html msg
-enemyCards enemies toggleMsg toggleCardMsg =
+enemyCards : List ( Int, BattleSheetEnemy ) -> (Int -> msg) -> (Int -> Int -> msg) -> (Int -> Int -> msg) -> Html msg
+enemyCards enemies toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
     div []
-        [ div [ class "card-list" ] (enemies |> List.map (\( i, bse ) -> enemyCardWithCardsWrapper bse (toggleMsg i) (toggleCardMsg i)))
+        [ div [ class "card-list" ] (enemies |> List.map (\( i, bse ) -> enemyCardWithCardsWrapper bse (toggleMsg i) (toggleCardUsedMsg i) (toggleCardDamagedMsg i)))
         ]
 
 
-enemyCardWithCardsWrapper : BattleSheetEnemy -> msg -> (Int -> msg) -> Html msg
-enemyCardWithCardsWrapper bse toggleMsg toggleCardUsedMsg =
-    div [ onClick toggleMsg ] [ enemyCardWithCardsUpdatable (Maybe.withDefault Enemy.init bse.data) bse.isDisplaySkills toggleCardUsedMsg ]
+enemyCardWithCardsWrapper : BattleSheetEnemy -> msg -> (Int -> msg) -> (Int -> msg) -> Html msg
+enemyCardWithCardsWrapper bse toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
+    div [ onClick toggleMsg ] [ enemyCardWithCardsUpdatable (Maybe.withDefault Enemy.init bse.data) bse.isDisplaySkills toggleCardUsedMsg toggleCardDamagedMsg ]
 
 
 characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> Html msg

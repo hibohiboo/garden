@@ -1,4 +1,4 @@
-module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemCardUsed, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
+module Models.BattleSheet exposing (BattleSheetCharacter, BattleSheetEnemy, BattleSheetItem, CountAreaItem, TabState(..), getCountAreaItems, getIndexedCharacterCard, getIndexedEnemyCard, initBatlleSheetCharacter, initBatlleSheetEnemy, initCountAreaItem, updateBatlleSheetItemActivePower, updateBatlleSheetItemCardDamaged, updateBatlleSheetItemCardUsed, updateBatlleSheetItemIsDisplay, updateBatlleSheetItemName, updateBatlleSheetItemPosition)
 
 import Array exposing (Array)
 import Models.Card exposing (CardData)
@@ -137,6 +137,34 @@ updateCardUsed index data =
             let
                 cards =
                     Array.set index { card | isUsed = not card.isUsed } data.cards
+            in
+            Just { data | cards = cards }
+
+        Nothing ->
+            Nothing
+
+
+updateBatlleSheetItemCardDamaged : Int -> Int -> Array { a | data : Maybe { b | cards : Array CardData } } -> Array { a | data : Maybe { b | cards : Array CardData } }
+updateBatlleSheetItemCardDamaged itemIndex skillIndex items =
+    case Array.get itemIndex items of
+        Just oldItem ->
+            let
+                data =
+                    oldItem.data |> Maybe.andThen (updateCardDamaged skillIndex)
+            in
+            Array.set itemIndex { oldItem | data = data } items
+
+        Nothing ->
+            items
+
+
+updateCardDamaged : Int -> { b | cards : Array CardData } -> Maybe { b | cards : Array CardData }
+updateCardDamaged index data =
+    case Array.get index data.cards of
+        Just card ->
+            let
+                cards =
+                    Array.set index { card | isDamaged = not card.isDamaged } data.cards
             in
             Just { data | cards = cards }
 
