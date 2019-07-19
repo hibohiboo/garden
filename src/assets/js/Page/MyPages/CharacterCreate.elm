@@ -71,8 +71,11 @@ init session apiKey storeUserId =
 
             else
                 Models.Character.initBaseCards initChar cards
+
+        editor =
+            initEditor
     in
-    ( Model session Close char (EditorModel [] [] cards "" "" (text "") Modal.Close)
+    ( Model session Close char { editor | cards = cards }
     , Cmd.batch [ cardsCmd ]
     )
 

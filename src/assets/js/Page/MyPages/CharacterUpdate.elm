@@ -110,7 +110,11 @@ init session apiKey storeUserId characterId =
 
 initModel : Session.Data -> String -> String -> List ( String, String ) -> List ( String, String ) -> List Card.CardData -> Model
 initModel session apiKey storeUserId reasons traits cards =
-    Model session Close apiKey (initCharacter storeUserId) (EditorModel reasons traits cards "" "" (text "") Modal.Close)
+    let
+        editor =
+            Models.CharacterEditor.initEditor
+    in
+    Model session Close apiKey (initCharacter storeUserId) { editor | reasons = reasons, traits = traits, cards = cards }
 
 
 type Msg

@@ -52,6 +52,7 @@ type Msg
     | InputImageCreatorName String
     | InputImageCreatorSite String
     | InputImageCreatorUrl String
+    | ToggleShowCardDetail
 
 
 type LoadErr
@@ -354,6 +355,9 @@ update msg char editor =
         InputImageCreatorUrl s ->
             ( ( { char | cardImageCreatorUrl = s }, editor ), Cmd.none )
 
+        ToggleShowCardDetail ->
+            ( ( char, { editor | isShowCardDetail = not editor.isShowCardDetail } ), Cmd.none )
+
 
 expectedTypes : List String
 expectedTypes =
@@ -449,13 +453,15 @@ inputCharacterImageArea model =
 skillArea character editor =
     div [ style "padding-bottom" "5px" ]
         [ h5 [] [ text "能力" ]
-        , div [] [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象" ]
+        , div [] [ label [] [ input [ type_ "checkbox", checked editor.isShowCardDetail, onClick ToggleShowCardDetail ] [], span [] [ text "詳細を表示" ] ] ]
+        , div [ class (Models.CharacterEditor.cardDetailClass editor.isShowCardDetail) ]
+            [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象" ]
         , div []
             (List.concat
                 [ [ div [ style "padding" "5px" ] (addButton "共通能力" OpenCommonSkillModal) ]
                 , [ div [ style "padding" "5px" ] (addButton "特性能力" OpenTraitSkillModal) ]
                 , [ div [ style "padding" "5px" ] (addButton "アイテム" OpenItemModal) ]
-                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardArea DeleteCard i card) character.cards
+                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardArea DeleteCard editor.isShowCardDetail i card) character.cards
                 ]
             )
         ]

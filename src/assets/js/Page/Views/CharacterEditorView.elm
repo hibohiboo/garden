@@ -9,7 +9,7 @@ import Html.Events exposing (onClick, onInput)
 import Html.Events.Extra exposing (onChange)
 import Models.Card as Card
 import Models.Character exposing (Character)
-import Models.CharacterEditor exposing (EditorModel)
+import Models.CharacterEditor as CharacterEditor exposing (EditorModel)
 import Models.Tag exposing (Tag)
 import Task
 import Url
@@ -19,8 +19,8 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
-updateCardArea : (Int -> msg) -> Int -> Card.CardData -> Html msg
-updateCardArea deleteMsg index card =
+updateCardArea : (Int -> msg) -> Bool -> Int -> Card.CardData -> Html msg
+updateCardArea deleteMsg isShowCardDetail index card =
     let
         fid =
             "card_" ++ String.fromInt index
@@ -31,6 +31,9 @@ updateCardArea deleteMsg index card =
 
             else
                 deleteButton deleteMsg index
+
+        detailClass =
+            CharacterEditor.cardDetailClass isShowCardDetail
     in
     div []
         [ div [ class "row" ]
@@ -45,7 +48,7 @@ updateCardArea deleteMsg index card =
             --     [ updateCardAreaInputField "効果" card.effect (fid ++ "-card_effect")
             --     ]
             ]
-        , div [ class "row" ]
+        , div [ class "row", class detailClass ]
             [ div [ class "col s4" ]
                 [ updateCardAreaInputField "Ti" card.timing (fid ++ "-card_timing")
                 ]
