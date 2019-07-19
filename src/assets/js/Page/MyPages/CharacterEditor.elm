@@ -11,6 +11,7 @@ import Models.Card as Card
 import Models.Character exposing (Character)
 import Models.CharacterEditor exposing (EditorModel)
 import Models.Tag exposing (Tag)
+import Page.Views.CharacterEditorView as CharacterEditorView exposing (updateCardArea)
 import Task
 import Url
 import Url.Builder
@@ -128,14 +129,6 @@ update msg char editor =
 
         InputSkillCard card ->
             let
-                -- maybeIndex =
-                --     findIndex (\x -> x.cardName == card.cardName) (Array.toList char.cards)
-                -- newCards =
-                --     case maybeIndex of
-                --         Just index ->
-                --             Array.set index card char.cards
-                --         _ ->
-                --             Array.push card char.cards
                 newCards =
                     Array.push card char.cards
 
@@ -453,57 +446,6 @@ inputCharacterImageArea model =
                 []
 
 
-updateCardArea : Int -> Card.CardData -> Html Msg
-updateCardArea index card =
-    let
-        fid =
-            "card_" ++ String.fromInt index
-
-        delButton =
-            if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本能力" then
-                text ""
-
-            else
-                deleteButton DeleteCard index
-    in
-    div []
-        [ div [ class "row" ]
-            [ div [ class "col s8" ]
-                [ updateCardAreaInputField "カード名" card.cardName (fid ++ "-card_name")
-                ]
-            , div [ class "col s2" ]
-                [ delButton
-                ]
-
-            -- , div [ class "col s6" ]
-            --     [ updateCardAreaInputField "効果" card.effect (fid ++ "-card_effect")
-            --     ]
-            ]
-        , div [ class "row" ]
-            [ div [ class "col s4" ]
-                [ updateCardAreaInputField "Ti" card.timing (fid ++ "-card_timing")
-                ]
-            , div [ class "col s2" ]
-                [ updateCardAreaInputField "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
-                ]
-            , div [ class "col s3" ]
-                [ updateCardAreaInputField "Ra" (Card.getRange card) (fid ++ "-card_range")
-                ]
-            , div [ class "col s3" ]
-                [ updateCardAreaInputField "Ta" card.target (fid ++ "-card_target")
-                ]
-            ]
-        ]
-
-
-updateCardAreaInputField : String -> String -> String -> Html Msg
-updateCardAreaInputField labelText valueText fieldId =
-    div [ class "input-field" ]
-        [ input [ placeholder labelText, id fieldId, type_ "text", class "validate", value valueText, disabled True ] []
-        , label [ class "active", for fieldId ] [ text labelText ]
-        ]
-
-
 skillArea character editor =
     div [ style "padding-bottom" "5px" ]
         [ h5 [] [ text "能力" ]
@@ -513,7 +455,7 @@ skillArea character editor =
                 [ [ div [ style "padding" "5px" ] (addButton "共通能力" OpenCommonSkillModal) ]
                 , [ div [ style "padding" "5px" ] (addButton "特性能力" OpenTraitSkillModal) ]
                 , [ div [ style "padding" "5px" ] (addButton "アイテム" OpenItemModal) ]
-                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardArea i card) character.cards
+                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardArea DeleteCard i card) character.cards
                 ]
             )
         ]
@@ -574,91 +516,6 @@ inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
 
 
 
--- オートコンプリート付き可変の入力欄
-
-
-inputAreasWithAutocomplete : String -> String -> Array String -> (Int -> String -> msg) -> msg -> (Int -> msg) -> String -> List String -> Html msg
-inputAreasWithAutocomplete fieldId labelName arrays updateMsg addMsg deleteMsg listId autocompleteList =
-    div []
-        [ div []
-            (List.concat
-                [ Array.toList <| Array.indexedMap (\i v -> updateAreaWithAutoComplete i fieldId labelName v updateMsg deleteMsg listId) arrays
-                , addButton labelName addMsg
-                ]
-            )
-        , datalist [ id listId ]
-            (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
-        ]
-
-
-updateAreaWithAutoComplete : Int -> String -> String -> String -> (Int -> String -> msg) -> (Int -> msg) -> String -> Html msg
-updateAreaWithAutoComplete idx fieldId labelName val updateMsg deleteMsg listId =
-    let
-        fid =
-            fieldId ++ String.fromInt idx
-    in
-    div [ class "row" ]
-        [ div [ class "col s10" ]
-            [ div [ class "input-field" ]
-                [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg idx), autocomplete True, list listId ] []
-                , label [ class "active", for fid ] [ text labelName ]
-                ]
-            ]
-        , div [ class "col s2" ]
-            [ deleteButton deleteMsg idx
-            ]
-        ]
-
-
-
--- 可変の入力欄
-
-
-inputAreas : String -> String -> Array String -> (Int -> String -> msg) -> msg -> (Int -> msg) -> Html msg
-inputAreas fieldId labelName arrays updateMsg addMsg deleteMsg =
-    div []
-        [ div []
-            (List.concat
-                [ Array.toList <| Array.indexedMap (\i v -> updateArea i fieldId labelName v updateMsg deleteMsg) arrays
-                , addButton labelName addMsg
-                ]
-            )
-        ]
-
-
-
--- インデックス付きの編集
-
-
-updateArea : Int -> String -> String -> String -> (Int -> String -> msg) -> (Int -> msg) -> Html msg
-updateArea index fieldId labelName val updateMsg deleteMsg =
-    let
-        fid =
-            fieldId ++ String.fromInt index
-    in
-    div [ class "row" ]
-        [ div [ class "col s11" ]
-            [ div [ class "input-field" ]
-                [ input [ placeholder labelName, id fid, type_ "text", class "validate", value val, onInput (updateMsg index) ] []
-                , label [ class "active", for fid ] [ text labelName ]
-                ]
-            ]
-        , div [ class "col s1" ]
-            [ deleteButton deleteMsg index
-            ]
-        ]
-
-
-
--- 削除ボタン
-
-
-deleteButton : (Int -> msg) -> Int -> Html msg
-deleteButton deleteMsg index =
-    button [ class "btn-small waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
-
-
-
 -- 追加ボタン
 
 
@@ -672,3 +529,7 @@ addButton labelName addMsg =
 modalCardOpenButton : (String -> String -> (Card.CardData -> Msg) -> msg) -> String -> String -> (Card.CardData -> Msg) -> Html msg
 modalCardOpenButton modalMsg title kind cardMsg =
     div [ onClick (modalMsg title kind cardMsg), class "waves-effect waves-light btn" ] [ text title ]
+
+
+
+-- TODO: ドラッグアンドドロップ https://elm-lang.org/examples/drag-and-drop
