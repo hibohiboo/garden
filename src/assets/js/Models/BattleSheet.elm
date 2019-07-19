@@ -19,6 +19,7 @@ module Models.BattleSheet exposing
     , maxAreaCount
     , updateBatlleSheetItemActivePower
     , updateBatlleSheetItemCardDamaged
+    , updateBatlleSheetItemCardUnUsedAll
     , updateBatlleSheetItemCardUsed
     , updateBatlleSheetItemIsDisplay
     , updateBatlleSheetItemName
@@ -110,6 +111,7 @@ type BattleSheetMsg
     | ToggleEnemySkillCardUsed Int Int
     | ToggleEnemySkillCardDamaged Int Int
     | GotBattleSheet String
+    | UnUsedAll
 
 
 type alias BattleSheetItem a =
@@ -347,6 +349,20 @@ updateBatlleSheetItemCardUsed itemIndex skillIndex items =
 
         Nothing ->
             items
+
+
+updateBatlleSheetItemCardUnUsedAll : Array { a | data : Maybe { b | cards : Array CardData } } -> Array { a | data : Maybe { b | cards : Array CardData } }
+updateBatlleSheetItemCardUnUsedAll items =
+    items |> Array.map (\item -> { item | data = item.data |> Maybe.andThen updateCardUnUsedAll })
+
+
+updateCardUnUsedAll : { b | cards : Array CardData } -> Maybe { b | cards : Array CardData }
+updateCardUnUsedAll data =
+    let
+        cards =
+            data.cards |> Array.map (\card -> { card | isUsed = False })
+    in
+    Just { data | cards = cards }
 
 
 updateCardUsed : Int -> { b | cards : Array CardData } -> Maybe { b | cards : Array CardData }

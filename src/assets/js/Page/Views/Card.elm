@@ -93,8 +93,8 @@ cardUpdatable toggleUsedMsg toggleDamagedMsg data =
         [ div [ style "display" "flex" ]
             [ div [ class "skill-name", style "min-width" "0" ] (span [] [ text data.cardName ] :: List.map (\t -> tag t.name) data.tags)
             , div [ style "display" "flex", style "margin-left" "auto" ]
-                [ div [ class "used" ] [ label [] [ input [ type_ "checkbox", onClick toggleUsedMsg ] [], span [] [ text "済" ] ] ]
-                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", onClick toggleDamagedMsg, class "filled-in" ] [], span [] [ text "傷" ] ] ]
+                [ div [ class "used" ] [ label [] [ input [ type_ "checkbox", onClick toggleUsedMsg, checked data.isUsed ] [], span [] [ text "済" ] ] ]
+                , div [ class "injury" ] [ label [] [ input [ type_ "checkbox", onClick toggleDamagedMsg, checked data.isDamaged, class "filled-in" ] [], span [] [ text "傷" ] ] ]
                 ]
             ]
         , div [ class "skill-description" ]

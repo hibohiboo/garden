@@ -252,7 +252,15 @@ viewNavi menues =
 
 tableOfContents : List ( String, String )
 tableOfContents =
-    [ ( "/", "トップに戻る" ), ( "#first", "はじめに" ), ( "#world", "ワールド" ), ( "/mypage", "マイページ" ), ( "/characters", "キャラクターリスト" ), ( "/enemies", "エネミーリスト" ) ]
+    [ ( "/", "トップに戻る" )
+
+    -- 挙動がおかしいので一旦コメント
+    -- , ( "#first", "はじめに" )
+    -- , ( "#world", "ワールド" )
+    , ( "/mypage", "マイページ" )
+    , ( "/characters", "キャラクターリスト" )
+    , ( "/enemies", "エネミーリスト" )
+    ]
 
 
 viewRulebook : Dict String String -> Html Msg

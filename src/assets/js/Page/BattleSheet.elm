@@ -9,7 +9,7 @@ import Models.BattleSheet as BS exposing (BattleSheetCharacter, BattleSheetEnemy
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
-import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputSheetName, mainAreaTabs, positionArea)
+import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputSheetName, mainAreaTabs, positionArea, unUsedAllButton)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -264,6 +264,16 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
+        UnUsedAll ->
+            let
+                enemies =
+                    BS.updateBatlleSheetItemCardUnUsedAll model.enemies
+
+                characters =
+                    BS.updateBatlleSheetItemCardUnUsedAll model.characters
+            in
+            saveLocalStorage ( { model | enemies = enemies, characters = characters }, Cmd.none )
+
 
 saveLocalStorage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 saveLocalStorage ( model, cmd ) =
@@ -373,6 +383,7 @@ cardMainArea : Model -> Html Msg
 cardMainArea model =
     div [ class "card-area" ]
         [ p [] [ text "カードクリックでスキルカードの表示/非表示を切替。" ]
+        , unUsedAllButton UnUsedAll
         , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay ToggleCharacterSkillCardUsed ToggleCharacterSkillCardDamaged
         , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleEnemySkillCardUsed ToggleEnemySkillCardDamaged
         ]

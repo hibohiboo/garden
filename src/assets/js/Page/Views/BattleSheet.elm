@@ -11,6 +11,7 @@ module Page.Views.BattleSheet exposing
     , inputSheetName
     , mainAreaTabs
     , positionArea
+    , unUsedAllButton
     )
 
 import Array exposing (Array)
@@ -389,3 +390,8 @@ positionCardItem item =
         , notDamagedCardNumber
         , cardImage
         ]
+
+
+unUsedAllButton : msg -> Html msg
+unUsedAllButton msg =
+    div [ onClick msg, class "waves-effect waves-light btn" ] [ span [] [ text "使用済をすべて未使用" ] ]
