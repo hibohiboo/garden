@@ -461,10 +461,15 @@ skillArea character editor =
                 [ [ div [ style "padding" "5px" ] (addButton "共通能力" OpenCommonSkillModal) ]
                 , [ div [ style "padding" "5px" ] (addButton "特性能力" OpenTraitSkillModal) ]
                 , [ div [ style "padding" "5px" ] (addButton "アイテム" OpenItemModal) ]
-                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardArea DeleteCard editor.isShowCardDetail i card) character.cards
+                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardAreaWithMsg i editor.isShowCardDetail card) character.cards
                 ]
             )
         ]
+
+
+updateCardAreaWithMsg : Int -> (Bool -> Card.CardData -> Html Msg)
+updateCardAreaWithMsg i =
+    updateCardArea (DeleteCard i) ("card_" ++ String.fromInt i)
 
 
 getNameList : List ( String, String ) -> List String

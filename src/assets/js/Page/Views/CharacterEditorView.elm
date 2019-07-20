@@ -19,18 +19,15 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
-updateCardArea : (Int -> msg) -> Bool -> Int -> Card.CardData -> Html msg
-updateCardArea deleteMsg isShowCardDetail index card =
+updateCardArea : msg -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg fid isShowCardDetail card =
     let
-        fid =
-            "card_" ++ String.fromInt index
-
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
                 text ""
 
             else
-                deleteButton deleteMsg index
+                deleteButton deleteMsg
 
         detailClass =
             CharacterEditor.cardDetailClass isShowCardDetail
@@ -77,9 +74,9 @@ updateCardAreaInputField labelText valueText fieldId =
 -- 削除ボタン
 
 
-deleteButton : (Int -> msg) -> Int -> Html msg
-deleteButton deleteMsg index =
-    button [ class "btn-small waves-effect waves-light grey", onClick (deleteMsg index) ] [ i [ class "material-icons" ] [ text "delete" ] ]
+deleteButton : msg -> Html msg
+deleteButton deleteMsg =
+    button [ class "btn-small waves-effect waves-light grey", onClick deleteMsg ] [ i [ class "material-icons" ] [ text "delete" ] ]
 
 
 
