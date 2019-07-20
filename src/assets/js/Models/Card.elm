@@ -16,6 +16,7 @@ port module Models.Card exposing
     , illustedBy
     , initCard
     , skillCard
+    , updateCardName
     )
 
 import Array exposing (Array)
@@ -416,3 +417,20 @@ getNotDamagedCardNumber cards =
     cards
         |> Array.filter (\card -> not card.isDamaged)
         |> Array.length
+
+
+updateCardName : Int -> String -> Array CardData -> Array CardData
+updateCardName index name oldCards =
+    case Array.get index oldCards of
+        Just card ->
+            let
+                cards =
+                    Array.set index { card | cardName = name } oldCards
+
+                _ =
+                    Debug.log "decodeUser" index
+            in
+            cards
+
+        Nothing ->
+            oldCards

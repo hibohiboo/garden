@@ -53,6 +53,7 @@ type Msg
     | InputImageCreatorSite String
     | InputImageCreatorUrl String
     | ToggleShowCardDetail
+    | UpdateCardName Int String
 
 
 type LoadErr
@@ -358,6 +359,9 @@ update msg char editor =
         ToggleShowCardDetail ->
             ( ( char, { editor | isShowCardDetail = not editor.isShowCardDetail } ), Cmd.none )
 
+        UpdateCardName index name ->
+            ( ( { char | cards = char.cards |> Card.updateCardName index name }, editor ), Cmd.none )
+
 
 expectedTypes : List String
 expectedTypes =
@@ -469,7 +473,7 @@ skillArea character editor =
 
 updateCardAreaWithMsg : Int -> (Bool -> Card.CardData -> Html Msg)
 updateCardAreaWithMsg i =
-    updateCardArea (DeleteCard i) ("card_" ++ String.fromInt i)
+    updateCardArea (DeleteCard i) (UpdateCardName i) ("card_" ++ String.fromInt i)
 
 
 getNameList : List ( String, String ) -> List String

@@ -19,8 +19,8 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
-updateCardArea : msg -> String -> Bool -> Card.CardData -> Html msg
-updateCardArea deleteMsg fid isShowCardDetail card =
+updateCardArea : msg -> (String -> msg) -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg updateNameMsg fid isShowCardDetail card =
     let
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
@@ -35,7 +35,7 @@ updateCardArea deleteMsg fid isShowCardDetail card =
     div []
         [ div [ class "row" ]
             [ div [ class "col s8" ]
-                [ updateCardAreaInputField "カード名" card.cardName (fid ++ "-card_name")
+                [ updateCardAreaInputField updateNameMsg "カード名" card.cardName (fid ++ "-card_name")
                 ]
             , div [ class "col s2" ]
                 [ delButton
@@ -47,25 +47,25 @@ updateCardArea deleteMsg fid isShowCardDetail card =
             ]
         , div [ class "row", class detailClass ]
             [ div [ class "col s4" ]
-                [ updateCardAreaInputField "Ti" card.timing (fid ++ "-card_timing")
+                [ updateCardAreaInputField updateNameMsg "Ti" card.timing (fid ++ "-card_timing")
                 ]
             , div [ class "col s2" ]
-                [ updateCardAreaInputField "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
+                [ updateCardAreaInputField updateNameMsg "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
                 ]
             , div [ class "col s3" ]
-                [ updateCardAreaInputField "Ra" (Card.getRange card) (fid ++ "-card_range")
+                [ updateCardAreaInputField updateNameMsg "Ra" (Card.getRange card) (fid ++ "-card_range")
                 ]
             , div [ class "col s3" ]
-                [ updateCardAreaInputField "Ta" card.target (fid ++ "-card_target")
+                [ updateCardAreaInputField updateNameMsg "Ta" card.target (fid ++ "-card_target")
                 ]
             ]
         ]
 
 
-updateCardAreaInputField : String -> String -> String -> Html msg
-updateCardAreaInputField labelText valueText fieldId =
+updateCardAreaInputField : (String -> msg) -> String -> String -> String -> Html msg
+updateCardAreaInputField msg labelText valueText fieldId =
     div [ class "input-field" ]
-        [ input [ placeholder labelText, id fieldId, type_ "text", class "validate", value valueText, disabled True ] []
+        [ input [ placeholder labelText, id fieldId, type_ "text", class "validate", value valueText, onChange msg ] []
         , label [ class "active", for fieldId ] [ text labelText ]
         ]
 
