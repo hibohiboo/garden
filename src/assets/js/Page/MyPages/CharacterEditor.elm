@@ -58,6 +58,7 @@ type Msg
     | UpdateCardCost Int String
     | UpdateCardRange Int String
     | UpdateCardMaxRange Int String
+    | UpdateCardTarget Int String
     | UpdateCardEffect Int String
 
 
@@ -379,6 +380,9 @@ update msg char editor =
         UpdateCardMaxRange index value ->
             ( ( { char | cards = char.cards |> Card.updateCardMaxRange index value }, editor ), Cmd.none )
 
+        UpdateCardTarget index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardTarget index value }, editor ), Cmd.none )
+
         UpdateCardEffect index value ->
             ( ( { char | cards = char.cards |> Card.updateCardEffect index value }, editor ), Cmd.none )
 
@@ -493,7 +497,7 @@ skillArea character editor =
 
 updateCardAreaWithMsg : Int -> (Bool -> Card.CardData -> Html Msg)
 updateCardAreaWithMsg i =
-    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) (UpdateCardRange i) (UpdateCardMaxRange i) (UpdateCardEffect i) ("card_" ++ String.fromInt i)
+    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) (UpdateCardRange i) (UpdateCardMaxRange i) (UpdateCardTarget i) (UpdateCardEffect i) ("card_" ++ String.fromInt i)
 
 
 getNameList : List ( String, String ) -> List String

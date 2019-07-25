@@ -23,8 +23,8 @@ type alias OnChangeMsg msg =
     String -> msg
 
 
-updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> String -> Bool -> Card.CardData -> Html msg
-updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg updateEffectMsg fid isShowCardDetail card =
+updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg updateTargetMsg updateEffectMsg fid isShowCardDetail card =
     let
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
@@ -63,7 +63,7 @@ updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRange
                 [ updateCardAreaInputNumberField updateMaxRangeMsg "MRa" (String.fromInt card.maxRange) (fid ++ "-card_range")
                 ]
             , div [ class "col s2" ]
-                [ updateCardAreaInputField updateNameMsg "Ta" card.target (fid ++ "-card_target")
+                [ updateCardAreaInputField updateTargetMsg "Ta" card.target (fid ++ "-card_target")
                 ]
             ]
         , div [ class "row", class detailClass ]

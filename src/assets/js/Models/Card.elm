@@ -22,6 +22,7 @@ port module Models.Card exposing
     , updateCardMaxRange
     , updateCardName
     , updateCardRange
+    , updateCardTarget
     , updateCardTiming
     )
 
@@ -474,6 +475,14 @@ updateCardMaxRange index value oldCards =
     oldCards
         |> Array.get index
         |> Maybe.andThen (\card -> Just <| Array.set index { card | maxRange = value |> String.toInt |> Maybe.withDefault 0 } oldCards)
+        |> Maybe.withDefault oldCards
+
+
+updateCardTarget : Int -> String -> Array CardData -> Array CardData
+updateCardTarget index value oldCards =
+    oldCards
+        |> Array.get index
+        |> Maybe.andThen (\card -> Just <| Array.set index { card | target = value } oldCards)
         |> Maybe.withDefault oldCards
 
 
