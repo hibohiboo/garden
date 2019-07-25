@@ -5,6 +5,8 @@ module Models.Tag exposing
     , tagsDecoder
     , tagsDecoderFromFireStoreApi
     , tagsDecoderFromJson
+    , tagsFromString
+    , toString
     )
 
 import FirestoreApi as FSApi
@@ -17,6 +19,28 @@ type alias Tag =
     { name : String
     , level : Int
     }
+
+
+empty =
+    Tag "" 0
+
+
+toString : Tag -> String
+toString tag =
+    if tag.level == 0 then
+        tag.name
+
+    else
+        tag.name ++ ":" ++ String.fromInt tag.level
+
+
+tagsFromString : String -> List Tag
+tagsFromString value =
+    value
+        |> String.split ","
+        |> List.map fromString
+        |> List.filter (\t -> t /= Nothing)
+        |> List.map (Maybe.withDefault empty)
 
 
 fromString : String -> Maybe Tag

@@ -12,6 +12,7 @@ port module Models.Card exposing
     , getBases
     , getNotDamagedCardNumber
     , getRange
+    , getTagsString
     , getTraitList
     , illustedBy
     , initCard
@@ -22,6 +23,7 @@ port module Models.Card exposing
     , updateCardMaxRange
     , updateCardName
     , updateCardRange
+    , updateCardTags
     , updateCardTarget
     , updateCardTiming
     )
@@ -189,6 +191,11 @@ getRange cardData =
 
     else
         String.fromInt cardData.range ++ " ～ " ++ String.fromInt cardData.maxRange
+
+
+getTagsString : CardData -> String
+getTagsString card =
+    card.tags |> List.map Tag.toString |> String.join ","
 
 
 illustedBy cardData =
@@ -499,4 +506,12 @@ updateCardDescription index value oldCards =
     oldCards
         |> Array.get index
         |> Maybe.andThen (\card -> Just <| Array.set index { card | description = value } oldCards)
+        |> Maybe.withDefault oldCards
+
+
+updateCardTags : Int -> String -> Array CardData -> Array CardData
+updateCardTags index value oldCards =
+    oldCards
+        |> Array.get index
+        |> Maybe.andThen (\card -> Just <| Array.set index { card | tags = Tag.tagsFromString value } oldCards)
         |> Maybe.withDefault oldCards

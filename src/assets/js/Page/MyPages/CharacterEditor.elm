@@ -61,6 +61,7 @@ type Msg
     | UpdateCardTarget Int String
     | UpdateCardEffect Int String
     | UpdateCardDescription Int String
+    | UpdateCardTags Int String
 
 
 type LoadErr
@@ -390,6 +391,19 @@ update msg char editor =
         UpdateCardDescription index value ->
             ( ( { char | cards = char.cards |> Card.updateCardDescription index value }, editor ), Cmd.none )
 
+        UpdateCardTags index value ->
+            let
+                newCards =
+                    char.cards |> Card.updateCardTags index value
+
+                newActivePower =
+                    Card.getActivePower newCards
+
+                c =
+                    { char | cards = newCards, activePower = newActivePower }
+            in
+            ( ( c, editor ), Cmd.none )
+
 
 expectedTypes : List String
 expectedTypes =
@@ -501,7 +515,7 @@ skillArea character editor =
 
 updateCardAreaWithMsg : Int -> (Bool -> Card.CardData -> Html Msg)
 updateCardAreaWithMsg i =
-    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) (UpdateCardRange i) (UpdateCardMaxRange i) (UpdateCardTarget i) (UpdateCardEffect i) (UpdateCardDescription i) ("card_" ++ String.fromInt i)
+    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) (UpdateCardRange i) (UpdateCardMaxRange i) (UpdateCardTarget i) (UpdateCardEffect i) (UpdateCardDescription i) (UpdateCardTags i) ("card_" ++ String.fromInt i)
 
 
 getNameList : List ( String, String ) -> List String
