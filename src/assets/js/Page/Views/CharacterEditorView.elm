@@ -19,8 +19,12 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
-updateCardArea : msg -> (String -> msg) -> (String -> msg) -> (String -> msg) -> String -> Bool -> Card.CardData -> Html msg
-updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg fid isShowCardDetail card =
+type alias OnChangeMsg msg =
+    String -> msg
+
+
+updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg fid isShowCardDetail card =
     let
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
@@ -52,10 +56,13 @@ updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg fid isShowC
             , div [ class "col s2" ]
                 [ updateCardAreaInputNumberField updateCostMsg "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
                 ]
-            , div [ class "col s3" ]
-                [ updateCardAreaInputField updateNameMsg "Ra" (Card.getRange card) (fid ++ "-card_range")
+            , div [ class "col s2" ]
+                [ updateCardAreaInputNumberField updateRangeMsg "Ra" (String.fromInt card.range) (fid ++ "-card_range")
                 ]
-            , div [ class "col s3" ]
+            , div [ class "col s2" ]
+                [ updateCardAreaInputNumberField updateMaxRangeMsg "MRa" (String.fromInt card.maxRange) (fid ++ "-card_range")
+                ]
+            , div [ class "col s2" ]
                 [ updateCardAreaInputField updateNameMsg "Ta" card.target (fid ++ "-card_target")
                 ]
             ]

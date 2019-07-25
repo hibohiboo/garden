@@ -56,6 +56,8 @@ type Msg
     | UpdateCardName Int String
     | UpdateCardTiming Int String
     | UpdateCardCost Int String
+    | UpdateCardRange Int String
+    | UpdateCardMaxRange Int String
 
 
 type LoadErr
@@ -370,6 +372,12 @@ update msg char editor =
         UpdateCardCost index value ->
             ( ( { char | cards = char.cards |> Card.updateCardCost index value }, editor ), Cmd.none )
 
+        UpdateCardRange index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardRange index value }, editor ), Cmd.none )
+
+        UpdateCardMaxRange index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardMaxRange index value }, editor ), Cmd.none )
+
 
 expectedTypes : List String
 expectedTypes =
@@ -467,7 +475,7 @@ skillArea character editor =
         [ h5 [] [ text "能力" ]
         , div [] [ label [] [ input [ type_ "checkbox", checked editor.isShowCardDetail, onClick ToggleShowCardDetail ] [], span [] [ text "詳細を表示" ] ] ]
         , div [ class (Models.CharacterEditor.cardDetailClass editor.isShowCardDetail) ]
-            [ text "Ti:タイミング/Co:コスト/Ra:射程/Ta:対象" ]
+            [ text "Ti:タイミング/Co:コスト/Ra:射程/MRa:最大射程/Ta:対象" ]
         , div []
             (List.concat
                 [ [ div [ style "padding" "5px" ] (addButton "共通能力" OpenCommonSkillModal) ]
@@ -481,7 +489,7 @@ skillArea character editor =
 
 updateCardAreaWithMsg : Int -> (Bool -> Card.CardData -> Html Msg)
 updateCardAreaWithMsg i =
-    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) ("card_" ++ String.fromInt i)
+    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) (UpdateCardRange i) (UpdateCardMaxRange i) ("card_" ++ String.fromInt i)
 
 
 getNameList : List ( String, String ) -> List String
