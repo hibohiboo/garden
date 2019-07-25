@@ -16,6 +16,7 @@ port module Models.Card exposing
     , illustedBy
     , initCard
     , skillCard
+    , updateCardCost
     , updateCardName
     , updateCardTiming
     )
@@ -439,6 +440,16 @@ updateCardTiming index value oldCards =
     case Array.get index oldCards of
         Just card ->
             Array.set index { card | timing = value } oldCards
+
+        Nothing ->
+            oldCards
+
+
+updateCardCost : Int -> String -> Array CardData -> Array CardData
+updateCardCost index value oldCards =
+    case Array.get index oldCards of
+        Just card ->
+            Array.set index { card | cost = value |> String.toInt |> Maybe.withDefault 0 } oldCards
 
         Nothing ->
             oldCards

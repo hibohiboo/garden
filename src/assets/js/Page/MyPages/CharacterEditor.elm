@@ -55,6 +55,7 @@ type Msg
     | ToggleShowCardDetail
     | UpdateCardName Int String
     | UpdateCardTiming Int String
+    | UpdateCardCost Int String
 
 
 type LoadErr
@@ -366,6 +367,9 @@ update msg char editor =
         UpdateCardTiming index value ->
             ( ( { char | cards = char.cards |> Card.updateCardTiming index value }, editor ), Cmd.none )
 
+        UpdateCardCost index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardCost index value }, editor ), Cmd.none )
+
 
 expectedTypes : List String
 expectedTypes =
@@ -477,7 +481,7 @@ skillArea character editor =
 
 updateCardAreaWithMsg : Int -> (Bool -> Card.CardData -> Html Msg)
 updateCardAreaWithMsg i =
-    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) ("card_" ++ String.fromInt i)
+    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) ("card_" ++ String.fromInt i)
 
 
 getNameList : List ( String, String ) -> List String

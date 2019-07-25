@@ -19,8 +19,8 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
-updateCardArea : msg -> (String -> msg) -> (String -> msg) -> String -> Bool -> Card.CardData -> Html msg
-updateCardArea deleteMsg updateNameMsg updateTimingMsg fid isShowCardDetail card =
+updateCardArea : msg -> (String -> msg) -> (String -> msg) -> (String -> msg) -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg fid isShowCardDetail card =
     let
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
@@ -50,7 +50,7 @@ updateCardArea deleteMsg updateNameMsg updateTimingMsg fid isShowCardDetail card
                 [ updateCardAreaInputField updateTimingMsg "Ti" card.timing (fid ++ "-card_timing")
                 ]
             , div [ class "col s2" ]
-                [ updateCardAreaInputField updateNameMsg "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
+                [ updateCardAreaInputNumberField updateCostMsg "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
                 ]
             , div [ class "col s3" ]
                 [ updateCardAreaInputField updateNameMsg "Ra" (Card.getRange card) (fid ++ "-card_range")
@@ -66,6 +66,14 @@ updateCardAreaInputField : (String -> msg) -> String -> String -> String -> Html
 updateCardAreaInputField msg labelText valueText fieldId =
     div [ class "input-field" ]
         [ input [ placeholder labelText, id fieldId, type_ "text", class "validate", value valueText, onChange msg ] []
+        , label [ class "active", for fieldId ] [ text labelText ]
+        ]
+
+
+updateCardAreaInputNumberField : (String -> msg) -> String -> String -> String -> Html msg
+updateCardAreaInputNumberField msg labelText valueText fieldId =
+    div [ class "input-field" ]
+        [ input [ placeholder labelText, id fieldId, type_ "number", class "validate", value valueText, onChange msg ] []
         , label [ class "active", for fieldId ] [ text labelText ]
         ]
 
