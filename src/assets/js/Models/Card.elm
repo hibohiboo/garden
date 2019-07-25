@@ -17,6 +17,8 @@ port module Models.Card exposing
     , initCard
     , skillCard
     , updateCardCost
+    , updateCardDescription
+    , updateCardEffect
     , updateCardMaxRange
     , updateCardName
     , updateCardRange
@@ -472,4 +474,20 @@ updateCardMaxRange index value oldCards =
     oldCards
         |> Array.get index
         |> Maybe.andThen (\card -> Just <| Array.set index { card | maxRange = value |> String.toInt |> Maybe.withDefault 0 } oldCards)
+        |> Maybe.withDefault oldCards
+
+
+updateCardEffect : Int -> String -> Array CardData -> Array CardData
+updateCardEffect index value oldCards =
+    oldCards
+        |> Array.get index
+        |> Maybe.andThen (\card -> Just <| Array.set index { card | effect = value } oldCards)
+        |> Maybe.withDefault oldCards
+
+
+updateCardDescription : Int -> String -> Array CardData -> Array CardData
+updateCardDescription index value oldCards =
+    oldCards
+        |> Array.get index
+        |> Maybe.andThen (\card -> Just <| Array.set index { card | description = value } oldCards)
         |> Maybe.withDefault oldCards

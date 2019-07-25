@@ -23,8 +23,8 @@ type alias OnChangeMsg msg =
     String -> msg
 
 
-updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> String -> Bool -> Card.CardData -> Html msg
-updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg fid isShowCardDetail card =
+updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg updateEffectMsg fid isShowCardDetail card =
     let
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
@@ -66,6 +66,11 @@ updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRange
                 [ updateCardAreaInputField updateNameMsg "Ta" card.target (fid ++ "-card_target")
                 ]
             ]
+        , div [ class "row", class detailClass ]
+            [ div [ class "col s12" ]
+                [ updateCardAreaTextAreaField updateEffectMsg "効果" card.effect (fid ++ "-card_effect")
+                ]
+            ]
         ]
 
 
@@ -81,6 +86,14 @@ updateCardAreaInputNumberField : (String -> msg) -> String -> String -> String -
 updateCardAreaInputNumberField msg labelText valueText fieldId =
     div [ class "input-field" ]
         [ input [ placeholder labelText, id fieldId, type_ "number", class "validate", value valueText, onChange msg ] []
+        , label [ class "active", for fieldId ] [ text labelText ]
+        ]
+
+
+updateCardAreaTextAreaField : (String -> msg) -> String -> String -> String -> Html msg
+updateCardAreaTextAreaField msg labelText valueText fieldId =
+    div [ class "input-field" ]
+        [ textarea [ placeholder labelText, id fieldId, class "materialize-textarea", value valueText, onChange msg ] []
         , label [ class "active", for fieldId ] [ text labelText ]
         ]
 
