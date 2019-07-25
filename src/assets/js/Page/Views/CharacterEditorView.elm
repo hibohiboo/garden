@@ -27,7 +27,7 @@ updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg ->
 updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg updateTargetMsg updateEffectMsg updateDescriptionMsg updateTagsMsg fid isShowCardDetail card =
     let
         delButton =
-            if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
+            if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本能力" then
                 text ""
 
             else
