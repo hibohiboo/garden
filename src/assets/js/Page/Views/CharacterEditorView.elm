@@ -23,8 +23,8 @@ type alias OnChangeMsg msg =
     String -> msg
 
 
-updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> String -> Bool -> Card.CardData -> Html msg
-updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg updateTargetMsg updateEffectMsg fid isShowCardDetail card =
+updateCardArea : msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> OnChangeMsg msg -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRangeMsg updateMaxRangeMsg updateTargetMsg updateEffectMsg updateDescriptionMsg fid isShowCardDetail card =
     let
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
@@ -69,6 +69,11 @@ updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRange
         , div [ class "row", class detailClass ]
             [ div [ class "col s12" ]
                 [ updateCardAreaTextAreaField updateEffectMsg "効果" card.effect (fid ++ "-card_effect")
+                ]
+            ]
+        , div [ class "row", class detailClass ]
+            [ div [ class "col s12" ]
+                [ updateCardAreaTextAreaField updateDescriptionMsg "解説" card.description (fid ++ "-card_description")
                 ]
             ]
         ]
