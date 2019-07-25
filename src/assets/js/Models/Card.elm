@@ -17,6 +17,7 @@ port module Models.Card exposing
     , initCard
     , skillCard
     , updateCardName
+    , updateCardTiming
     )
 
 import Array exposing (Array)
@@ -426,11 +427,18 @@ updateCardName index name oldCards =
             let
                 cards =
                     Array.set index { card | cardName = name } oldCards
-
-                _ =
-                    Debug.log "decodeUser" index
             in
             cards
+
+        Nothing ->
+            oldCards
+
+
+updateCardTiming : Int -> String -> Array CardData -> Array CardData
+updateCardTiming index value oldCards =
+    case Array.get index oldCards of
+        Just card ->
+            Array.set index { card | timing = value } oldCards
 
         Nothing ->
             oldCards

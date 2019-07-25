@@ -19,8 +19,8 @@ import Utils.ModalWindow as Modal
 import Utils.Util exposing (deleteAt)
 
 
-updateCardArea : msg -> (String -> msg) -> String -> Bool -> Card.CardData -> Html msg
-updateCardArea deleteMsg updateNameMsg fid isShowCardDetail card =
+updateCardArea : msg -> (String -> msg) -> (String -> msg) -> String -> Bool -> Card.CardData -> Html msg
+updateCardArea deleteMsg updateNameMsg updateTimingMsg fid isShowCardDetail card =
     let
         delButton =
             if card.kind == "特性" || card.kind == "変異原" || card.kind == "器官" || card.kind == "基本" then
@@ -47,7 +47,7 @@ updateCardArea deleteMsg updateNameMsg fid isShowCardDetail card =
             ]
         , div [ class "row", class detailClass ]
             [ div [ class "col s4" ]
-                [ updateCardAreaInputField updateNameMsg "Ti" card.timing (fid ++ "-card_timing")
+                [ updateCardAreaInputField updateTimingMsg "Ti" card.timing (fid ++ "-card_timing")
                 ]
             , div [ class "col s2" ]
                 [ updateCardAreaInputField updateNameMsg "Co" (String.fromInt card.cost) (fid ++ "-card_cost")
