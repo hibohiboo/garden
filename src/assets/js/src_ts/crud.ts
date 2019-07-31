@@ -63,6 +63,13 @@ type Character = {
   kana: string
 };
 
+/**
+ * ユーザのキャラクターを取得する
+ * 
+ * @param storeUserId 
+ * @param characterId 
+ * @param db 
+ */
 export async function getCharacter(storeUserId, characterId, db) {
   const characterRef = await db.collection("users").doc(storeUserId).collection('characters').doc(characterId).get();
   const character = characterRef.data();
@@ -97,21 +104,42 @@ export async function readCharacters(db, storeUserId) {
  * @param timestamp 
  * @param uid 
  */
-export async function addCharacter(json: string, db, timestamp, uid) {
-  const data = JSON.parse(json);
-  const userRef = db.collection("users").doc(data.storeUserId);
-  data.createdAt = timestamp;
-  data.updatedAt = timestamp;
-  data.uid = uid;
-  return await userRef.collection('characters').add(data);
+export async function addCharacter(json: string, storage, db, timestamp, uid) {
+  let character = JSON.parse(json);
+  character = await updateCharacterImages(storage, character);
+  const userRef = db.collection("users").doc(character.storeUserId);
+  character.createdAt = timestamp;
+  character.updatedAt = timestamp;
+  character.uid = uid;
+  return await userRef.collection('characters').add(character);
 }
 
-export async function updateCharacter(json, fireBase, db, uid) {
-  const character = JSON.parse(json);
+/**
+ * データベースのキャラクターを更新する
+ * 
+ * @param json 
+ * @param db 
+ * @param timestamp 
+ * @param uid 
+ */
 
+export async function updateCharacter(json, storage, db, timestamp, uid) {
+  let character = JSON.parse(json);
+
+  character = await updateCharacterImages(storage, character);
+
+  // キャラクター更新
+  const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
+  character.updatedAt = timestamp;
+
+  character.uid = uid;
+  await characterRef.update(character);
+}
+
+async function updateCharacterImages(storage, character) {
   // 画像アップロード
   if (character.cardImageData !== "") {
-    const ref = fireBase.storage.ref('card-' + character.characterId);
+    const ref = storage.ref('card-' + character.characterId);
     await ref.putString(character.cardImageData, 'data_url');
     const url = await ref.getDownloadURL();
     character.cardImage = url;
@@ -119,17 +147,22 @@ export async function updateCharacter(json, fireBase, db, uid) {
   }
 
   if (character.characterImageData !== "") {
-    const ref = fireBase.storage.ref('character-' + character.characterId);
+    const ref = storage.ref('character-' + character.characterId);
     await ref.putString(character.characterImageData, 'data_url');
     const url = await ref.getDownloadURL();
     character.characterImage = url;
     character.characterImageData = "";
   }
+  return character;
+}
 
-  // キャラクター更新
-  const characterRef = await db.collection("users").doc(character.storeUserId).collection('characters').doc(character.characterId);
-  character.updatedAt = fireBase.getTimestamp();
-
-  character.uid = uid;
-  await characterRef.update(character);
+/**
+ * データベースのキャラクターを削除する
+ * 
+ * @param storeUserId 
+ * @param characterId 
+ * @param db 
+ */
+export async function deleteCharacter(storeUserId, characterId, db) {
+  await db.collection("users").doc(storeUserId).collection('characters').doc(characterId).delete();
 }

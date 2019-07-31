@@ -3,7 +3,7 @@ import FireBaseBackEnd from './src_ts/FireBaseBackEnd';
 // import * as M from 'M'; //  tslint-disable-line
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import { GOOGLE_SHEET_API_KEY } from "./src_ts/constants";
-import { addCharacter, readCharacters, addUser, getCharacter, updateCharacter } from './src_ts/crud';
+import { addCharacter, readCharacters, addUser, getCharacter, updateCharacter, deleteCharacter } from './src_ts/crud';
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
 
 // firebase使用準備
@@ -14,6 +14,9 @@ const auth = fireBase.auth;;
 
 // firestore使用準備
 const db = fireBase.db;
+
+// firebase storage
+const storage = fireBase.storage;
 
 // ローカルストレージに保存するためのキー
 const STORAGE_KEY = 'gardenLoginData';
@@ -76,7 +79,7 @@ app.ports.signOut.subscribe(() => {
 
 // キャラクター新規作成
 app.ports.saveNewCharacter.subscribe(async json => {
-  await addCharacter(json, db, fireBase.getTimestamp(), userData.uid);
+  await addCharacter(json, storage, db, fireBase.getTimestamp(), userData.uid);
   app.ports.createdCharacter.send(true);
 });
 
@@ -90,8 +93,14 @@ app.ports.getCharacter.subscribe(async data => {
 
 // キャラクター更新
 app.ports.updateCharacter.subscribe(async json => {
-  await updateCharacter(json, fireBase, db, userData.uid);
+  await updateCharacter(json, storage, db, fireBase.getTimestamp(), userData.uid);
   app.ports.updatedCharacter.send(true);
+});
+
+// キャラクター削除
+app.ports.deleteCharacter.subscribe(async ({ storeUserId, characterId }) => {
+  await deleteCharacter(storeUserId, characterId, db);
+  app.ports.deletedCharacter.send(true);
 });
 
 // ローカルストレージに、キャラクターのデータカードの使用済/負傷などを保存

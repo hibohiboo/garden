@@ -4,6 +4,7 @@ module Models.Character exposing
     , characterDecoderFromFireStoreApi
     , characterListFromJson
     , encodeCharacter
+    , encodeCharacterIdsToValue
     , encodeCharacterToValue
     , initBaseCards
     , initCharacter
@@ -76,6 +77,14 @@ encodeCharacterToValue c =
         , ( "cardImageCreatorName", E.string c.cardImageCreatorName )
         , ( "cardImageCreatorSite", E.string c.cardImageCreatorSite )
         , ( "cardImageCreatorUrl", E.string c.cardImageCreatorUrl )
+        ]
+
+
+encodeCharacterIdsToValue : Character -> E.Value
+encodeCharacterIdsToValue c =
+    E.object
+        [ ( "storeUserId", E.string c.storeUserId )
+        , ( "characterId", E.string c.characterId )
         ]
 
 

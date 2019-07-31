@@ -1,4 +1,4 @@
-module Models.CharacterEditor exposing (EditorModel, cardDetailClass, initEditor)
+module Models.CharacterEditor exposing (EditorModel, cardDetailClass, closeModal, initEditor, showModal)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -30,3 +30,13 @@ cardDetailClass isShowCardDetail =
 
     else
         "hide"
+
+
+showModal : EditorModel msg -> EditorModel msg
+showModal modal =
+    { modal | modalState = Modal.Open }
+
+
+closeModal : EditorModel msg -> EditorModel msg
+closeModal modal =
+    { modal | modalState = Modal.Close }

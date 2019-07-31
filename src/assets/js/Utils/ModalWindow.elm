@@ -25,7 +25,7 @@ view title content state closeMsg =
         [ div [ id "mainModal", class ("modal " ++ openClass), style "z-index" "1002" ]
             [ div [ class "modal-content" ]
                 [ h4 [] [ text title ]
-                , p [] [ content ]
+                , div [] [ content ]
                 ]
             , div [ class "modal-footer" ]
                 [ button [ class "modal-close waves-effect waves-lignt btn-flat btn", onClick closeMsg ] [ text "閉じる" ]

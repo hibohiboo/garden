@@ -1,4 +1,4 @@
-module Page.MyPages.CharacterEditor exposing (Msg(..), editArea, update)
+module Page.MyPages.CharacterEditor exposing (Msg(..), deleteModal, editArea, update)
 
 import Array exposing (Array)
 import File exposing (File)
@@ -12,6 +12,7 @@ import Models.Character exposing (Character)
 import Models.CharacterEditor exposing (EditorModel)
 import Models.Tag exposing (Tag)
 import Page.Views.CharacterEditorView as CharacterEditorView exposing (updateCardArea)
+import Page.Views.Modal exposing (confirmDelete)
 import Task
 import Url
 import Url.Builder
@@ -62,6 +63,9 @@ type Msg
     | UpdateCardEffect Int String
     | UpdateCardDescription Int String
     | UpdateCardTags Int String
+    | DeleteConfirm
+    | CancelConfirm
+    | Delete
 
 
 type LoadErr
@@ -404,6 +408,26 @@ update msg char editor =
             in
             ( ( c, editor ), Cmd.none )
 
+        DeleteConfirm ->
+            let
+                showModal =
+                    Models.CharacterEditor.showModal editor
+
+                e =
+                    { showModal | modalContents = confirmDelete CancelConfirm Delete "キャラクター" }
+            in
+            ( ( char, e ), Cmd.none )
+
+        CancelConfirm ->
+            let
+                closeModal =
+                    Models.CharacterEditor.closeModal editor
+            in
+            ( ( char, closeModal ), Cmd.none )
+
+        Delete ->
+            update CloseModal char editor
+
 
 expectedTypes : List String
 expectedTypes =
@@ -590,3 +614,12 @@ modalCardOpenButton modalMsg title kind cardMsg =
 
 
 -- TODO: ドラッグアンドドロップ https://elm-lang.org/examples/drag-and-drop
+
+
+deleteModal char editor =
+    div [ style "padding" "20px 0" ]
+        [ button [ onClick DeleteConfirm, class "btn waves-effect waves-light red", type_ "button", name "delete" ]
+            [ text "削除"
+            , i [ class "material-icons right" ] [ text "delete" ]
+            ]
+        ]

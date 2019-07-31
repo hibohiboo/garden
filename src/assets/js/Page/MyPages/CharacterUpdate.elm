@@ -9,9 +9,9 @@ import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as D
 import Models.Card as Card
-import Models.Character exposing (..)
+import Models.Character as Character exposing (..)
 import Models.CharacterEditor exposing (EditorModel)
-import Page.MyPages.CharacterEditor as CharacterEditor exposing (editArea)
+import Page.MyPages.CharacterEditor as CharacterEditor exposing (deleteModal, editArea)
 import Page.MyPages.CharacterView exposing (cardsView)
 import Session
 import Skeleton exposing (viewLink, viewMain)
@@ -27,6 +27,12 @@ port updateCharacter : String -> Cmd msg
 port updatedCharacter : (Bool -> msg) -> Sub msg
 
 
+port deleteCharacter : D.Value -> Cmd msg
+
+
+port deletedCharacter : (Bool -> msg) -> Sub msg
+
+
 port getCharacter : ( String, String ) -> Cmd msg
 
 
@@ -38,6 +44,7 @@ subscriptions =
     Sub.batch
         [ gotCharacter GotCharacter
         , updatedCharacter UpdatedCharacter
+        , deletedCharacter DeletedCharacter
         ]
 
 
@@ -126,6 +133,7 @@ type Msg
     | GotReasons (Result Http.Error String)
     | GotTraits (Result Http.Error String)
     | GotCards (Result Http.Error String)
+    | DeletedCharacter Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -136,11 +144,16 @@ update msg model =
 
         -- キャラクターデータの更新
         EditorMsg emsg ->
-            let
-                ( ( char, editor ), s ) =
-                    CharacterEditor.update emsg model.character model.editorModel
-            in
-            ( { model | character = char, editorModel = editor }, Cmd.map EditorMsg s )
+            case emsg of
+                CharacterEditor.Delete ->
+                    ( model, deleteCharacter (Character.encodeCharacterIdsToValue model.character) )
+
+                _ ->
+                    let
+                        ( ( char, editor ), s ) =
+                            CharacterEditor.update emsg model.character model.editorModel
+                    in
+                    ( { model | character = char, editorModel = editor }, Cmd.map EditorMsg s )
 
         Save ->
             ( model, model.character |> encodeCharacter |> updateCharacter )
@@ -230,6 +243,9 @@ update msg model =
         GotCards (Err _) ->
             ( model, Cmd.none )
 
+        DeletedCharacter _ ->
+            ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
+
 
 view : Model -> Skeleton.Details Msg
 view model =
@@ -270,6 +286,7 @@ edit model =
             [ text "更新"
             , i [ class "material-icons right" ] [ text "send" ]
             ]
+        , Html.map EditorMsg (deleteModal model.character model.editorModel)
         ]
 
 
