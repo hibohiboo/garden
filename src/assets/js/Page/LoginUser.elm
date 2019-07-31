@@ -6,6 +6,8 @@ import Html.Events exposing (onClick)
 import Json.Decode as D
 import Models.Character exposing (..)
 import Models.User exposing (..)
+import Page.Views.LoginPage exposing (loginPage)
+import Page.Views.MyPage as MyPage
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -112,57 +114,4 @@ viewMainPage model =
             loginPage
 
         Just user ->
-            myPage user model.characters
-
-
-loginPage : Html msg
-loginPage =
-    div [ class "" ]
-        [ h3 [] [ text "マイページ" ]
-        , div [] [ text "ユーザページの利用にはログインをお願いしております。" ]
-        , div []
-            [ text "現在、Twitterでログイン可能です。"
-            ]
-        , div [ id "firebaseui-auth-container", lang "ja" ] []
-        , div [ id "loader" ] [ text "Loading ..." ]
-        ]
-
-
-myPage : User -> List Character -> Html Msg
-myPage user characters =
-    div [ class "mypage" ]
-        [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
-        , button [ class "signout-button", onClick SignOut, type_ "button" ] [ span [] [ text "サインアウト" ] ]
-        , div [ class "character-area" ]
-            [ a [ href (Url.Builder.absolute [ "mypage", "character", "create", user.storeUserId ] []), class "waves-effect waves-light btn", style "width" "250px" ]
-                [ i [ class "small material-icons" ] [ text "add" ]
-                , text "キャラクター新規作成"
-                ]
-            , characterListWrapper characters
-            ]
-        ]
-
-
-characterListWrapper characters =
-    div [ class "row" ]
-        [ div [ class "col m6 s12" ]
-            [ characterList characters ]
-        ]
-
-
-characterList characters =
-    div [ class "collection with-header" ]
-        (div [ class "collection-header" ] [ text "作成したPC一覧" ]
-            :: List.map characterListItem characters
-        )
-
-
-characterListItem char =
-    div [ class "collection-item" ]
-        [ a [ href (Url.Builder.absolute [ "character", "view", char.characterId ] []) ]
-            [ text char.name
-            ]
-        , a [ href (Url.Builder.absolute [ "mypage", "character", "edit", char.storeUserId, char.characterId ] []), class "secondary-content btn-floating btn-small waves-effect waves-light red" ]
-            [ i [ class "material-icons" ] [ text "edit" ]
-            ]
-        ]
+            MyPage.view user model.characters SignOut
