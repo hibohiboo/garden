@@ -1,4 +1,4 @@
-module Page.MyPages.User exposing (User, decodeUserFromString)
+module Models.User exposing (User, decodeUserFromString)
 
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)

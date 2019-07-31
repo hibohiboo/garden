@@ -5,7 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D
 import Models.Character exposing (..)
-import Page.MyPages.User exposing (..)
+import Models.User exposing (..)
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
