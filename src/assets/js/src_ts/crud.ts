@@ -106,12 +106,15 @@ export async function readCharacters(db, storeUserId) {
  */
 export async function addCharacter(json: string, storage, db, timestamp, uid) {
   let character = JSON.parse(json);
-  character = await updateCharacterImages(storage, character);
   const userRef = db.collection("users").doc(character.storeUserId);
   character.createdAt = timestamp;
   character.updatedAt = timestamp;
   character.uid = uid;
-  return await userRef.collection('characters').add(character);
+
+  const ref = await userRef.collection('characters').doc();
+  character.characterId = ref.id;
+  character = await updateCharacterImages(storage, character);
+  return await userRef.collection('characters').doc(ref.id).set(character);
 }
 
 /**

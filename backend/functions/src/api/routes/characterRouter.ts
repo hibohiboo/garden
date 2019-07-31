@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { firestore } from '../model/firestore';
+import { firestore } from '../model/firebase';
 
 
 const router = express.Router();

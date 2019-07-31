@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as cors from 'cors';
 // firestoreのgetapiから直接取得するようにしたため、以下は不要
 // import characterRouter from './api/routes/characterRouter';
-import { firestore } from './api/model/firestore';
+import { firestore, bucket } from './api/model/firebase';
 
 const app = express();
 app.use(cors({ origin: true }));
@@ -40,6 +40,8 @@ export const onUsersCharacterUpdate = functions.firestore.document('/users/{user
 export const onUsersCharacterDelete = functions.firestore.document('/users/{userId}/characters/{characterId}').onDelete(async (snapshot, context) => {
   if (!context) { return; }
   const characterId = snapshot.id;
+  await bucket.file('card-' + characterId).delete();
+  await bucket.file('character-' + characterId).delete();
   await firestore.collection('publish').doc('all').collection('characters').doc(characterId).delete();
   await firestore.collection('characters').doc(characterId).delete();
 });
