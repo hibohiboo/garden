@@ -40,10 +40,13 @@ export const onUsersCharacterUpdate = functions.firestore.document('/users/{user
 export const onUsersCharacterDelete = functions.firestore.document('/users/{userId}/characters/{characterId}').onDelete(async (snapshot, context) => {
   if (!context) { return; }
   const characterId = snapshot.id;
-  await bucket.file('card-' + characterId).delete();
-  await bucket.file('character-' + characterId).delete();
-  await firestore.collection('publish').doc('all').collection('characters').doc(characterId).delete();
-  await firestore.collection('characters').doc(characterId).delete();
+  const results = [];
+  // 画像が消せなかったときは無視。
+  bucket.file('card-' + characterId).delete().catch();
+  bucket.file('character-' + characterId).delete().catch();
+  results.push(firestore.collection('publish').doc('all').collection('characters').doc(characterId).delete());
+  results.push(firestore.collection('characters').doc(characterId).delete());
+  await Promise.all(results);
 });
 
 async function copyToRootWithUsersCharacterSnapshot(snapshot: FirebaseFirestore.DocumentSnapshot, context: functions.EventContext) {
