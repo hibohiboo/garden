@@ -15,6 +15,7 @@ import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
 import Page.MyPages.CharacterUpdate as CharacterUpdate
 import Page.MyPages.CharacterView as CharacterView
+import Page.MyPages.EnemyCrud as EnemyCrud
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
 import Page.SandBox as SandBox
@@ -88,6 +89,7 @@ type Page
     | CharacterListPage Page.CharacterList.Model
     | EnemyListPage Page.EnemyList.Model
     | BattleSheetPage Page.BattleSheet.Model
+    | EnemyCrudPage EnemyCrud.Model
 
 
 init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -134,6 +136,7 @@ type Msg
     | CharacterListMsg Page.CharacterList.Msg
     | EnemyListMsg Page.EnemyList.Msg
     | BattleSheetMsg Page.BattleSheet.Msg
+    | EnemyCrudMsg EnemyCrud.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -305,6 +308,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        EnemyCrudMsg pageMsg ->
+            case model.page of
+                EnemyCrudPage pageModel ->
+                    let
+                        ( newModel, cmd ) =
+                            EnemyCrud.update pageMsg pageModel
+                    in
+                    ( { model | page = EnemyCrudPage newModel }, Cmd.map EnemyCrudMsg cmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 -- EXIT
@@ -350,6 +365,9 @@ exit model =
             m.session
 
         BattleSheetPage m ->
+            m.session
+
+        EnemyCrudPage m ->
             m.session
 
 
@@ -495,6 +513,33 @@ goTo maybeRoute model =
             , Cmd.map BattleSheetMsg cmd
             )
 
+        Just (Route.EnemyCreate storeUserId) ->
+            let
+                ( m, cmd ) =
+                    EnemyCrud.init session model.googleSheetApiKey storeUserId Nothing
+            in
+            ( { model | page = EnemyCrudPage m }
+            , Cmd.map EnemyCrudMsg cmd
+            )
+
+        Just (Route.EnemyUpdate storeUserId enemyId) ->
+            let
+                ( m, cmd ) =
+                    EnemyCrud.init session model.googleSheetApiKey storeUserId (Just enemyId)
+            in
+            ( { model | page = EnemyCrudPage m }
+            , Cmd.map EnemyCrudMsg cmd
+            )
+
+        Just (Route.EnemyView enemyId) ->
+            let
+                ( m, cmd ) =
+                    EnemyCrud.init session model.googleSheetApiKey "" (Just enemyId)
+            in
+            ( { model | page = EnemyCrudPage m }
+            , Cmd.map EnemyCrudMsg cmd
+            )
+
 
 
 -- SUBSCRIPTIONS
@@ -573,6 +618,9 @@ view model =
 
         BattleSheetPage m ->
             Skeleton.view BattleSheetMsg (Page.BattleSheet.view m)
+
+        EnemyCrudPage m ->
+            Skeleton.view EnemyCrudMsg (EnemyCrud.view m)
 
 
 {-| NotFound ページ

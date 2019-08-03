@@ -19,6 +19,9 @@ type Route
     | CharacterListNext String
     | EnemyList
     | BattleSheet
+    | EnemyCreate String
+    | EnemyUpdate String String
+    | EnemyView String
 
 
 parse : Url -> Maybe Route
@@ -43,6 +46,9 @@ parser =
         , map CharacterList (s "characters")
         , map EnemyList (s "enemies")
         , map BattleSheet (s "battle-sheet")
+        , map EnemyUpdate (s "mypage" </> s "enemy" </> s "edit" </> string </> string)
+        , map EnemyCreate (s "mypage" </> s "enemy" </> s "create" </> string)
+        , map EnemyView (s "enemy" </> s "view" </> string)
 
         -- , map GitHubUser string
         -- , map Repo (string </> string)
