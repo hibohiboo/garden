@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Json.Decode as D
+import Models.Enemy as Enemy
 import Page.BattleSheet
 import Page.CharacterList
 import Page.EnemyList
@@ -516,7 +517,7 @@ goTo maybeRoute model =
         Just (Route.EnemyCreate storeUserId) ->
             let
                 ( m, cmd ) =
-                    EnemyCrud.init session model.googleSheetApiKey storeUserId Nothing
+                    EnemyCrud.init session model.googleSheetApiKey Enemy.Create storeUserId Nothing
             in
             ( { model | page = EnemyCrudPage m }
             , Cmd.map EnemyCrudMsg cmd
@@ -525,7 +526,7 @@ goTo maybeRoute model =
         Just (Route.EnemyUpdate storeUserId enemyId) ->
             let
                 ( m, cmd ) =
-                    EnemyCrud.init session model.googleSheetApiKey storeUserId (Just enemyId)
+                    EnemyCrud.init session model.googleSheetApiKey Enemy.Update storeUserId (Just enemyId)
             in
             ( { model | page = EnemyCrudPage m }
             , Cmd.map EnemyCrudMsg cmd
@@ -534,7 +535,7 @@ goTo maybeRoute model =
         Just (Route.EnemyView enemyId) ->
             let
                 ( m, cmd ) =
-                    EnemyCrud.init session model.googleSheetApiKey "" (Just enemyId)
+                    EnemyCrud.init session model.googleSheetApiKey Enemy.Read "" (Just enemyId)
             in
             ( { model | page = EnemyCrudPage m }
             , Cmd.map EnemyCrudMsg cmd

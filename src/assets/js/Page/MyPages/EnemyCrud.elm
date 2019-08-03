@@ -3,17 +3,20 @@ port module Page.MyPages.EnemyCrud exposing (Model, Msg(..), init, subscriptions
 import Array
 import Browser.Navigation as Navigation
 import GoogleSpreadSheetApi as GSAPI
+import Html exposing (..)
+import Html.Attributes exposing (class)
 import Http
 import Json.Decode as D
+import Models.Enemy as Enemy exposing (Enemy, PageState)
+import Page.Views.EnemyEditor as EnemyEditor
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
 import Url.Builder
 import Utils.ModalWindow as Modal
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
-import Html exposing (..)
-import Html.Attributes exposing (class)
-import Page.Views.EnemyCrud as EnemyCrudView
+
+
 subscriptions : Sub Msg
 subscriptions =
     Sub.batch
@@ -24,6 +27,7 @@ type alias Model =
     { session : Session.Data
     , naviState : NaviState
     , googleSheetApiKey : String
+    , pageState : PageState
 
     -- , character : Character
     -- , editorModel : EditorModel CharacterEditor.Msg
@@ -41,15 +45,15 @@ update msg model =
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
 
 
-init : Session.Data -> String -> String -> Maybe String -> ( Model, Cmd Msg )
-init session apiKey storeUserId characterId =
-    ( initModel session apiKey
+init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
+init session apiKey pageState storeUserId characterId =
+    ( initModel session apiKey pageState
     , Cmd.batch [ Cmd.none ]
     )
 
 
-initModel session apiKey =
-    Model session Close apiKey
+initModel session apiKey pageState =
+    Model session Close apiKey pageState
 
 
 view : Model -> Skeleton.Details Msg
@@ -68,5 +72,5 @@ view model =
 
 
 viewHelper : Model -> Html Msg
-viewHelper model = EnemyCrudView.view
-
+viewHelper model =
+    EnemyEditor.view model.pageState

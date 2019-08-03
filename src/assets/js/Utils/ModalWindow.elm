@@ -1,8 +1,12 @@
-module Utils.ModalWindow exposing (ModalState(..), view)
+module Utils.ModalWindow exposing (ModalContents, ModalState(..), view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+
+
+type alias ModalContents msg =
+    Html msg
 
 
 type ModalState

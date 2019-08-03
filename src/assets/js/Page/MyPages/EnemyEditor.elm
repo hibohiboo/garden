@@ -1,0 +1,481 @@
+module Page.MyPages.EnemyEditor exposing (Msg(..), deleteModal, editArea, update)
+
+import Array exposing (Array)
+import File exposing (File)
+import File.Select as Select
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onClick, onInput)
+import Html.Events.Extra exposing (onChange)
+import Models.Card as Card
+import Models.Enemy as Enemy exposing (Enemy, EnemyEditor, PageState)
+import Models.Tag exposing (Tag)
+import Page.Views.EnemyEditorView as EnemyEditorView exposing (updateCardArea)
+import Page.Views.Modal exposing (confirmDelete)
+import Task
+import Url
+import Url.Builder
+import Utils.List.Extra exposing (findIndex)
+import Utils.ModalWindow as Modal
+import Utils.Util exposing (deleteAt)
+
+
+type Msg
+    = InputName String
+    | InputKana String
+    | InputSkillCard Card.CardData
+    | UpdateModal String String (Card.CardData -> Msg)
+    | OpenCommonSkillModal
+    | OpenModal
+    | AddCard
+    | DeleteCard Int
+    | CloseModal
+    | InputReason String
+    | InputLabo String
+    | InputMemo String
+    | InputAP String
+    | TogglePublish
+    | ImageRequested
+    | ImageSelected File
+    | ImageLoaded (Result LoadErr String)
+    | EnemyImageRequested
+    | EnemyImageSelected File
+    | EnemyImageLoaded (Result LoadErr String)
+    | InputImageCreatorName String
+    | InputImageCreatorSite String
+    | InputImageCreatorUrl String
+    | ToggleShowCardDetail
+    | UpdateCardName Int String
+    | UpdateCardTiming Int String
+    | UpdateCardCost Int String
+    | UpdateCardRange Int String
+    | UpdateCardMaxRange Int String
+    | UpdateCardTarget Int String
+    | UpdateCardEffect Int String
+    | UpdateCardDescription Int String
+    | UpdateCardTags Int String
+    | DeleteConfirm
+    | CancelConfirm
+    | Delete
+
+
+type LoadErr
+    = ErrToUrlFailed
+    | ErrInvalidFile
+
+
+update : Msg -> Enemy -> EditorModel Msg -> ( ( Enemy, EditorModel Msg ), Cmd Msg )
+update msg char editor =
+    case msg of
+        InputName s ->
+            let
+                c =
+                    { char | name = s }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        InputKana s ->
+            let
+                c =
+                    { char | kana = s }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        InputSkillCard card ->
+            let
+                newCards =
+                    Array.push card char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
+
+                c =
+                    { char | cards = newCards, activePower = newActivePower }
+            in
+            ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
+
+        AddCard ->
+            let
+                newCards =
+                    Array.push Card.initCard char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
+
+                c =
+                    { char | cards = newCards, activePower = newActivePower }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        DeleteCard i ->
+            let
+                newCards =
+                    deleteAt i char.cards
+
+                newActivePower =
+                    Card.getActivePower newCards
+
+                c =
+                    { char | cards = newCards, activePower = newActivePower }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        UpdateModal title kind m ->
+            let
+                filteredCards =
+                    if kind == "" then
+                        editor.cards
+
+                    else
+                        List.filter (\card -> card.kind == kind) editor.cards
+
+                cardElements =
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (m card)) filteredCards)
+
+                newEditor =
+                    { editor
+                        | modalContents = cardElements
+                    }
+            in
+            update OpenModal char newEditor
+
+        OpenCommonSkillModal ->
+            let
+                filteredCards =
+                    List.filter (\card -> card.kind == "共通能力") editor.cards
+
+                cardElements =
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
+
+                newEditor =
+                    { editor
+                        | modalContents = cardElements
+                    }
+            in
+            update OpenModal char newEditor
+
+        OpenModal ->
+            ( ( char, { editor | modalState = Modal.Open } ), Cmd.none )
+
+        CloseModal ->
+            ( ( char, { editor | modalState = Modal.Close } ), Cmd.none )
+
+        InputMemo s ->
+            let
+                c =
+                    { char | memo = s }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        InputAP s ->
+            let
+                c =
+                    { char | activePower = s |> String.toInt |> Maybe.withDefault 0 }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        TogglePublish ->
+            let
+                c =
+                    { char | isPublished = not char.isPublished }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        ImageRequested ->
+            ( ( char, editor )
+            , Select.file expectedTypes ImageSelected
+            )
+
+        ImageSelected file ->
+            if File.size file < 1048576 then
+                ( ( char, editor )
+                , Task.attempt ImageLoaded <| File.toUrl file
+                )
+
+            else
+                ( ( char, editor )
+                , Cmd.none
+                )
+
+        ImageLoaded result ->
+            case result of
+                Ok content ->
+                    let
+                        c =
+                            { char | cardImageData = content }
+                    in
+                    ( ( c, editor )
+                    , Cmd.none
+                    )
+
+                Err error ->
+                    ( ( char, editor )
+                    , Cmd.none
+                    )
+
+        EnemyImageRequested ->
+            ( ( char, editor )
+            , Select.file expectedTypes EnemyImageSelected
+            )
+
+        EnemyImageSelected file ->
+            if File.size file < 1048576 then
+                ( ( char, editor )
+                , Task.attempt EnemyImageLoaded <| File.toUrl file
+                )
+
+            else
+                ( ( char, editor )
+                , Cmd.none
+                )
+
+        EnemyImageLoaded result ->
+            case result of
+                Ok content ->
+                    let
+                        c =
+                            { char | enemyImageData = content }
+                    in
+                    ( ( c, editor )
+                    , Cmd.none
+                    )
+
+                Err error ->
+                    ( ( char, editor )
+                    , Cmd.none
+                    )
+
+        InputImageCreatorName s ->
+            ( ( { char | cardImageCreatorName = s }, editor ), Cmd.none )
+
+        InputImageCreatorSite s ->
+            ( ( { char | cardImageCreatorSite = s }, editor ), Cmd.none )
+
+        InputImageCreatorUrl s ->
+            ( ( { char | cardImageCreatorUrl = s }, editor ), Cmd.none )
+
+        ToggleShowCardDetail ->
+            ( ( char, { editor | isShowCardDetail = not editor.isShowCardDetail } ), Cmd.none )
+
+        UpdateCardName index name ->
+            ( ( { char | cards = char.cards |> Card.updateCardName index name }, editor ), Cmd.none )
+
+        UpdateCardTiming index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardTiming index value }, editor ), Cmd.none )
+
+        UpdateCardCost index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardCost index value }, editor ), Cmd.none )
+
+        UpdateCardRange index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardRange index value }, editor ), Cmd.none )
+
+        UpdateCardMaxRange index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardMaxRange index value }, editor ), Cmd.none )
+
+        UpdateCardTarget index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardTarget index value }, editor ), Cmd.none )
+
+        UpdateCardEffect index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardEffect index value }, editor ), Cmd.none )
+
+        UpdateCardDescription index value ->
+            ( ( { char | cards = char.cards |> Card.updateCardDescription index value }, editor ), Cmd.none )
+
+        UpdateCardTags index value ->
+            let
+                newCards =
+                    char.cards |> Card.updateCardTags index value
+
+                newActivePower =
+                    Card.getActivePower newCards
+
+                c =
+                    { char | cards = newCards, activePower = newActivePower }
+            in
+            ( ( c, editor ), Cmd.none )
+
+        DeleteConfirm ->
+            let
+                showModal =
+                    Models.EnemyEditor.showModal editor
+
+                e =
+                    { showModal | modalContents = confirmDelete CancelConfirm Delete "キャラクター" }
+            in
+            ( ( char, e ), Cmd.none )
+
+        CancelConfirm ->
+            let
+                closeModal =
+                    Models.EnemyEditor.closeModal editor
+            in
+            ( ( char, closeModal ), Cmd.none )
+
+        Delete ->
+            update CloseModal char editor
+
+
+expectedTypes : List String
+expectedTypes =
+    [ "image/png", "image/jpeg", "image/gif" ]
+
+
+setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
+setNewDataCards card kind cards =
+    if Array.length cards == 0 then
+        Array.fromList [ card ]
+
+    else
+        let
+            maybeIndex =
+                findIndex (\x -> x.kind == kind) (Array.toList cards)
+        in
+        case maybeIndex of
+            Just index ->
+                Array.set index card cards
+
+            _ ->
+                Array.push card cards
+
+
+
+-- 入力エリア
+
+
+editArea : Enemy -> EditorModel Msg -> Html Msg
+editArea enemy editor =
+    div [ class "enemy-edit-area" ]
+        [ inputArea "name" "名前" enemy.name InputName
+        , inputArea "kana" "フリガナ" enemy.kana InputKana
+        , skillArea enemy editor
+        , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
+        , div [ class "input-field" ]
+            [ input [ placeholder "行動力", id "activePower", type_ "number", class "validate", value (String.fromInt enemy.activePower), onInput InputAP ] []
+            , label [ class "active", for "activePower" ] [ text "行動力" ]
+            ]
+        , div [ class "input-field" ]
+            [ div [] [ text "他の人にシートを公開する場合は以下にチェック" ]
+            , div [] [ label [] [ input [ type_ "checkbox", checked enemy.isPublished, onClick TogglePublish ] [], span [] [ text "公開する" ] ] ]
+            ]
+        , div [ class "input-field" ]
+            [ div [] [ text "カードイメージ" ]
+            , div [] [ text "(74×94px推奨。1Mb未満。)" ]
+            , inputCardImageArea enemy
+            ]
+        , inputArea "cardImageCreatorName" "画像作者" enemy.cardImageCreatorName InputImageCreatorName
+        , inputArea "cardImageCreatorSite" "画像作者サイト名" enemy.cardImageCreatorSite InputImageCreatorSite
+        , inputArea "cardImageCreatorUrl" "画像作者サイトURL" enemy.cardImageCreatorUrl InputImageCreatorUrl
+        ]
+
+
+inputCardImageArea : Enemy -> Html Msg
+inputCardImageArea model =
+    case model.cardImageData of
+        "" ->
+            button [ onClick ImageRequested ] [ text "Upload image" ]
+
+        content ->
+            img
+                [ class "cardImage", src content, width 74, height 94 ]
+                []
+
+
+skillArea enemy editor =
+    div [ style "padding-bottom" "5px" ]
+        [ h5 [] [ text "能力" ]
+        , div [] [ label [] [ input [ type_ "checkbox", checked editor.isShowCardDetail, onClick ToggleShowCardDetail ] [], span [] [ text "詳細を表示" ] ] ]
+        , div [ class (Models.EnemyEditor.cardDetailClass editor.isShowCardDetail) ]
+            [ text "Ti:タイミング/Co:コスト/Ra:射程/MRa:最大射程/Ta:対象" ]
+        , div []
+            (List.concat
+                [ [ div [ style "padding" "5px" ] (addButton "共通能力" OpenCommonSkillModal) ]
+                , [ div [ style "padding" "5px" ] (addButton "特性能力" OpenTraitSkillModal) ]
+                , [ div [ style "padding" "5px" ] (addButton "アイテム" OpenItemModal) ]
+                , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardAreaWithMsg i editor.isShowCardDetail card) enemy.cards
+                ]
+            )
+        ]
+
+
+updateCardAreaWithMsg : Int -> (Bool -> Card.CardData -> Html Msg)
+updateCardAreaWithMsg i =
+    updateCardArea (DeleteCard i) (UpdateCardName i) (UpdateCardTiming i) (UpdateCardCost i) (UpdateCardRange i) (UpdateCardMaxRange i) (UpdateCardTarget i) (UpdateCardEffect i) (UpdateCardDescription i) (UpdateCardTags i) ("card_" ++ String.fromInt i)
+
+
+getNameList : List ( String, String ) -> List String
+getNameList list =
+    List.map (\( name, description ) -> name) list
+
+
+cardWithInputArea : Enemy -> String -> String -> String -> String -> (String -> Msg) -> (Card.CardData -> Msg) -> Html Msg
+cardWithInputArea enemy name label kind value msg cardMsg =
+    div [ class "row" ]
+        [ div [ class "col s6" ]
+            [ div [ class "input-field" ]
+                [ inputArea name label value msg
+                ]
+            ]
+        , div [ class "col s6" ]
+            [ modalCardOpenButton UpdateModal "カード選択" kind cardMsg
+            ]
+        ]
+
+
+inputCard : Card.CardData -> msg -> Html msg
+inputCard card msg =
+    div [ onClick msg ] [ Card.cardView card ]
+
+
+
+-- 単純な入力
+
+
+inputArea : String -> String -> String -> (String -> msg) -> Html msg
+inputArea fieldId labelName val toMsg =
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onChange toMsg ] []
+        , label [ class "active", for fieldId ] [ text labelName ]
+        ]
+
+
+
+-- 単純な入力。オートコンプリート付き
+
+
+inputAreaWithAutocomplete : String -> String -> String -> (String -> msg) -> String -> List String -> Html msg
+inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId ] []
+        , label [ class "active", for fieldId ] [ text labelName ]
+        , datalist [ id listId ]
+            (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
+        ]
+
+
+
+-- 追加ボタン
+
+
+addButton : String -> msg -> List (Html msg)
+addButton labelName addMsg =
+    [ text (labelName ++ "を追加  ")
+    , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
+    ]
+
+
+modalCardOpenButton : (String -> String -> (Card.CardData -> Msg) -> msg) -> String -> String -> (Card.CardData -> Msg) -> Html msg
+modalCardOpenButton modalMsg title kind cardMsg =
+    div [ onClick (modalMsg title kind cardMsg), class "waves-effect waves-light btn" ] [ text title ]
+
+
+
+-- TODO: ドラッグアンドドロップ https://elm-lang.org/examples/drag-and-drop
+
+
+deleteModal char editor =
+    div [ style "padding" "20px 0" ]
+        [ button [ onClick DeleteConfirm, class "btn waves-effect waves-light red", type_ "button", name "delete" ]
+            [ text "削除"
+            , i [ class "material-icons right" ] [ text "delete" ]
+            ]
+        ]

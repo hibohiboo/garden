@@ -80,6 +80,9 @@
 ### 可変数の入力欄を作ったときのメモ
 [参考用自作ソース](https://github.com/hibohiboo/garden/tree/7fdaadd158e8d093e63da2a942c3289b23bd1194/)
 
+### 新しいページを増やしたときのメモ
+[参考用自作ソース](https://github.com/hibohiboo/garden/tree/2d43713ca3cbb2ddf6c533bc2cd481cabc9fde08/)
+
 
 ## 参考
 
