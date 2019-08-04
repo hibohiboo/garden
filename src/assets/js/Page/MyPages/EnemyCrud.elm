@@ -4,11 +4,13 @@ import Array
 import Browser.Navigation as Navigation
 import GoogleSpreadSheetApi as GSAPI
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, name, type_)
+import Html.Events exposing (onClick)
 import Http
 import Json.Decode as D
-import Models.Enemy as Enemy exposing (Enemy, PageState)
-import Page.Views.EnemyEditor as EnemyEditor
+import Models.Enemy as Enemy exposing (EditorModel, Enemy, PageState)
+import Page.MyPages.EnemyEditor as EnemyEditor
+import Page.Views.EnemyEditor as EnemyEditorView
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -30,12 +32,14 @@ type alias Model =
     , pageState : PageState
 
     -- , character : Character
-    -- , editorModel : EditorModel CharacterEditor.Msg
+    , editorModel : EditorModel EnemyEditor.Msg
     }
 
 
 type Msg
     = ToggleNavigation
+    | EditorMsg EnemyEditor.Msg
+    | Save
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -43,6 +47,21 @@ update msg model =
     case msg of
         ToggleNavigation ->
             ( { model | naviState = toggleNavigationState model.naviState }, Cmd.none )
+
+        EditorMsg emsg ->
+            case emsg of
+                -- EnemyEditor.Delete ->
+                --     ( model, deleteCharacter (Character.encodeCharacterIdsToValue model.character) )
+                _ ->
+                    let
+                        ( editor, cmd ) =
+                            EnemyEditor.update emsg model.editorModel
+                    in
+                    ( { model | editorModel = editor }, Cmd.map EditorMsg cmd )
+
+        Save ->
+            -- TODO
+            ( model, Cmd.none )
 
 
 init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
@@ -53,24 +72,54 @@ init session apiKey pageState storeUserId characterId =
 
 
 initModel session apiKey pageState =
-    Model session Close apiKey pageState
+    Model session Close apiKey pageState Enemy.defaultEditorModel
 
 
 view : Model -> Skeleton.Details Msg
 view model =
     let
-        -- ナビゲーションの状態によってページに持たせるクラスを変える
         naviClass =
             getNavigationPageClass model.naviState
+
+        title =
+            case model.pageState of
+                Enemy.Create ->
+                    "新規"
+
+                Enemy.Update ->
+                    "更新"
+
+                Enemy.Read ->
+                    "View"
     in
-    { title = "更新"
+    { title = title
     , attrs = [ class naviClass, class "character-sheet" ]
     , kids =
-        [ viewMain <| viewHelper model
+        [ viewMain <| viewHelper title model
         ]
     }
 
 
-viewHelper : Model -> Html Msg
-viewHelper model =
-    EnemyEditor.view model.pageState
+viewHelper : String -> Model -> Html Msg
+viewHelper title model =
+    div [ class "" ]
+        [ h1 []
+            [ text title ]
+        , div
+            [ class "edit-karte" ]
+            [ edit model
+            ]
+        ]
+
+
+edit : Model -> Html Msg
+edit model =
+    div [ class "edit-area" ]
+        [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
+        , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
+            [ text "更新"
+            , i [ class "material-icons right" ] [ text "send" ]
+            ]
+
+        -- , Html.map EditorMsg (deleteModal model.character model.editorModel)
+        ]

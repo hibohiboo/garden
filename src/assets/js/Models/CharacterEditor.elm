@@ -1,4 +1,4 @@
-module Models.CharacterEditor exposing (EditorModel, cardDetailClass, closeModal, initEditor, showModal)
+module Models.CharacterEditor exposing (EditorModel, closeModal, initEditor, showModal)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -21,15 +21,6 @@ type alias EditorModel msg =
 initEditor : EditorModel msg
 initEditor =
     EditorModel [] [] [] "" "" (text "") Modal.Close False
-
-
-cardDetailClass : Bool -> String
-cardDetailClass isShowCardDetail =
-    if isShowCardDetail then
-        ""
-
-    else
-        "hide"
 
 
 showModal : EditorModel msg -> EditorModel msg

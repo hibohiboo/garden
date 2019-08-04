@@ -1,4 +1,11 @@
-module Models.Enemy exposing (Enemy, PageState(..))
+module Models.Enemy exposing
+    ( EditorModel
+    , Enemy
+    , PageState(..)
+    , defaultEditorModel
+    , defaultEnemy
+    , setEnemyName
+    )
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -16,11 +23,25 @@ type alias Enemy =
     , activePower : Int
     , memo : String
     , cardImage : String
+    , cardImageData : String
     , kana : String
     , degreeOfThreat : Int
     , tags : List Tag
     , cards : Array CardData
+    , cardImageCreatorName : String
+    , cardImageCreatorSite : String
+    , cardImageCreatorUrl : String
     }
+
+
+defaultEnemy : Enemy
+defaultEnemy =
+    Enemy "" "" 0 "" "" "" "" 0 [] Array.empty "" "" ""
+
+
+setEnemyName : String -> Enemy -> Enemy
+setEnemyName name enemy =
+    { enemy | name = name }
 
 
 type PageState
@@ -30,10 +51,17 @@ type PageState
 
 
 type alias EditorModel msg =
-    { cards : List Card.CardData
+    { editingEnemy : Enemy
+    , isCreateState : Bool
+    , cards : List Card.CardData
     , searchCardKind : String
     , modalTitle : String
     , modalContents : Modal.ModalContents msg
     , modalState : Modal.ModalState
     , isShowCardDetail : Bool
     }
+
+
+defaultEditorModel : EditorModel msg
+defaultEditorModel =
+    EditorModel defaultEnemy True [] "" "" Modal.defaultModalContents Modal.Close False

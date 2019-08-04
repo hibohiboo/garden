@@ -5,6 +5,7 @@ port module Models.Card exposing
     , cardDecodeFromString
     , cardDecoderFromFireStoreApi
     , cardDecoderFromJson
+    , cardDetailClass
     , cardList
     , cardView
     , encodeCardToValue
@@ -515,3 +516,12 @@ updateCardTags index value oldCards =
         |> Array.get index
         |> Maybe.andThen (\card -> Just <| Array.set index { card | tags = Tag.tagsFromString value } oldCards)
         |> Maybe.withDefault oldCards
+
+
+cardDetailClass : Bool -> String
+cardDetailClass isShowCardDetail =
+    if isShowCardDetail then
+        ""
+
+    else
+        "hide"

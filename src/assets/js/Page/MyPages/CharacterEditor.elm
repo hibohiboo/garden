@@ -524,7 +524,7 @@ skillArea character editor =
     div [ style "padding-bottom" "5px" ]
         [ h5 [] [ text "能力" ]
         , div [] [ label [] [ input [ type_ "checkbox", checked editor.isShowCardDetail, onClick ToggleShowCardDetail ] [], span [] [ text "詳細を表示" ] ] ]
-        , div [ class (Models.CharacterEditor.cardDetailClass editor.isShowCardDetail) ]
+        , div [ class (Card.cardDetailClass editor.isShowCardDetail) ]
             [ text "Ti:タイミング/Co:コスト/Ra:射程/MRa:最大射程/Ta:対象" ]
         , div []
             (List.concat

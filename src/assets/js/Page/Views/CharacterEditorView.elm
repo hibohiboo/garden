@@ -34,7 +34,7 @@ updateCardArea deleteMsg updateNameMsg updateTimingMsg updateCostMsg updateRange
                 deleteButton deleteMsg
 
         detailClass =
-            CharacterEditor.cardDetailClass isShowCardDetail
+            Card.cardDetailClass isShowCardDetail
     in
     div []
         [ div [ class "row" ]
