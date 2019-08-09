@@ -68,13 +68,13 @@ update msg model =
             in
             case model.pageState of
                 Enemy.Create ->
-                    ( model, crudEnemy <| Enemy.encodeCrudValue (Enemy.CreateEnemy enemy) model.storeUserId )
+                    ( model, crudEnemy <| Enemy.encodeCrudValue <| Enemy.CreateEnemy model.storeUserId enemy )
 
                 Enemy.Read ->
                     ( model, Cmd.none )
 
                 Enemy.Update ->
-                    ( model, crudEnemy <| Enemy.encodeCrudValue (Enemy.UpdateEnemy enemy) model.storeUserId )
+                    ( model, crudEnemy <| Enemy.encodeCrudValue <| Enemy.UpdateEnemy model.storeUserId enemy )
 
 
 init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )

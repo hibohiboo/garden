@@ -23,6 +23,10 @@ type alias EnemyId =
     String
 
 
+type alias UserId =
+    String
+
+
 type alias Enemy =
     { storeUserId : String
     , enemyId : EnemyId
@@ -58,9 +62,9 @@ type PageState
 
 
 type StorageState
-    = CreateEnemy Enemy
-    | UpdateEnemy Enemy
-    | DeleteEnemy EnemyId
+    = CreateEnemy UserId Enemy
+    | UpdateEnemy UserId Enemy
+    | DeleteEnemy UserId EnemyId
 
 
 type alias EditorModel msg =
@@ -100,17 +104,17 @@ encodeEnemyToValue c =
         ]
 
 
-encodeCrudValue : StorageState -> String -> E.Value
-encodeCrudValue state userId =
+encodeCrudValue : StorageState -> E.Value
+encodeCrudValue state =
     case state of
-        CreateEnemy enemy ->
+        CreateEnemy userId enemy ->
             E.object
                 [ ( "state", E.string "Create" )
                 , ( "storeUserId", E.string userId )
                 , ( "enemy", encodeEnemyToValue enemy )
                 ]
 
-        UpdateEnemy enemy ->
+        UpdateEnemy userId enemy ->
             E.object
                 [ ( "state", E.string "Update" )
                 , ( "storeUserId", E.string userId )
@@ -118,7 +122,7 @@ encodeCrudValue state userId =
                 , ( "enemy", encodeEnemyToValue enemy )
                 ]
 
-        DeleteEnemy enemyId ->
+        DeleteEnemy userId enemyId ->
             E.object
                 [ ( "state", E.string "Delete" )
                 , ( "storeUserId", E.string userId )
