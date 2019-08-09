@@ -8,10 +8,18 @@ service cloud.firestore {
     function isUserAuthenticated(userId) {
       return request.auth.uid == userId;
     }
-    
-    function isCharacterUser() {
-      return request.auth != null && resource.data.uid == request.auth.uid;
+
+    function canCreate() {
+      return isAuthenticated() && request.resource.data.uid == request.auth.uid;
     }
+
+
+    function isOwner() {
+      // request.resourceとresourceは似ているが異なる。resourceはDBにすでに存在するドキュメントを参照する
+      return isAuthenticated() && resource.data.uid == request.auth.uid;
+    }
+
+
 
     match /users/{userId} {
       allow create, read: if isAuthenticated();
@@ -19,7 +27,11 @@ service cloud.firestore {
 
       match /characters/{characterId} {
         allow create: if isAuthenticated();
-        allow read, update, delete: if isCharacterUser();
+        allow read, update, delete: if isOwner();
+      }
+      match /enemies/{characterId} {
+        allow create: if canCreate();
+        allow read, update, delete: if isOwner();
       }
     }
     match /characters/{characterId} {

@@ -183,9 +183,17 @@ export async function deleteCharacter(storeUserId, characterId, db) {
   await db.collection("users").doc(storeUserId).collection('characters').doc(characterId).delete();
 }
 
-export async function crudEnemy({ state, storeUserId, enemyId, enemy }) {
+export async function crudEnemy(storage, db, timestamp, uid, { state, storeUserId, enemyId, enemy }) {
   console.log(state);
   if (state === "Create") {
+    const userRef = db.collection("users").doc(storeUserId);
+    enemy.createdAt = timestamp;
+    enemy.updatedAt = timestamp;
+    enemy.uid = uid;
 
+    const ref = await userRef.collection('enemies').doc();
+    enemy.enemyId = ref.id;
+    // enemy = await updateCharacterImages(storage, enemy);
+    return await userRef.collection('enemies').doc(ref.id).set(enemy);
   }
 }

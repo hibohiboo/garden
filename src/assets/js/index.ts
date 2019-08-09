@@ -106,7 +106,7 @@ app.ports.deleteCharacter.subscribe(async ({ storeUserId, characterId }) => {
 
 // エネミー更新
 app.ports.crudEnemy.subscribe(async (obj) => {
-  await crudEnemy(obj);
+  await crudEnemy(storage, db, fireBase.getTimestamp(), userData.uid, obj);
 
 });
 
