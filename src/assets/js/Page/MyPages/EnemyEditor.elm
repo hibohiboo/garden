@@ -75,11 +75,7 @@ update msg editor =
     in
     case msg of
         InputName s ->
-            let
-                newEditor =
-                    { editor | editingEnemy = Enemy.setEnemyName s enemy }
-            in
-            ( editor, Cmd.none )
+            ( { editor | editingEnemy = Enemy.setEnemyName s enemy }, Cmd.none )
 
 
 

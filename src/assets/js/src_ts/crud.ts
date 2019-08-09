@@ -141,22 +141,33 @@ export async function updateCharacter(json, storage, db, timestamp, uid) {
 
 async function updateCharacterImages(storage, character) {
   // 画像アップロード
-  if (character.cardImageData !== "") {
-    const ref = storage.ref('card-' + character.characterId);
-    await ref.putString(character.cardImageData, 'data_url');
-    const url = await ref.getDownloadURL();
-    character.cardImage = url;
-    character.cardImageData = "";
+  await updateImages(storage, "card", `card-{character.characterId}`, character.cardImageData, character);
+  await updateImages(storage, "character", `character-{character.characterId}`, character.characterImageData, character);
+
+  return character;
+}
+
+/**
+ * 画像をストレージに保存して、URLをオブジェクトに設定。
+ * オブジェクトから画像データを取り除く。
+ * 
+ * @param storage 
+ * @param objectKey 
+ * @param storageKey 
+ * @param data 
+ * @param target 
+ */
+async function updateImages(storage, objectKey, storageKey, data, target) {
+  if (target[`${objectKey}ImageData`] === "") {
+    return target;
   }
 
-  if (character.characterImageData !== "") {
-    const ref = storage.ref('character-' + character.characterId);
-    await ref.putString(character.characterImageData, 'data_url');
-    const url = await ref.getDownloadURL();
-    character.characterImage = url;
-    character.characterImageData = "";
-  }
-  return character;
+  const ref = storage.ref(storageKey);
+  await ref.putString(data, 'data_url');
+  const url = await ref.getDownloadURL();
+  target[`${objectKey}Image`] = url;
+  target[`${objectKey}ImageData`] = "";
+  return target;
 }
 
 /**
@@ -168,4 +179,11 @@ async function updateCharacterImages(storage, character) {
  */
 export async function deleteCharacter(storeUserId, characterId, db) {
   await db.collection("users").doc(storeUserId).collection('characters').doc(characterId).delete();
+}
+
+export async function crudEnemy({ state, storeUserId, enemyId, enemy }) {
+  console.log(state);
+  if (state === "Create") {
+
+  }
 }

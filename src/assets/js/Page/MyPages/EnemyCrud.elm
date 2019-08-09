@@ -127,12 +127,28 @@ viewHelper title model =
 
 edit : Model -> Html Msg
 edit model =
-    div [ class "edit-area" ]
-        [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
-        , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
-            [ text "更新"
-            , i [ class "material-icons right" ] [ text "send" ]
-            ]
+    case model.pageState of
+        Enemy.Create ->
+            div [ class "edit-area" ]
+                [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
+                , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
+                    [ text "作成"
+                    , i [ class "material-icons right" ] [ text "send" ]
+                    ]
+                ]
 
-        -- , Html.map EditorMsg (deleteModal model.character model.editorModel)
-        ]
+        Enemy.Update ->
+            div [ class "edit-area" ]
+                [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
+                , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
+                    [ text "更新"
+                    , i [ class "material-icons right" ] [ text "send" ]
+                    ]
+
+                -- , Html.map EditorMsg (deleteModal model.character model.editorModel)
+                ]
+
+        Enemy.Read ->
+            div [ class "edit-area" ]
+                [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
+                ]
