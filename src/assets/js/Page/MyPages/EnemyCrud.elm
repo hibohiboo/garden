@@ -19,6 +19,9 @@ import Utils.ModalWindow as Modal
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 
 
+port crudEnemy : D.Value -> Cmd msg
+
+
 subscriptions : Sub Msg
 subscriptions =
     Sub.batch
@@ -30,9 +33,8 @@ type alias Model =
     , naviState : NaviState
     , googleSheetApiKey : String
     , pageState : PageState
-
-    -- , character : Character
     , editorModel : EditorModel EnemyEditor.Msg
+    , storeUserId : String
     }
 
 
@@ -60,19 +62,26 @@ update msg model =
                     ( { model | editorModel = editor }, Cmd.map EditorMsg cmd )
 
         Save ->
-            -- TODO
-            ( model, Cmd.none )
+            case model.pageState of
+                Enemy.Create ->
+                    ( model, crudEnemy (Enemy.encodeCrudValue (Enemy.CreateEnemy model.editorModel.editingEnemy) model.storeUserId) )
+
+                Enemy.Read ->
+                    ( model, Cmd.none )
+
+                Enemy.Update ->
+                    ( model, crudEnemy (Enemy.encodeCrudValue (Enemy.UpdateEnemy model.editorModel.editingEnemy) model.storeUserId) )
 
 
 init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
 init session apiKey pageState storeUserId characterId =
-    ( initModel session apiKey pageState
+    ( initModel session apiKey pageState storeUserId
     , Cmd.batch [ Cmd.none ]
     )
 
 
-initModel session apiKey pageState =
-    Model session Close apiKey pageState Enemy.defaultEditorModel
+initModel session apiKey pageState storeUserId =
+    Model session Close apiKey pageState Enemy.defaultEditorModel storeUserId
 
 
 view : Model -> Skeleton.Details Msg

@@ -2,8 +2,10 @@ module Models.Enemy exposing
     ( EditorModel
     , Enemy
     , PageState(..)
+    , StorageState(..)
     , defaultEditorModel
     , defaultEnemy
+    , encodeCrudValue
     , setEnemyName
     )
 
@@ -17,8 +19,13 @@ import Models.Tag as Tag exposing (Tag)
 import Utils.ModalWindow as Modal
 
 
+type alias EnemyId =
+    String
+
+
 type alias Enemy =
-    { enemyId : String
+    { storeUserId : String
+    , enemyId : EnemyId
     , name : String
     , activePower : Int
     , memo : String
@@ -36,7 +43,7 @@ type alias Enemy =
 
 defaultEnemy : Enemy
 defaultEnemy =
-    Enemy "" "" 0 "" "" "" "" 0 [] Array.empty "" "" ""
+    Enemy "" "" "" 0 "" "" "" "" 0 [] Array.empty "" "" ""
 
 
 setEnemyName : String -> Enemy -> Enemy
@@ -46,8 +53,14 @@ setEnemyName name enemy =
 
 type PageState
     = Create
-    | Update
     | Read
+    | Update
+
+
+type StorageState
+    = CreateEnemy Enemy
+    | UpdateEnemy Enemy
+    | DeleteEnemy EnemyId
 
 
 type alias EditorModel msg =
@@ -65,3 +78,49 @@ type alias EditorModel msg =
 defaultEditorModel : EditorModel msg
 defaultEditorModel =
     EditorModel defaultEnemy True [] "" "" Modal.defaultModalContents Modal.Close False
+
+
+encodeEnemyToValue : Enemy -> E.Value
+encodeEnemyToValue c =
+    E.object
+        [ ( "storeUserId", E.string c.storeUserId )
+        , ( "enemyId", E.string c.enemyId )
+        , ( "name", E.string c.name )
+        , ( "kana", E.string c.kana )
+        , ( "activePower", E.int c.activePower )
+        , ( "memo", E.string c.memo )
+        , ( "tags", E.list Tag.encodeTagToValue c.tags )
+        , ( "cards", E.array Card.encodeCardToValue c.cards )
+        , ( "cardImage", E.string c.cardImage )
+        , ( "cardImageData", E.string c.cardImageData )
+        , ( "degreeOfThreat", E.int c.degreeOfThreat )
+        , ( "cardImageCreatorName", E.string c.cardImageCreatorName )
+        , ( "cardImageCreatorSite", E.string c.cardImageCreatorSite )
+        , ( "cardImageCreatorUrl", E.string c.cardImageCreatorUrl )
+        ]
+
+
+encodeCrudValue : StorageState -> String -> E.Value
+encodeCrudValue state userId =
+    case state of
+        CreateEnemy enemy ->
+            E.object
+                [ ( "state", E.string "Create" )
+                , ( "storeUserId", E.string userId )
+                , ( "enemy", encodeEnemyToValue enemy )
+                ]
+
+        UpdateEnemy enemy ->
+            E.object
+                [ ( "state", E.string "Update" )
+                , ( "storeUserId", E.string userId )
+                , ( "enemyId", E.string enemy.enemyId )
+                , ( "enemy", encodeEnemyToValue enemy )
+                ]
+
+        DeleteEnemy enemyId ->
+            E.object
+                [ ( "state", E.string "Delete" )
+                , ( "storeUserId", E.string userId )
+                , ( "enemyId", E.string enemyId )
+                ]
