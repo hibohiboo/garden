@@ -62,15 +62,19 @@ update msg model =
                     ( { model | editorModel = editor }, Cmd.map EditorMsg cmd )
 
         Save ->
+            let
+                enemy =
+                    model.editorModel.editingEnemy
+            in
             case model.pageState of
                 Enemy.Create ->
-                    ( model, crudEnemy (Enemy.encodeCrudValue (Enemy.CreateEnemy model.editorModel.editingEnemy) model.storeUserId) )
+                    ( model, crudEnemy <| Enemy.encodeCrudValue (Enemy.CreateEnemy enemy) model.storeUserId )
 
                 Enemy.Read ->
                     ( model, Cmd.none )
 
                 Enemy.Update ->
-                    ( model, crudEnemy (Enemy.encodeCrudValue (Enemy.UpdateEnemy model.editorModel.editingEnemy) model.storeUserId) )
+                    ( model, crudEnemy <| Enemy.encodeCrudValue (Enemy.UpdateEnemy enemy) model.storeUserId )
 
 
 init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
