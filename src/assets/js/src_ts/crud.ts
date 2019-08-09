@@ -141,8 +141,10 @@ export async function updateCharacter(json, storage, db, timestamp, uid) {
 
 async function updateCharacterImages(storage, character) {
   // 画像アップロード
-  await updateImages(storage, "card", `card-{character.characterId}`, character.cardImageData, character);
-  await updateImages(storage, "character", `character-{character.characterId}`, character.characterImageData, character);
+  await Promise.all([
+    updateImages(storage, "card", `card-{character.characterId}`, character.cardImageData, character),
+    updateImages(storage, "character", `character-{character.characterId}`, character.characterImageData, character)
+  ]);
 
   return character;
 }
