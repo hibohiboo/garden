@@ -10,8 +10,8 @@ import Url
 import Url.Builder
 
 
-view : User -> List Character -> List Enemy -> msg -> msg -> Html msg
-view user characters enemies nextEnemyMsg signOut =
+view : User -> List Character -> List Enemy -> Bool -> msg -> msg -> Html msg
+view user characters enemies isEnemyNext nextEnemyMsg signOut =
     div [ class "mypage" ]
         [ h1 [ class "header" ] [ text (user.displayName ++ "さんのマイページ") ]
         , button [ class "signout-button", onClick signOut, type_ "button" ] [ span [] [ text "サインアウト" ] ]
@@ -25,7 +25,7 @@ view user characters enemies nextEnemyMsg signOut =
                 [ i [ class "small material-icons" ] [ text "add" ]
                 , text "エネミー作成"
                 ]
-            , enemiesWrapper enemies nextEnemyMsg
+            , enemiesWrapper enemies nextEnemyMsg isEnemyNext
             ]
         ]
 
@@ -56,19 +56,23 @@ characterListItem char =
         ]
 
 
-enemiesWrapper enemies nextEnemyMsg =
+enemiesWrapper enemies nextEnemyMsg isEnemyNext =
     div [ class "row" ]
         [ div [ class "col m6 s12" ]
-            [ enemyList nextEnemyMsg enemies ]
+            [ enemyList nextEnemyMsg enemies isEnemyNext ]
         ]
 
 
-enemyList nextEnemyMsg enemies =
+enemyList nextEnemyMsg enemies isEnemyNext =
     div [ class "collection with-header" ]
         (List.concat
             [ [ div [ class "collection-header" ] [ text "作成したエネミー一覧" ] ]
             , List.map enemyListItem enemies
-            , [ button [ class "signout-button", onClick nextEnemyMsg, type_ "button" ] [ span [] [ text "さらに読み込む" ] ] ]
+            , if isEnemyNext then
+                [ button [ class "signout-button", onClick nextEnemyMsg, type_ "button" ] [ span [] [ text "さらに読み込む" ] ] ]
+
+              else
+                []
             ]
         )
 

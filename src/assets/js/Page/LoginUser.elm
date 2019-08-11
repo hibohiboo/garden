@@ -152,4 +152,4 @@ viewMainPage model =
             loginPage
 
         Just user ->
-            MyPage.view user model.characters model.enemies GetEnemies SignOut
+            MyPage.view user model.characters model.enemies model.enemyPagination.isNext GetEnemies SignOut

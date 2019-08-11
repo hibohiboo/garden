@@ -217,8 +217,7 @@ export async function crudEnemy(storage, db, timestamp, uid, { state, storeUserI
 }
 
 export async function readEnemies(db, storeUserId, limit, pageToken) {
-
-  let query = db.collection("users").doc(storeUserId).collection('enemies').orderBy('createdAt', 'desc');
+  let query = db.collection("users").doc(storeUserId).collection('enemies').orderBy('createdAt', 'desc').limit(limit);
   const splitter = ':';
 
   if (pageToken !== "") {
@@ -229,8 +228,6 @@ export async function readEnemies(db, storeUserId, limit, pageToken) {
     query = query.startAfter(timestamp);
   }
 
-  query = query.limit(limit);
-
   const querySnapshot = await query.get();
   const enemies: any[] = [];
   await querySnapshot.forEach((doc) => {
@@ -240,9 +237,15 @@ export async function readEnemies(db, storeUserId, limit, pageToken) {
     enemies.push(enemy);
   });
 
+  if (querySnapshot.docs.length < limit) {
+    // limitより少なければ、次のデータはないとする
+    return { enemies, nextPageToken: "" };
+  }
+
   const last = querySnapshot.docs[querySnapshot.docs.length - 1];
   const lastData = last.data();
   const time = lastData.createdAt;
+  let nextToken = `${time.seconds}${splitter}${time.nanoseconds}`;
 
-  return { enemies, "nextPageToken": `${time.seconds}${splitter}${time.nanoseconds}` };
+  return { enemies, "nextPageToken": nextToken };
 }

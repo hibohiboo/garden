@@ -29,6 +29,7 @@ type alias Pagination =
     { storeUserId : UserId
     , limit : PageLimit
     , pageToken : PageToken
+    , isNext : Bool
     }
 
 
@@ -39,17 +40,19 @@ limit =
 
 init : String -> Pagination
 init userId =
-    Pagination userId limit ""
+    Pagination userId limit "" True
 
 
 empty : Pagination
 empty =
-    Pagination "" limit ""
+    Pagination "" limit "" True
 
 
+{-| tokenが空の場合、次のページはないものとする
+-}
 updateToken : String -> Pagination -> Pagination
 updateToken token model =
-    { model | pageToken = token }
+    { model | pageToken = token, isNext = token /= "" }
 
 
 encodePaginationToValue : Pagination -> E.Value
@@ -58,6 +61,7 @@ encodePaginationToValue m =
         [ ( "storeUserId", E.string m.storeUserId )
         , ( "limit", E.int m.limit )
         , ( "pageToken", E.string m.pageToken )
+        , ( "isNext", E.bool m.isNext )
         ]
 
 
