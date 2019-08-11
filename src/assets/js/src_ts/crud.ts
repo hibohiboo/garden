@@ -206,6 +206,10 @@ export async function crudEnemy(storage, db, timestamp, uid, { state, storeUserI
     // enemy = await updateCharacterImages(storage, enemy);
     return await enemiesCollectrion.doc(ref.id).set(enemy);
   }
+  if (state === "Read") {
+    const doc = await enemiesCollectrion.doc(enemyId).get();
+    return doc.data();
+  }
 
   if (state === "Delete") {
     await enemiesCollectrion.doc(enemyId).delete();

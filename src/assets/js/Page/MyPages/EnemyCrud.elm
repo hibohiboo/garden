@@ -37,6 +37,24 @@ subscriptions =
         [ updatedEnemy UpdatedEnemy, gotEnemy GotEnemy ]
 
 
+init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
+init session apiKey pageState storeUserId enemyId =
+    case pageState of
+        Enemy.Create ->
+            ( initModel session apiKey pageState storeUserId, Cmd.none )
+
+        Enemy.Update ->
+            let
+                id =
+                    Enemy.justEnemyId enemyId
+            in
+            ( initModel session apiKey pageState storeUserId, getEnemy <| Enemy.encodeCrudValue <| Enemy.ReadEnemy storeUserId id )
+
+
+initModel session apiKey pageState storeUserId =
+    Model session Close apiKey pageState Enemy.defaultEditorModel storeUserId
+
+
 type alias Model =
     { session : Session.Data
     , naviState : NaviState
@@ -97,20 +115,6 @@ update msg model =
                     { editor | editingEnemy = Enemy.decodeFromValue value }
             in
             ( { model | editorModel = newEditor }, Cmd.none )
-
-
-init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
-init session apiKey pageState storeUserId characterId =
-    case pageState of
-        Enemy.Create ->
-            ( initModel session apiKey pageState storeUserId, Cmd.none )
-
-        Enemy.Update ->
-            ( initModel session apiKey pageState storeUserId, Cmd.none )
-
-
-initModel session apiKey pageState storeUserId =
-    Model session Close apiKey pageState Enemy.defaultEditorModel storeUserId
 
 
 view : Model -> Skeleton.Details Msg

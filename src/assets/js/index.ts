@@ -119,7 +119,12 @@ app.ports.crudEnemy.subscribe(async (obj) => {
     app.ports.updatedEnemy.send(false);
   }
 });
-
+app.ports.getEnemy.subscribe(async obj => {
+  const enemy = await crudEnemy(storage, db, fireBase.getTimestamp(), userData.uid, obj);
+  console.log('ene', enemy);
+  console.log(app.ports);
+  app.ports.gotEnemy.send(enemy);
+});
 // ローカルストレージに、キャラクターのデータカードの使用済/負傷などを保存
 app.ports.saveCardState.subscribe(obj => {
   localStorage[obj.characterId] = JSON.stringify({ states: obj.states, ap: obj.ap, currentAp: obj.currentAp });

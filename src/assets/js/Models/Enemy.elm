@@ -9,6 +9,7 @@ module Models.Enemy exposing
     , defaultEnemy
     , encodeCrudValue
     , enemyDecoder
+    , justEnemyId
     , setEnemyName
     , showModal
     )
@@ -127,6 +128,16 @@ decodeFromValue value =
 
         Ok enemy ->
             enemy
+
+
+justEnemyId : Maybe String -> String
+justEnemyId enemyId =
+    case enemyId of
+        Just s ->
+            s
+
+        Nothing ->
+            ""
 
 
 type PageState

@@ -572,6 +572,7 @@ subscriptions model =
         , Sub.map CharacterCreateMsg CharacterCreate.subscriptions
         , Sub.map CharacterViewMsg CharacterView.subscriptions
         , Sub.map BattleSheetMsg Page.BattleSheet.subscriptions
+        , Sub.map EnemyCrudMsg EnemyCrud.subscriptions
         ]
 
 
