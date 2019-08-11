@@ -37,6 +37,9 @@ service cloud.firestore {
     match /characters/{characterId} {
       allow read;
     }
+    match /enemies/{enemyId} {
+      allow read;
+    }
     match /publish/all/characters/{characterId} {
       allow read;
     }

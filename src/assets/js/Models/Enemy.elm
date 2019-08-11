@@ -9,6 +9,8 @@ module Models.Enemy exposing
     , defaultEnemy
     , encodeCrudValue
     , enemyDecoder
+    , enemyDecoderFromFireStoreApiJson
+    , getEnemyFromSession
     , justEnemyId
     , setEnemyName
     , showModal

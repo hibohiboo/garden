@@ -29,6 +29,16 @@ interface RootCharacter extends Character {
   authorRef?: FirebaseFirestore.DocumentReference;
 }
 
+interface Enemy {
+  uid?: string;
+  enemyId: string;
+  name: string;
+}
+
+interface RootEnemy extends Enemy {
+  authorRef?: FirebaseFirestore.DocumentReference;
+}
+
 export const onUsersCharacterCreate = functions.firestore.document('/users/{userId}/characters/{characterId}').onCreate(async (snapshot, context) => {
   if (!context) { return; }
   await copyToRootWithUsersCharacterSnapshot(snapshot, context);
@@ -66,4 +76,37 @@ async function copyToRootWithUsersCharacterSnapshot(snapshot: FirebaseFirestore.
   } else {
     await firestore.collection('publish').doc('all').collection('characters').doc(characterId).delete();
   }
+}
+
+export const onUsersEnemyCreate = functions.firestore.document('/users/{userId}/enemies/{characterId}').onCreate(async (snapshot, context) => {
+  if (!context) { return; }
+  await copyToRootWithUsersEnemySnapshot(snapshot, context);
+});
+export const onUsersEnemyUpdate = functions.firestore.document('/users/{userId}/enemies/{characterId}').onUpdate(async (change, context) => {
+  if (!context) { return; }
+  await copyToRootWithUsersEnemySnapshot(change.after, context);
+});
+export const onUsersEnemyDelete = functions.firestore.document('/users/{userId}/enemies/{characterId}').onDelete(async (snapshot, context) => {
+  if (!context) { return; }
+  const characterId = snapshot.id;
+  const results = [];
+  bucket.file('card-' + characterId).delete().catch();
+  bucket.file('character-' + characterId).delete().catch();
+  results.push(firestore.collection('publish').doc('all').collection('enemies').doc(characterId).delete());
+  results.push(firestore.collection('enemies').doc(characterId).delete());
+  await Promise.all(results);
+});
+
+async function copyToRootWithUsersEnemySnapshot(snapshot: FirebaseFirestore.DocumentSnapshot, context: functions.EventContext) {
+  const enemyId = snapshot.id;
+  const userId = context.params.userId;
+  const enemy = snapshot.data() as RootEnemy;
+  delete enemy.uid;
+  enemy.authorRef = firestore.collection('users').doc(userId);
+  await firestore.collection('enemies').doc(enemyId).set(enemy, { merge: true });
+  // const publish = {
+  //   enemyId: enemy.enemyId,
+  //   name: enemy.name,
+  // }
+  // await firestore.collection('publish').doc('all').collection('enemies').doc(enemyId).set(publish);
 }

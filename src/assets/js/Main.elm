@@ -553,7 +553,7 @@ goTo maybeRoute model =
         Just (Route.EnemyView enemyId) ->
             let
                 ( m, cmd ) =
-                    EnemyView.init session model.googleSheetApiKey "" (Just enemyId)
+                    EnemyView.init session model.googleSheetApiKey enemyId
             in
             ( { model | page = EnemyViewPage m }
             , Cmd.map EnemyViewMsg cmd

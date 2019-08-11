@@ -222,9 +222,7 @@ export async function readEnemies(db, storeUserId, limit, pageToken) {
 
   if (pageToken !== "") {
     const [seconds, nanoseconds] = pageToken.split(splitter);
-    const timestamp = new Timestamp();
-    timestamp.seconds = seconds;
-    timestamp.nanoseconds = nanoseconds;
+    const timestamp = new Timestamp(seconds, nanoseconds);
     query = query.startAfter(timestamp);
   }
 
