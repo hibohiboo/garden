@@ -1,4 +1,4 @@
-module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, deleteEnemyCard, encodeCrudValue, encodeEnemyToValue, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromSession, justEnemyId, setEnemyActivePower, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTags, showModal)
+module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, deleteEnemyCard, encodeCrudValue, encodeEnemyToValue, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromSession, justEnemyId, setEnemyActivePower, setEnemyCardCost, setEnemyCardDescription, setEnemyCardEffect, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyCardMaxRange, setEnemyCardName, setEnemyCardRange, setEnemyCardTags, setEnemyCardTarget, setEnemyCardTiming, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTags, showModal)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -101,6 +101,51 @@ addEnemyCard card enemy =
 deleteEnemyCard : Int -> Enemy -> Enemy
 deleteEnemyCard i enemy =
     { enemy | cards = deleteAt i enemy.cards }
+
+
+setEnemyCardName : Int -> String -> Enemy -> Enemy
+setEnemyCardName index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardName index s }
+
+
+setEnemyCardTiming : Int -> String -> Enemy -> Enemy
+setEnemyCardTiming index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardTiming index s }
+
+
+setEnemyCardCost : Int -> String -> Enemy -> Enemy
+setEnemyCardCost index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardCost index s }
+
+
+setEnemyCardRange : Int -> String -> Enemy -> Enemy
+setEnemyCardRange index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardRange index s }
+
+
+setEnemyCardMaxRange : Int -> String -> Enemy -> Enemy
+setEnemyCardMaxRange index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardMaxRange index s }
+
+
+setEnemyCardTarget : Int -> String -> Enemy -> Enemy
+setEnemyCardTarget index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardTarget index s }
+
+
+setEnemyCardEffect : Int -> String -> Enemy -> Enemy
+setEnemyCardEffect index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardEffect index s }
+
+
+setEnemyCardDescription : Int -> String -> Enemy -> Enemy
+setEnemyCardDescription index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardDescription index s }
+
+
+setEnemyCardTags : Int -> String -> Enemy -> Enemy
+setEnemyCardTags index s enemy =
+    { enemy | cards = enemy.cards |> Card.updateCardTags index s }
 
 
 getEnemyFromSession : Session.Data -> String -> Maybe Enemy

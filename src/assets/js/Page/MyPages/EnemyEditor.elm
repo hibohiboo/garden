@@ -44,16 +44,16 @@ type Msg
       -- | EnemyImageRequested
       -- | EnemyImageSelected File
       -- | EnemyImageLoaded (Result LoadErr String)
-      -- | ToggleShowCardDetail
-      -- | UpdateCardName Int String
-      -- | UpdateCardTiming Int String
-      -- | UpdateCardCost Int String
-      -- | UpdateCardRange Int String
-      -- | UpdateCardMaxRange Int String
-      -- | UpdateCardTarget Int String
-      -- | UpdateCardEffect Int String
-      -- | UpdateCardDescription Int String
-      -- | UpdateCardTags Int String
+    | ToggleShowCardDetail
+    | UpdateCardName Int String
+    | UpdateCardTiming Int String
+    | UpdateCardCost Int String
+    | UpdateCardRange Int String
+    | UpdateCardMaxRange Int String
+    | UpdateCardTarget Int String
+    | UpdateCardEffect Int String
+    | UpdateCardDescription Int String
+    | UpdateCardTags Int String
     | DeleteConfirm
     | CancelConfirm
     | Delete
@@ -141,12 +141,12 @@ update msg editor =
             ( { editor | modalState = Modal.Close }, Cmd.none )
 
         -- ImageRequested ->
-        --     ( ( enemy, editor )
+        --     (  editor )
         --     , Select.file expectedTypes ImageSelected
         --     )
         -- ImageSelected file ->
         --     if File.size file < 1048576 then
-        --         ( ( enemy, editor )
+        --         (  editor )
         --         , Task.attempt ImageLoaded <| File.toUrl file
         --         )
         --     else
@@ -194,34 +194,36 @@ update msg editor =
         --             ( ( enemy, editor )
         --             , Cmd.none
         --             )
-        -- ToggleShowCardDetail ->
-        --     ( ( enemy, { editor | isShowCardDetail = not editor.isShowCardDetail } ), Cmd.none )
-        -- UpdateCardName index name ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardName index name }, editor ), Cmd.none )
-        -- UpdateCardTiming index value ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardTiming index value }, editor ), Cmd.none )
-        -- UpdateCardCost index value ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardCost index value }, editor ), Cmd.none )
-        -- UpdateCardRange index value ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardRange index value }, editor ), Cmd.none )
-        -- UpdateCardMaxRange index value ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardMaxRange index value }, editor ), Cmd.none )
-        -- UpdateCardTarget index value ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardTarget index value }, editor ), Cmd.none )
-        -- UpdateCardEffect index value ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardEffect index value }, editor ), Cmd.none )
-        -- UpdateCardDescription index value ->
-        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardDescription index value }, editor ), Cmd.none )
-        -- UpdateCardTags index value ->
-        --     let
-        --         newCards =
-        --             enemy.cards |> Card.updateCardTags index value
-        --         newActivePower =
-        --             Card.getActivePower newCards
-        --         c =
-        --             { enemy | cards = newCards, activePower = newActivePower }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
+        ToggleShowCardDetail ->
+            ( { editor | isShowCardDetail = not editor.isShowCardDetail }, Cmd.none )
+
+        UpdateCardName index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardName index value enemy }, Cmd.none )
+
+        UpdateCardTiming index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardTiming index value enemy }, Cmd.none )
+
+        UpdateCardCost index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardCost index value enemy }, Cmd.none )
+
+        UpdateCardRange index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardRange index value enemy }, Cmd.none )
+
+        UpdateCardMaxRange index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardMaxRange index value enemy }, Cmd.none )
+
+        UpdateCardTarget index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardTarget index value enemy }, Cmd.none )
+
+        UpdateCardEffect index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardEffect index value enemy }, Cmd.none )
+
+        UpdateCardDescription index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardDescription index value enemy }, Cmd.none )
+
+        UpdateCardTags index value ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardTags index value enemy }, Cmd.none )
+
         DeleteConfirm ->
             let
                 showModal =
