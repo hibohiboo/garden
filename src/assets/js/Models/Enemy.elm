@@ -94,7 +94,7 @@ enemyDecoderFromFireStoreApiHealper =
         |> optional "activePower" FSApi.int 4
         |> optional "memo" FSApi.string ""
         |> optional "degreeOfThreat" FSApi.int 1
-        |> required "tags" (FSApi.list Tag.tagDecoder)
+        |> optional "tags" (FSApi.list Tag.tagDecoder) []
         |> optional "cards" (FSApi.array Card.cardDecoderFromJson) (Array.fromList [])
         |> optional "cardImage" FSApi.string ""
         |> optional "cardImageData" FSApi.string ""

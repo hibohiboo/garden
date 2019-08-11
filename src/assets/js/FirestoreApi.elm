@@ -77,12 +77,18 @@ fields decoder =
 
 list : Decoder a -> Decoder (List a)
 list decoder =
-    D.at [ "arrayValue", "values" ] <| D.list (D.at [ "mapValue", "fields" ] decoder)
+    D.oneOf
+        [ D.at [ "arrayValue", "values" ] <| D.list (D.at [ "mapValue", "fields" ] decoder)
+        , D.at [ "arrayValue" ] <| D.succeed []
+        ]
 
 
 array : Decoder a -> Decoder (Array a)
 array decoder =
-    D.at [ "arrayValue", "values" ] <| D.array (D.at [ "mapValue", "fields" ] decoder)
+    D.oneOf
+        [ D.at [ "arrayValue", "values" ] <| D.array (D.at [ "mapValue", "fields" ] decoder)
+        , D.at [ "arrayValue" ] <| D.succeed Array.empty
+        ]
 
 
 string : Decoder String
