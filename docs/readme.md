@@ -102,6 +102,7 @@
 [Web Pack define plugin variables are recoginized by ts-loader][*14]
 [Googleスプレッドシートで多言語に翻訳][*15]
 [flexboxにおけるmarginの特別な効果][*16]
+[firestore timestamp][*17]
 
 [*1]:https://github.com/simonh1000/elm-webpack-starter/blob/master/package.json
 [*2]:https://github.com/elm/package.elm-lang.org
@@ -119,3 +120,4 @@
 [*14]:https://github.com/TypeStrong/ts-loader/issues/37
 [*15]:https://qiita.com/ryohorie/items/291e91003b4e5b4464d5
 [*16]:https://coliss.com/articles/build-websites/operation/css/learned-reading-the-flexbox-spec.html
+[*17]:https://firebase.google.com/docs/reference/js/firebase.firestore.Timestamp

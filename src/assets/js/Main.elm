@@ -11,13 +11,13 @@ import Models.Enemy as Enemy
 import Page.BattleSheet
 import Page.CharacterList
 import Page.EnemyList
+import Page.EnemyView as EnemyView
 import Page.LoginUser
 import Page.Markdown as Markdown
 import Page.MyPages.CharacterCreate as CharacterCreate
 import Page.MyPages.CharacterUpdate as CharacterUpdate
 import Page.MyPages.CharacterView as CharacterView
 import Page.MyPages.EnemyCrud as EnemyCrud
-import Page.MyPages.EnemyView as EnemyView
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
 import Page.SandBox as SandBox

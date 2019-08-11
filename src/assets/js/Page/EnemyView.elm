@@ -1,16 +1,10 @@
-port module Page.MyPages.EnemyView exposing (Model, Msg(..), init, subscriptions, update, view)
+module Page.EnemyView exposing (Model, Msg(..), init, update, view)
 
 import Html exposing (text)
 import Html.Attributes exposing (class)
 import Page.Views.Enemy as EnemyView
 import Session
 import Skeleton exposing (viewLink, viewMain)
-
-
-subscriptions : Sub Msg
-subscriptions =
-    Sub.batch
-        []
 
 
 type alias Model =

@@ -238,7 +238,7 @@ export async function readEnemies(db, storeUserId, limit, pageToken) {
   });
 
   if (querySnapshot.docs.length < limit) {
-    // limitより少なければ、次のデータはないとする
+    // limitより少なければ、次のデータはないとする ... limitと同値の時は次へが表示されてしまう
     return { enemies, nextPageToken: "" };
   }
 
