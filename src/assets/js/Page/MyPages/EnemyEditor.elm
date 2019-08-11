@@ -32,6 +32,7 @@ type Msg
     | AddEmptyCard
     | DeleteCard Int
     | InputSkillCard Card.CardData
+    | InputTags String
       -- | UpdateModal String String (Card.CardData -> Msg)
       -- | OpenCommonSkillModal
     | OpenModal
@@ -75,6 +76,9 @@ update msg editor =
 
         InputKana s ->
             ( { editor | editingEnemy = Enemy.setEnemyKana s enemy }, Cmd.none )
+
+        InputTags s ->
+            ( { editor | editingEnemy = Enemy.setEnemyTags s enemy }, Cmd.none )
 
         InputActivePower s ->
             ( { editor | editingEnemy = Enemy.setEnemyActivePower s enemy }, Cmd.none )
@@ -190,12 +194,6 @@ update msg editor =
         --             ( ( enemy, editor )
         --             , Cmd.none
         --             )
-        -- InputImageCreatorName s ->
-        --     ( ( { enemy | cardImageCreatorName = s }, editor ), Cmd.none )
-        -- InputImageCreatorSite s ->
-        --     ( ( { enemy | cardImageCreatorSite = s }, editor ), Cmd.none )
-        -- InputImageCreatorUrl s ->
-        --     ( ( { enemy | cardImageCreatorUrl = s }, editor ), Cmd.none )
         -- ToggleShowCardDetail ->
         --     ( ( enemy, { editor | isShowCardDetail = not editor.isShowCardDetail } ), Cmd.none )
         -- UpdateCardName index name ->
@@ -275,9 +273,13 @@ setNewDataCards card kind cards =
 editArea : EditorModel Msg -> Html Msg
 editArea editor =
     div []
-        [ editor |> EnemyEditorView.editArea InputName
+        [ editor |> editAreaWithMsg
         , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
         ]
+
+
+editAreaWithMsg =
+    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl
 
 
 

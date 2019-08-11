@@ -6,6 +6,7 @@ module Models.Tag exposing
     , tagsDecoderFromFireStoreApi
     , tagsDecoderFromJson
     , tagsFromString
+    , tagsToString
     , toString
     )
 
@@ -23,6 +24,11 @@ type alias Tag =
 
 empty =
     Tag "" 0
+
+
+tagsToString : List Tag -> String
+tagsToString list =
+    list |> List.map toString |> String.join ","
 
 
 toString : Tag -> String

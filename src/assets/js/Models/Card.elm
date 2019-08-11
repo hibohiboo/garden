@@ -196,7 +196,7 @@ getRange cardData =
 
 getTagsString : CardData -> String
 getTagsString card =
-    card.tags |> List.map Tag.toString |> String.join ","
+    card.tags |> Tag.tagsToString
 
 
 illustedBy cardData =
