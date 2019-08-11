@@ -1,4 +1,4 @@
-module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, encodeCrudValue, encodeEnemyToValue, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromSession, justEnemyId, setEnemyActivePower, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTag, showModal)
+module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, deleteEnemyCard, encodeCrudValue, encodeEnemyToValue, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromSession, justEnemyId, setEnemyActivePower, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTag, showModal)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -96,6 +96,11 @@ setEnemyTag s enemy =
 addEnemyCard : Card.CardData -> Enemy -> Enemy
 addEnemyCard card enemy =
     { enemy | cards = Array.push card enemy.cards }
+
+
+deleteEnemyCard : Int -> Enemy -> Enemy
+deleteEnemyCard i enemy =
+    { enemy | cards = deleteAt i enemy.cards }
 
 
 getEnemyFromSession : Session.Data -> String -> Maybe Enemy

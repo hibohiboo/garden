@@ -26,15 +26,15 @@ type Msg
     | InputActivePower String
     | InputMemo String
     | InputDegreeOfThreat String
-    | AddCard
     | InputCardImageCreatorName String
     | InputCardImageCreatorSite String
     | InputCardImageCreatorUrl String
-      -- | InputSkillCard Card.CardData
+    | AddEmptyCard
+    | DeleteCard Int
+    | InputSkillCard Card.CardData
       -- | UpdateModal String String (Card.CardData -> Msg)
       -- | OpenCommonSkillModal
     | OpenModal
-      -- | DeleteCard Int
     | CloseModal
       -- | TogglePublish
       -- | ImageRequested
@@ -94,39 +94,15 @@ update msg editor =
         InputCardImageCreatorUrl s ->
             ( { editor | editingEnemy = Enemy.setEnemyCardImageCreatorUrl s enemy }, Cmd.none )
 
-        AddCard ->
+        AddEmptyCard ->
             ( { editor | editingEnemy = Enemy.addEnemyCard Card.initCard enemy }, Cmd.none )
 
-        -- InputSkillCard card ->
-        --     let
-        --         newCards =
-        --             Array.push card enemy.cards
-        --         newActivePower =
-        --             Card.getActivePower newCards
-        --         c =
-        --             { enemy | cards = newCards, activePower = newActivePower }
-        --     in
-        --     ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
-        -- AddCard ->
-        --     let
-        --         newCards =
-        --             Array.push Card.initCard enemy.cards
-        --         newActivePower =
-        --             Card.getActivePower newCards
-        --         c =
-        --             { enemy | cards = newCards, activePower = newActivePower }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
-        -- DeleteCard i ->
-        --     let
-        --         newCards =
-        --             deleteAt i enemy.cards
-        --         newActivePower =
-        --             Card.getActivePower newCards
-        --         c =
-        --             { enemy | cards = newCards, activePower = newActivePower }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
+        DeleteCard i ->
+            ( { editor | editingEnemy = Enemy.deleteEnemyCard i enemy }, Cmd.none )
+
+        InputSkillCard card ->
+            ( { editor | editingEnemy = Enemy.addEnemyCard card enemy }, Cmd.none )
+
         -- UpdateModal title kind m ->
         --     let
         --         filteredCards =
@@ -160,24 +136,6 @@ update msg editor =
         CloseModal ->
             ( { editor | modalState = Modal.Close }, Cmd.none )
 
-        -- InputMemo s ->
-        --     let
-        --         c =
-        --             { enemy | memo = s }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
-        -- InputAP s ->
-        --     let
-        --         c =
-        --             { enemy | activePower = s |> String.toInt |> Maybe.withDefault 0 }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
-        -- TogglePublish ->
-        --     let
-        --         c =
-        --             { enemy | isPublished = not enemy.isPublished }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
         -- ImageRequested ->
         --     ( ( enemy, editor )
         --     , Select.file expectedTypes ImageSelected
