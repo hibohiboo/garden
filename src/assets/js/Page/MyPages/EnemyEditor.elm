@@ -22,18 +22,20 @@ import Utils.Util exposing (deleteAt)
 
 type Msg
     = InputName String
-      -- | InputKana String
+    | InputKana String
+    | InputActivePower String
+    | InputMemo String
+    | InputDegreeOfThreat String
+    | AddCard
+    | InputCardImageCreatorName String
+    | InputCardImageCreatorSite String
+    | InputCardImageCreatorUrl String
       -- | InputSkillCard Card.CardData
       -- | UpdateModal String String (Card.CardData -> Msg)
       -- | OpenCommonSkillModal
     | OpenModal
-      -- | AddCard
       -- | DeleteCard Int
     | CloseModal
-      -- | InputReason String
-      -- | InputLabo String
-      -- | InputMemo String
-      -- | InputAP String
       -- | TogglePublish
       -- | ImageRequested
       -- | ImageSelected File
@@ -41,9 +43,6 @@ type Msg
       -- | EnemyImageRequested
       -- | EnemyImageSelected File
       -- | EnemyImageLoaded (Result LoadErr String)
-      -- | InputImageCreatorName String
-      -- | InputImageCreatorSite String
-      -- | InputImageCreatorUrl String
       -- | ToggleShowCardDetail
       -- | UpdateCardName Int String
       -- | UpdateCardTiming Int String
@@ -74,12 +73,30 @@ update msg editor =
         InputName s ->
             ( { editor | editingEnemy = Enemy.setEnemyName s enemy }, Cmd.none )
 
-        -- InputKana s ->
-        --     let
-        --         c =
-        --             { enemy | kana = s }
-        --     in
-        --     ( ( c, editor ), Cmd.none )
+        InputKana s ->
+            ( { editor | editingEnemy = Enemy.setEnemyKana s enemy }, Cmd.none )
+
+        InputActivePower s ->
+            ( { editor | editingEnemy = Enemy.setEnemyActivePower s enemy }, Cmd.none )
+
+        InputMemo s ->
+            ( { editor | editingEnemy = Enemy.setEnemyMemo s enemy }, Cmd.none )
+
+        InputDegreeOfThreat s ->
+            ( { editor | editingEnemy = Enemy.setEnemyDegreeOfThreat s enemy }, Cmd.none )
+
+        InputCardImageCreatorName s ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardImageCreatorName s enemy }, Cmd.none )
+
+        InputCardImageCreatorSite s ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardImageCreatorSite s enemy }, Cmd.none )
+
+        InputCardImageCreatorUrl s ->
+            ( { editor | editingEnemy = Enemy.setEnemyCardImageCreatorUrl s enemy }, Cmd.none )
+
+        AddCard ->
+            ( { editor | editingEnemy = Enemy.addEnemyCard Card.initCard enemy }, Cmd.none )
+
         -- InputSkillCard card ->
         --     let
         --         newCards =

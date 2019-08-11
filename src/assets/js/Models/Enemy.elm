@@ -1,20 +1,4 @@
-module Models.Enemy exposing
-    ( EditorModel
-    , Enemy
-    , PageState(..)
-    , StorageState(..)
-    , closeModal
-    , decodeFromValue
-    , defaultEditorModel
-    , defaultEnemy
-    , encodeCrudValue
-    , enemyDecoder
-    , enemyDecoderFromFireStoreApiJson
-    , getEnemyFromSession
-    , justEnemyId
-    , setEnemyName
-    , showModal
-    )
+module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, encodeCrudValue, encodeEnemyToValue, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromSession, justEnemyId, setEnemyActivePower, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTag, showModal)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -25,6 +9,7 @@ import Models.Card as Card exposing (CardData)
 import Models.Tag as Tag exposing (Tag)
 import Session
 import Utils.ModalWindow as Modal
+import Utils.Util exposing (deleteAt)
 
 
 type alias EnemyId =
@@ -61,6 +46,56 @@ defaultEnemy =
 setEnemyName : String -> Enemy -> Enemy
 setEnemyName name enemy =
     { enemy | name = name }
+
+
+setEnemyKana : String -> Enemy -> Enemy
+setEnemyKana s enemy =
+    { enemy | kana = s }
+
+
+setEnemyActivePower : String -> Enemy -> Enemy
+setEnemyActivePower s enemy =
+    { enemy | activePower = Maybe.withDefault 0 <| String.toInt <| s }
+
+
+setEnemyMemo : String -> Enemy -> Enemy
+setEnemyMemo s enemy =
+    { enemy | memo = s }
+
+
+setEnemyDegreeOfThreat : String -> Enemy -> Enemy
+setEnemyDegreeOfThreat s enemy =
+    { enemy | degreeOfThreat = Maybe.withDefault 0 <| String.toInt <| s }
+
+
+setEnemyCardImageData : String -> Enemy -> Enemy
+setEnemyCardImageData s enemy =
+    { enemy | cardImageData = s }
+
+
+setEnemyCardImageCreatorName : String -> Enemy -> Enemy
+setEnemyCardImageCreatorName s enemy =
+    { enemy | cardImageCreatorName = s }
+
+
+setEnemyCardImageCreatorSite : String -> Enemy -> Enemy
+setEnemyCardImageCreatorSite s enemy =
+    { enemy | cardImageCreatorSite = s }
+
+
+setEnemyCardImageCreatorUrl : String -> Enemy -> Enemy
+setEnemyCardImageCreatorUrl s enemy =
+    { enemy | cardImageCreatorUrl = s }
+
+
+setEnemyTag : String -> Enemy -> Enemy
+setEnemyTag s enemy =
+    { enemy | tags = Tag.tagsFromString s }
+
+
+addEnemyCard : Card.CardData -> Enemy -> Enemy
+addEnemyCard card enemy =
+    { enemy | cards = Array.push card enemy.cards }
 
 
 getEnemyFromSession : Session.Data -> String -> Maybe Enemy
