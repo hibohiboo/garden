@@ -1,4 +1,4 @@
-module FirestoreApi exposing (array, arrayFromJson, bool, boolFromJson, characterDetailsUrlWithPageToken, characterUrl, characterUrlFromFireStore, charactersUrl, charactersUrlWithLimit, charactersUrlWithPageToken, enemiesUrl, fields, int, intFromJson, list, nextTokenFromJson, string, stringFromJson, timestamp, timestampFromJson)
+module FirestoreApi exposing (array, arrayFromJson, bool, boolFromJson, characterDetailsUrlWithPageToken, characterUrl, characterUrlFromFireStore, charactersUrl, charactersUrlWithLimit, charactersUrlWithPageToken, enemiesUrl, enemyUrlFromFireStore, fields, int, intFromJson, list, nextTokenFromJson, string, stringFromJson, timestamp, timestampFromJson)
 
 import Array exposing (Array)
 import Json.Decode as D exposing (Decoder)
@@ -60,6 +60,10 @@ enemiesUrl =
     -- 登録画面未作成なので、取得できるjsonに似せたjsonファイルを直接読む。
     -- databaseUrl ++ "/(default)/documents/publish/all/enemies/"
     "/assets/json/enemies.json"
+
+
+enemyUrlFromFireStore enemyId =
+    databaseUrl ++ "/(default)/documents/enemies/" ++ enemyId
 
 
 

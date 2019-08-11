@@ -19,6 +19,7 @@ import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as E
 import Models.Card as Card exposing (CardData)
 import Models.Tag as Tag exposing (Tag)
+import Session
 import Utils.ModalWindow as Modal
 
 
@@ -56,6 +57,45 @@ defaultEnemy =
 setEnemyName : String -> Enemy -> Enemy
 setEnemyName name enemy =
     { enemy | name = name }
+
+
+getEnemy : Session.Data -> String -> Maybe Enemy
+getEnemy session enemyId =
+    case Session.getEnemy session enemyId of
+        Just json ->
+            case D.decodeString enemyDecoderFromFireStoreApi json of
+                Err a ->
+                    Nothing
+
+                Ok char ->
+                    Just char
+
+        Nothing ->
+            Nothing
+
+
+enemyDecoderFromFireStoreApi : Decoder Enemy
+enemyDecoderFromFireStoreApi =
+    FSApi.fields enemyDecoderFromFireStoreApiHealper
+
+
+enemyDecoderFromFireStoreApiHealper : Decoder Enemy
+enemyDecoderFromFireStoreApiHealper =
+    D.succeed Enemy
+        |> required "storeUserId" FSApi.string
+        |> required "enemyId" FSApi.string
+        |> required "name" FSApi.string
+        |> required "kana" FSApi.string
+        |> optional "activePower" FSApi.int 4
+        |> optional "memo" FSApi.string ""
+        |> optional "degreeOfThreat" FSApi.int 1
+        |> required "tags" (FSApi.list Tag.tagDecoder)
+        |> optional "cards" (FSApi.array Card.cardDecoderFromJson) (Array.fromList [])
+        |> optional "cardImage" FSApi.string ""
+        |> optional "cardImageData" FSApi.string ""
+        |> optional "cardImageCreatorName" FSApi.string ""
+        |> optional "cardImageCreatorSite" FSApi.string ""
+        |> optional "cardImageCreatorUrl" FSApi.string ""
 
 
 type PageState
