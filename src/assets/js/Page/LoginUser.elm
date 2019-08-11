@@ -5,6 +5,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as D
 import Models.Character exposing (..)
+import Models.Enemy as Enemy exposing (Enemy)
+import Models.Pagination as Pagination exposing (Pagination)
 import Models.User exposing (..)
 import Page.Views.LoginPage exposing (loginPage)
 import Page.Views.MyPage as MyPage
@@ -15,16 +17,26 @@ import Url.Builder
 import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNavigationButton, getNavigationPageClass, openNavigationButton, toggleNavigationState, viewNav)
 
 
+type alias UserId =
+    String
+
+
 port signOut : () -> Cmd msg
 
 
 port signedIn : (String -> msg) -> Sub msg
 
 
-port getCharacters : String -> Cmd msg
+port getCharacters : UserId -> Cmd msg
 
 
 port gotCharacters : (String -> msg) -> Sub msg
+
+
+port getEnemies : D.Value -> Cmd msg
+
+
+port gotEnemies : (D.Value -> msg) -> Sub msg
 
 
 subscriptions : Sub Msg
@@ -32,6 +44,7 @@ subscriptions =
     Sub.batch
         [ signedIn SignedIn
         , gotCharacters GotCharacters
+        , gotEnemies GotEnemies
         ]
 
 
@@ -40,6 +53,8 @@ type alias Model =
     , naviState : NaviState
     , user : Maybe User
     , characters : List Character
+    , enemies : List Enemy
+    , enemyPagination : Pagination
     }
 
 
@@ -52,7 +67,7 @@ init session =
 
 initModel : Session.Data -> Model
 initModel session =
-    Model session Close Nothing []
+    Model session Close Nothing [] [] Pagination.empty
 
 
 type Msg
@@ -60,6 +75,8 @@ type Msg
     | SignedIn String
     | SignOut
     | GotCharacters String
+    | GotEnemies D.Value
+    | GetEnemies
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -74,7 +91,17 @@ update msg model =
                     ( model, Cmd.none )
 
                 Just user ->
-                    ( { model | user = Just user }, getCharacters user.storeUserId )
+                    let
+                        pagination =
+                            Pagination.init user.storeUserId
+
+                        cmd =
+                            Cmd.batch
+                                [ getCharacters user.storeUserId
+                                , getEnemies <| Pagination.encodePaginationToValue pagination
+                                ]
+                    in
+                    ( { model | user = Just user, enemyPagination = pagination }, cmd )
 
         SignOut ->
             ( model, signOut () )
@@ -86,6 +113,17 @@ update msg model =
 
                 Ok char ->
                     ( { model | characters = char }, Cmd.none )
+
+        GotEnemies s ->
+            case D.decodeValue Pagination.enemyPaginationDecoder s of
+                Err a ->
+                    ( model, Cmd.none )
+
+                Ok ( nextToken, enemies ) ->
+                    ( { model | enemies = List.concat [ model.enemies, enemies ], enemyPagination = Pagination.updateToken nextToken model.enemyPagination }, Cmd.none )
+
+        GetEnemies ->
+            ( model, getEnemies <| Pagination.encodePaginationToValue model.enemyPagination )
 
 
 view : Model -> Skeleton.Details Msg
@@ -114,4 +152,4 @@ viewMainPage model =
             loginPage
 
         Just user ->
-            MyPage.view user model.characters SignOut
+            MyPage.view user model.characters model.enemies GetEnemies SignOut

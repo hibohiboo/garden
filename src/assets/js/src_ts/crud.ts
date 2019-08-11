@@ -1,4 +1,6 @@
 import User from './User';
+import * as firebase from 'firebase';
+const { Timestamp } = firebase.firestore;
 
 /**
  * データベースにユーザを新規登録する
@@ -183,17 +185,60 @@ export async function deleteCharacter(storeUserId, characterId, db) {
   await db.collection("users").doc(storeUserId).collection('characters').doc(characterId).delete();
 }
 
+/**
+ * エネミーの作成・更新・削除を行う
+ * 
+ * @param storage 
+ * @param db 
+ * @param timestamp 
+ * @param uid 
+ * @param param4 
+ */
 export async function crudEnemy(storage, db, timestamp, uid, { state, storeUserId, enemyId, enemy }) {
-  console.log(state);
+  const enemiesCollectrion = db.collection("users").doc(storeUserId).collection('enemies');
   if (state === "Create") {
-    const userRef = db.collection("users").doc(storeUserId);
     enemy.createdAt = timestamp;
     enemy.updatedAt = timestamp;
     enemy.uid = uid;
 
-    const ref = await userRef.collection('enemies').doc();
+    const ref = await enemiesCollectrion.doc();
     enemy.enemyId = ref.id;
     // enemy = await updateCharacterImages(storage, enemy);
-    return await userRef.collection('enemies').doc(ref.id).set(enemy);
+    return await enemiesCollectrion.doc(ref.id).set(enemy);
   }
+
+  if (state === "Delete") {
+    await enemiesCollectrion.doc(enemyId).delete();
+  }
+}
+
+export async function readEnemies(db, storeUserId, limit, pageToken) {
+
+  let query = db.collection("users").doc(storeUserId).collection('enemies').orderBy('createdAt', 'desc');
+  const splitter = ':';
+
+  if (pageToken !== "") {
+    const [seconds, nanoseconds] = pageToken.split(splitter);
+    const timestamp = new Timestamp();
+    timestamp.seconds = seconds;
+    timestamp.nanoseconds = nanoseconds;
+    query = query.startAfter(timestamp);
+  }
+
+  query = query.limit(limit);
+
+  const querySnapshot = await query.get();
+  const enemies: any[] = [];
+  await querySnapshot.forEach((doc) => {
+    const enemy = doc.data();
+    enemy.storeUserId = storeUserId;
+    enemy.enemyId = doc.id;
+    enemies.push(enemy);
+  });
+
+  const last = querySnapshot.docs[querySnapshot.docs.length - 1];
+  const lastData = last.data();
+  const time = lastData.createdAt;
+
+  return { enemies, "nextPageToken": `${time.seconds}${splitter}${time.nanoseconds}` };
 }

@@ -22,44 +22,41 @@ import Utils.Util exposing (deleteAt)
 
 type Msg
     = InputName String
-
-
-
--- | InputKana String
--- | InputSkillCard Card.CardData
--- | UpdateModal String String (Card.CardData -> Msg)
--- | OpenCommonSkillModal
--- | OpenModal
--- | AddCard
--- | DeleteCard Int
--- | CloseModal
--- | InputReason String
--- | InputLabo String
--- | InputMemo String
--- | InputAP String
--- | TogglePublish
--- | ImageRequested
--- | ImageSelected File
--- | ImageLoaded (Result LoadErr String)
--- | EnemyImageRequested
--- | EnemyImageSelected File
--- | EnemyImageLoaded (Result LoadErr String)
--- | InputImageCreatorName String
--- | InputImageCreatorSite String
--- | InputImageCreatorUrl String
--- | ToggleShowCardDetail
--- | UpdateCardName Int String
--- | UpdateCardTiming Int String
--- | UpdateCardCost Int String
--- | UpdateCardRange Int String
--- | UpdateCardMaxRange Int String
--- | UpdateCardTarget Int String
--- | UpdateCardEffect Int String
--- | UpdateCardDescription Int String
--- | UpdateCardTags Int String
--- | DeleteConfirm
--- | CancelConfirm
--- | Delete
+      -- | InputKana String
+      -- | InputSkillCard Card.CardData
+      -- | UpdateModal String String (Card.CardData -> Msg)
+      -- | OpenCommonSkillModal
+    | OpenModal
+      -- | AddCard
+      -- | DeleteCard Int
+    | CloseModal
+      -- | InputReason String
+      -- | InputLabo String
+      -- | InputMemo String
+      -- | InputAP String
+      -- | TogglePublish
+      -- | ImageRequested
+      -- | ImageSelected File
+      -- | ImageLoaded (Result LoadErr String)
+      -- | EnemyImageRequested
+      -- | EnemyImageSelected File
+      -- | EnemyImageLoaded (Result LoadErr String)
+      -- | InputImageCreatorName String
+      -- | InputImageCreatorSite String
+      -- | InputImageCreatorUrl String
+      -- | ToggleShowCardDetail
+      -- | UpdateCardName Int String
+      -- | UpdateCardTiming Int String
+      -- | UpdateCardCost Int String
+      -- | UpdateCardRange Int String
+      -- | UpdateCardMaxRange Int String
+      -- | UpdateCardTarget Int String
+      -- | UpdateCardEffect Int String
+      -- | UpdateCardDescription Int String
+      -- | UpdateCardTags Int String
+    | DeleteConfirm
+    | CancelConfirm
+    | Delete
 
 
 type LoadErr
@@ -77,197 +74,200 @@ update msg editor =
         InputName s ->
             ( { editor | editingEnemy = Enemy.setEnemyName s enemy }, Cmd.none )
 
+        -- InputKana s ->
+        --     let
+        --         c =
+        --             { enemy | kana = s }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        -- InputSkillCard card ->
+        --     let
+        --         newCards =
+        --             Array.push card enemy.cards
+        --         newActivePower =
+        --             Card.getActivePower newCards
+        --         c =
+        --             { enemy | cards = newCards, activePower = newActivePower }
+        --     in
+        --     ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
+        -- AddCard ->
+        --     let
+        --         newCards =
+        --             Array.push Card.initCard enemy.cards
+        --         newActivePower =
+        --             Card.getActivePower newCards
+        --         c =
+        --             { enemy | cards = newCards, activePower = newActivePower }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        -- DeleteCard i ->
+        --     let
+        --         newCards =
+        --             deleteAt i enemy.cards
+        --         newActivePower =
+        --             Card.getActivePower newCards
+        --         c =
+        --             { enemy | cards = newCards, activePower = newActivePower }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        -- UpdateModal title kind m ->
+        --     let
+        --         filteredCards =
+        --             if kind == "" then
+        --                 editor.cards
+        --             else
+        --                 List.filter (\card -> card.kind == kind) editor.cards
+        --         cardElements =
+        --             div [ class "card-list" ] (List.map (\card -> inputCard card (m card)) filteredCards)
+        --         newEditor =
+        --             { editor
+        --                 | modalContents = cardElements
+        --             }
+        --     in
+        --     update OpenModal enemy newEditor
+        -- OpenCommonSkillModal ->
+        --     let
+        --         filteredCards =
+        --             List.filter (\card -> card.kind == "共通能力") editor.cards
+        --         cardElements =
+        --             div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
+        --         newEditor =
+        --             { editor
+        --                 | modalContents = cardElements
+        --             }
+        --     in
+        --     update OpenModal enemy newEditor
+        OpenModal ->
+            ( { editor | modalState = Modal.Open }, Cmd.none )
 
+        CloseModal ->
+            ( { editor | modalState = Modal.Close }, Cmd.none )
 
--- InputKana s ->
---     let
---         c =
---             { enemy | kana = s }
---     in
---     ( ( c, editor ), Cmd.none )
--- InputSkillCard card ->
---     let
---         newCards =
---             Array.push card enemy.cards
---         newActivePower =
---             Card.getActivePower newCards
---         c =
---             { enemy | cards = newCards, activePower = newActivePower }
---     in
---     ( ( c, { editor | modalState = Modal.Close } ), Cmd.none )
--- AddCard ->
---     let
---         newCards =
---             Array.push Card.initCard enemy.cards
---         newActivePower =
---             Card.getActivePower newCards
---         c =
---             { enemy | cards = newCards, activePower = newActivePower }
---     in
---     ( ( c, editor ), Cmd.none )
--- DeleteCard i ->
---     let
---         newCards =
---             deleteAt i enemy.cards
---         newActivePower =
---             Card.getActivePower newCards
---         c =
---             { enemy | cards = newCards, activePower = newActivePower }
---     in
---     ( ( c, editor ), Cmd.none )
--- UpdateModal title kind m ->
---     let
---         filteredCards =
---             if kind == "" then
---                 editor.cards
---             else
---                 List.filter (\card -> card.kind == kind) editor.cards
---         cardElements =
---             div [ class "card-list" ] (List.map (\card -> inputCard card (m card)) filteredCards)
---         newEditor =
---             { editor
---                 | modalContents = cardElements
---             }
---     in
---     update OpenModal enemy newEditor
--- OpenCommonSkillModal ->
---     let
---         filteredCards =
---             List.filter (\card -> card.kind == "共通能力") editor.cards
---         cardElements =
---             div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
---         newEditor =
---             { editor
---                 | modalContents = cardElements
---             }
---     in
---     update OpenModal enemy newEditor
--- OpenModal ->
---     ( ( enemy, { editor | modalState = Modal.Open } ), Cmd.none )
--- CloseModal ->
---     ( ( enemy, { editor | modalState = Modal.Close } ), Cmd.none )
--- InputMemo s ->
---     let
---         c =
---             { enemy | memo = s }
---     in
---     ( ( c, editor ), Cmd.none )
--- InputAP s ->
---     let
---         c =
---             { enemy | activePower = s |> String.toInt |> Maybe.withDefault 0 }
---     in
---     ( ( c, editor ), Cmd.none )
--- TogglePublish ->
---     let
---         c =
---             { enemy | isPublished = not enemy.isPublished }
---     in
---     ( ( c, editor ), Cmd.none )
--- ImageRequested ->
---     ( ( enemy, editor )
---     , Select.file expectedTypes ImageSelected
---     )
--- ImageSelected file ->
---     if File.size file < 1048576 then
---         ( ( enemy, editor )
---         , Task.attempt ImageLoaded <| File.toUrl file
---         )
---     else
---         ( ( enemy, editor )
---         , Cmd.none
---         )
--- ImageLoaded result ->
---     case result of
---         Ok content ->
---             let
---                 c =
---                     { enemy | cardImageData = content }
---             in
---             ( ( c, editor )
---             , Cmd.none
---             )
---         Err error ->
---             ( ( enemy, editor )
---             , Cmd.none
---             )
--- EnemyImageRequested ->
---     ( ( enemy, editor )
---     , Select.file expectedTypes EnemyImageSelected
---     )
--- EnemyImageSelected file ->
---     if File.size file < 1048576 then
---         ( ( enemy, editor )
---         , Task.attempt EnemyImageLoaded <| File.toUrl file
---         )
---     else
---         ( ( enemy, editor )
---         , Cmd.none
---         )
--- EnemyImageLoaded result ->
---     case result of
---         Ok content ->
---             let
---                 c =
---                     { enemy | enemyImageData = content }
---             in
---             ( ( c, editor )
---             , Cmd.none
---             )
---         Err error ->
---             ( ( enemy, editor )
---             , Cmd.none
---             )
--- InputImageCreatorName s ->
---     ( ( { enemy | cardImageCreatorName = s }, editor ), Cmd.none )
--- InputImageCreatorSite s ->
---     ( ( { enemy | cardImageCreatorSite = s }, editor ), Cmd.none )
--- InputImageCreatorUrl s ->
---     ( ( { enemy | cardImageCreatorUrl = s }, editor ), Cmd.none )
--- ToggleShowCardDetail ->
---     ( ( enemy, { editor | isShowCardDetail = not editor.isShowCardDetail } ), Cmd.none )
--- UpdateCardName index name ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardName index name }, editor ), Cmd.none )
--- UpdateCardTiming index value ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardTiming index value }, editor ), Cmd.none )
--- UpdateCardCost index value ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardCost index value }, editor ), Cmd.none )
--- UpdateCardRange index value ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardRange index value }, editor ), Cmd.none )
--- UpdateCardMaxRange index value ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardMaxRange index value }, editor ), Cmd.none )
--- UpdateCardTarget index value ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardTarget index value }, editor ), Cmd.none )
--- UpdateCardEffect index value ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardEffect index value }, editor ), Cmd.none )
--- UpdateCardDescription index value ->
---     ( ( { enemy | cards = enemy.cards |> Card.updateCardDescription index value }, editor ), Cmd.none )
--- UpdateCardTags index value ->
---     let
---         newCards =
---             enemy.cards |> Card.updateCardTags index value
---         newActivePower =
---             Card.getActivePower newCards
---         c =
---             { enemy | cards = newCards, activePower = newActivePower }
---     in
---     ( ( c, editor ), Cmd.none )
--- DeleteConfirm ->
---     let
---         showModal =
---             Models.EnemyEditor.showModal editor
---         e =
---             { showModal | modalContents = confirmDelete CancelConfirm Delete "キャラクター" }
---     in
---     ( ( enemy, e ), Cmd.none )
--- CancelConfirm ->
---     let
---         closeModal =
---             Models.EnemyEditor.closeModal editor
---     in
---     ( ( enemy, closeModal ), Cmd.none )
--- Delete ->
---     update CloseModal enemy editor
+        -- InputMemo s ->
+        --     let
+        --         c =
+        --             { enemy | memo = s }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        -- InputAP s ->
+        --     let
+        --         c =
+        --             { enemy | activePower = s |> String.toInt |> Maybe.withDefault 0 }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        -- TogglePublish ->
+        --     let
+        --         c =
+        --             { enemy | isPublished = not enemy.isPublished }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        -- ImageRequested ->
+        --     ( ( enemy, editor )
+        --     , Select.file expectedTypes ImageSelected
+        --     )
+        -- ImageSelected file ->
+        --     if File.size file < 1048576 then
+        --         ( ( enemy, editor )
+        --         , Task.attempt ImageLoaded <| File.toUrl file
+        --         )
+        --     else
+        --         ( ( enemy, editor )
+        --         , Cmd.none
+        --         )
+        -- ImageLoaded result ->
+        --     case result of
+        --         Ok content ->
+        --             let
+        --                 c =
+        --                     { enemy | cardImageData = content }
+        --             in
+        --             ( ( c, editor )
+        --             , Cmd.none
+        --             )
+        --         Err error ->
+        --             ( ( enemy, editor )
+        --             , Cmd.none
+        --             )
+        -- EnemyImageRequested ->
+        --     ( ( enemy, editor )
+        --     , Select.file expectedTypes EnemyImageSelected
+        --     )
+        -- EnemyImageSelected file ->
+        --     if File.size file < 1048576 then
+        --         ( ( enemy, editor )
+        --         , Task.attempt EnemyImageLoaded <| File.toUrl file
+        --         )
+        --     else
+        --         ( ( enemy, editor )
+        --         , Cmd.none
+        --         )
+        -- EnemyImageLoaded result ->
+        --     case result of
+        --         Ok content ->
+        --             let
+        --                 c =
+        --                     { enemy | enemyImageData = content }
+        --             in
+        --             ( ( c, editor )
+        --             , Cmd.none
+        --             )
+        --         Err error ->
+        --             ( ( enemy, editor )
+        --             , Cmd.none
+        --             )
+        -- InputImageCreatorName s ->
+        --     ( ( { enemy | cardImageCreatorName = s }, editor ), Cmd.none )
+        -- InputImageCreatorSite s ->
+        --     ( ( { enemy | cardImageCreatorSite = s }, editor ), Cmd.none )
+        -- InputImageCreatorUrl s ->
+        --     ( ( { enemy | cardImageCreatorUrl = s }, editor ), Cmd.none )
+        -- ToggleShowCardDetail ->
+        --     ( ( enemy, { editor | isShowCardDetail = not editor.isShowCardDetail } ), Cmd.none )
+        -- UpdateCardName index name ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardName index name }, editor ), Cmd.none )
+        -- UpdateCardTiming index value ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardTiming index value }, editor ), Cmd.none )
+        -- UpdateCardCost index value ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardCost index value }, editor ), Cmd.none )
+        -- UpdateCardRange index value ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardRange index value }, editor ), Cmd.none )
+        -- UpdateCardMaxRange index value ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardMaxRange index value }, editor ), Cmd.none )
+        -- UpdateCardTarget index value ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardTarget index value }, editor ), Cmd.none )
+        -- UpdateCardEffect index value ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardEffect index value }, editor ), Cmd.none )
+        -- UpdateCardDescription index value ->
+        --     ( ( { enemy | cards = enemy.cards |> Card.updateCardDescription index value }, editor ), Cmd.none )
+        -- UpdateCardTags index value ->
+        --     let
+        --         newCards =
+        --             enemy.cards |> Card.updateCardTags index value
+        --         newActivePower =
+        --             Card.getActivePower newCards
+        --         c =
+        --             { enemy | cards = newCards, activePower = newActivePower }
+        --     in
+        --     ( ( c, editor ), Cmd.none )
+        DeleteConfirm ->
+            let
+                showModal =
+                    Enemy.showModal editor
+
+                e =
+                    { showModal | modalContents = confirmDelete CancelConfirm Delete "エネミー" }
+            in
+            ( e, Cmd.none )
+
+        CancelConfirm ->
+            let
+                closeModal =
+                    Enemy.closeModal editor
+            in
+            ( closeModal, Cmd.none )
+
+        Delete ->
+            update CloseModal editor
 
 
 expectedTypes : List String
@@ -299,7 +299,10 @@ setNewDataCards card kind cards =
 
 editArea : EditorModel Msg -> Html Msg
 editArea editor =
-    editor |> EnemyEditorView.editArea InputName
+    div []
+        [ editor |> EnemyEditorView.editArea InputName
+        , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
+        ]
 
 
 
@@ -391,13 +394,10 @@ modalCardOpenButton modalMsg title kind cardMsg =
 -- TODO: ドラッグアンドドロップ https://elm-lang.org/examples/drag-and-drop
 
 
-deleteModal char editor =
-    div [ style "padding" "20px 0" ] []
-
-
-
---         [ button [ onClick DeleteConfirm, class "btn waves-effect waves-light red", type_ "button", name "delete" ]
---             [ text "削除"
---             , i [ class "material-icons right" ] [ text "delete" ]
---             ]
---         ]
+deleteModal =
+    div [ style "padding" "20px 0" ]
+        [ button [ onClick DeleteConfirm, class "btn waves-effect waves-light red", type_ "button", name "delete" ]
+            [ text "削除"
+            , i [ class "material-icons right" ] [ text "delete" ]
+            ]
+        ]

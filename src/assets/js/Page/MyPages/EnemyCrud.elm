@@ -22,10 +22,13 @@ import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNaviga
 port crudEnemy : D.Value -> Cmd msg
 
 
+port updatedEnemy : (Bool -> msg) -> Sub msg
+
+
 subscriptions : Sub Msg
 subscriptions =
     Sub.batch
-        []
+        [ updatedEnemy UpdatedEnemy ]
 
 
 type alias Model =
@@ -42,6 +45,7 @@ type Msg
     = ToggleNavigation
     | EditorMsg EnemyEditor.Msg
     | Save
+    | UpdatedEnemy Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,8 +56,9 @@ update msg model =
 
         EditorMsg emsg ->
             case emsg of
-                -- EnemyEditor.Delete ->
-                --     ( model, deleteCharacter (Character.encodeCharacterIdsToValue model.character) )
+                EnemyEditor.Delete ->
+                    ( model, crudEnemy <| Enemy.encodeCrudValue <| Enemy.DeleteEnemy model.storeUserId model.editorModel.editingEnemy.enemyId )
+
                 _ ->
                     let
                         ( editor, cmd ) =
@@ -75,6 +80,9 @@ update msg model =
 
                 Enemy.Update ->
                     ( model, crudEnemy <| Enemy.encodeCrudValue <| Enemy.UpdateEnemy model.storeUserId enemy )
+
+        UpdatedEnemy _ ->
+            ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
 
 init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
@@ -119,7 +127,7 @@ viewHelper title model =
         [ h1 []
             [ text title ]
         , div
-            [ class "edit-karte" ]
+            []
             [ edit model
             ]
         ]
@@ -144,8 +152,7 @@ edit model =
                     [ text "更新"
                     , i [ class "material-icons right" ] [ text "send" ]
                     ]
-
-                -- , Html.map EditorMsg (deleteModal model.character model.editorModel)
+                , Html.map EditorMsg EnemyEditor.deleteModal
                 ]
 
         Enemy.Read ->

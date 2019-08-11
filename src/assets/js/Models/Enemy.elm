@@ -3,10 +3,13 @@ module Models.Enemy exposing
     , Enemy
     , PageState(..)
     , StorageState(..)
+    , closeModal
     , defaultEditorModel
     , defaultEnemy
     , encodeCrudValue
+    , enemyDecoder
     , setEnemyName
+    , showModal
     )
 
 import Array exposing (Array)
@@ -31,14 +34,14 @@ type alias Enemy =
     { storeUserId : String
     , enemyId : EnemyId
     , name : String
+    , kana : String
     , activePower : Int
     , memo : String
-    , cardImage : String
-    , cardImageData : String
-    , kana : String
     , degreeOfThreat : Int
     , tags : List Tag
     , cards : Array CardData
+    , cardImage : String
+    , cardImageData : String
     , cardImageCreatorName : String
     , cardImageCreatorSite : String
     , cardImageCreatorUrl : String
@@ -47,7 +50,7 @@ type alias Enemy =
 
 defaultEnemy : Enemy
 defaultEnemy =
-    Enemy "" "" "" 0 "" "" "" "" 0 [] Array.empty "" "" ""
+    Enemy "" "" "" "" 0 "" 0 [] Array.empty "" "" "" "" ""
 
 
 setEnemyName : String -> Enemy -> Enemy
@@ -82,6 +85,16 @@ type alias EditorModel msg =
 defaultEditorModel : EditorModel msg
 defaultEditorModel =
     EditorModel defaultEnemy True [] "" "" Modal.defaultModalContents Modal.Close False
+
+
+showModal : EditorModel msg -> EditorModel msg
+showModal modal =
+    { modal | modalState = Modal.Open }
+
+
+closeModal : EditorModel msg -> EditorModel msg
+closeModal modal =
+    { modal | modalState = Modal.Close }
 
 
 encodeEnemyToValue : Enemy -> E.Value
@@ -128,3 +141,22 @@ encodeCrudValue state =
                 , ( "storeUserId", E.string userId )
                 , ( "enemyId", E.string enemyId )
                 ]
+
+
+enemyDecoder : Decoder Enemy
+enemyDecoder =
+    D.succeed Enemy
+        |> required "storeUserId" D.string
+        |> required "enemyId" D.string
+        |> required "name" D.string
+        |> required "kana" D.string
+        |> optional "activePower" D.int 4
+        |> optional "memo" D.string ""
+        |> optional "degreeOfThreat" D.int 1
+        |> required "tags" (D.list Tag.tagDecoder)
+        |> optional "cards" (D.array Card.cardDecoderFromJson) (Array.fromList [])
+        |> optional "cardImage" D.string ""
+        |> optional "cardImageData" D.string ""
+        |> optional "cardImageCreatorName" D.string ""
+        |> optional "cardImageCreatorSite" D.string ""
+        |> optional "cardImageCreatorUrl" D.string ""

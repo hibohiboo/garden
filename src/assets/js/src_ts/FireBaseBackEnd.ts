@@ -29,6 +29,7 @@ export default class FireBaseBackEnd {
   }
 
   public getTimestamp() {
+    console.log(firebase.firestore.Timestamp);
     return firebase.firestore.FieldValue.serverTimestamp();
   }
 

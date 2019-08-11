@@ -3,7 +3,7 @@ import FireBaseBackEnd from './src_ts/FireBaseBackEnd';
 // import * as M from 'M'; //  tslint-disable-line
 import { Elm } from './Main'; //  eslint-disable-line import/no-unresolved
 import { GOOGLE_SHEET_API_KEY } from "./src_ts/constants";
-import { addCharacter, readCharacters, addUser, getCharacter, updateCharacter, deleteCharacter, crudEnemy } from './src_ts/crud';
+import { addCharacter, readCharacters, addUser, getCharacter, updateCharacter, deleteCharacter, crudEnemy, readEnemies } from './src_ts/crud';
 import { arrayPattern } from 'babel-types';
 require('../css/styles.scss'); // tslint:disable-line no-var-requires
 
@@ -104,10 +104,20 @@ app.ports.deleteCharacter.subscribe(async ({ storeUserId, characterId }) => {
   app.ports.deletedCharacter.send(true);
 });
 
+// エネミー情報取得
+app.ports.getEnemies.subscribe(async ({ storeUserId, limit, pageToken }) => {
+  const { enemies, nextPageToken } = await readEnemies(db, storeUserId, limit, pageToken);
+  app.ports.gotEnemies.send({ enemies, nextPageToken });
+});
+
 // エネミー更新
 app.ports.crudEnemy.subscribe(async (obj) => {
-  await crudEnemy(storage, db, fireBase.getTimestamp(), userData.uid, obj);
-
+  try {
+    await crudEnemy(storage, db, fireBase.getTimestamp(), userData.uid, obj);
+    app.ports.updatedEnemy.send(true);
+  } catch (e) {
+    app.ports.updatedEnemy.send(false);
+  }
 });
 
 // ローカルストレージに、キャラクターのデータカードの使用済/負傷などを保存
