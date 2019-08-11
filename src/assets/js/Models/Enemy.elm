@@ -4,6 +4,7 @@ module Models.Enemy exposing
     , PageState(..)
     , StorageState(..)
     , closeModal
+    , decodeFromValue
     , defaultEditorModel
     , defaultEnemy
     , encodeCrudValue
@@ -59,19 +60,20 @@ setEnemyName name enemy =
     { enemy | name = name }
 
 
-getEnemy : Session.Data -> String -> Maybe Enemy
-getEnemy session enemyId =
-    case Session.getEnemy session enemyId of
-        Just json ->
-            case D.decodeString enemyDecoderFromFireStoreApi json of
-                Err a ->
-                    Nothing
+getEnemyFromSession : Session.Data -> String -> Maybe Enemy
+getEnemyFromSession session enemyId =
+    Session.getEnemy session enemyId
+        |> Maybe.andThen enemyDecoderFromFireStoreApiJson
 
-                Ok char ->
-                    Just char
 
-        Nothing ->
+enemyDecoderFromFireStoreApiJson : String -> Maybe Enemy
+enemyDecoderFromFireStoreApiJson json =
+    case D.decodeString enemyDecoderFromFireStoreApi json of
+        Err a ->
             Nothing
+
+        Ok m ->
+            Just m
 
 
 enemyDecoderFromFireStoreApi : Decoder Enemy
@@ -98,9 +100,37 @@ enemyDecoderFromFireStoreApiHealper =
         |> optional "cardImageCreatorUrl" FSApi.string ""
 
 
+enemyDecoder : Decoder Enemy
+enemyDecoder =
+    D.succeed Enemy
+        |> required "storeUserId" D.string
+        |> required "enemyId" D.string
+        |> required "name" D.string
+        |> required "kana" D.string
+        |> optional "activePower" D.int 4
+        |> optional "memo" D.string ""
+        |> optional "degreeOfThreat" D.int 1
+        |> required "tags" (D.list Tag.tagDecoder)
+        |> optional "cards" (D.array Card.cardDecoderFromJson) (Array.fromList [])
+        |> optional "cardImage" D.string ""
+        |> optional "cardImageData" D.string ""
+        |> optional "cardImageCreatorName" D.string ""
+        |> optional "cardImageCreatorSite" D.string ""
+        |> optional "cardImageCreatorUrl" D.string ""
+
+
+decodeFromValue : D.Value -> Enemy
+decodeFromValue value =
+    case D.decodeValue enemyDecoder value of
+        Err _ ->
+            defaultEnemy
+
+        Ok enemy ->
+            enemy
+
+
 type PageState
     = Create
-    | Read
     | Update
 
 
@@ -108,6 +138,7 @@ type StorageState
     = CreateEnemy UserId Enemy
     | UpdateEnemy UserId Enemy
     | DeleteEnemy UserId EnemyId
+    | ReadEnemy UserId EnemyId
 
 
 type alias EditorModel msg =
@@ -182,21 +213,9 @@ encodeCrudValue state =
                 , ( "enemyId", E.string enemyId )
                 ]
 
-
-enemyDecoder : Decoder Enemy
-enemyDecoder =
-    D.succeed Enemy
-        |> required "storeUserId" D.string
-        |> required "enemyId" D.string
-        |> required "name" D.string
-        |> required "kana" D.string
-        |> optional "activePower" D.int 4
-        |> optional "memo" D.string ""
-        |> optional "degreeOfThreat" D.int 1
-        |> required "tags" (D.list Tag.tagDecoder)
-        |> optional "cards" (D.array Card.cardDecoderFromJson) (Array.fromList [])
-        |> optional "cardImage" D.string ""
-        |> optional "cardImageData" D.string ""
-        |> optional "cardImageCreatorName" D.string ""
-        |> optional "cardImageCreatorSite" D.string ""
-        |> optional "cardImageCreatorUrl" D.string ""
+        ReadEnemy userId enemyId ->
+            E.object
+                [ ( "state", E.string "Read" )
+                , ( "storeUserId", E.string userId )
+                , ( "enemyId", E.string enemyId )
+                ]

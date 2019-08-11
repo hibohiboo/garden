@@ -17,6 +17,7 @@ import Page.MyPages.CharacterCreate as CharacterCreate
 import Page.MyPages.CharacterUpdate as CharacterUpdate
 import Page.MyPages.CharacterView as CharacterView
 import Page.MyPages.EnemyCrud as EnemyCrud
+import Page.MyPages.EnemyView as EnemyView
 import Page.Problem as Problem
 import Page.RuleBook as RuleBook
 import Page.SandBox as SandBox
@@ -91,6 +92,7 @@ type Page
     | EnemyListPage Page.EnemyList.Model
     | BattleSheetPage Page.BattleSheet.Model
     | EnemyCrudPage EnemyCrud.Model
+    | EnemyViewPage EnemyView.Model
 
 
 init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -138,6 +140,7 @@ type Msg
     | EnemyListMsg Page.EnemyList.Msg
     | BattleSheetMsg Page.BattleSheet.Msg
     | EnemyCrudMsg EnemyCrud.Msg
+    | EnemyViewMsg EnemyView.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -321,6 +324,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        EnemyViewMsg pageMsg ->
+            case model.page of
+                EnemyViewPage pageModel ->
+                    let
+                        ( newModel, cmd ) =
+                            EnemyView.update pageMsg pageModel
+                    in
+                    ( { model | page = EnemyViewPage newModel }, Cmd.map EnemyViewMsg cmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 
 -- EXIT
@@ -369,6 +384,9 @@ exit model =
             m.session
 
         EnemyCrudPage m ->
+            m.session
+
+        EnemyViewPage m ->
             m.session
 
 
@@ -535,10 +553,10 @@ goTo maybeRoute model =
         Just (Route.EnemyView enemyId) ->
             let
                 ( m, cmd ) =
-                    EnemyCrud.init session model.googleSheetApiKey Enemy.Read "" (Just enemyId)
+                    EnemyView.init session model.googleSheetApiKey "" (Just enemyId)
             in
-            ( { model | page = EnemyCrudPage m }
-            , Cmd.map EnemyCrudMsg cmd
+            ( { model | page = EnemyViewPage m }
+            , Cmd.map EnemyViewMsg cmd
             )
 
 
@@ -622,6 +640,9 @@ view model =
 
         EnemyCrudPage m ->
             Skeleton.view EnemyCrudMsg (EnemyCrud.view m)
+
+        EnemyViewPage m ->
+            Skeleton.view EnemyViewMsg (EnemyView.view m)
 
 
 {-| NotFound ページ

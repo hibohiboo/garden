@@ -22,13 +22,19 @@ import Utils.NavigationMenu exposing (NaviState(..), NavigationMenu, closeNaviga
 port crudEnemy : D.Value -> Cmd msg
 
 
+port getEnemy : D.Value -> Cmd msg
+
+
 port updatedEnemy : (Bool -> msg) -> Sub msg
+
+
+port gotEnemy : (D.Value -> msg) -> Sub msg
 
 
 subscriptions : Sub Msg
 subscriptions =
     Sub.batch
-        [ updatedEnemy UpdatedEnemy ]
+        [ updatedEnemy UpdatedEnemy, gotEnemy GotEnemy ]
 
 
 type alias Model =
@@ -46,6 +52,7 @@ type Msg
     | EditorMsg EnemyEditor.Msg
     | Save
     | UpdatedEnemy Bool
+    | GotEnemy D.Value
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -75,21 +82,31 @@ update msg model =
                 Enemy.Create ->
                     ( model, crudEnemy <| Enemy.encodeCrudValue <| Enemy.CreateEnemy model.storeUserId enemy )
 
-                Enemy.Read ->
-                    ( model, Cmd.none )
-
                 Enemy.Update ->
                     ( model, crudEnemy <| Enemy.encodeCrudValue <| Enemy.UpdateEnemy model.storeUserId enemy )
 
         UpdatedEnemy _ ->
             ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
+        GotEnemy value ->
+            let
+                editor =
+                    model.editorModel
+
+                newEditor =
+                    { editor | editingEnemy = Enemy.decodeFromValue value }
+            in
+            ( { model | editorModel = newEditor }, Cmd.none )
+
 
 init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
 init session apiKey pageState storeUserId characterId =
-    ( initModel session apiKey pageState storeUserId
-    , Cmd.batch [ Cmd.none ]
-    )
+    case pageState of
+        Enemy.Create ->
+            ( initModel session apiKey pageState storeUserId, Cmd.none )
+
+        Enemy.Update ->
+            ( initModel session apiKey pageState storeUserId, Cmd.none )
 
 
 initModel session apiKey pageState storeUserId =
@@ -109,9 +126,6 @@ view model =
 
                 Enemy.Update ->
                     "更新"
-
-                Enemy.Read ->
-                    "View"
     in
     { title = title
     , attrs = [ class naviClass, class "character-sheet" ]
@@ -153,9 +167,4 @@ edit model =
                     , i [ class "material-icons right" ] [ text "send" ]
                     ]
                 , Html.map EditorMsg EnemyEditor.deleteModal
-                ]
-
-        Enemy.Read ->
-            div [ class "edit-area" ]
-                [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
                 ]
