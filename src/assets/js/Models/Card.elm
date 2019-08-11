@@ -11,6 +11,7 @@ port module Models.Card exposing
     , encodeCardToValue
     , getActivePower
     , getBases
+    , getCardsFromSession
     , getNotDamagedCardNumber
     , getRange
     , getTagsString
@@ -525,3 +526,18 @@ cardDetailClass isShowCardDetail =
 
     else
         "hide"
+
+
+getCardsFromSession : Session.Data -> List CardData
+getCardsFromSession session =
+    case Session.getCards session of
+        Just sheet ->
+            case cardDataListDecodeFromJson sheet of
+                Ok list ->
+                    list
+
+                Err _ ->
+                    []
+
+        Nothing ->
+            []

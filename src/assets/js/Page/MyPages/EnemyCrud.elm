@@ -8,6 +8,7 @@ import Html.Attributes exposing (class, name, type_)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode as D
+import Models.Card as Card
 import Models.Enemy as Enemy exposing (EditorModel, Enemy, PageState)
 import Page.MyPages.EnemyEditor as EnemyEditor
 import Page.Views.EnemyEditor as EnemyEditorView
@@ -39,16 +40,28 @@ subscriptions =
 
 init : Session.Data -> String -> PageState -> String -> Maybe String -> ( Model, Cmd Msg )
 init session apiKey pageState storeUserId enemyId =
+    let
+        cards =
+            Card.getCardsFromSession session
+
+        cardsCmd =
+            if cards == [] then
+                Session.fetchCards GotCards apiKey
+
+            else
+                Cmd.none
+    in
     case pageState of
         Enemy.Create ->
-            ( initModel session apiKey pageState storeUserId, Cmd.none )
+            ( initModel session apiKey pageState storeUserId, cardsCmd )
 
         Enemy.Update ->
-            let
-                id =
-                    Enemy.justEnemyId enemyId
-            in
-            ( initModel session apiKey pageState storeUserId, getEnemy <| Enemy.encodeCrudValue <| Enemy.ReadEnemy storeUserId id )
+            ( initModel session apiKey pageState storeUserId
+            , Cmd.batch
+                [ getEnemy <| Enemy.encodeCrudValue <| Enemy.ReadEnemy storeUserId <| Enemy.justEnemyId enemyId
+                , cardsCmd
+                ]
+            )
 
 
 initModel session apiKey pageState storeUserId =
@@ -71,6 +84,7 @@ type Msg
     | Save
     | UpdatedEnemy Bool
     | GotEnemy D.Value
+    | GotCards (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -115,6 +129,24 @@ update msg model =
                     { editor | editingEnemy = Enemy.decodeFromValue value }
             in
             ( { model | editorModel = newEditor }, Cmd.none )
+
+        GotCards (Ok json) ->
+            case Card.cardDataListDecodeFromJson json of
+                Ok cards ->
+                    let
+                        oldEditorModel =
+                            model.editorModel
+
+                        newEditorModel =
+                            { oldEditorModel | cards = cards }
+                    in
+                    ( { model | editorModel = newEditorModel, session = Session.addCards model.session json }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotCards (Err _) ->
+            ( model, Cmd.none )
 
 
 view : Model -> Skeleton.Details Msg

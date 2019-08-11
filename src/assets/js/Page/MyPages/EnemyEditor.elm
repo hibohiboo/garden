@@ -33,8 +33,7 @@ type Msg
     | DeleteCard Int
     | InputSkillCard Card.CardData
     | InputTags String
-      -- | UpdateModal String String (Card.CardData -> Msg)
-      -- | OpenCommonSkillModal
+    | OpenSkillModal
     | OpenModal
     | CloseModal
       -- | TogglePublish
@@ -105,35 +104,19 @@ update msg editor =
             ( { editor | editingEnemy = Enemy.deleteEnemyCard i enemy }, Cmd.none )
 
         InputSkillCard card ->
-            ( { editor | editingEnemy = Enemy.addEnemyCard card enemy }, Cmd.none )
+            update CloseModal { editor | editingEnemy = Enemy.addEnemyCard card enemy }
 
-        -- UpdateModal title kind m ->
-        --     let
-        --         filteredCards =
-        --             if kind == "" then
-        --                 editor.cards
-        --             else
-        --                 List.filter (\card -> card.kind == kind) editor.cards
-        --         cardElements =
-        --             div [ class "card-list" ] (List.map (\card -> inputCard card (m card)) filteredCards)
-        --         newEditor =
-        --             { editor
-        --                 | modalContents = cardElements
-        --             }
-        --     in
-        --     update OpenModal enemy newEditor
-        -- OpenCommonSkillModal ->
-        --     let
-        --         filteredCards =
-        --             List.filter (\card -> card.kind == "共通能力") editor.cards
-        --         cardElements =
-        --             div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
-        --         newEditor =
-        --             { editor
-        --                 | modalContents = cardElements
-        --             }
-        --     in
-        --     update OpenModal enemy newEditor
+        OpenSkillModal ->
+            let
+                filteredCards =
+                    editor.cards
+
+                -- List.filter (\card -> card.kind /= "共通能力") editor.cards
+                cardElements =
+                    div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
+            in
+            update OpenModal { editor | modalContents = cardElements }
+
         OpenModal ->
             ( { editor | modalState = Modal.Open }, Cmd.none )
 
@@ -235,11 +218,7 @@ update msg editor =
             ( e, Cmd.none )
 
         CancelConfirm ->
-            let
-                closeModal =
-                    Enemy.closeModal editor
-            in
-            ( closeModal, Cmd.none )
+            ( Enemy.closeModal editor, Cmd.none )
 
         Delete ->
             update CloseModal editor
@@ -281,7 +260,7 @@ editArea editor =
 
 
 editAreaWithMsg =
-    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl
+    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl OpenSkillModal ToggleShowCardDetail DeleteCard UpdateCardName UpdateCardTiming UpdateCardCost UpdateCardRange UpdateCardMaxRange UpdateCardTarget UpdateCardEffect UpdateCardDescription UpdateCardTags
 
 
 

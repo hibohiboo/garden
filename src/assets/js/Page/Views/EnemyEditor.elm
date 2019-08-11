@@ -18,7 +18,7 @@ import Page.Views.Tag exposing (tag)
 -- editArea : OnChangeMsg msg -> OnChangeMsg msg -> EditorModel msg -> Html msg
 
 
-editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creatorNameMsg creatorSiteMsg creatorUrlMsg editor =
+editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creatorNameMsg creatorSiteMsg creatorUrlMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg editor =
     let
         enemy =
             editor.editingEnemy
@@ -30,6 +30,7 @@ editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creato
         , inputNumberArea "degreeOfThreat" "脅威度" enemy.degreeOfThreat degreeOfThreatMsg
         , inputNumberArea "activePower" "行動力" enemy.activePower activePowerMsg
         , inputTextArea "memo" "メモ" enemy.memo memoMsg
+        , skillArea openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg enemy editor
         , inputArea "cardImageCreatorName" "画像作者" enemy.cardImageCreatorName creatorNameMsg
         , inputArea "cardImageCreatorSite" "画像作者サイト名" enemy.cardImageCreatorSite creatorSiteMsg
         , inputArea "cardImageCreatorUrl" "画像作者サイトURL" enemy.cardImageCreatorUrl creatorUrlMsg
