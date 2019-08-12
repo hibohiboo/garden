@@ -18,7 +18,7 @@ import Page.Views.Tag exposing (tag)
 -- editArea : OnChangeMsg msg -> OnChangeMsg msg -> EditorModel msg -> Html msg
 
 
-editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creatorNameMsg creatorSiteMsg creatorUrlMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg editor =
+editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creatorNameMsg creatorSiteMsg creatorUrlMsg inputSearchTagNameMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg editor =
     let
         enemy =
             editor.editingEnemy
@@ -30,14 +30,14 @@ editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creato
         , inputNumberArea "degreeOfThreat" "脅威度" enemy.degreeOfThreat degreeOfThreatMsg
         , inputNumberArea "activePower" "行動力" enemy.activePower activePowerMsg
         , inputTextArea "memo" "メモ" enemy.memo memoMsg
-        , skillArea openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg enemy editor
+        , skillArea inputSearchTagNameMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg enemy editor
         , inputArea "cardImageCreatorName" "画像作者" enemy.cardImageCreatorName creatorNameMsg
         , inputArea "cardImageCreatorSite" "画像作者サイト名" enemy.cardImageCreatorSite creatorSiteMsg
         , inputArea "cardImageCreatorUrl" "画像作者サイトURL" enemy.cardImageCreatorUrl creatorUrlMsg
         ]
 
 
-skillArea openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg enemy editor =
+skillArea inputSearchTagNameMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg enemy editor =
     div [ style "padding-bottom" "5px" ]
         [ h5 [] [ text "能力" ]
         , div [] [ label [] [ input [ type_ "checkbox", checked editor.isShowCardDetail, onClick toggleDetailMsg ] [], span [] [ text "詳細を表示" ] ] ]
@@ -45,7 +45,9 @@ skillArea openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg 
             [ text "Ti:タイミング/Co:コスト/Ra:射程/MRa:最大射程/Ta:対象" ]
         , div []
             (List.concat
-                [ [ div [ style "padding" "5px" ] (addButton "能力" openCardModal) ]
+                [ [ inputArea "searchTag" "能力をタグで絞り込む" editor.searchCardTagName inputSearchTagNameMsg
+                  , div [ style "padding" "5px" ] (addButton "能力" openCardModal)
+                  ]
                 , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardAreaWithMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg i editor.isShowCardDetail card) enemy.cards
                 ]
             )

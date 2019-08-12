@@ -243,7 +243,7 @@ type alias EditorModel msg =
     { editingEnemy : Enemy
     , isCreateState : Bool
     , cards : List Card.CardData
-    , searchCardKind : String
+    , searchCardTagName : String
     , modalTitle : String
     , modalContents : Modal.ModalContents msg
     , modalState : Modal.ModalState

@@ -1,6 +1,7 @@
 module Models.Tag exposing
     ( Tag
     , encodeTagToValue
+    , memberByName
     , tagDecoder
     , tagsDecoder
     , tagsDecoderFromFireStoreApi
@@ -105,6 +106,11 @@ tagDecoderFromFireStoreApi =
     D.succeed Tag
         |> required "name" FSApi.string
         |> optional "level" FSApi.int 0
+
+
+memberByName : String -> List Tag -> Bool
+memberByName name list =
+    list |> List.any (\tag -> tag.name == name)
 
 
 

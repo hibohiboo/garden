@@ -9,6 +9,7 @@ port module Models.Card exposing
     , cardList
     , cardView
     , encodeCardToValue
+    , filterByName
     , getActivePower
     , getBases
     , getCardsFromSession
@@ -383,6 +384,19 @@ encodeCardToValue card =
 -- ==============================================================================================
 -- ユーティリティ
 -- ==============================================================================================
+-- arrayFilterByName : String -> Array CardData -> Array CardData
+-- arrayFilterByName name cards =
+--     cards |> Array.filter (\card -> Tag.memberByName name card.tags)
+
+
+filterByName : String -> List CardData -> List CardData
+filterByName name cards =
+    cards |> List.filter (filterByNameHelper name)
+
+
+filterByNameHelper : String -> CardData -> Bool
+filterByNameHelper name card =
+    Tag.memberByName name card.tags
 
 
 getTraitList : Array CardData -> List String

@@ -33,6 +33,7 @@ type Msg
     | DeleteCard Int
     | InputSkillCard Card.CardData
     | InputTags String
+    | InputSearchTagName String
     | OpenSkillModal
     | OpenModal
     | CloseModal
@@ -106,12 +107,18 @@ update msg editor =
         InputSkillCard card ->
             update CloseModal { editor | editingEnemy = Enemy.addEnemyCard card enemy }
 
+        InputSearchTagName s ->
+            ( { editor | searchCardTagName = s }, Cmd.none )
+
         OpenSkillModal ->
             let
                 filteredCards =
-                    editor.cards
+                    if editor.searchCardTagName == "" then
+                        editor.cards
 
-                -- List.filter (\card -> card.kind /= "共通能力") editor.cards
+                    else
+                        Card.filterByName editor.searchCardTagName editor.cards
+
                 cardElements =
                     div [ class "card-list" ] (List.map (\card -> inputCard card (InputSkillCard card)) filteredCards)
             in
@@ -260,7 +267,7 @@ editArea editor =
 
 
 editAreaWithMsg =
-    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl OpenSkillModal ToggleShowCardDetail DeleteCard UpdateCardName UpdateCardTiming UpdateCardCost UpdateCardRange UpdateCardMaxRange UpdateCardTarget UpdateCardEffect UpdateCardDescription UpdateCardTags
+    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl InputSearchTagName OpenSkillModal ToggleShowCardDetail DeleteCard UpdateCardName UpdateCardTiming UpdateCardCost UpdateCardRange UpdateCardMaxRange UpdateCardTarget UpdateCardEffect UpdateCardDescription UpdateCardTags
 
 
 
