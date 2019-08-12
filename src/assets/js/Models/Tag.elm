@@ -60,10 +60,10 @@ fromString str =
             Nothing
 
         name :: level :: _ ->
-            Just <| Tag name (String.toInt level |> Maybe.withDefault 0)
+            Just <| Tag (String.trim name) (String.toInt level |> Maybe.withDefault 0)
 
         name :: _ ->
-            Just <| Tag name 0
+            Just <| Tag (String.trim name) 0
 
 
 tagsDecoder : Decoder (List Tag)
@@ -86,7 +86,7 @@ tagsDecoderFromJson =
 
 tagDecoder : Decoder Tag
 tagDecoder =
-    D.map2 Tag
+    D.map2 customTagConstrunctor
         (D.field "name" D.string)
         (D.field "level" D.int)
 
@@ -103,9 +103,14 @@ tagsDecoderFromFireStoreApi =
 
 tagDecoderFromFireStoreApi : Decoder Tag
 tagDecoderFromFireStoreApi =
-    D.succeed Tag
+    D.succeed customTagConstrunctor
         |> required "name" FSApi.string
         |> optional "level" FSApi.int 0
+
+
+customTagConstrunctor : String -> Int -> Tag
+customTagConstrunctor name level =
+    Tag (String.trim name) level
 
 
 memberByName : String -> List Tag -> Bool

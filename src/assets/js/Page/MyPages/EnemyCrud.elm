@@ -165,21 +165,15 @@ view model =
     in
     { title = title
     , attrs = [ class naviClass, class "character-sheet" ]
-    , kids =
-        [ viewMain <| viewHelper title model
-        ]
+    , kids = [ viewMain <| viewHelper title model ]
     }
 
 
 viewHelper : String -> Model -> Html Msg
 viewHelper title model =
     div [ class "" ]
-        [ h1 []
-            [ text title ]
-        , div
-            []
-            [ edit model
-            ]
+        [ h1 [] [ text title ]
+        , div [] [ edit model ]
         ]
 
 
@@ -190,17 +184,13 @@ edit model =
             div [ class "edit-area" ]
                 [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
                 , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
-                    [ text "作成"
-                    , i [ class "material-icons right" ] [ text "send" ]
-                    ]
+                    [ text "作成", i [ class "material-icons right" ] [ text "send" ] ]
                 ]
 
         Enemy.Update ->
             div [ class "edit-area" ]
                 [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
                 , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
-                    [ text "更新"
-                    , i [ class "material-icons right" ] [ text "send" ]
-                    ]
+                    [ text "更新", i [ class "material-icons right" ] [ text "send" ] ]
                 , Html.map EditorMsg EnemyEditor.deleteModal
                 ]

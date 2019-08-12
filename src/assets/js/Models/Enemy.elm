@@ -253,7 +253,7 @@ type alias EditorModel msg =
 
 defaultEditorModel : EditorModel msg
 defaultEditorModel =
-    EditorModel defaultEnemy True [] "" "" Modal.defaultModalContents Modal.Close False
+    EditorModel defaultEnemy True [] "エネミー" "" Modal.defaultModalContents Modal.Close False
 
 
 showModal : EditorModel msg -> EditorModel msg
