@@ -1,4 +1,4 @@
-module Page.MyPages.EnemyEditor exposing (Msg(..), deleteModal, editArea, update)
+module Page.MyPages.EnemyEditor exposing (Msg(..), createEditArea, deleteModal, editArea, update)
 
 import Array exposing (Array)
 import File exposing (File)
@@ -57,6 +57,7 @@ type Msg
     | DeleteConfirm
     | CancelConfirm
     | Delete
+    | InputSampleCharacter String
 
 
 type LoadErr
@@ -71,6 +72,14 @@ update msg editor =
             editor.editingEnemy
     in
     case msg of
+        InputSampleCharacter id ->
+            case Enemy.getEnemyFromListId id editor.sampleEnemies of
+                Just newEnemy ->
+                    ( { editor | editingEnemy = newEnemy }, Cmd.none )
+
+                Nothing ->
+                    ( editor, Cmd.none )
+
         InputName s ->
             ( { editor | editingEnemy = Enemy.setEnemyName s enemy }, Cmd.none )
 
@@ -220,6 +229,15 @@ setNewDataCards card kind cards =
 
 
 -- 入力エリア
+
+
+createEditArea : EditorModel Msg -> Html Msg
+createEditArea editor =
+    div []
+        [ EnemyEditorView.selectSampleEnemiesField "サンプルエネミー" "sampleEnemy" "" InputSampleCharacter editor.sampleEnemies
+        , editor |> editAreaWithMsg
+        , Modal.view editor.modalTitle editor.modalContents editor.modalState CloseModal
+        ]
 
 
 editArea : EditorModel Msg -> Html Msg

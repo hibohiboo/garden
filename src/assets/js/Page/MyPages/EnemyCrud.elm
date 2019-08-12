@@ -50,10 +50,20 @@ init session apiKey pageState storeUserId enemyId =
 
             else
                 Cmd.none
+
+        sampleEnemies =
+            Enemy.getSampleEnemiesFromSession session
+
+        sampleEnemiesCmd =
+            if sampleEnemies == [] then
+                Session.fetchEnemiesFromJson GotSampleEnemies
+
+            else
+                Cmd.none
     in
     case pageState of
         Enemy.Create ->
-            ( initModel session apiKey pageState storeUserId, cardsCmd )
+            ( initModel session apiKey pageState storeUserId, Cmd.batch [ sampleEnemiesCmd, cardsCmd ] )
 
         Enemy.Update ->
             ( initModel session apiKey pageState storeUserId
@@ -62,10 +72,6 @@ init session apiKey pageState storeUserId enemyId =
                 , cardsCmd
                 ]
             )
-
-
-initModel session apiKey pageState storeUserId =
-    Model session Close apiKey pageState Enemy.defaultEditorModel storeUserId
 
 
 type alias Model =
@@ -78,6 +84,10 @@ type alias Model =
     }
 
 
+initModel session apiKey pageState storeUserId =
+    Model session Close apiKey pageState Enemy.defaultEditorModel storeUserId
+
+
 type Msg
     = ToggleNavigation
     | EditorMsg EnemyEditor.Msg
@@ -85,6 +95,7 @@ type Msg
     | UpdatedEnemy Bool
     | GotEnemy D.Value
     | GotCards (Result Http.Error String)
+    | GotSampleEnemies (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -148,6 +159,24 @@ update msg model =
         GotCards (Err _) ->
             ( model, Cmd.none )
 
+        GotSampleEnemies (Ok json) ->
+            case Enemy.enemiesDecoderFromFireStoreApiJson json of
+                Just enemies ->
+                    let
+                        oldEditorModel =
+                            model.editorModel
+
+                        newEditorModel =
+                            { oldEditorModel | sampleEnemies = enemies }
+                    in
+                    ( { model | editorModel = newEditorModel, session = Session.addEnemiesFromJson model.session json }, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        GotSampleEnemies (Err _) ->
+            ( model, Cmd.none )
+
 
 view : Model -> Skeleton.Details Msg
 view model =
@@ -182,7 +211,7 @@ edit model =
     case model.pageState of
         Enemy.Create ->
             div [ class "edit-area" ]
-                [ Html.map EditorMsg (EnemyEditor.editArea model.editorModel)
+                [ Html.map EditorMsg (EnemyEditor.createEditArea model.editorModel)
                 , button [ onClick Save, class "btn waves-effect waves-light", type_ "button", name "save" ]
                     [ text "作成", i [ class "material-icons right" ] [ text "send" ] ]
                 ]

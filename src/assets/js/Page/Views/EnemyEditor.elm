@@ -1,4 +1,4 @@
-module Page.Views.EnemyEditor exposing (editArea)
+module Page.Views.EnemyEditor exposing (editArea, selectSampleEnemiesField)
 
 import Array exposing (Array)
 import Html exposing (..)
@@ -40,6 +40,18 @@ editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg imageR
         , inputArea "cardImageCreatorName" "画像作者" enemy.cardImageCreatorName creatorNameMsg
         , inputArea "cardImageCreatorSite" "画像作者サイト名" enemy.cardImageCreatorSite creatorSiteMsg
         , inputArea "cardImageCreatorUrl" "画像作者サイトURL" enemy.cardImageCreatorUrl creatorUrlMsg
+        ]
+
+
+selectSampleEnemiesField : String -> String -> String -> OnChangeMsg msg -> List Enemy -> Html msg
+selectSampleEnemiesField labelName fid val updateMsg list =
+    div [ class "input-field" ]
+        [ select
+            [ placeholder labelName, id fid, class "browser-default", onChange updateMsg, style "min-width" "60px", style "height" "2rem" ]
+            (option [ value "", selected (val == "") ] [ text "未選択" ]
+                :: (list |> List.map (\enemy -> option [ value enemy.enemyId, selected (val == enemy.enemyId) ] [ text enemy.name ]))
+            )
+        , label [ class "active", for fid ] [ text labelName ]
         ]
 
 

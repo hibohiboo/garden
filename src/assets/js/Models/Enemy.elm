@@ -1,4 +1,4 @@
-module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, deleteEnemyCard, encodeCrudValue, encodeEnemyToValue, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromSession, justEnemyId, setEnemyActivePower, setEnemyCardCost, setEnemyCardDescription, setEnemyCardEffect, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyCardMaxRange, setEnemyCardName, setEnemyCardRange, setEnemyCardTags, setEnemyCardTarget, setEnemyCardTiming, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTags, showModal)
+module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, deleteEnemyCard, encodeCrudValue, encodeEnemyToValue, enemiesDecoderFromFireStoreApi, enemiesDecoderFromFireStoreApiJson, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromListId, getEnemyFromSession, getSampleEnemiesFromSession, justEnemyId, setEnemyActivePower, setEnemyCardCost, setEnemyCardDescription, setEnemyCardEffect, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyCardMaxRange, setEnemyCardName, setEnemyCardRange, setEnemyCardTags, setEnemyCardTarget, setEnemyCardTiming, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTags, showModal)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -148,6 +148,16 @@ setEnemyCardTags index s enemy =
     { enemy | cards = enemy.cards |> Card.updateCardTags index s }
 
 
+getEnemyFromListId : String -> List Enemy -> Maybe Enemy
+getEnemyFromListId id list =
+    case List.filter (\enemy -> id == enemy.enemyId) list of
+        x :: xs ->
+            Just x
+
+        _ ->
+            Nothing
+
+
 getEnemyFromSession : Session.Data -> String -> Maybe Enemy
 getEnemyFromSession session enemyId =
     Session.getEnemy session enemyId
@@ -164,6 +174,35 @@ enemyDecoderFromFireStoreApiJson json =
             Just m
 
 
+getSampleEnemiesFromSession : Session.Data -> List Enemy
+getSampleEnemiesFromSession session =
+    Session.getEnemiesFromJson session
+        |> Maybe.andThen enemiesDecoderFromFireStoreApiJson
+        |> (\list ->
+                case list of
+                    Just l ->
+                        l
+
+                    Nothing ->
+                        []
+           )
+
+
+enemiesDecoderFromFireStoreApiJson : String -> Maybe (List Enemy)
+enemiesDecoderFromFireStoreApiJson json =
+    case D.decodeString enemiesDecoderFromFireStoreApi json of
+        Err a ->
+            Nothing
+
+        Ok m ->
+            Just m
+
+
+enemiesDecoderFromFireStoreApi : Decoder (List Enemy)
+enemiesDecoderFromFireStoreApi =
+    D.at [ "documents" ] <| D.list enemyDecoderFromFireStoreApi
+
+
 enemyDecoderFromFireStoreApi : Decoder Enemy
 enemyDecoderFromFireStoreApi =
     FSApi.fields enemyDecoderFromFireStoreApiHealper
@@ -175,12 +214,12 @@ enemyDecoderFromFireStoreApiHealper =
         |> required "storeUserId" FSApi.string
         |> required "enemyId" FSApi.string
         |> required "name" FSApi.string
-        |> required "kana" FSApi.string
+        |> optional "kana" FSApi.string ""
         |> optional "activePower" FSApi.int 4
         |> optional "memo" FSApi.string ""
         |> optional "degreeOfThreat" FSApi.int 1
-        |> optional "tags" (FSApi.list Tag.tagDecoder) []
-        |> optional "cards" (FSApi.array Card.cardDecoderFromJson) (Array.fromList [])
+        |> optional "tags" Tag.tagsDecoderFromFireStoreApi []
+        |> optional "cards" (FSApi.array Card.cardDecoderFromFireStoreApi) (Array.fromList [])
         |> optional "cardImage" FSApi.string ""
         |> optional "cardImageData" FSApi.string ""
         |> optional "cardImageCreatorName" FSApi.string ""
@@ -248,12 +287,13 @@ type alias EditorModel msg =
     , modalContents : Modal.ModalContents msg
     , modalState : Modal.ModalState
     , isShowCardDetail : Bool
+    , sampleEnemies : List Enemy
     }
 
 
 defaultEditorModel : EditorModel msg
 defaultEditorModel =
-    EditorModel defaultEnemy True [] "エネミー" "" Modal.defaultModalContents Modal.Close False
+    EditorModel defaultEnemy True [] "エネミー" "" Modal.defaultModalContents Modal.Close False []
 
 
 showModal : EditorModel msg -> EditorModel msg

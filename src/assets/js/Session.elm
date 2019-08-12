@@ -1,4 +1,4 @@
-module Session exposing (Data, Version, addCards, addCharacter, addCharacterDetails, addCharacters, addEnemies, addEnemy, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, deleteCharacter, deleteEnemy, deleteJsonData, empty, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchCharacterDetails, fetchCharacters, fetchCharactersWithPageToken, fetchEnemies, fetchEnemy, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getCharacterDetails, getCharacters, getCharactersWithPageToken, getEnemies, getEnemy, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
+module Session exposing (Data, Version, addCards, addCharacter, addCharacterDetails, addCharacters, addEnemies, addEnemiesFromJson, addEnemy, addFaqs, addJsonData, addMarkdown, addReasons, addSpreasSheetData, addTextStrings, addTraits, addUserCards, cardRange, cardSheetId, cardSheetVersion, deleteCharacter, deleteEnemy, deleteJsonData, empty, enemiesJsonUrl, faqRange, faqSheetId, faqSheetVersion, fetchCards, fetchCharacter, fetchCharacterDetails, fetchCharacters, fetchCharactersWithPageToken, fetchEnemies, fetchEnemiesFromJson, fetchEnemy, fetchFaqs, fetchJsonData, fetchMarkdown, fetchReasons, fetchSpreasSheetData, fetchTextStrings, fetchTraits, fetchUserCards, getCards, getCharacter, getCharacterDetails, getCharacters, getCharactersWithPageToken, getEnemies, getEnemiesFromJson, getEnemy, getFaqs, getJsonData, getMarkdown, getReasons, getSpreasSheetData, getTextStrings, getTraits, getUserCards, markdownUrl, reasonRange, reasonSheetId, reasonSheetVersion, textStringsRange, textStringsSheetId, textStringsSheetVersion, toMarkdownKey, toSpreasSheetDataKey, traitRange, traitSheetId, traitSheetVersion, userCardRange, userCardSheetId, userCardSheetVersion)
 
 import Dict
 import FirestoreApi
@@ -398,6 +398,24 @@ addEnemies data json =
 
 fetchEnemies toMsg =
     fetchJsonData toMsg FirestoreApi.enemiesUrl
+
+
+enemiesJsonUrl =
+    "/assets/json/enemies.json"
+
+
+getEnemiesFromJson : Data -> Maybe String
+getEnemiesFromJson data =
+    getJsonData data enemiesJsonUrl
+
+
+fetchEnemiesFromJson toMsg =
+    fetchJsonData toMsg enemiesJsonUrl
+
+
+addEnemiesFromJson : Data -> String -> Data
+addEnemiesFromJson data json =
+    addJsonData enemiesJsonUrl json data
 
 
 

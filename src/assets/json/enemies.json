@@ -93,7 +93,10 @@
           }
         },
         "enemyId": {
-          "stringValue": "kHvKakx3TqLFAeR9eSHZ"
+          "stringValue": "decoi"
+        },
+        "storeUserId": {
+          "stringValue": "hibo"
         },
         "activePower": {
           "integerValue": "5"
@@ -219,6 +222,9 @@
         "enemyId": {
           "stringValue": "shielddecoi"
         },
+        "storeUserId": {
+          "stringValue": "hibo"
+        },
         "activePower": {
           "integerValue": "6"
         }
@@ -343,6 +349,9 @@
         "enemyId": {
           "stringValue": "commandar"
         },
+        "storeUserId": {
+          "stringValue": "hibo"
+        },
         "activePower": {
           "integerValue": "8"
         }
@@ -464,6 +473,9 @@
         "enemyId": {
           "stringValue": "jammer"
         },
+        "storeUserId": {
+          "stringValue": "hibo"
+        },
         "activePower": {
           "integerValue": "8"
         }
@@ -560,6 +572,9 @@
         },
         "enemyId": {
           "stringValue": "supporter"
+        },
+        "storeUserId": {
+          "stringValue": "hibo"
         },
         "activePower": {
           "integerValue": "8"
@@ -739,6 +754,9 @@
         "enemyId": {
           "stringValue": "atackers"
         },
+        "storeUserId": {
+          "stringValue": "hibo"
+        },
         "activePower": {
           "integerValue": "8"
         }
@@ -917,6 +935,9 @@
         "enemyId": {
           "stringValue": "shooter"
         },
+        "storeUserId": {
+          "stringValue": "hibo"
+        },
         "activePower": {
           "integerValue": "8"
         }
@@ -1004,6 +1025,9 @@
         },
         "enemyId": {
           "stringValue": "slasher"
+        },
+        "storeUserId": {
+          "stringValue": "hibo"
         },
         "activePower": {
           "integerValue": "9"
@@ -1412,7 +1436,10 @@
           }
         },
         "enemyId": {
-          "stringValue": "supporter"
+          "stringValue": "jarm"
+        },
+        "storeUserId": {
+          "stringValue": "hibo"
         },
         "activePower": {
           "integerValue": "10"
