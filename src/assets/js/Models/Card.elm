@@ -15,6 +15,7 @@ port module Models.Card exposing
     , getCardsFromSession
     , getNotDamagedCardNumber
     , getRange
+    , getTagNamesList
     , getTagsString
     , getTraitList
     , illustedBy
@@ -408,6 +409,15 @@ getTraitList cards =
         |> List.concat
         |> List.map (\t -> t.name)
         |> List.filter (\name -> name /= "特性")
+        |> unique
+
+
+getTagNamesList : List CardData -> List String
+getTagNamesList cards =
+    cards
+        |> List.map (\card -> card.tags)
+        |> List.concat
+        |> List.map (\t -> t.name)
         |> unique
 
 

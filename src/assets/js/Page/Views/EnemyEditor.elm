@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Html.Events.Extra exposing (onChange)
+import Html.Lazy exposing (..)
 import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.Enemy as Enemy exposing (EditorModel, Enemy, PageState)
@@ -45,7 +46,7 @@ skillArea inputSearchTagNameMsg openCardModal toggleDetailMsg deleteCardMsg name
             [ text "Ti:タイミング/Co:コスト/Ra:射程/MRa:最大射程/Ta:対象" ]
         , div []
             (List.concat
-                [ [ inputArea "searchTag" "能力をタグで絞り込む" editor.searchCardTagName inputSearchTagNameMsg
+                [ [ lazy6 inputAreaWithAutocomplete "searchTag" "能力をタグで絞り込む" editor.searchCardTagName inputSearchTagNameMsg "taglist" (Card.getTagNamesList editor.cards)
                   , div [ style "padding" "5px" ] (addButton "能力" openCardModal)
                   ]
                 , List.reverse <| Array.toList <| Array.indexedMap (\i card -> updateCardAreaWithMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg i editor.isShowCardDetail card) enemy.cards

@@ -1,4 +1,4 @@
-module Page.Views.Form exposing (OnChangeIndexMsg, OnChangeMsg, addButton, deleteButton, inputArea, inputNumberArea, inputTextArea)
+module Page.Views.Form exposing (OnChangeIndexMsg, OnChangeMsg, addButton, deleteButton, inputArea, inputAreaWithAutocomplete, inputNumberArea, inputTextArea)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -41,7 +41,7 @@ inputTextArea fieldId labelName val toMsg =
 
 addButton : String -> msg -> List (Html msg)
 addButton labelName addMsg =
-    [ text (labelName ++ "を追加  ")
+    [ text (labelName ++ "を追加")
     , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
     ]
 
@@ -49,3 +49,13 @@ addButton labelName addMsg =
 deleteButton : msg -> Html msg
 deleteButton deleteMsg =
     button [ class "btn-small waves-effect waves-light grey", onClick deleteMsg ] [ i [ class "material-icons" ] [ text "delete" ] ]
+
+
+inputAreaWithAutocomplete : String -> String -> String -> OnChangeMsg msg -> String -> List String -> Html msg
+inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
+    div [ class "input-field" ]
+        [ input [ placeholder labelName, id fieldId, type_ "text", class "validate", value val, onInput toMsg, autocomplete True, list listId ] []
+        , label [ class "active", for fieldId ] [ text labelName ]
+        , datalist [ id listId ]
+            (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
+        ]
