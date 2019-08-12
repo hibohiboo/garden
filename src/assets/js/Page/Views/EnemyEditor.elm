@@ -19,7 +19,7 @@ import Page.Views.Tag exposing (tag)
 -- editArea : OnChangeMsg msg -> OnChangeMsg msg -> EditorModel msg -> Html msg
 
 
-editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creatorNameMsg creatorSiteMsg creatorUrlMsg inputSearchTagNameMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg editor =
+editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg imageRequestedMsg creatorNameMsg creatorSiteMsg creatorUrlMsg inputSearchTagNameMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg editor =
     let
         enemy =
             editor.editingEnemy
@@ -32,6 +32,11 @@ editArea nameMsg kanaMsg tagsMsg degreeOfThreatMsg activePowerMsg memoMsg creato
         , inputNumberArea "activePower" "行動力" enemy.activePower activePowerMsg
         , inputTextArea "memo" "メモ" enemy.memo memoMsg
         , skillArea inputSearchTagNameMsg openCardModal toggleDetailMsg deleteCardMsg nameCardMsg timingCardMsg costCardMsg rangeCardMsg maxRangeCardMsg targetCardMsg effectCardMsg descriptionCardMsg tagsCardMsg enemy editor
+        , div [ class "input-field" ]
+            [ div [] [ text "カードイメージ" ]
+            , div [] [ text "(74×94px推奨。1Mb未満。)" ]
+            , inputCardImageArea imageRequestedMsg enemy
+            ]
         , inputArea "cardImageCreatorName" "画像作者" enemy.cardImageCreatorName creatorNameMsg
         , inputArea "cardImageCreatorSite" "画像作者サイト名" enemy.cardImageCreatorSite creatorSiteMsg
         , inputArea "cardImageCreatorUrl" "画像作者サイトURL" enemy.cardImageCreatorUrl creatorUrlMsg
@@ -111,3 +116,13 @@ updateCardAreaTextAreaField msg labelText valueText fieldId =
         [ textarea [ placeholder labelText, id fieldId, class "materialize-textarea", value valueText, onChange msg ] []
         , label [ class "active", for fieldId ] [ text labelText ]
         ]
+
+
+inputCardImageArea : msg -> Enemy -> Html msg
+inputCardImageArea imageRequestedMsg model =
+    case model.cardImageData of
+        "" ->
+            button [ onClick imageRequestedMsg ] [ text "Upload image" ]
+
+        content ->
+            img [ class "cardImage", src content, width 74, height 94 ] []

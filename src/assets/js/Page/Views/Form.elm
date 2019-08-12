@@ -1,4 +1,4 @@
-module Page.Views.Form exposing (OnChangeIndexMsg, OnChangeMsg, addButton, deleteButton, inputArea, inputAreaWithAutocomplete, inputNumberArea, inputTextArea)
+module Page.Views.Form exposing (OnChangeIndexMsg, OnChangeMsg, addButton, deleteButton, expectedTypes, inputArea, inputAreaWithAutocomplete, inputNumberArea, inputTextArea)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -41,7 +41,7 @@ inputTextArea fieldId labelName val toMsg =
 
 addButton : String -> msg -> List (Html msg)
 addButton labelName addMsg =
-    [ text (labelName ++ "を追加")
+    [ text (labelName ++ "追加")
     , button [ class "btn-floating btn-small waves-effect waves-light green", onClick addMsg ] [ i [ class "material-icons" ] [ text "add" ] ]
     ]
 
@@ -59,3 +59,8 @@ inputAreaWithAutocomplete fieldId labelName val toMsg listId autocompleteList =
         , datalist [ id listId ]
             (List.map (\s -> option [ value s ] [ text s ]) autocompleteList)
         ]
+
+
+expectedTypes : List String
+expectedTypes =
+    [ "image/png", "image/jpeg", "image/gif" ]

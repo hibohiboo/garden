@@ -144,8 +144,8 @@ export async function updateCharacter(json, storage, db, timestamp, uid) {
 async function updateCharacterImages(storage, character) {
   // 画像アップロード
   await Promise.all([
-    updateImages(storage, "card", `card-{character.characterId}`, character.cardImageData, character),
-    updateImages(storage, "character", `character-{character.characterId}`, character.characterImageData, character)
+    updateImages(storage, "card", `card-${character.characterId}`, character.cardImageData, character),
+    updateImages(storage, "character", `character-${character.characterId}`, character.characterImageData, character)
   ]);
 
   return character;
@@ -203,8 +203,15 @@ export async function crudEnemy(storage, db, timestamp, uid, { state, storeUserI
 
     const ref = await enemiesCollectrion.doc();
     enemy.enemyId = ref.id;
-    // enemy = await updateCharacterImages(storage, enemy);
+    await updateImages(storage, "card", `card-${enemy.enemyId}`, enemy.cardImageData, enemy);
     return await enemiesCollectrion.doc(ref.id).set(enemy);
+  }
+  if (state === 'Update') {
+    const enemyRef = await enemiesCollectrion.doc(enemy.enemyId);
+    enemy.updatedAt = timestamp;
+    enemy.uid = uid;
+    await updateImages(storage, "card", `card-${enemy.enemyId}`, enemy.cardImageData, enemy);
+    return await enemyRef.update(enemy);
   }
   if (state === "Read") {
     const doc = await enemiesCollectrion.doc(enemyId).get();

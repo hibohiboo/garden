@@ -38,9 +38,9 @@ type Msg
     | OpenModal
     | CloseModal
       -- | TogglePublish
-      -- | ImageRequested
-      -- | ImageSelected File
-      -- | ImageLoaded (Result LoadErr String)
+    | ImageRequested
+    | ImageSelected File
+    | ImageLoaded (Result LoadErr String)
       -- | EnemyImageRequested
       -- | EnemyImageSelected File
       -- | EnemyImageLoaded (Result LoadErr String)
@@ -130,60 +130,24 @@ update msg editor =
         CloseModal ->
             ( { editor | modalState = Modal.Close }, Cmd.none )
 
-        -- ImageRequested ->
-        --     (  editor )
-        --     , Select.file expectedTypes ImageSelected
-        --     )
-        -- ImageSelected file ->
-        --     if File.size file < 1048576 then
-        --         (  editor )
-        --         , Task.attempt ImageLoaded <| File.toUrl file
-        --         )
-        --     else
-        --         ( ( enemy, editor )
-        --         , Cmd.none
-        --         )
-        -- ImageLoaded result ->
-        --     case result of
-        --         Ok content ->
-        --             let
-        --                 c =
-        --                     { enemy | cardImageData = content }
-        --             in
-        --             ( ( c, editor )
-        --             , Cmd.none
-        --             )
-        --         Err error ->
-        --             ( ( enemy, editor )
-        --             , Cmd.none
-        --             )
-        -- EnemyImageRequested ->
-        --     ( ( enemy, editor )
-        --     , Select.file expectedTypes EnemyImageSelected
-        --     )
-        -- EnemyImageSelected file ->
-        --     if File.size file < 1048576 then
-        --         ( ( enemy, editor )
-        --         , Task.attempt EnemyImageLoaded <| File.toUrl file
-        --         )
-        --     else
-        --         ( ( enemy, editor )
-        --         , Cmd.none
-        --         )
-        -- EnemyImageLoaded result ->
-        --     case result of
-        --         Ok content ->
-        --             let
-        --                 c =
-        --                     { enemy | enemyImageData = content }
-        --             in
-        --             ( ( c, editor )
-        --             , Cmd.none
-        --             )
-        --         Err error ->
-        --             ( ( enemy, editor )
-        --             , Cmd.none
-        --             )
+        ImageRequested ->
+            ( editor, Select.file expectedTypes ImageSelected )
+
+        ImageSelected file ->
+            if File.size file < 1048576 then
+                ( editor, Task.attempt ImageLoaded <| File.toUrl file )
+
+            else
+                ( editor, Cmd.none )
+
+        ImageLoaded result ->
+            case result of
+                Ok content ->
+                    ( { editor | editingEnemy = Enemy.setEnemyCardImageData content enemy }, Cmd.none )
+
+                Err error ->
+                    ( editor, Cmd.none )
+
         ToggleShowCardDetail ->
             ( { editor | isShowCardDetail = not editor.isShowCardDetail }, Cmd.none )
 
@@ -267,7 +231,7 @@ editArea editor =
 
 
 editAreaWithMsg =
-    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl InputSearchTagName OpenSkillModal ToggleShowCardDetail DeleteCard UpdateCardName UpdateCardTiming UpdateCardCost UpdateCardRange UpdateCardMaxRange UpdateCardTarget UpdateCardEffect UpdateCardDescription UpdateCardTags
+    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo ImageRequested InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl InputSearchTagName OpenSkillModal ToggleShowCardDetail DeleteCard UpdateCardName UpdateCardTiming UpdateCardCost UpdateCardRange UpdateCardMaxRange UpdateCardTarget UpdateCardEffect UpdateCardDescription UpdateCardTags
 
 
 

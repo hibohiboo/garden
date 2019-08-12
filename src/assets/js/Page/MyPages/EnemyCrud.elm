@@ -118,7 +118,7 @@ update msg model =
                     ( model, crudEnemy <| Enemy.encodeCrudValue <| Enemy.UpdateEnemy model.storeUserId enemy )
 
         UpdatedEnemy _ ->
-            ( model, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
+            ( { model | session = Session.deleteEnemy model.session model.editorModel.editingEnemy.enemyId }, Navigation.load (Url.Builder.absolute [ "mypage" ] []) )
 
         GotEnemy value ->
             let

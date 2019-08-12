@@ -12,6 +12,7 @@ import Models.Character exposing (Character)
 import Models.CharacterEditor exposing (EditorModel)
 import Models.Tag exposing (Tag)
 import Page.Views.CharacterEditorView as CharacterEditorView exposing (updateCardArea)
+import Page.Views.Form exposing (expectedTypes)
 import Page.Views.Modal exposing (confirmDelete)
 import Task
 import Url
@@ -427,11 +428,6 @@ update msg char editor =
 
         Delete ->
             update CloseModal char editor
-
-
-expectedTypes : List String
-expectedTypes =
-    [ "image/png", "image/jpeg", "image/gif" ]
 
 
 setNewDataCards : Card.CardData -> String -> Array Card.CardData -> Array Card.CardData
