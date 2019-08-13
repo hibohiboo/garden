@@ -1,4 +1,4 @@
-module Page.Views.Form exposing (OnChangeIndexMsg, OnChangeMsg, addButton, deleteButton, expectedTypes, inputArea, inputAreaWithAutocomplete, inputNumberArea, inputTextArea)
+module Page.Views.Form exposing (OnChangeIndexMsg, OnChangeMsg, addButton, deleteButton, expectedTypes, inputArea, inputAreaWithAutocomplete, inputCheckBox, inputNumberArea, inputTextArea)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -37,6 +37,11 @@ inputTextArea fieldId labelName val toMsg =
         [ textarea [ placeholder "labelName", id fieldId, class "materialize-textarea", value val, onChange toMsg, style "height" "200px", style "overflow-y" "auto" ] []
         , label [ class "active", for fieldId ] [ text labelName ]
         ]
+
+
+inputCheckBox : String -> String -> Bool -> msg -> Html msg
+inputCheckBox fieldId labelText value clickMsg =
+    div [] [ label [] [ input [ type_ "checkbox", checked value, onClick clickMsg ] [], span [] [ text labelText ] ] ]
 
 
 addButton : String -> msg -> List (Html msg)

@@ -1,4 +1,4 @@
-module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, deleteEnemyCard, encodeCrudValue, encodeEnemyToValue, enemiesDecoderFromFireStoreApi, enemiesDecoderFromFireStoreApiJson, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromListId, getEnemyFromSession, getSampleEnemiesFromSession, justEnemyId, setEnemyActivePower, setEnemyCardCost, setEnemyCardDescription, setEnemyCardEffect, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyCardMaxRange, setEnemyCardName, setEnemyCardRange, setEnemyCardTags, setEnemyCardTarget, setEnemyCardTiming, setEnemyDegreeOfThreat, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTags, showModal)
+module Models.Enemy exposing (EditorModel, Enemy, EnemyId, PageState(..), StorageState(..), UserId, addEnemyCard, closeModal, decodeFromValue, defaultEditorModel, defaultEnemy, deleteEnemyCard, encodeCrudValue, encodeEnemyToValue, enemiesDecoderFromFireStoreApi, enemiesDecoderFromFireStoreApiJson, enemyDecoder, enemyDecoderFromFireStoreApi, enemyDecoderFromFireStoreApiHealper, enemyDecoderFromFireStoreApiJson, getEnemyFromListId, getEnemyFromSession, getSampleEnemiesFromSession, justEnemyId, setEnemyActivePower, setEnemyCardCost, setEnemyCardDescription, setEnemyCardEffect, setEnemyCardImageCreatorName, setEnemyCardImageCreatorSite, setEnemyCardImageCreatorUrl, setEnemyCardImageData, setEnemyCardMaxRange, setEnemyCardName, setEnemyCardRange, setEnemyCardTags, setEnemyCardTarget, setEnemyCardTiming, setEnemyDegreeOfThreat, setEnemyIsPublished, setEnemyKana, setEnemyMemo, setEnemyName, setEnemyTags, showModal)
 
 import Array exposing (Array)
 import FirestoreApi as FSApi
@@ -35,12 +35,13 @@ type alias Enemy =
     , cardImageCreatorName : String
     , cardImageCreatorSite : String
     , cardImageCreatorUrl : String
+    , isPublished : Bool
     }
 
 
 defaultEnemy : Enemy
 defaultEnemy =
-    Enemy "" "" "" "" 0 "" 0 [] Array.empty "" "" "" "" ""
+    Enemy "" "" "" "" 0 "" 0 [] Array.empty "" "" "" "" "" False
 
 
 setEnemyName : String -> Enemy -> Enemy
@@ -86,6 +87,11 @@ setEnemyCardImageCreatorSite s enemy =
 setEnemyCardImageCreatorUrl : String -> Enemy -> Enemy
 setEnemyCardImageCreatorUrl s enemy =
     { enemy | cardImageCreatorUrl = s }
+
+
+setEnemyIsPublished : Bool -> Enemy -> Enemy
+setEnemyIsPublished b enemy =
+    { enemy | isPublished = b }
 
 
 setEnemyTags : String -> Enemy -> Enemy
@@ -225,6 +231,7 @@ enemyDecoderFromFireStoreApiHealper =
         |> optional "cardImageCreatorName" FSApi.string ""
         |> optional "cardImageCreatorSite" FSApi.string ""
         |> optional "cardImageCreatorUrl" FSApi.string ""
+        |> optional "isPublished" FSApi.bool False
 
 
 enemyDecoder : Decoder Enemy
@@ -244,6 +251,7 @@ enemyDecoder =
         |> optional "cardImageCreatorName" D.string ""
         |> optional "cardImageCreatorSite" D.string ""
         |> optional "cardImageCreatorUrl" D.string ""
+        |> optional "isPublished" D.bool False
 
 
 decodeFromValue : D.Value -> Enemy

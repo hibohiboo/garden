@@ -37,13 +37,10 @@ type Msg
     | OpenSkillModal
     | OpenModal
     | CloseModal
-      -- | TogglePublish
+    | TogglePublish
     | ImageRequested
     | ImageSelected File
     | ImageLoaded (Result LoadErr String)
-      -- | EnemyImageRequested
-      -- | EnemyImageSelected File
-      -- | EnemyImageLoaded (Result LoadErr String)
     | ToggleShowCardDetail
     | UpdateCardName Int String
     | UpdateCardTiming Int String
@@ -106,6 +103,9 @@ update msg editor =
 
         InputCardImageCreatorUrl s ->
             ( { editor | editingEnemy = Enemy.setEnemyCardImageCreatorUrl s enemy }, Cmd.none )
+
+        TogglePublish ->
+            ( { editor | editingEnemy = Enemy.setEnemyIsPublished (not enemy.isPublished) enemy }, Cmd.none )
 
         AddEmptyCard ->
             ( { editor | editingEnemy = Enemy.addEnemyCard Card.initCard enemy }, Cmd.none )
@@ -249,7 +249,7 @@ editArea editor =
 
 
 editAreaWithMsg =
-    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo ImageRequested InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl InputSearchTagName OpenSkillModal ToggleShowCardDetail DeleteCard UpdateCardName UpdateCardTiming UpdateCardCost UpdateCardRange UpdateCardMaxRange UpdateCardTarget UpdateCardEffect UpdateCardDescription UpdateCardTags
+    EnemyEditorView.editArea InputName InputKana InputTags InputDegreeOfThreat InputActivePower InputMemo ImageRequested InputCardImageCreatorName InputCardImageCreatorSite InputCardImageCreatorUrl TogglePublish InputSearchTagName OpenSkillModal ToggleShowCardDetail DeleteCard UpdateCardName UpdateCardTiming UpdateCardCost UpdateCardRange UpdateCardMaxRange UpdateCardTarget UpdateCardEffect UpdateCardDescription UpdateCardTags
 
 
 
