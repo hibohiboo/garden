@@ -331,6 +331,7 @@ encodeEnemyToValue c =
         , ( "cardImageCreatorName", E.string c.cardImageCreatorName )
         , ( "cardImageCreatorSite", E.string c.cardImageCreatorSite )
         , ( "cardImageCreatorUrl", E.string c.cardImageCreatorUrl )
+        , ( "isPublished", E.bool c.isPublished )
         ]
 
 
