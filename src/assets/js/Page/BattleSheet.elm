@@ -97,6 +97,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotEnemies (Ok json) ->
+            let
+                _ =
+                    Debug.log "decodeUser" json
+            in
             ( updateEnemiesModel model json, Cmd.none )
 
         GotEnemies (Err _) ->

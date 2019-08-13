@@ -13,7 +13,12 @@ import Url.Builder
 
 view : Enemy -> Html msg
 view enemy =
-    enemyCardMain enemy
+    enemyCardWithCards enemy
+
+
+enemyCardWithCards : Enemy -> Html msg
+enemyCardWithCards enemy =
+    div [ class "card-set" ] (enemyCardMain enemy :: skillsCards enemy)
 
 
 enemyCardMain : Enemy -> Html msg

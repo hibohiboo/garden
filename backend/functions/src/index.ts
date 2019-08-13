@@ -33,6 +33,7 @@ interface Enemy {
   uid?: string;
   enemyId: string;
   name: string;
+  isPublished: boolean;
 }
 
 interface RootEnemy extends Enemy {
@@ -104,9 +105,10 @@ async function copyToRootWithUsersEnemySnapshot(snapshot: FirebaseFirestore.Docu
   delete enemy.uid;
   enemy.authorRef = firestore.collection('users').doc(userId);
   await firestore.collection('enemies').doc(enemyId).set(enemy, { merge: true });
-  // const publish = {
-  //   enemyId: enemy.enemyId,
-  //   name: enemy.name,
-  // }
-  // await firestore.collection('publish').doc('all').collection('enemies').doc(enemyId).set(publish);
+  if (enemy.isPublished) {
+    await firestore.collection('publish').doc('all').collection('enemies').doc(enemyId).set(enemy);
+  } else {
+    await firestore.collection('publish').doc('all').collection('enemies').doc(enemyId).delete();
+  }
+
 }

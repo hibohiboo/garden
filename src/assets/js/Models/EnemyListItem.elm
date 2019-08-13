@@ -91,5 +91,9 @@ enemyListFromFireStoreApi json =
         Ok item ->
             item
 
-        Err _ ->
+        Err e ->
+            let
+                _ =
+                    Debug.log "decodeUser" e
+            in
             []

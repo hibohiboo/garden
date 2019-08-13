@@ -35,7 +35,7 @@ type alias Pagination =
 
 limit : PageLimit
 limit =
-    2
+    20
 
 
 init : String -> Pagination
