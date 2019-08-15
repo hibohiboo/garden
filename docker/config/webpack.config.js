@@ -10,27 +10,38 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 // to extract the css as a separate file
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+// // webpack-dev-server で使用
+// const fs = require('fs');
+
 // process.env.npm_lifecycle_event : webpackコマンドを実行したnpm script名が格納されている。
 const MODE = process.env.npm_lifecycle_event === 'prod' ? 'production' : 'development';
-const filename = MODE === 'production' ? '[name]-[hash].js' : 'index.js';
+const filename = MODE === 'production' ? '[name]-[hash].js' : '[name].js';
+
 
 const common = {
   mode: MODE,
   entry: {
     index: './src/assets/js/index.ts',
+    // scenario: './src/scenario/assets/js/index.ts'
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    publicPath: '/',
+    // publicPath: '/',
     // webpack -p automatically adds hash when building for production
-    filename,
+    filename: `${filename}`,
   },
   plugins: [
+    // new HTMLWebpackPlugin({
+    //   template: 'src/scenario/index.pug',
+    //   inject: false,
+    //   chunks: ['scenario'],
+    // }),
     new HTMLWebpackPlugin({
       // Use this template to get basic responsive meta tags
       template: 'src/index.pug',
       // inject details of output file at end of body
       inject: 'body',
+      chunks: ['index'],
     }),
   ],
   resolve: {
@@ -149,7 +160,19 @@ if (MODE === 'development') {
         app.get('/test', (req, res) => {
           res.json({ result: 'OK' });
         });
-      },
+        // app.get('/scenario', (req, res) => {
+        //   let teset = fs.readFileSync('index.html', 'utf-8');
+        //   const data = fs.readFileSync('/scenario/index.html', 'utf-8');
+
+        //   res.writeHead(200, {
+        //     'content-Type': 'text/html'
+        //   });
+
+        //   // HTTPレスポンスボディを出力する
+        //   res.write(data);
+        //   res.end("HTML file has already sent to browser");
+        // })
+      }
     },
     watch: true,
     watchOptions: {

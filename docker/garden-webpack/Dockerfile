@@ -18,7 +18,9 @@ RUN yarn add --dev @babel/cli
 RUN yarn add --dev elm
 RUN yarn add --dev elm-format
 RUN yarn add --dev elm-minify
-RUN yarn add --dev elm-hot-webpack-loader
+RUN yarn add --dev elm-webpack-loader
+# > elm-hot-webpack-loader@1.1.2" has unmet peer dependency "elm-webpack-loader@^6.0.0".
+
 RUN yarn add --dev elm-test
 RUN yarn add --dev elm-verify-examples
 
@@ -42,6 +44,7 @@ RUN yarn add --dev style-loader
 RUN yarn add --dev css-loader
 RUN yarn add --dev html-loader
 RUN yarn add --dev elm-webpack-loader
+RUN yarn add --dev elm-hot-webpack-loader
 RUN yarn add --dev resolve-url-loader
 RUN yarn add --dev resolve-url-loader
 RUN yarn add --dev sass-loader
@@ -92,15 +95,14 @@ RUN yarn add --dev pug-loader
 RUN sed -i -e "s/\(\"scripts\": {\)/\1\n    \"prod\": \"webpack -p\",/g" /app/package.json
 
 ### elm minify
-RUN yarn add --dev uglify-js
-RUN yarn global add uglify-js
 
 ## file copy
 RUN yarn add --dev cpx
-
-RUN yarn add --dev @types/jquery
-RUN yarn add --dev @types/materialize-css
-RUN yarn add --dev @types/chart.js
-
 RUN yarn add --dev postcss-loader
-#RUN yarn add --dev @types/firebase
+RUN yarn add --dev @types/firebase
+
+# RUN yarn add --dev @types/jquery
+# RUN yarn add --dev @types/materialize-css
+# RUN yarn add --dev @types/chart.js
+RUN yarn add --dev uglify-js
+RUN yarn global add uglify-js

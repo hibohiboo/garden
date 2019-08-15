@@ -1,0 +1,63 @@
+//- 変数一覧
+- var title="Garden - 箱庭の島の子供たち"
+- var description="箱庭の島に実験体として集められた、異形の子供たちの記録"
+- var keywords="TRPG,異能,実験体,子供,廃墟"
+
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    //- 従来型のメタデータ
+    meta(name='description', content=description)
+    //- 記事のキーワードをカンマで区切る
+    meta(name='keywords', content=keywords)
+    meta(name='robots', content=robots)
+    //- SNSでページが共有された時に表示する用のメタデータ。
+    //- サイト名
+    meta(name='og:sitename', content=title) 
+    //- 言語の種類
+    meta(name='og:locale', content="ja_JP") 
+    //- タイトル
+    meta(name='og:title', content=title) 
+    //- 概要
+    meta(name='og:description', content=description)
+    //- 記事のURL
+    meta(name='og:url', content="https://garden-2a6de.firebaseapp.com/") 
+    //- twitter
+    meta(name="twitter:site" content="@hibohiboo")
+    //- twittercard（申請必要
+    meta(name="twitter:card" content="summary_large_image")
+    meta(name="twitter:creator" content="@hibohiboo")
+    meta(name="twitter:title" content=title)
+    meta(name="twitter:description" content=description)
+    meta(name="twitter:image" content="https://garden-2a6de.firebaseapp.com/assets/images/childrens.png")
+    title=title
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+    link(href="https://fonts.googleapis.com/css?family=Anton&text=SKILL", rel="stylesheet")
+    block css
+    link(href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" rel="stylesheet")
+    script(src="https://www.gstatic.com/firebasejs/6.3.5/firebase-app.js")
+    script(src="https://www.gstatic.com/firebasejs/6.3.5/firebase-firestore.js")
+    script(src="https://www.gstatic.com/firebasejs/6.3.5/firebase-auth.js")
+    script(src="https://www.gstatic.com/firebasejs/6.3.5/firebase-storage.js")
+    script(src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js")
+    script(defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+            
+    .
+      <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-NM7RRXS');</script>
+      <!-- End Google Tag Manager -->
+  body.page
+    .
+      <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NM7RRXS"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->
+    block main
