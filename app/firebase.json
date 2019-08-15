@@ -12,6 +12,10 @@
         "function": "itemApi"
       },
       {
+        "source": "/scenario/**",
+        "destination": "/scenario/index.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
