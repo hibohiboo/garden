@@ -444,9 +444,6 @@ updateBatlleSheetItemCardRandomDamaged itemIndex damageNumber items =
                 skillIndex =
                     oldItem.data |> Maybe.andThen (\d -> Just (findCountIndex damageNumber (\card -> not card.isUsed && not card.isDamaged) <| Array.toList d.cards)) |> Maybe.withDefault 0
 
-                _ =
-                    Debug.log "decodeUser" skillIndex
-
                 data =
                     oldItem.data |> Maybe.andThen (updateCardDamaged skillIndex)
 
