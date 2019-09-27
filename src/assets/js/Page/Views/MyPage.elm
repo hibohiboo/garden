@@ -3,9 +3,9 @@ module Page.Views.MyPage exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import Models.Character exposing (..)
+import Models.Character exposing (Character)
 import Models.Enemy as Enemy exposing (Enemy)
-import Models.User exposing (..)
+import Models.User exposing (User)
 import Url
 import Url.Builder
 

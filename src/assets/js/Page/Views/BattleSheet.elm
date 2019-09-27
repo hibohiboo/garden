@@ -334,16 +334,28 @@ enemyCardWithCardsWrapper bse toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
     div [ onClick toggleMsg ] [ enemyCardWithCardsUpdatable (Maybe.withDefault Enemy.init bse.data) bse.isDisplaySkills toggleCardUsedMsg toggleCardDamagedMsg ]
 
 
-characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> (Int -> Int -> msg) -> (Int -> Int -> msg) -> Html msg
-characterCards characters toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
+characterCards : List ( Int, BattleSheetCharacter ) -> (Int -> msg) -> (Int -> Int -> msg) -> (Int -> Int -> msg) -> (Int -> msg) -> Html msg
+characterCards characters toggleMsg toggleCardUsedMsg toggleCardDamagedMsg randomDamageMsg =
     div []
-        [ div [ class "card-list" ] (characters |> List.map (\( i, bsc ) -> characterCardWithCardsWrapper bsc (toggleMsg i) (toggleCardUsedMsg i) (toggleCardDamagedMsg i)))
+        [ div [ class "card-list" ] (characters |> List.map (\( i, bsc ) -> characterCardWithCardsWrapper bsc (toggleMsg i) (toggleCardUsedMsg i) (toggleCardDamagedMsg i) (randomDamageMsg i)))
         ]
 
 
-characterCardWithCardsWrapper : BattleSheetCharacter -> msg -> (Int -> msg) -> (Int -> msg) -> Html msg
-characterCardWithCardsWrapper bsc toggleMsg toggleCardUsedMsg toggleCardDamagedMsg =
-    div [ onClick toggleMsg ] [ characterCardWithCardsUpdatable (Maybe.withDefault (Character.initCharacter "") bsc.data) bsc.isDisplaySkills toggleCardUsedMsg toggleCardDamagedMsg ]
+characterCardWithCardsWrapper : BattleSheetCharacter -> msg -> (Int -> msg) -> (Int -> msg) -> msg -> Html msg
+characterCardWithCardsWrapper bsc toggleMsg toggleCardUsedMsg toggleCardDamagedMsg randomDamageMsg =
+    div [ style "position" "relative" ]
+        [ randomDamageButton randomDamageMsg
+        , div [ onClick toggleMsg ]
+            [ characterCardWithCardsUpdatable (Maybe.withDefault (Character.initCharacter "") bsc.data) bsc.isDisplaySkills toggleCardUsedMsg toggleCardDamagedMsg
+            ]
+        ]
+
+
+randomDamageButton : msg -> Html msg
+randomDamageButton randomDamageMsg =
+    div [ style "position" "absolute", style "top" "7px", style "left" "12px", style "font-size" "12px", style "z-index" "1" ]
+        [ button [ onClick randomDamageMsg ] [ text "ﾗﾝﾀﾞﾑﾀﾞﾒｰｼﾞ" ]
+        ]
 
 
 positionArea : List { a | name : String, cardImage : String, position : Int, notDamagedCardNumber : Int } -> Html msg

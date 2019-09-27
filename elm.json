@@ -19,7 +19,8 @@
       "NoRedInk/elm-json-decode-pipeline": "1.0.0",
       "elm-community/html-extra": "3.2.0",
       "elm/file": "1.0.5",
-      "elm-community/list-split": "1.0.3"
+      "elm-community/list-split": "1.0.3",
+      "elm/random": "1.0.0"
     },
     "indirect": {
       "elm/time": "1.0.0",
@@ -31,8 +32,6 @@
     "direct": {
       "elm-explorations/test": "1.2.0"
     },
-    "indirect": {
-      "elm/random": "1.0.0"
-    }
+    "indirect": {}
   }
 }

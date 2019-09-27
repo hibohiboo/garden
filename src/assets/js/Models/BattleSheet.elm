@@ -9,6 +9,7 @@ module Models.BattleSheet exposing
     , decodeBattleSheetFromJson
     , encodeBattleSheetToJson
     , getCountAreaItems
+    , getCountNotDamagedUnUsedCard
     , getIndexedCharacterCard
     , getIndexedEnemyCard
     , initBatlleSheetCharacter
@@ -19,6 +20,7 @@ module Models.BattleSheet exposing
     , maxAreaCount
     , updateBatlleSheetItemActivePower
     , updateBatlleSheetItemCardDamaged
+    , updateBatlleSheetItemCardRandomDamaged
     , updateBatlleSheetItemCardUnUsedAll
     , updateBatlleSheetItemCardUsed
     , updateBatlleSheetItemIsDisplay
@@ -112,6 +114,8 @@ type BattleSheetMsg
     | ToggleEnemySkillCardDamaged Int Int
     | GotBattleSheet String
     | UnUsedAll
+    | RandomCharacterDamage Int
+    | RandomCharacterDamaged Int Int
 
 
 type alias BattleSheetItem a =
@@ -408,6 +412,77 @@ updateCardDamaged index data =
 
         Nothing ->
             Nothing
+
+
+
+-- ランダムでスキルを破壊
+
+
+getCountNotDamagedUnUsedCard : Int -> Array { a | data : Maybe { b | cards : Array CardData } } -> Int
+getCountNotDamagedUnUsedCard itemIndex items =
+    case Array.get itemIndex items of
+        Just oldItem ->
+            let
+                data =
+                    oldItem.data
+            in
+            data |> Maybe.andThen (\d -> Just (Card.getNotDamagedUnUsedCardNumber d.cards)) |> Maybe.withDefault 0
+
+        _ ->
+            0
+
+
+
+-- ランダムダメージの対象のインデックスを取得して更新
+
+
+updateBatlleSheetItemCardRandomDamaged : Int -> Int -> Array { a | data : Maybe { b | cards : Array CardData }, notDamagedCardNumber : Int } -> Array { a | data : Maybe { b | cards : Array CardData }, notDamagedCardNumber : Int }
+updateBatlleSheetItemCardRandomDamaged itemIndex damageNumber items =
+    case Array.get itemIndex items of
+        Just oldItem ->
+            let
+                skillIndex =
+                    oldItem.data |> Maybe.andThen (\d -> Just (findCountIndex damageNumber (\card -> not card.isUsed && not card.isDamaged) <| Array.toList d.cards)) |> Maybe.withDefault 0
+
+                _ =
+                    Debug.log "decodeUser" skillIndex
+
+                data =
+                    oldItem.data |> Maybe.andThen (updateCardDamaged skillIndex)
+
+                notDamagedCardNumber =
+                    data |> Maybe.andThen (\d -> Just (Card.getNotDamagedCardNumber d.cards)) |> Maybe.withDefault 0
+            in
+            Array.set itemIndex { oldItem | data = data, notDamagedCardNumber = notDamagedCardNumber } items
+
+        Nothing ->
+            items
+
+
+findCountIndex : Int -> (a -> Bool) -> List a -> Int
+findCountIndex =
+    findIndexHelp 0 0
+
+
+findIndexHelp : Int -> Int -> Int -> (a -> Bool) -> List a -> Int
+findIndexHelp cntIndex index cnt predicate list =
+    case list of
+        [] ->
+            -1
+
+        x :: xs ->
+            if predicate x && (cnt - 1) == cntIndex then
+                index
+
+            else if predicate x then
+                findIndexHelp (cntIndex + 1) (index + 1) cnt predicate xs
+
+            else
+                findIndexHelp cntIndex (index + 1) cnt predicate xs
+
+
+
+--
 
 
 getCountAreaItems : List Int -> Array BattleSheetCharacter -> Array BattleSheetEnemy -> List CountAreaItem

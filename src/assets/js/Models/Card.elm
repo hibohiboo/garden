@@ -1,36 +1,4 @@
-port module Models.Card exposing
-    ( CardData
-    , CardLabelData
-    , cardDataListDecodeFromJson
-    , cardDecodeFromString
-    , cardDecoderFromFireStoreApi
-    , cardDecoderFromJson
-    , cardDetailClass
-    , cardList
-    , cardView
-    , encodeCardToValue
-    , filterByName
-    , getActivePower
-    , getBases
-    , getCardsFromSession
-    , getNotDamagedCardNumber
-    , getRange
-    , getTagNamesList
-    , getTagsString
-    , getTraitList
-    , illustedBy
-    , initCard
-    , skillCard
-    , updateCardCost
-    , updateCardDescription
-    , updateCardEffect
-    , updateCardMaxRange
-    , updateCardName
-    , updateCardRange
-    , updateCardTags
-    , updateCardTarget
-    , updateCardTiming
-    )
+port module Models.Card exposing (CardData, CardLabelData, baseCardTag, cardDataListDecodeFromJson, cardDecodeFromString, cardDecoderFromFireStoreApi, cardDecoderFromJson, cardDecoderFromSpreadSheet, cardDetailClass, cardList, cardView, encodeCardToValue, filterByName, filterByNameHelper, getActivePower, getBases, getCardsFromSession, getNotDamagedCardNumber, getNotDamagedUnUsedCardNumber, getRange, getTagNamesList, getTagsString, getTraitList, illustedBy, initCard, skillCard, traitTag, updateCardCost, updateCardDescription, updateCardEffect, updateCardMaxRange, updateCardName, updateCardRange, updateCardTags, updateCardTarget, updateCardTiming)
 
 import Array exposing (Array)
 import Browser.Dom as Dom
@@ -456,6 +424,14 @@ getNotDamagedCardNumber : Array CardData -> Int
 getNotDamagedCardNumber cards =
     cards
         |> Array.filter (\card -> not card.isDamaged)
+        |> Array.length
+
+
+getNotDamagedUnUsedCardNumber : Array CardData -> Int
+getNotDamagedUnUsedCardNumber cards =
+    cards
+        |> Array.filter (\card -> not card.isDamaged)
+        |> Array.filter (\card -> not card.isUsed)
         |> Array.length
 
 

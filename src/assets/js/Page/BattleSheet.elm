@@ -10,6 +10,7 @@ import Models.Card as Card
 import Models.Character as Character exposing (Character)
 import Models.EnemyListItem as EnemyListItem exposing (EnemyListItem)
 import Page.Views.BattleSheet exposing (characterCards, characterListModal, countArea, countController, enemyCards, enemyListModal, inputCharacters, inputEnemies, inputSheetName, mainAreaTabs, positionArea, unUsedAllButton)
+import Random
 import Session
 import Skeleton exposing (viewLink, viewMain)
 import Url
@@ -274,6 +275,20 @@ update msg model =
             in
             saveLocalStorage ( { model | enemies = enemies, characters = characters }, Cmd.none )
 
+        RandomCharacterDamage indexCharacter ->
+            let
+                maxNumber =
+                    BS.getCountNotDamagedUnUsedCard indexCharacter model.characters
+            in
+            saveLocalStorage ( model, Random.generate (RandomCharacterDamaged indexCharacter) (Random.int 1 maxNumber) )
+
+        RandomCharacterDamaged indexCharacter damaged ->
+            let
+                characters =
+                    BS.updateBatlleSheetItemCardRandomDamaged indexCharacter damaged model.characters
+            in
+            saveLocalStorage ( { model | characters = characters }, Cmd.none )
+
 
 saveLocalStorage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 saveLocalStorage ( model, cmd ) =
@@ -384,7 +399,7 @@ cardMainArea model =
     div [ class "card-area" ]
         [ p [] [ text "カードクリックでスキルカードの表示/非表示を切替。" ]
         , unUsedAllButton UnUsedAll
-        , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay ToggleCharacterSkillCardUsed ToggleCharacterSkillCardDamaged
+        , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay ToggleCharacterSkillCardUsed ToggleCharacterSkillCardDamaged RandomCharacterDamage
         , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleEnemySkillCardUsed ToggleEnemySkillCardDamaged
         ]
 
