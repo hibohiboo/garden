@@ -116,6 +116,8 @@ type BattleSheetMsg
     | UnUsedAll
     | RandomCharacterDamage Int
     | RandomCharacterDamaged Int Int
+    | RandomEnemyDamage Int
+    | RandomEnemyDamaged Int Int
 
 
 type alias BattleSheetItem a =

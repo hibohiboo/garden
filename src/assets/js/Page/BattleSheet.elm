@@ -289,6 +289,20 @@ update msg model =
             in
             saveLocalStorage ( { model | characters = characters }, Cmd.none )
 
+        RandomEnemyDamage indexEnemy ->
+            let
+                maxNumber =
+                    BS.getCountNotDamagedUnUsedCard indexEnemy model.enemies
+            in
+            saveLocalStorage ( model, Random.generate (RandomEnemyDamaged indexEnemy) (Random.int 1 maxNumber) )
+
+        RandomEnemyDamaged indexEnemy damaged ->
+            let
+                enemies =
+                    BS.updateBatlleSheetItemCardRandomDamaged indexEnemy damaged model.enemies
+            in
+            saveLocalStorage ( { model | enemies = enemies }, Cmd.none )
+
 
 saveLocalStorage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 saveLocalStorage ( model, cmd ) =
@@ -400,7 +414,7 @@ cardMainArea model =
         [ p [] [ text "カードクリックでスキルカードの表示/非表示を切替。" ]
         , unUsedAllButton UnUsedAll
         , characterCards (BS.getIndexedCharacterCard model.characters) ToggleCharacterCardSkillsDisplay ToggleCharacterSkillCardUsed ToggleCharacterSkillCardDamaged RandomCharacterDamage
-        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleEnemySkillCardUsed ToggleEnemySkillCardDamaged
+        , enemyCards (BS.getIndexedEnemyCard model.enemies) ToggleEnemyCardSkillsDisplay ToggleEnemySkillCardUsed ToggleEnemySkillCardDamaged RandomEnemyDamage
         ]
 
 
