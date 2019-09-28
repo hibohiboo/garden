@@ -104,5 +104,7 @@ RUN yarn add --dev @types/firebase
 # RUN yarn add --dev @types/jquery
 # RUN yarn add --dev @types/materialize-css
 # RUN yarn add --dev @types/chart.js
-RUN yarn add --dev uglify-js
+# RUN yarn add --dev uglify-js
 RUN yarn global add uglify-js
+# 一時的に対策。node_modules/@types/webpack/index.d.ts:40:30 - error TS2307: Cannot find module 'source-map'.
+RUN  yarn add --dev @types/source-map@0.5.2
